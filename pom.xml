@@ -13,6 +13,7 @@
 	<packaging>war</packaging>
 	<name>Springside :: Example :: Showcase</name>
 
+
 	<!-- 项目属性 -->
 	<properties>
 		<!--<jdbc.driver.groupId>com.h2database</jdbc.driver.groupId>
@@ -28,6 +29,7 @@
         <jdbc.driver.artifactId>ojdbc14</jdbc.driver.artifactId>
         <jdbc.driver.version>10.2.0.4.0</jdbc.driver.version> 
 	</properties>
+
 
 	<!-- 依赖项定义 -->
 	<dependencies>
