@@ -14,7 +14,7 @@ package org.railway.com.trainplan.service;
  */
 public class ServiceException extends RuntimeException {
 
-	private static final long serialVersionUID = 3583566093089790852L;
+	private static final long serialVersionUID = 1401593546385403720L;
 
 	public ServiceException() {
 		super();
