@@ -34,7 +34,7 @@
 	</appender>
 
 	<!-- project default level -->
-	<logger name="org.springside.examples.showcase" level="INFO" />
+	<logger name="org.railway.com.trainplan" level="DEBUG" />
 	
 	<!-- business log 使用独立的appender，不继承Root的appender -->
 	<logger name="business" level="INFO" additivity="false">
@@ -51,7 +51,7 @@
 	<logger name="org.apache.cxf.services" level="INFO" />
 
 	<!-- root -->
-	<root level="WARN">
+	<root level="DEBUG">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />
 	</root>
