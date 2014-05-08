@@ -5,36 +5,50 @@
  *******************************************************************************/
 package org.railway.com.trainplan.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+import org.springside.modules.utils.Collections3;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.Lists;
+
+/**
+ * 用户.
+ * 
+ * @author calvin
+ */
 @Entity
 @Table(name = "ss_user")
+// 默认的缓存策略.
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
 	private String loginName;
-	private String name;
 	private String plainPassword;
 	private String password;
 	private String salt;
-	private String roles;
-	private Date registerDate;
+	private String name;
+	private String email;
+	private String status;
 
-	public User() {
-	}
+	private Team team;
 
-	public User(Long id) {
-		this.id = id;
-	}
+	private List<Role> roleList = Lists.newArrayList(); // 有序的关联对象集合
 
 	@NotBlank
 	public String getLoginName() {
@@ -45,18 +59,7 @@ public class User extends IdEntity {
 		this.loginName = loginName;
 	}
 
-	@NotBlank
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	// 不持久化到数据库，也不显示在Restful接口的属性.
 	@Transient
-	@JsonIgnore
 	public String getPlainPassword() {
 		return plainPassword;
 	}
@@ -81,29 +84,63 @@ public class User extends IdEntity {
 		this.salt = salt;
 	}
 
-	public String getRoles() {
-		return roles;
+	@NotBlank
+	public String getName() {
+		return name;
 	}
 
-	public void setRoles(String roles) {
-		this.roles = roles;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Email
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	// 多对多定义
+	@ManyToMany
+	@JoinTable(name = "ss_user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
+	// Fecth策略定义
+	@Fetch(FetchMode.SUBSELECT)
+	// 集合按id排序
+	@OrderBy("id ASC")
+	// 缓存策略
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	public List<Role> getRoleList() {
+		return roleList;
+	}
+
+	public void setRoleList(List<Role> roleList) {
+		this.roleList = roleList;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "team_id")
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 	@Transient
 	@JsonIgnore
-	public List<String> getRoleList() {
-		// 角色列表在数据库中实际以逗号分隔字符串存储，因此返回不能修改的List.
-		return ImmutableList.copyOf(StringUtils.split(roles, ","));
-	}
-
-	// 设定JSON序列化时的日期格式
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
-	public Date getRegisterDate() {
-		return registerDate;
-	}
-
-	public void setRegisterDate(Date registerDate) {
-		this.registerDate = registerDate;
+	public String getRoleNames() {
+		return Collections3.extractToString(roleList, "name", ", ");
 	}
 
 	@Override
