@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.railway.com.trainplan.demos.jms.simple.NotifyMessageProducer;
-import org.railway.com.trainplan.demos.jmx.ApplicationStatistics;
 import org.railway.com.trainplan.entity.Role;
 import org.railway.com.trainplan.entity.User;
 import org.railway.com.trainplan.repository.jpa.RoleDao;
@@ -47,10 +45,6 @@ public class AccountService {
 	private UserDao userDao;
 
 	private RoleDao roleDao;
-
-	private NotifyMessageProducer notifyProducer;
-
-	private ApplicationStatistics applicationStatistics;
 
 	private BusinessLogger businessLogger;
 
@@ -135,10 +129,6 @@ public class AccountService {
 		Specification<User> spec = DynamicSpecifications.bySearchFilter(filters.values(), User.class);
 		List<User> userList = userDao.findAll(spec);
 
-		// 运行统计演示
-		if (applicationStatistics != null) {
-			applicationStatistics.incrListUserTimes();
-		}
 		// 业务日志演示
 		if (businessLogger != null) {
 			businessLogger.log("USER", "LIST", getCurrentUserName(), null);
@@ -178,8 +168,8 @@ public class AccountService {
 	 */
 	private void sendNotifyMessage(User user) {
 		try {
-			notifyProducer.sendQueue(user);
-			notifyProducer.sendTopic(user);
+//			notifyProducer.sendQueue(user);
+//			notifyProducer.sendTopic(user);
 		} catch (Exception e) {
 			logger.error("消息发送失败", e);
 		}
@@ -221,13 +211,13 @@ public class AccountService {
 		this.businessLogger = businessLogger;
 	}
 
-	@Autowired(required = false)
-	public void setNotifyProducer(NotifyMessageProducer notifyProducer) {
-		this.notifyProducer = notifyProducer;
-	}
-
-	@Autowired(required = false)
-	public void setApplicationStatistics(ApplicationStatistics applicationStatistics) {
-		this.applicationStatistics = applicationStatistics;
-	}
+//	@Autowired(required = false)
+//	public void setNotifyProducer(NotifyMessageProducer notifyProducer) {
+//		this.notifyProducer = notifyProducer;
+//	}
+//
+//	@Autowired(required = false)
+//	public void setApplicationStatistics(ApplicationStatistics applicationStatistics) {
+//		this.applicationStatistics = applicationStatistics;
+//	}
 }
