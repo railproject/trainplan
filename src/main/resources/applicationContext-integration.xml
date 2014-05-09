@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
-	<description>导入ShowCase中的applicationContext文件列表</description>
+	<description>导入trainplan中的applicationContext文件列表</description>
 <!--
 	&lt;!&ndash; required &ndash;&gt;
 	<import resource="security/applicationContext-shiro.xml" />
@@ -23,4 +23,6 @@
 	<import resource="webservice/applicationContext-soap-server.xml" />
 	<import resource="webservice/applicationContext-jaxrs-server.xml" />
     -->
+
+    <import resource="config/applicationContext-properties.xml" />
 </beans>

@@ -50,6 +50,18 @@
 	<!-- cxf inbound/outbound logger -->
 	<logger name="org.apache.cxf.services" level="INFO" />
 
+    <logger name="org.springframework" level="INFO" />
+
+    <logger name="org.mybatis" level="INFO" />
+
+    <logger name="org.apache.ibatis" level="INFO"/>
+
+    <logger name="org.hibernate" level="INFO" />
+
+    <logger name="net.sf" level="INFO" />
+
+    <logger name="org.jboss" level="INFO" />
+
 	<!-- root -->
 	<root level="DEBUG">
 		<appender-ref ref="console" />

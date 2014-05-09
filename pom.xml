@@ -2,16 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springside</groupId>
-		<artifactId>springside-parent</artifactId>
-		<version>4.2.2.GA</version>
-		<relativePath>../../modules/parent/</relativePath>
-	</parent>
-	<groupId>org.springside.examples</groupId>
-	<artifactId>showcase</artifactId>
+	<groupId>org.railway.com</groupId>
+	<artifactId>trainplan</artifactId>
 	<packaging>war</packaging>
-	<name>Springside :: Example :: Showcase</name>
+	<name>trainplan</name>
 
 	<!-- 项目属性 -->
 	<properties>
@@ -167,6 +161,12 @@
 			<artifactId>activemq-core</artifactId>
 		</dependency>
 		<!-- JMS end -->
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.18.1</version>
+        </dependency>
 
 		<!-- TIMER -->
 		<dependency>
@@ -415,20 +415,6 @@
 			<artifactId>h2</artifactId>
 		</dependency>
 		-->
-
-		<!-- mail server simulator -->
-		<dependency>
-			<groupId>com.icegreen</groupId>
-			<artifactId>greenmail</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest_2.10</artifactId>
-			<version>2.0</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- TEST end -->
 	</dependencies>
 
 	<dependencyManagement>
