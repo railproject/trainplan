@@ -6,16 +6,18 @@
 package org.railway.com.trainplan.web;
 
 import com.google.common.collect.Maps;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.railway.com.trainplan.entity.Role;
+import org.railway.com.trainplan.entity.User;
+import org.railway.com.trainplan.service.AccountEffectiveService;
+import org.railway.com.trainplan.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.railway.com.trainplan.entity.Role;
-import org.railway.com.trainplan.entity.User;
-import org.railway.com.trainplan.service.AccountEffectiveService;
-import org.railway.com.trainplan.service.AccountService;
 import org.springside.modules.web.Servlets;
 
 import javax.servlet.ServletRequest;
@@ -26,6 +28,8 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/account/user")
 public class UserController {
+
+    private Log logger = LogFactory.getLog(UserController.class);
 
 	private static Map<String, String> allStatus = Maps.newHashMap();
 
@@ -44,6 +48,10 @@ public class UserController {
 //	@RequiresRoles(value = { "Admin", "User" }, logical = Logical.OR)
 	@RequestMapping(value = "")
 	public String list(Model model, ServletRequest request) {
+        logger.info("######## begin #########");
+        Worker worker = new Worker();
+        worker.setAccountService(accountService);
+        worker.run();
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
 
