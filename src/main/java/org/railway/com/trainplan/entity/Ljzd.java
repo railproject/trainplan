@@ -2,15 +2,12 @@ package org.railway.com.trainplan.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
 /**
  * 路局字典model
  * @author join
  *
  */
-//@Entity
-//@Table(name = "LJZD")
 public class Ljzd implements Serializable {
 /**
  * CZSJ	VARCHAR2(12 BYTE)

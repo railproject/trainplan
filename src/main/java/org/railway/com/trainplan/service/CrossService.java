@@ -24,15 +24,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.railway.com.trainplan.common.constants.Constants;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook; 
 import org.railway.com.trainplan.common.util.ExcelUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
-import org.railway.com.trainplan.entity.CrossTrainInfo;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import org.railway.com.trainplan.entity.CrossTrainInfo; 
  
  
 public class CrossService{
