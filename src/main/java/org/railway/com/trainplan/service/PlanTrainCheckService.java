@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlanTrainCheckService {
 	private static final Logger logger = Logger.getLogger(PlanTrainCheckService.class);
 
-
+/*
 	@Autowired
 	private CommonService commonService;
 	
@@ -65,36 +65,36 @@ public class PlanTrainCheckService {
 	@Value("#{sqlprop['delete.plan.train.rundate.train.nbr.init']}")
 	private String delete_plan_train_rundate_train_nbr_init;
 	
-	/**
+	*//**
 	 * 根据run_date的开始时间和结束时间删除
 	 * 表plan_train_stn中的历史数据
 	 * @param startRunDate 格式：yyyyMMdd
 	 * @param endRunDate 格式：yyyyMMdd
 	 * @throws Exception
-	 */
+	 *//*
 	public void deletePlanTrainStnHistoryDate(String startRunDate,String endRunDate) throws Exception {
 		String sql = String.format(delete_plan_train_rundate_train_stn_init, startRunDate,endRunDate);
 		System.err.println("deletePlanTrainStnHistoryDate---sql==" + sql);
 		jdbcDao.execute(sql);
 	}
-	/**
+	*//**
 	 * 根据run_date的开始时间和结束时间删除
 	 * 表plan_train中的历史数据
 	 * @param startRunDate 格式：yyyyMMdd
 	 * @param endRunDate 格式：yyyyMMdd
 	 * @throws Exception
-	 */
+	 *//*
 	public void deletePlanTrainHistoryDate(String startRunDate,String endRunDate) throws Exception {
 		String sql = String.format(delete_plan_train_rundate_train_nbr_init, startRunDate,endRunDate);
 		System.err.println("deletePlanTrainHistoryDate---sql==" + sql);
 		jdbcDao.execute(sql);
 	}
-	/**
+	*//**
 	 * 根据条件删除表train_plan中数据
 	 * @param runDate 开行日期，格式：yyyyMMdd
 	 * @param trainNbr 列车号
 	 * @throws Exception
-	 */
+	 *//*
 	public void deletePlanTrainWithRundate(String runDate,String trainNbr) throws Exception{
 		String sql = String.format(delete_plan_train_rundate_train_nbr, runDate,trainNbr);
 		System.err.println("deletePlanTrainSql==" + sql);
@@ -102,19 +102,19 @@ public class PlanTrainCheckService {
 		jdbcDao.execute(sql);
 	}
 	
-	/**
+	*//**
 	 * 根据条件删除表train_plan_stn中数据
 	 * @param runDate 开行日期，格式：yyyyMMdd
 	 * @param trainNbr 列车号
 	 * @throws Exception
-	 */
+	 *//*
 	public void deletePlanTrainStnWithRundate(String runDate,String trainNbr) throws Exception {
 		String sql = String.format(delete_plan_train_rundate_train_stn, runDate,trainNbr);
 		System.err.println("deletePlanTrainStnSql==" + sql);
 		//执行删除动作
 	    jdbcDao.execute(sql);
 	}
-	/**
+	*//**
 	 * 通过开行时间段查询某局的开行客运信息
 	 * @param paging  分页对象
 	 * @param startBureauFullName  客车始发局全称
@@ -122,7 +122,7 @@ public class PlanTrainCheckService {
 	 * @param endRunDate   结束运行时间,格式yyyy-MM-dd
 	 * @param trainNbr 车次号
 	 * @return  分页对象
-	 */
+	 *//*
 	@Override
 	public PagingResult findPlanTrainWithPeriodRunDate(PagingInfo paging,String startBureauFullName,String startDate,int dayCount,String trainNbrFrom){
 		int currentPage = paging.getCurrentPage();
@@ -200,7 +200,7 @@ public class PlanTrainCheckService {
 	}
 	
 
-	/**
+	*//**
 	 * 6.1.1	查询始发日期为给定日期范围的日计划运行线统计数
 	 * @param code:
 	 * 	查询统计信息编码
@@ -211,7 +211,7 @@ public class PlanTrainCheckService {
 	 * @param targetTime  格式：yyyy-MM-dd HH:mm:ss
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
 	@Override
 	public List<PlanBureauStatisticsDto>  getTrainLinesWithDay(String code,String sourceTime,String targetTime) throws Exception{
 		List<PlanBureauStatisticsDto> returnList = new ArrayList<PlanBureauStatisticsDto>();
@@ -246,7 +246,7 @@ public class PlanTrainCheckService {
 				    		List<Map<String,Object>> listDtos =  (List<Map<String,Object>>)stationMap.get("planBureauTsDtos");
 				    		if(listDtos != null && listDtos.size() > 0){
 				    			for(Map<String,Object> subMap : listDtos){
-				    				/**
+				    				*//**
 				    				 * 后台返回的数据
 				    				 *  {
                                          "id": "客运图定",
@@ -255,7 +255,7 @@ public class PlanTrainCheckService {
                                          "accessTargetTrainlineCounts": 0,
                                          "accessSurrenderTrainlineCounts": 0
                                         }
-				    				 */
+				    				 *//*
 				    				String id = StringUtil.objToStr(subMap.get("id"));
 				    				if("客运图定".equals(id)){
 				    					PlanBureauTsDto subDto = new PlanBureauTsDto();
@@ -277,13 +277,13 @@ public class PlanTrainCheckService {
 		return returnList ;
 	}
 	
-	/**
+	*//**
 	 * 根据始发局局码、开行日期查询列车开行计划信息
 	 * @param startBureau 始发局局码
 	 * @param runDate 开行日期 yyyyMMdd
 	 * @author denglj
 	 * @return
-	 */
+	 *//*
 	public PagingResult findPlanTrainByStartBureauAndRundate(PagingInfo paging, String startBureau, String runDate, String trainNbr){
 		Search search = new Search();
 		search.addFilterEqual("runDate", runDate);
@@ -350,11 +350,11 @@ public class PlanTrainCheckService {
 		return pageing;
 	}
 	
-	/**
+	*//**
 	 * 统计某天某局接入交出，接入终到的列车数
 	 * runDate:开行日期 yyyyMMdd
 	 * bureauName :路局全称
-	 */
+	 *//*
 	
 	public Map<String,Object> getOneStationTrains(String runDate,String bureauName){
 		List<Map<String,Object>> list = null;
@@ -367,11 +367,11 @@ public class PlanTrainCheckService {
 		}
 		return returnMap;
 	}
-    /**
+    *//**
      * 统计一个路局某天的图定，临客，施工等信息
      * @param runDate 开行日期，格式：yyyyMMdd
      * @param startBureauFull 路局全称
-     */
+     *//*
 	public List<Map<String,Object>> getFullStationTrains(String runDate,String startBureauFull){
 		List<Map<String,Object>> resultList = null;
 		String sql = "";
@@ -392,13 +392,13 @@ public class PlanTrainCheckService {
 	
 	
 	
-	/**
+	*//**
 	 * 根据车次及开行日期查询 时刻信息
 	 * @param trainNbr 车次号
 	 * @param runDate 开行日期 yyyy-MM-dd
 	 * @author denglj
 	 * @return
-	 */
+	 *//*
 	public List<Map<String, Object>> getTrainTimeDetail(String runDate, String trainNbr) {
 		String sql = String.format(sqlTrainTimeDetail, runDate, trainNbr);
 		logger.info("sql==" + sql.toString());
@@ -421,5 +421,5 @@ public class PlanTrainCheckService {
 		return listMap;
 	}
 	
-	
+	*/
 }

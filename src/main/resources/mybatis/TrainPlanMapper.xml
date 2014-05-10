@@ -81,7 +81,6 @@
    
    
    
-    SELECT case when a.START_STN=b.STN_NAME then '1' else '0' end IS_START_STN,case when a.END_STN=b.STN_NAME then '1' else '0' end IS_END_STN,to_char(b.ARR_TIME,'yyyy-mm-dd hh24:mi:ss')ARR_TIME_ALL ,to_char(b.DPT_TIME,'yyyy-mm-dd hh24:mi:ss') DPT_TIME_ALL,b.STN_NAME,to_char(b.ARR_TIME,'hh24:mi')ARR_TIME ,to_char(b.DPT_TIME,'hh24:mi') DPT_TIME,b.TRACK_NBR,b.TRACK_NAME,b.RUN_DAYS,(select c.ljjc from jhpt_jcsj.ljzd c where c.ljqc=b.STN_BUREAU_FULL) LJJC FROM PLAN_TRAIN a,PLAN_TRAIN_STN b where a.PLAN_TRAIN_ID = b.PLAN_TRAIN_ID and a.RUN_DATE='%1$s' and a.TRAIN_NBR='%2$s' order by b.STN_SORT
     
     
 </mapper>

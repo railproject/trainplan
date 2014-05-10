@@ -27,9 +27,9 @@ public class PlanTrainStnController {
 	@RequestMapping(value = "/mytest", method = RequestMethod.POST)
 	public Result getTest(@RequestBody Map<String,Object> reqMap) throws Exception{
 		Result result = new Result();
-		//String ljqc = StringUtil.objToStr(reqMap.get("ljqc"));
+		String ljqc = reqMap.get("ljqc").toString();
 		//System.err.println("ljqc == " + ljqc);
-		//Ljzd ljzd = commonService.getLjInfo(ljqc);
+		Ljzd ljzd = commonService.getLjInfo(ljqc);
 		return result;
 	}
 }
