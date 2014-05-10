@@ -20,7 +20,7 @@
         password varchar(255),
         salt varchar(64),
         email varchar(128),
-        status varchar(32),
+        status varchar(32) ,
         team_id bigint,
         primary key (id)
     ) engine=InnoDB;

@@ -51,6 +51,10 @@
 		<!-- 显式指定Mapper文件位置 -->
 		<property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml" />
 	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+  		<constructor-arg index="0" ref="sqlSessionFactory" />
+ 	</bean>
 	<!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口-->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="org.railway.com.trainplan" />
@@ -91,6 +95,33 @@
 			<property name="timeBetweenEvictionRunsMillis" value="60000" />
 			<property name="minEvictableIdleTimeMillis" value="600000" />
 		</bean>
+<<<<<<< HEAD
+	
+
+	</beans>
+	
+	<beans profile="oracle">
+		<context:property-placeholder ignore-resource-not-found="true"
+			location="classpath*:/application.properties" />	
+
+		<!-- 数据源配置,使用应用内的Tomcat JDBC连接池 -->
+		<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+			<!-- Connection Info -->
+			<property name="driverClassName" value="${oracle.jdbc.driver}" />
+			<property name="url" value="${oracle.jdbc.url}" />
+			<property name="username" value="${oracle.jdbc.username}" />
+			<property name="password" value="${oracle.jdbc.password}" />
+			<property name="maxActive" value="${jdbc.pool.maxActive}" />
+			<property name="maxIdle" value="${jdbc.pool.maxIdle}" />
+			<property name="minIdle" value="0" />
+			<property name="defaultAutoCommit" value="false" />
+			<!-- 连接Idle10分钟后超时，每1分钟检查一次 -->
+			<property name="timeBetweenEvictionRunsMillis" value="60000" />
+			<property name="minEvictableIdleTimeMillis" value="600000" />
+		</bean>
+
+=======
+>>>>>>> 5eef0044d449f9d047ea6ef02ac6b583c74daf75
 	</beans>
 
 </beans>

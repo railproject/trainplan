@@ -8,8 +8,12 @@
 	<packaging>war</packaging>
 	<name>trainplan</name>
 
+
 	<!-- 项目属性 -->
 	<properties>
+        <jdbc.driver.groupId>mysql</jdbc.driver.groupId>
+        <jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
+        <jdbc.driver.version>5.1.22</jdbc.driver.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdbc.driver.groupId>mysql</jdbc.driver.groupId>
         <jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
@@ -20,6 +24,7 @@
         <com.fasterxml.jackson.version>2.3.3</com.fasterxml.jackson.version>
         <org.slf4j.version>1.7.7</org.slf4j.version>
 	</properties>
+
 
 	<!-- 依赖项定义 -->
 	<dependencies>
