@@ -314,9 +314,7 @@ public class CrossService{
 		tokenPsgDeptValuesMap.put( "C", "长沙");
 		tokenPsgDeptValuesMap.put("S", "上");
 		tokenPsgDeptValuesMap.put("N", "南");
-		valuesMap.put("tokenPsgDept", tokenPsgDeptValuesMap); 
-		 
-		
+		valuesMap.put("tokenPsgDept", tokenPsgDeptValuesMap);  
 		// TODO Auto-generated method stub
 		try{
 			HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
