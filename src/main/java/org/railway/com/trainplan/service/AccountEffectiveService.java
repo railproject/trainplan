@@ -7,13 +7,11 @@ package org.railway.com.trainplan.service;
 
 import com.google.common.collect.Maps;
 import org.javasimon.aop.Monitored;
+import org.railway.com.trainplan.entity.User;
+import org.railway.com.trainplan.repository.mybatis.UserMybatisDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.railway.com.trainplan.entity.Team;
-import org.railway.com.trainplan.entity.User;
-import org.railway.com.trainplan.repository.mybatis.TeamMybatisDao;
-import org.railway.com.trainplan.repository.mybatis.UserMybatisDao;
 import org.springside.modules.mapper.JsonMapper;
 
 import java.util.List;
@@ -30,17 +28,11 @@ import java.util.Map;
 public class AccountEffectiveService {
 	@Autowired
 	private UserMybatisDao userDao;
-	@Autowired
-	private TeamMybatisDao teamDao;
 
 //	@Autowired(required = false)
 //	private SpyMemcachedClient memcachedClient;
 
 	private final JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
-
-	public Team getTeamWithDetail(Long id) {
-		return teamDao.getWithDetail(id);
-	}
 
 	public User getUser(Long id) {
 //		if (memcachedClient != null) {
