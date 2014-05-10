@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="trainPlanDao">
+    <insert id="addTrainPlanTest" parameterType="map">
+       insert into plan_train (PLAN_TRAIN_ID,END_BUREAU_FULL)values(SEQ_PLAN_TRAIN.nextVal,#{name})
+    </insert>
+   <!-- 更新数据表train_plan的字段check_state -->
+   <update id="updateCheckState">  
+	 update plan_train set
+	   CHECK_STATE=1 
+	 where base_train_id=#{base_train_id}
+   </update>
+    
+   <update id="updatePlanTrainDaylyPlanFlag">
+      update plan_train set 
+        DAILYPLAN_FLAG=0
+      where base_train_id=#{base_train_id}		
+   
+   </update>
+   
+   <select id="getTotalTrains" parameterType="map" resultType="map">
+     select base_train_id ,
+            run_date 
+     from plan_train 
+     where run_date=#{runDate} and START_BUREAU_FULL = #{startBureauFull} 
+   
+   </select>
+   	
+   	<select id="getTrainShortInfo" parameterType="map"  resultType="map">
+   	select m.* from (select PLAN_TRAIN_ID,RUN_DATE,TRAIN_NBR,START_STN,END_STN FROM PLAN_TRAIN WHERE RUN_DATE= #{runDate}  order by TRAIN_NBR )m where ROWNUM &lt;=$rownum$
+   	<if test="trainNbr != null">
+   	AND TRAIN_NBR=  #{trainNbr} 
+   	</if>
+   	
+   	</select>
+   	
+   	<insert id="addTrainPlan" parameterType="map">
+   	
+	  	insert into plan_train (PLAN_TRAIN_ID,RUN_DATE,TRAIN_NBR,START_TIME,END_TIME,START_STN,END_STN,BASE_CHART_ID,BASE_TRAIN_ID,START_BUREAU_FULL,END_BUREAU_FULL,TRAIN_TYPE) 
+	  	values 
+	  (SEQ_PLAN_TRAIN.nextVal,#{runDate},#{trainNbr},
+	  <choose>
+	    <when test="startTime != null">
+	    to_date(#{startTime},'yyyy-MM-dd hh24:mi:ss'),
+	    </when>
+	    <otherwise>
+	    null,
+	    </otherwise>
+	  </choose>
+	  <choose>
+	   <when test="endTime != null">
+	    to_date(#{endTime},'yyyy-MM-dd hh24:mi:ss'),
+	   </when>
+	   <otherwise>
+	   null,
+	   </otherwise>
+	  </choose>
+	  #{startStn},#{endStn},#{baseChartId},#{baseTrainId},#{startBureauFull},#{endBureauFull},#{trainType})
+   	</insert>
+   	
+   	<select id="getMaxPlanTrainId"  resultType="map">
+     	select plan_train_id from (select plan_train_id from plan_train order by plan_train_id desc) where rownum = 1	
+   	</select>
+   	
+   	 <insert id="addTrainPlanStn" parameterType="map">
+     insert into plan_train_stn (PLAN_TRAIN_STN_ID,PLAN_TRAIN_ID,ARR_TIME,DPT_TIME,BASE_ARR_TIME,BASE_DPT_TIME,STN_NAME,STN_BUREAU_FULL,STN_SORT,TRACK_NAME,RUN_DAYS) 
+     values
+     (SEQ_PLAN_TRAIN_STN.nextVal,$planTrainId$,
+     to_date(#{arrTime},'yyyy-MM-dd hh24:mi:ss'),
+     to_date(#{dptTime},'yyyy-MM-dd hh24:mi:ss'),
+     to_date(#{baseArrTime},'yyyy-MM-dd hh24:mi:ss'),
+     to_date(#{baseDptTime},'yyyy-MM-dd hh24:mi:ss'),
+     #{stnName},
+     #{stnBureauFull},
+     $stnSort$,
+     #{trackName},
+     $runDays$)
+   </insert>
+   
+   <select id="getTrainTimeDetail" parameterType="map" resultType="map">
+    SELECT case when a.START_STN=b.STN_NAME then '1' else '0' end IS_START_STN,case when a.END_STN=b.STN_NAME then '1' else '0' end IS_END_STN,
+    to_char(b.ARR_TIME,'yyyy-mm-dd hh24:mi:ss')ARR_TIME_ALL ,
+    to_char(b.DPT_TIME,'yyyy-mm-dd hh24:mi:ss') DPT_TIME_ALL,
+    b.STN_NAME,to_char(b.ARR_TIME,'hh24:mi')ARR_TIME ,to_char(b.DPT_TIME,'hh24:mi') DPT_TIME,b.TRACK_NBR,b.TRACK_NAME,b.RUN_DAYS,(select c.ljjc from jhpt_jcsj.ljzd c where c.ljqc=b.STN_BUREAU_FULL) LJJC FROM PLAN_TRAIN a,PLAN_TRAIN_STN b where a.PLAN_TRAIN_ID = b.PLAN_TRAIN_ID and a.RUN_DATE='%1$s' and a.TRAIN_NBR='%2$s' order by b.STN_SORT
+    
+   
+   </select>
+   
+   
+    
+</mapper>
