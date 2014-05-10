@@ -1,10 +1,14 @@
 package org.railway.com.trainplan.service;
 
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
+import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.TrainType;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
@@ -35,14 +39,8 @@ public class CommonService {
 	/**
 	 * 通过路局全称查询路基基本信息
 	 */
-	public Ljzd getLjInfo(String ljqc) {
-		//Ljzd  dto = new Ljzd();
-		//dto = ljzdDao.getLjInfo(ljqc);
-		Ljzd dto = (Ljzd)baseDao.selectOneBySql("org.railway.com.trainplan.repository.mybatis.LjzdMybatisDao.getLjInfo", ljqc);
-		//fortest
-		System.err.println("dm=" + dto.getLjdm());
-		System.err.println("jc=" + dto.getLjjc());
-		System.err.println("pym=" + dto.getLjpym());
+	public Ljzd getLjInfo(String ljqc) {	
+		Ljzd dto = (Ljzd)baseDao.selectOneBySql(Constants.LJZDDAO_GET_LJ_INFO, ljqc);
 		return dto;
 	}
 
@@ -52,12 +50,19 @@ public class CommonService {
 	 * @return
 	 */
 	public  TrainType getTrainType(String id){
-		TrainType trainType = new TrainType();
-		String sql = String.format("select_train_type_id", id);
-		List<Map<String,Object>> listMap = null;//jdbcDao.queryList(sql);
-		//只有一条数据
-		
-		
+		TrainType trainType = (TrainType)baseDao.selectOneBySql(Constants.LJZDDAO_GET_TRAIN_TYPE, id);
 		return trainType;
 	}
+	
+	/**
+    * 从基础数据库中获取18个路局的基本信息
+    * @return
+    */
+  
+    public List<Ljzd> getFullStationInfo(){
+    	List<Ljzd> list = baseDao.selectListBySql(Constants.LJZDDAO_GET_FULL_STATION_INFO, null);
+    	return list;
+    }
+	    
+	    
 }
