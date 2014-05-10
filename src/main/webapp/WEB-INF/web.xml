@@ -9,9 +9,9 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			classpath*:/applicationContext.xml
-			classpath*:/applicationContext-showcases.xml
-		</param-value>
+            classpath*:/applicationContext.xml
+            classpath*:/applicationContext-integration.xml
+        </param-value>
 	</context-param>
 	
 	<!-- 設定Spring Context的默认Profile -->
@@ -76,27 +76,6 @@
 		<url-pattern>/javasimon/*</url-pattern>
 	</servlet-mapping>
 -->
-
-	<!-- Content Servlet 配置 -->
-    <!--
-	<servlet>
-		<servlet-name>StaticContentServlet</servlet-name>
-		<servlet-class>org.railway.com.trainplan.demos.web.StaticContentServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>StaticContentServlet</servlet-name>
-		<url-pattern>/static-content</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>RemoteContentServlet</servlet-name>
-		<servlet-class>org.railway.com.trainplan.demos.web.RemoteContentServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RemoteContentServlet</servlet-name>
-		<url-pattern>/remote-content</url-pattern>
-	</servlet-mapping>
-    -->
 	<!-- Filter 定义 -->
 	<!-- Character Encoding filter -->
 	<filter>
@@ -142,15 +121,7 @@
 	</filter-mapping>
 -->
 
-	<!-- Cache Control Header filter -->
-	<filter>
-		<filter-name>cacheControlHeaderFilter</filter-name>
-		<filter-class>org.railway.com.trainplan.demos.web.CacheControlHeaderFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>cacheControlHeaderFilter</filter-name>
-		<url-pattern>/static/*</url-pattern>
-	</filter-mapping>
+
 <!--
 
 	&lt;!&ndash; SiteMesh Web-Page Layout filter&ndash;&gt;

@@ -34,7 +34,7 @@
 	</appender>
 
 	<!-- project default level -->
-	<logger name="org.springside.examples.showcase" level="INFO" />
+	<logger name="org.railway.com.trainplan" level="DEBUG" />
 	
 	<!-- business log 使用独立的appender，不继承Root的appender -->
 	<logger name="business" level="INFO" additivity="false">
@@ -50,8 +50,20 @@
 	<!-- cxf inbound/outbound logger -->
 	<logger name="org.apache.cxf.services" level="INFO" />
 
+    <logger name="org.springframework" level="INFO" />
+
+    <logger name="org.mybatis" level="INFO" />
+
+    <logger name="org.apache.ibatis" level="INFO"/>
+
+    <logger name="org.hibernate" level="INFO" />
+
+    <logger name="net.sf" level="INFO" />
+
+    <logger name="org.jboss" level="INFO" />
+
 	<!-- root -->
-	<root level="WARN">
+	<root level="DEBUG">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />
 	</root>
