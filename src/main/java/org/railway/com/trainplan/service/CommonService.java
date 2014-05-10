@@ -8,6 +8,7 @@ import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.TrainType;
+import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.repository.mybatis.LjzdMybatisDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,16 +30,20 @@ public class CommonService {
 	
 	@Autowired
 	private LjzdMybatisDao ljzdDao;
+	
+	@Autowired
+	private BaseDao baseDao;
 	/**
 	 * 通过路局全称查询路基基本信息
 	 */
 	public Ljzd getLjInfo(String ljqc) {
-		Ljzd  dto = new Ljzd();
-		dto = ljzdDao.getLjInfo(ljqc);
+		//Ljzd  dto = new Ljzd();
+		//dto = ljzdDao.getLjInfo(ljqc);
+		Ljzd dto = (Ljzd)baseDao.selectOneBySql("org.railway.com.trainplan.repository.mybatis.LjzdMybatisDao.getLjInfo", ljqc);
 		//fortest
-		System.err.println("Ljdm=" + dto.getLjdm());
-		System.err.println("Ljjc=" + dto.getLjjc());
-		System.err.println("Ljpym=" + dto.getLjpym());
+		System.err.println("dm=" + dto.getLjdm());
+		System.err.println("jc=" + dto.getLjjc());
+		System.err.println("pym=" + dto.getLjpym());
 		return dto;
 	}
 
