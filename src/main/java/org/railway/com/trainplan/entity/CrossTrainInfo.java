@@ -12,7 +12,7 @@ public class CrossTrainInfo {
 	private String startBureau;//START_BUREAU
 	private String endStn;//END_STN
 	private String endBureau;//END_BUREAU
-	private String dayGap;//DAY_GAP
+	private int dayGap;//DAY_GAP
 	private String alertNateTrainNbr;//ALTERNATE_TRAIN_NBR
 	private String alertNateTime;//ALTERNATE_TIME
 	private int spareFlag; //SPARE_FLAG
@@ -22,6 +22,22 @@ public class CrossTrainInfo {
 	private int commonLineRule;//COMMONLINE_RULE
 	private String appointWeek;//APPOINT_WEEK
 	private String appointDay;//APPOINT_DAY 
+	
+	private String sourceTargetTime;
+	private String targetTime;
+	
+	public String getSourceTargetTime() {
+		return sourceTargetTime;
+	}
+	public void setSourceTargetTime(String sourceTargetTime) {
+		this.sourceTargetTime = sourceTargetTime;
+	}
+	public String getTargetTime() {
+		return targetTime;
+	}
+	public void setTargetTime(String targetTime) {
+		this.targetTime = targetTime;
+	}
 	public String getCrossTainId() {
 		return crossTainId;
 	}
@@ -70,10 +86,11 @@ public class CrossTrainInfo {
 	public void setEndBureau(String endBureau) {
 		this.endBureau = endBureau;
 	}
-	public String getDayGap() {
+ 
+	public int getDayGap() {
 		return dayGap;
 	}
-	public void setDayGap(String dayGap) {
+	public void setDayGap(int dayGap) {
 		this.dayGap = dayGap;
 	}
 	public String getAlertNateTrainNbr() {

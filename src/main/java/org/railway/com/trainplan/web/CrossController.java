@@ -3,8 +3,8 @@ package org.railway.com.trainplan.web;
 import java.io.IOException;
 import java.util.Map;
 
-import org.railway.com.trainplan.dto.Result;
 import org.railway.com.trainplan.service.CrossService;
+import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;

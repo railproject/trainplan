@@ -197,7 +197,7 @@ public class ExcelUtil<T> {
 							} 
 						}
 					}catch(Exception e){
-						e.printStackTrace();
+//						e.printStackTrace();
 					}
 				}
 			} catch (InstantiationException e) {

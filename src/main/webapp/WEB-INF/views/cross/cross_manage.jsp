@@ -45,8 +45,11 @@
 
 		function CrossModel() {
 			var self = this;
+			//列车列表
 			self.trains = ko.observableArray();
+			//交路列表
 			self.rows = ko.observableArray();
+			self.currentTrain = null;
 
 			var rowLookup = {};
 			var rowLooktrains = {};
@@ -61,8 +64,9 @@
 
 			self.showTrains = function(row) {
 				self.trains.remove(function(item) {
-					return true
-				})
+					return true;
+				});
+				self.currentTrain =  ko.observable(rowLookup[row.name]);
 				var trains = rowLookup[row.name].trains;
 				for ( var i = 0; i < trains.length; i++) {
 					var row = new TrainRow(trains[i]);
@@ -346,7 +350,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="pull-right"> 
+	<div class="pull-right">
+		<div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
 			<div class="row" style="margin: 10px 10px 10px 10px;">
 			   <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>经由基本信息</div>
@@ -711,6 +716,7 @@
 						</div> 
 					</section>
 					</div>
+				</div>
 				</div>
 			</div> 
 
