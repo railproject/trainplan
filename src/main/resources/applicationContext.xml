@@ -55,6 +55,7 @@
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
   		<constructor-arg index="0" ref="sqlSessionFactory" />
  	</bean>
+ 	
 	<!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口-->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="org.railway.com.trainplan" />
@@ -95,9 +96,6 @@
 			<property name="timeBetweenEvictionRunsMillis" value="60000" />
 			<property name="minEvictableIdleTimeMillis" value="600000" />
 		</bean>
-<<<<<<< HEAD
-	
-
 	</beans>
 	
 	<beans profile="oracle">
@@ -120,8 +118,6 @@
 			<property name="minEvictableIdleTimeMillis" value="600000" />
 		</bean>
 
-=======
->>>>>>> 5eef0044d449f9d047ea6ef02ac6b583c74daf75
 	</beans>
 
 </beans>
