@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
-import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.TrainType;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
@@ -57,17 +56,7 @@ public class CommonService {
 		String sql = String.format("select_train_type_id", id);
 		List<Map<String,Object>> listMap = null;//jdbcDao.queryList(sql);
 		//只有一条数据
-		if(listMap != null){
-			Map<String,Object> map = listMap.get(0);
-			trainType.setCheciBiaoshi(StringUtil.objToStr(map.get("CHECI_BIAOSHI")));
-			trainType.setId(StringUtil.objToStr(map.get("id")));
-			trainType.setLiecheDengji(StringUtil.objToStr(map.get("LIECHE_DENGJI")));
-			trainType.setName(StringUtil.objToStr(map.get("name")));
-			trainType.setPinYinCode(StringUtil.objToStr(map.get("PINYINCODE")));
-			trainType.setShortName(StringUtil.objToStr(map.get("SHORT_NAME")));
-			trainType.setZuoyeDengji(StringUtil.objToStr(map.get("ZUOYE_DENGJI")));
-			
-		}
+		
 		
 		return trainType;
 	}

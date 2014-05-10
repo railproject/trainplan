@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.railway.com.trainplan.common.utils.StringUtil;
+
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.web.dto.Result;
@@ -27,9 +27,9 @@ public class PlanTrainStnController {
 	@RequestMapping(value = "/mytest", method = RequestMethod.POST)
 	public Result getTest(@RequestBody Map<String,Object> reqMap) throws Exception{
 		Result result = new Result();
-		String ljqc = StringUtil.objToStr(reqMap.get("ljqc"));
-		System.err.println("ljqc == " + ljqc);
-		Ljzd ljzd = commonService.getLjInfo(ljqc);
+		//String ljqc = StringUtil.objToStr(reqMap.get("ljqc"));
+		//System.err.println("ljqc == " + ljqc);
+		//Ljzd ljzd = commonService.getLjInfo(ljqc);
 		return result;
 	}
 }
