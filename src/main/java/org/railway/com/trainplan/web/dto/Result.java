@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.web.dto;
 
+import org.railway.com.trainplan.common.constants.StaticCodeType;
+
 public class Result {
 
 	private String code;
@@ -9,8 +11,8 @@ public class Result {
 	private Object data;
 
 	public Result(){
-//		this.code = StaticCodeType.SYSTEM_SUCCESS.getCode();
-//		this.message = StaticCodeType.SYSTEM_SUCCESS.getDescription();
+		this.code = StaticCodeType.SYSTEM_SUCCESS.getCode();
+		this.message = StaticCodeType.SYSTEM_SUCCESS.getDescription();
 	}
 	public Result(String code,String message){
 		this.code = code;

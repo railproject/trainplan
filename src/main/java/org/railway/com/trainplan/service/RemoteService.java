@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.javasimon.aop.Monitored;
+import org.railway.com.trainplan.service.dto.PlanBureauStatisticsDto;
+import org.railway.com.trainplan.service.dto.PlanBureauTsDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
@@ -178,6 +180,84 @@ public class RemoteService {
 		return returnList;
 	}
 
+	
+	/**
+	 * 6.1.1	查询始发日期为给定日期范围的日计划运行线统计数
+	 * @param code:
+	 * 	查询统计信息编码
+         1.	code="01"，查询所有列车统计项的统计数
+         2.	code="02"，只查询运行线统计项的统计数
+         3.	code="10"，查询给定时间范围内路局统计数
+	 * @param sourceTime  格式：yyyy-MM-dd HH:mm:ss
+	 * @param targetTime  格式：yyyy-MM-dd HH:mm:ss
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PlanBureauStatisticsDto>  getTrainLinesWithDay(String code,String sourceTime,String targetTime) throws Exception{
+		List<PlanBureauStatisticsDto> returnList = new ArrayList<PlanBureauStatisticsDto>();
+		Map<String,String> request = new HashMap<String,String>();
+		request.put("code",code);
+		request.put("sourceTime",sourceTime );
+		request.put("targetTime", targetTime);
+		System.err.println("getTrainLinesWithDay---request==" + request);
+		//调用后台的接口
+		Map response = RestClientUtils.post(Constants.SERVICE_URL
+				+ Constants.GET_TRAINLINS, request, Map.class);
+		System.err.println("getTrainLinesWithDay---response==" + response);
+		//解析后台报文
+		if (response != null && response.size() > 0){
+			String codeMessage = StringUtil.objToStr(response.get("code"));
+			if (!"".equals(codeMessage) && codeMessage.equals("200")){
+				List<Map<String, Object>> dataList = (List<Map<String, Object>>) response.get("data");
+				if (dataList != null && dataList.size() > 0){
+					//取第一个,只有一条数据
+					Map<String,Object> dataMap = dataList.get(0);
+					//18个路局列表
+					List<Map<String,Object>> stationsList = (List<Map<String,Object>>)dataMap.get("planBureauStatisticsDtos");
+				    if(stationsList != null && stationsList.size() > 0){
+				    	//循环18个路局，并取数据
+				    	for(Map<String,Object> stationMap : stationsList){
+				    		PlanBureauStatisticsDto dto = new PlanBureauStatisticsDto();
+				    		dto.setBureauName(StringUtil.objToStr(stationMap.get("bureauName")));
+				    		dto.setBureauShortName(StringUtil.objToStr(stationMap.get("bureauShortName")));
+				    		dto.setBureauId(StringUtil.objToStr(stationMap.get("bureauId")));
+				    		dto.setBureauCode(StringUtil.objToStr(stationMap.get("bureauCode")));
+				    		
+				    		List<Map<String,Object>> listDtos =  (List<Map<String,Object>>)stationMap.get("planBureauTsDtos");
+				    		if(listDtos != null && listDtos.size() > 0){
+				    			for(Map<String,Object> subMap : listDtos){
+				    				/**
+				    				 * 后台返回的数据
+				    				 *  {
+                                         "id": "客运图定",
+                                         "sourceTargetTrainlineCounts": 0,
+                                         "sourceSurrenderTrainlineCounts": 0,
+                                         "accessTargetTrainlineCounts": 0,
+                                         "accessSurrenderTrainlineCounts": 0
+                                        }
+				    				 */
+				    				String id = StringUtil.objToStr(subMap.get("id"));
+				    				if("客运图定".equals(id)){
+				    					PlanBureauTsDto subDto = new PlanBureauTsDto();
+				    					subDto.setSourceSurrenderTrainlineCounts((Integer)subMap.get("sourceSurrenderTrainlineCounts"));
+				    					subDto.setSourceTargetTrainlineCounts((Integer)subMap.get("sourceTargetTrainlineCounts"));
+				    					dto.getListBureauDto().add(subDto);
+				    					break;
+				    				}
+				    			}
+				    		}
+				    		
+				    		returnList.add(dto);
+				    	}
+				    }
+				}
+			}
+		}
+		System.err.println("getTrainLinesWithDay---returnList==="+returnList);
+		return returnList ;
+	}
+	
+	
 	
 	/**
 	 * 对站点设置基本信息

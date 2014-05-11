@@ -1,6 +1,8 @@
 
 package org.railway.com.trainplan.common.constants;
 
+import org.springframework.beans.factory.annotation.Value;
+
 
 
 /**
@@ -18,7 +20,8 @@ public class Constants {
 	//TODO:后台服务地址，以后要改为配置文件
 	//后台接口地址
 	
-	public static  String SERVICE_URL = "" ;//PropertiesConfiguration.getStringValue("SERVICE_URL");
+	@Value("#{restConfig['SERVICE_URL']}")
+	public static  String SERVICE_URL ;//PropertiesConfiguration.getStringValue("SERVICE_URL");
 	//获取方案列表
 	public static final String GET_SCHEME_LIST = "/rail/template/TemplateSchemes";
 	//基本图方案包含的基本图运行线
@@ -55,4 +58,30 @@ public class Constants {
 	public static final String TRAINPLANDAO_ADD_TRAIN_PLAN_STN = "trainPlanDao.addTrainPlanStn";
 	//获取最大的train_plan_id   getMaxPlanTrainId
 	public static final String TRAINPLANDAO_GET_MAX_PLANTRAIN_ID = "trainPlanDao.getMaxPlanTrainId";
+    //getTrainTimeDetail
+	public static final String TRAINPLANDAO_GET_TRAIN_TIME_DETAIL = "trainPlanDao.getTrainTimeDetail";
+    //统计全路局列车信息 getTotalStationInfo
+	public static final String TRAINPLANDAO_GET_TOTAL_STATION_INFO="trainPlanDao.getTotalStationInfo";
+    //统计一个路局列车信息getOneStationInfo
+	public static final String TRAINPLANDAO_GET_ONE_STATION_INFO = "trainPlanDao.getOneStationInfo";
+	//getGatherTotalStationJieru
+	public static final String TRAINPLANDAO_GET_TOTAL_STATION_JIERU = "trainPlanDao.getGatherTotalStationJieru";
+    //查询某天某局的车次 getGatherPeriodRundateTrains
+	public static final String TRAINPLANDAO_GET_PERIOD_RUNDATE_TRAINS = "trainPlanDao.getGatherPeriodRundateTrains";
+    //查询数据总的条数 getPeriodRundateTrainsTotal
+	public static final String TRAINPLANDAO_GET_RUNDATE_TRAINS_TOTAL = "trainPlanDao.getPeriodRundateTrainsTotal";
+	//getRundateTrainCount
+	public static final String TRAINPLANDAO_GET_RUNDATE_TRAIN_COUNT = "trainPlanDao.getRundateTrainCount";
+    //根据rundate和train_nbr删除表plan_train中的数据 deleteTrainRundateTrainNbr
+	public static final String TRAINPLANDAO_DELETE_TRAIN_RUNDATE_NBR = "trainPlanDao.deleteTrainRundateTrainNbr";
+    //deleteTrainRundateTrainStn
+	public static final String TRAINPLANDAO_DELETE_TRAIN_RUNDATE_TRAIN_STN = "trainPlanDao.deleteTrainRundateTrainStn";
+    //导入数据前删除历史数据 deleteTrainRundateTrainStnInit
+	public static final String TRAINPLANDAO_DELETE_TRAIN_RUNDATE_TRAIN_STN_INIT = "trainPlanDao.deleteTrainRundateTrainStnInit";
+    //
+	public static final String TRAINPLANDAO_DELETE_TRAIN_RUNDATE_TRAIN_NBR_INIT = "trainPlanDao.deleteTrainRundateTrainNbrInit";
+    //findPlanTrainByStartBureauAndRundate
+	public static final String TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU = "trainPlanDao.findPlanTrainByStartBureauAndRundate";
+    //findPlanTrainByStartBureauCount
+	public static final String TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU_COUNT = "trainPlanDao.findPlanTrainByStartBureauCount";
 }
