@@ -77,26 +77,7 @@
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
 	<!-- production环境 -->
-	<beans profile="production">
-		<context:property-placeholder ignore-resource-not-found="true"
-			location="classpath:config/databaseConfig.properties" />
 
-		<!-- 数据源配置,使用应用内的Tomcat JDBC连接池 -->
-		<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
-			<!-- Connection Info -->
-			<property name="driverClassName" value="${jdbc.driver}" />
-			<property name="url" value="${jdbc.url}" />
-			<property name="username" value="${jdbc.username}" />
-			<property name="password" value="${jdbc.password}" />
-			<property name="maxActive" value="${jdbc.pool.maxActive}" />
-			<property name="maxIdle" value="${jdbc.pool.maxIdle}" />
-			<property name="minIdle" value="0" />
-			<property name="defaultAutoCommit" value="false" />
-			<!-- 连接Idle10分钟后超时，每1分钟检查一次 -->
-			<property name="timeBetweenEvictionRunsMillis" value="60000" />
-			<property name="minEvictableIdleTimeMillis" value="600000" />
-		</bean>
-	</beans>
 	
 	<beans profile="oracle">
 		<context:property-placeholder ignore-resource-not-found="true"
