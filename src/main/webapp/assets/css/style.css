@@ -1189,3 +1189,9 @@ transform: translateX(10px);
 	color:#939298;
 }
 /*error*/
+.padding0 {
+    padding: 0px;
+}
+.bigtable {
+    overflow: scroll;
+}
