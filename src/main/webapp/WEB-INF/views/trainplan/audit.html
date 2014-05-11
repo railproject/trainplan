@@ -10,13 +10,14 @@
     <title>审核次日客车运行线</title>
     <link type="text/css" href="../../../assets/css/custom-bootstrap.css" rel="stylesheet"/>
     <link type="text/css" href="../../../assets/css/font-awesome.min.css" rel="stylesheet"/>
+    <link type="text/css" href="../../../assets/css/minified/jquery-ui.min.css" rel="stylesheet"/>
     <link type="text/css" href="../../../assets/css/style.css" rel="stylesheet"/>
     <script type="text/javascript" src="../../../assets/js/jquery.js"></script>
     <script type="text/javascript" src="../../../assets/js/html5.js"></script>
     <script type="text/javascript" src="../../../assets/js/fuelUX.js"></script>
     <script type="text/javascript" src="../../../assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../assets/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="../../../assets/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript" src="../../../assets/js/minified/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../../../assets/js/datepicker.js"></script>
     <script type="text/javascript" src="../../../assets/js/jquery.knob.js"></script>
     <script type="text/javascript" src="../../../assets/js/jquery.gritter.min.js"></script>
@@ -30,408 +31,161 @@
     <span><i class="fa fa-anchor"></i>当前位置：</span>
     <li><a href="#">审核次日客车运行线</a></li>
 </ol>
-<section class="mainContent" style="width: 2200px;">
+<section class="mainContent">
     <div class="row">
-        <div class="panel panel-default">
-            <!--panle-heading-->
-            <div class="panel-body">
-                <div class="row" style="margin:-5px 0 10px 0;">
-                    <form class="form-horizontal" role="form">
-                        <button class="btn btn-primary" type="button" id="search">搜索</button>
-                        <div class="pull-left">
-                            <div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
-                                <label class="control-label pull-left"> 日期:&nbsp;</label>
-
-                                <div class="pull-left">
-                                    <input type="text" class="form-control" onkeydown="return false;"
-                                           style="width:100px;" id="date_selector">
-                                </div>
-                            </div>
-                        </div>
-                        <!--col-md-3 col-sm-4 col-xs-4-->
-                    </form>
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-home"></i>审核
                 </div>
-                <dev class="col-xs-6 col-md-6 col-lg-6">
-                    <fieldset>
-                        <legend>计划</legend>
-                        <div class="row">
-                            <div class="col-xs-8 col-md-8 col-lg-8 padding0">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th class="text-center"><input class="checkbox-inline" type="checkbox"/></th>
-                                            <th class="text-center">序号</th>
-                                            <th class="text-center">车次</th>
-                                            <th class="text-center">始发站</th>
-                                            <th class="text-center">终到站</th>
-                                            <th class="text-center">始发日期</th>
-                                            <th class="text-center">命令号</th>
-                                            <th class="text-center">文电号</th>
-                                            <th class="text-center">上图状态</th>
-                                            <th class="text-center">上图时间</th>
-                                            <th class="text-center">运行线ID</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr><tr>
-                                            <td class="text-center "><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">T8</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">北京</td>
-                                            <td class="text-center">2014-5-10</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">123</td>
-                                            <td class="text-center">以上图</td>
-                                            <td class="text-center">上图时间</td>
-                                            <td class="text-center">12345</td>
-                                        </tr>
-
-
-
-
-
-
-
-
-
-
-                                        <!--<tr><td colspan="2" class="text-center">总合计</td><td colspan="19" class="text-center">12345</td></tr>-->
-                                        </tbody>
-                                    </table>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-2 col-md-2 col-lg-2">
+                            <form class="form-inline" role="form">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="请选择日期" id="date_selector"/>
                                 </div>
+                            </form>
+                        </div>
+                        <div class="col-xs-4 col-md-4 col-sm-4 col-lg-4">
+                            <form class="form-inline" role="form">
+                                <div class="input-group">
+                                    <button href="#" class="btn btn-default margin-right-10" role="button">校验</button>
+                                    <button id="compare" href="#" class="btn btn-default margin-right-10" role="button">图形对比</button>
+                                    <button href="#" class="btn btn-default margin-right-10" role="button">生成运行线</button>
+                                    <button href="#" class="btn btn-default margin-right-10" role="button">客调审核</button>
+                                    <button href="#" class="btn btn-default margin-right-10 disabled" role="button">值班主任审核</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="panel panel-default marginbottom0">
+                            <div class="panel-body paddingbottom0">
+                                <p>客运计划共709条，其中停运8条，热备52条，需下达709条。</p>
+                                <p>已生成运行线709条，未生成0条，调整0条。</p>
+                                <p>客调已审核709条，值班主任已审核12条。</p>
                             </div>
-                            <div class="col-xs-4 col-md-4 col-lg-4 padding0">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th class="text-center">序号</th>
-                                            <th class="text-center">站名</th>
-                                            <th class="text-center">到达</th>
-                                            <th class="text-center">出发</th>
-                                            <th class="text-center">股道</th>
-                                            <th class="text-center">营业</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">成都</td>
-                                            <td class="text-center">12:00</td>
-                                            <td class="text-center">12:04</td>
-                                            <td class="text-center">1</td>
-                                            <td class="text-center">1</td>
-                                        </tr>
-                                        <!--<tr><td colspan="2" class="text-center">总合计</td><td colspan="19" class="text-center">12345</td></tr>-->
-                                        </tbody>
-                                    </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading paddingbottom0">
+                                    <i class="fa fa-home"></i>客运开行计划
+                                </div>
+                                <div class="panel-body paddingtop0 paddingleftright5">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
+                                            <form class="form-inline" role="form">
+                                                <div class="input-group">
+                                                    <label class="margin-right-10">时刻表:</label>
+                                                    <input id="kyjh_time" class="checkbox-inline" style="margin: 0px 10px 0px 0px;" type="checkbox">
+                                                    <label class="margin-right-10">经由:</label>
+                                                    <input id="kyjh_routing" class="checkbox-inline" style="margin: 0px 10px 0px 0px;" type="checkbox">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <dev class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped table-hover tableradius">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center"><input class="checkbox-inline" type="checkbox"/></th>
+                                                        <th class="text-center">序号</th>
+                                                        <th class="text-center">车次</th>
+                                                        <th class="text-center">始发站</th>
+                                                        <th class="text-center">终到站</th>
+                                                        <th class="text-center">始发日期</th>
+                                                        <th class="text-center">命令号</th>
+                                                        <th class="text-center">文电号</th>
+                                                        <th class="text-center">上图状态</th>
+                                                        <th class="text-center">上图时间</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
+                                                        <td class="text-center">1</td>
+                                                        <td class="text-center">T8</td>
+                                                        <td class="text-center">成都</td>
+                                                        <td class="text-center">北京</td>
+                                                        <td class="text-center">5-10</td>
+                                                        <td class="text-center">123</td>
+                                                        <td class="text-center">123</td>
+                                                        <td class="text-center">已上图</td>
+                                                        <td class="text-center">5-9 12:21</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </dev>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </fieldset>
-                </dev>
-                <dev class="col-xs-6 col-md-6 col-lg-6">
-                    <fieldset>
-                        <legend>运行线</legend>
-                        <div class="row">
-                            <div class="col-xs-8 col-md-8 col-lg-8 padding0">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th class="text-center"><input class="checkbox-inline" type="checkbox"/></th>
-                                            <th class="text-center">序号</th>
-                                            <th class="text-center">车次</th>
-                                            <th class="text-center">始发站</th>
-                                            <th class="text-center">终到站</th>
-                                            <th class="text-center">始发日期</th>
-                                            <th class="text-center">客调</th>
-                                            <th class="text-center">审核日期</th>
-                                            <th class="text-center">值班主任</th>
-                                            <th class="text-center">审核时间</th>
-                                            <th class="text-center">运行线ID</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                        <div class="col-xs-6 col-md-6 col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading paddingbottom0">
+                                    <i class="fa fa-home"></i>运行线
                                 </div>
-                            </div>
-                            <div class="col-xs-4 col-md-4 col-lg-4 padding0">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th class="text-center">序号</th>
-                                            <th class="text-center">站名</th>
-                                            <th class="text-center">到达</th>
-                                            <th class="text-center">出发</th>
-                                            <th class="text-center">股道</th>
-                                            <th class="text-center">营业</th>
-                                            <th class="text-center">客调</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="panel-body paddingtop0 paddingleftright5">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
+                                            <form class="form-inline" role="form">
+                                                <div class="input-group">
+                                                    <label class="margin-right-10">时刻表:</label>
+                                                    <input id="yxx_time" class="checkbox-inline" style="margin: 0px 10px 0px 0px;" type="checkbox">
+                                                    <label class="margin-right-10">经由:</label>
+                                                    <input id="yxx_routing" class="checkbox-inline" style="margin: 0px 10px 0px 0px;" type="checkbox">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <dev class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped table-hover tableradius">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center"><input class="checkbox-inline" type="checkbox"/></th>
+                                                        <th class="text-center">序号</th>
+                                                        <th class="text-center">车次</th>
+                                                        <th class="text-center">始发站</th>
+                                                        <th class="text-center">终到站</th>
+                                                        <th class="text-center">始发日期</th>
+                                                        <th class="text-center">客调</th>
+                                                        <th class="text-center">审核日期</th>
+                                                        <th class="text-center">值班主任</th>
+                                                        <th class="text-center">审核时间</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
+                                                        <td class="text-center">1</td>
+                                                        <td class="text-center">T7</td>
+                                                        <td class="text-center">成都</td>
+                                                        <td class="text-center">北京</td>
+                                                        <td class="text-center">5-11</td>
+                                                        <td class="text-center">张三</td>
+                                                        <td class="text-center">5-10 9:04</td>
+                                                        <td class="text-center">李四</td>
+                                                        <td class="text-center">5-10 10:01</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </dev>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                    </fieldset>
-                </dev>
+                    </div>
+                </div>
             </div>
-            <!--panel panel-default-->
         </div>
     </div>
 </section>
