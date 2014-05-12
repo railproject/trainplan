@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -8,23 +9,31 @@
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="0"/>
     <title>审核次日客车运行线</title>
-    <link type="text/css" href="../../../assets/css/custom-bootstrap.css" rel="stylesheet"/>
-    <link type="text/css" href="../../../assets/css/font-awesome.min.css" rel="stylesheet"/>
-    <link type="text/css" href="../../../assets/css/minified/jquery-ui.min.css" rel="stylesheet"/>
-    <link type="text/css" href="../../../assets/css/style.css" rel="stylesheet"/>
-    <script type="text/javascript" src="../../../assets/js/jquery.js"></script>
-    <script type="text/javascript" src="../../../assets/js/html5.js"></script>
-    <script type="text/javascript" src="../../../assets/js/fuelUX.js"></script>
-    <script type="text/javascript" src="../../../assets/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../../assets/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="../../../assets/js/minified/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="../../../assets/js/datepicker.js"></script>
-    <script type="text/javascript" src="../../../assets/js/jquery.knob.js"></script>
-    <script type="text/javascript" src="../../../assets/js/jquery.gritter.min.js"></script>
-    <script type="text/javascript" src="../../../assets/js/jquery.sparkline.min.js"></script>
-    <script type="text/javascript" src="../../../assets/js/purl.js"></script>
-    <script type="text/javascript" src="../../../assets/js/knockout.js"></script>
-    <script type="text/javascript" src="../../../assets/js/trainplan/audit.js"></script>
+    <link type="text/css" href="assets/css/custom-bootstrap.css" rel="stylesheet"/>
+    <link type="text/css" href="assets/css/font-awesome.min.css" rel="stylesheet"/>
+    <link type="text/css" href="assets/css/minified/jquery-ui.min.css" rel="stylesheet"/>
+    <link type="text/css" href="assets/css/style.css" rel="stylesheet"/>
+    <script type="text/javascript" src="assets/js/jquery.js"></script>
+    <script type="text/javascript" src="assets/js/html5.js"></script>
+    <script type="text/javascript" src="assets/js/fuelUX.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.knob.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.gritter.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.sparkline.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.freezeheader.js"></script>
+    <script type="text/javascript" src="assets/js/minified/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/js/datepicker.js"></script>
+    <script type="text/javascript" src="assets/js/purl.js"></script>
+    <script type="text/javascript" src="assets/js/knockout.js"></script>
+    <script type="text/javascript" src="assets/js/moment.min.js"></script>
+    <script type="text/javascript" src="assets/js/trainplan/audit.js"></script>
+    <style>
+        #hdleft_table table tr th{
+            border-color:#dfe4ee;
+            text-align:center;
+        }
+    </style>
 </head>
 <body class="Iframe-body">
 <ol class="breadcrumb">
@@ -90,7 +99,7 @@
                                     <div class="row">
                                         <dev class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
                                             <div class="table-responsive">
-                                                <table class="table table-bordered table-striped table-hover tableradius">
+                                                <table id="left_table" class="table table-bordered table-striped table-hover tableradius">
                                                     <thead>
                                                     <tr>
                                                         <th class="text-center"><input class="checkbox-inline" type="checkbox"/></th>
@@ -105,18 +114,18 @@
                                                         <th class="text-center">上图时间</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody>
-                                                    <tr>
+                                                    <tbody data-bind="foreach: kyjhTable">
+                                                    <tr data-bind="value: id, click: $parent.showInPanel">
                                                         <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                                        <td class="text-center">1</td>
-                                                        <td class="text-center">T8</td>
-                                                        <td class="text-center">成都</td>
-                                                        <td class="text-center">北京</td>
-                                                        <td class="text-center">5-10</td>
-                                                        <td class="text-center">123</td>
-                                                        <td class="text-center">123</td>
-                                                        <td class="text-center">已上图</td>
-                                                        <td class="text-center">5-9 12:21</td>
+                                                        <td class="text-center" data-bind="text: $index"></td>
+                                                        <td class="text-center" data-bind="text: serial"></td>
+                                                        <td class="text-center" data-bind="text: startSTN">成都</td>
+                                                        <td class="text-center" data-bind="text: endSTN">北京</td>
+                                                        <td class="text-center" data-bind="text: runDate">5-10</td>
+                                                        <td class="text-center" data-bind="text: command">123</td>
+                                                        <td class="text-center" data-bind="text: tele">123</td>
+                                                        <td class="text-center" data-bind="text: flag">已上图</td>
+                                                        <td class="text-center" data-bind="text: generateDateTime">5-9 12:21</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -147,7 +156,7 @@
                                     <div class="row">
                                         <dev class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
                                             <div class="table-responsive">
-                                                <table class="table table-bordered table-striped table-hover tableradius">
+                                                <table id="right_table" class="table table-bordered table-striped table-hover tableradius">
                                                     <thead>
                                                     <tr>
                                                         <th class="text-center"><input class="checkbox-inline" type="checkbox"/></th>
