@@ -145,11 +145,22 @@ public class PlanCheckController {
 					String ljqc = StringUtil.objToStr(map.get("LJQC"));
 					Map<String,Object> jieru_map = planTrainCheckService.getOneStationTrains(runDate,ljqc);
 					//System.err.println(ljqc+"接入统计Map==" + jieru_map);
-					map.put("TDJRZD",StringUtil.objToStr(jieru_map.get("TDJRZD")));
+					//接入终到
+					Object jrzd ="";
+					//接入交出
+					Object jrjc ="";
+					//接入小计
+					Object jrxj ="";
+					if(jieru_map != null){
+						jrzd = jieru_map.get("TDJRZD");
+						jrjc = jieru_map.get("TDJRJC");
+						jrxj = jieru_map.get("TDJRXJ");
+					}
+					map.put("TDJRZD",StringUtil.objToStr(jrzd));
 					//图定接入交出
-					map.put("TDJRJC",StringUtil.objToStr(jieru_map.get("TDJRJC")));
+					map.put("TDJRJC",StringUtil.objToStr(jrjc));
 					//图定接入小计
-					map.put("TDJRXJ",StringUtil.objToStr(jieru_map.get("TDJRXJ")));
+					map.put("TDJRXJ",StringUtil.objToStr(jrxj));
 					//图定始发交出线
 					map.put("TDSFJCX","" );
 					//图定始发终到线
@@ -215,12 +226,20 @@ public class PlanCheckController {
 				//只有一条数据
 				Map<String,Object> tempMap = listMap.get(0);
 				//System.err.println("接入统计一个路局始发map==" + tempMap);
+				Object jrzd = "";
+				Object jrjc = "";
+				Object jrxj = "";
+				if(map != null){
+					jrzd = map.get("TDJRZD");
+					jrjc = map.get("TDJRJC");
+					jrxj = map.get("TDJRXJ");
+				}
 				//图定接入终到
-				tempMap.put("TDJRZD",StringUtil.objToStr(map.get("TDJRZD")));
+				tempMap.put("TDJRZD",StringUtil.objToStr(jrzd));
 				//图定接入交出
-				tempMap.put("TDJRJC",StringUtil.objToStr(map.get("TDJRJC")));
+				tempMap.put("TDJRJC",StringUtil.objToStr(jrjc));
 				//图定接入小计
-				tempMap.put("TDJRXJ",StringUtil.objToStr(map.get("TDJRXJ")));
+				tempMap.put("TDJRXJ",StringUtil.objToStr(jrxj));
 				result.setData(tempMap);
 			}
 			

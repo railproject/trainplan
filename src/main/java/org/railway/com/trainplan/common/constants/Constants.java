@@ -19,9 +19,9 @@ public class Constants {
 	public static final String DATE_FORMAT_2 = "yyyy-MM-dd HH:mm:ss";
 	//TODO:后台服务地址，以后要改为配置文件
 	//后台接口地址
-	
+	//TODO 从配置文件中获取不到值
 	@Value("#{restConfig['SERVICE_URL']}")
-	public static  String SERVICE_URL ;//PropertiesConfiguration.getStringValue("SERVICE_URL");
+	public static  String SERVICE_URL = "http://10.1.191.135:7003";//PropertiesConfiguration.getStringValue("SERVICE_URL");
 	//获取方案列表
 	public static final String GET_SCHEME_LIST = "/rail/template/TemplateSchemes";
 	//基本图方案包含的基本图运行线
@@ -84,4 +84,17 @@ public class Constants {
 	public static final String TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU = "trainPlanDao.findPlanTrainByStartBureauAndRundate";
     //findPlanTrainByStartBureauCount
 	public static final String TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU_COUNT = "trainPlanDao.findPlanTrainByStartBureauCount";
+
+    /****CrossMapper.xml  ****/
+    //表base_cross插入数据addCrossInfo
+	public static final String CROSSDAO_ADD_CROSS_INFO = "crossDao.addCrossInfo";
+	//表base_cross_train插入数据addCrossTrainInfo
+	public static final String CROSSDAO_ADD_CROSS_TRAIN_INFO = "crossDao.addCrossTrainInfo";
+	//查询crossinfo信息
+	public static final String CROSSDAO_GET_CROSS_INFO = "crossDao.getCrossInfo";
+    //通过crossid获取crossinfo信息 
+	public static final String  CROSSDAO_GET_CROSS_INFO_FOR_CROSSID = "crossDao.getCrossInfoForCrossid";
+	//通过crossid查询crosstrainInfo信息   
+	public static final String CROSSDAO_GET_CROSS_TRAIN_INFO_FOR_CROSSID = "crossDao.getCrossTrainInfoForCrossid";
+
 }
