@@ -48,7 +48,7 @@
 	<mvc:default-servlet-handler/>
 	
 	<!-- 定义无需Controller的url<->view直接映射 -->
-	<mvc:view-controller path="/" view-name="trainplan/index"/>
+	<mvc:view-controller path="/" view-name="trainplan/trainPlanIndex"/>
     <!--
 	<mvc:view-controller path="/web/mashup-client" view-name="/web/mashup-client"/>
 -->
