@@ -142,7 +142,7 @@ public class CrossService{
 			for(int i = 0; i < alllist.size(); i++){
 				try {
 					crossTrains.addAll(completion.take().get());
-				} catch (InterruptedException | ExecutionException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
