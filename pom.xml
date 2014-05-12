@@ -309,7 +309,12 @@
 			<artifactId>dozer</artifactId>
             <version>5.5.1</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.3</version>
+		</dependency>
 		<!-- OTHER TOOLS end -->
 	</dependencies>
 </project>
