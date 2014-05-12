@@ -1,6 +1,5 @@
 package org.railway.com.trainplan.web.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,15 +10,14 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
-import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.CommonService;
+import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.service.PlanTrainCheckService;
 import org.railway.com.trainplan.service.PlanTrainStnService;
 import org.railway.com.trainplan.service.RemoteService;
@@ -56,6 +54,8 @@ public class PlanTrainStnController {
 	@Autowired
 	private RemoteService remoteService;
 	
+	@Autowired
+	private CrossService crossService;
 	//fortest
 	@Autowired
 	private BaseDao baseDao;
@@ -67,7 +67,7 @@ public class PlanTrainStnController {
 		//System.err.println("ljqc == " + ljqc);
 		//Ljzd ljzd = commonService.getLjInfo(ljqc);
 		//System.err.println("ljdm==" + ljzd.getLjdm());
-		List<CrossInfo> alllist = new ArrayList<CrossInfo>();
+		/*List<CrossInfo> alllist = new ArrayList<CrossInfo>();
 		for(int i = 0;i<10;i++){
 			CrossInfo cross = new CrossInfo();
 			cross.setCreatePeople("people"+i);
@@ -90,8 +90,12 @@ public class PlanTrainStnController {
 			
 			baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
 		}
+*/		
+		//List list = crossService.getCrossInfo(reqMap);
+		//result.setData(list);
 		
-		
+        CrossInfo crossinfo = crossService.getCrossInfoForCrossid("100");
+        result.setData(crossinfo);
 		return result;
 	}
 	

@@ -48,12 +48,7 @@ import com.sun.jersey.api.client.WebResource;
 public class CrossService{
 	private static final Logger logger = Logger.getLogger(CommonService.class);
 	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-//	@Autowired
-//	private CrossMybatisDao crossMybatisDao;
-//	
-//	@Autowired
-//	private CrossTrainMybatisDao crossTrainMybatisDao;
-	
+
 	@Autowired
 	private CommonService commonService;
 	
@@ -69,6 +64,39 @@ public class CrossService{
 //		System.out.println("G11(".substring(0,"G11(".indexOf('(')));
 	}
 
+	/**
+	 * 查询cross信息
+	 * @param reqMap
+	 * @return
+	 */
+	public List<CrossInfo>  getCrossInfo(Map<String,Object> reqMap){
+		List<CrossInfo>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_INFO, reqMap);
+		return list;
+	}
+	
+	/**
+	 * 通过crossid查询crossinfo信息
+	 * @param crossId
+	 * @return
+	 */
+	public CrossInfo getCrossInfoForCrossid(String crossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("crossId", crossId);
+		return (CrossInfo)baseDao.selectOneBySql(Constants.CROSSDAO_GET_CROSS_INFO_FOR_CROSSID, paramMap);
+	    
+	}
+	
+	/**
+	 * 通过crossid查询crosstrainInfo信息
+	 * @param crossId
+	 * @return
+	 */
+	public List<CrossTrainInfo> getCrossTrainInfoForCrossid(String crossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("crossId", crossId);
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_TRAIN_INFO_FOR_CROSSID, paramMap);
+	}
+	
 	
 	public void actionExcel(InputStream inputStream) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// TODO Auto-generated method stub

@@ -4,6 +4,77 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="crossDao">
 
+   <select id="getCrossTrainInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
+     select 
+	     BASE_CROSS_ID AS crossId,
+	     TRAIN_SORT AS trainSort,
+	     TRAIN_NBR AS trainNbr,
+	     BASE_TRAIN_ID AS baseTrainId ,
+	     START_STN AS startStn,
+	     START_BUREAU AS startBureau,
+	     END_STN AS endStn,
+	     END_BUREAU AS endBureau,
+	     DAY_GAP AS dayGap ,
+	     ALTERNATE_TRAIN_NBR AS alertNateTrainNbr,
+	     ALTERNATE_TIME AS alertNateTime ,
+	     SPARE_FLAG AS spareFlag,
+	     SPARE_APPLY_FLAG AS spareApplyFlage,
+	     HIGHLINE_FLAG AS highlineFlag,
+	     HIGHLINE_RULE AS highlineRule,
+	     COMMONLINE_RULE AS commonLineRule,
+	     APPOINT_WEEK AS appointWeek,
+	     APPOINT_DAY AS appointDay
+	     from base_cross_train where BASE_CROSS_ID=#{crossId}    
+   </select>
+   
+   
+   <select id="getCrossInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
+      select 
+        BASE_CROSS_ID as crossId,
+        BASE_CHART_ID as chartId,
+        BASE_CHART_NAME as chartName,
+        CROSS_START_DATE as crossStartDate,
+        CROSS_END_DATE as crossEndDate,
+        
+        CROSS_NAME as crossName,
+        CROSS_SPARE_NAME as crossSpareName,
+        ALTERNATE_DATE as alterNateDate,
+        ALTERNATE_TRAIN_NBR as alterNateTranNbr,
+        
+        SPARE_FLAG as spareFlag ,
+        CUT_OLD as  cutOld,
+        GROUP_TOTAL_NBR as groupTotalNbr ,
+        PAIR_NBR as pairNbr , 
+        
+        HIGHLINE_FLAG as  highlineFlag,
+        HIGHLINE_RULE as  highlineRule,
+        COMMONLINE_RULE as  commonlineRule,
+        APPOINT_WEEK as appointWeek ,
+        
+        APPOINT_DAY  as  appointDay,
+        CROSS_SECTION  as crossSection ,
+        THROUGH_LINE  as  throughline,
+        START_BUREAU  as startBureau ,
+        
+		TOKEN_VEH_BUREAU  as tokenVehBureau ,
+		TOKEN_VEH_DEPT  as  tokenVehDept,
+		TOKEN_VEH_DEPOT  as tokenVehDepot ,
+		TOKEN_PSG_BUREAU  as tokenPsgBureau ,
+		
+		TOKEN_PSG_DEPT  as tokenPsgDept ,	
+		LOCO_TYPE  as locoType ,
+		CRH_TYPE  as crhType ,
+		ELEC_SUPPLY  as elecSupply ,
+		
+		DEJ_COLLECT  as dejCollect ,
+		AIR_CONDITION  as airCondition ,
+		NOTE  as  note,
+		CREAT_PEOPLE  as createPeople ,
+		CREAT_PEOPLE_ORG  as createPeopleOrg ,
+		CREAT_TIME  as  createTime
+  
+      from base_cross where BASE_CROSS_ID=#{crossId}
+   </select>
 
 	<insert id="addCrossInfo"  parameterType="java.util.List" >
 
@@ -66,5 +137,21 @@
 	      </foreach>
 	     ) A
 	</insert>
+	
+	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
+	  select m.*  from  (select 
+		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from BASE_CROSS
+		) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
+		<if test="tokenVehBureau != null">
+			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+		</if>
+		<if test="startBureau != null">
+		   AND START_BUREAU = #{startBureau}
+		</if>
+		<if test="highlineFlag != null">
+		AND HIGHLINE_FLAG = #{highlineFlag}
+		</if>
+	</select>
+
 
 </mapper>
