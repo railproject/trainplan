@@ -14,7 +14,7 @@ public class CrossInfo {
 	//CREAT_PEOPLE_ORG	CREAT_TIME 
 	//LOCO_TYPE	CRH_TYPE	ELEC_SUPPLY	DEJ_COLLECT	AIR_CONDITION	NOTE	CREAT_PEOPLE	
 		//CREAT_PEOPLE_ORG	CREAT_TIME 
-	private String crossId = UUID.randomUUID().toString();
+	private int crossId ;
 	private String crossName; 
 	private String chartId;
 	private String chartName;
@@ -52,10 +52,10 @@ public class CrossInfo {
 	private String createTime;
 	
 	 
-	public String getCrossId() {
+	public int getCrossId() {
 		return crossId;
 	}
-	public void setCrossId(String crossId) {
+	public void setCrossId(int crossId) {
 //		this.crossId = crossId;
 	}
 	public String getCrossName() {
@@ -269,6 +269,8 @@ public class CrossInfo {
 		this.createTime = createTime;
 	}
 	 
-	
+	public static void main(String args[]){
+		System.err.println("" + UUID.randomUUID().toString());
+	}
 
 }

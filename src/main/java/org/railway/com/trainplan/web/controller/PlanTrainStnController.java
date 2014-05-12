@@ -1,5 +1,6 @@
 package org.railway.com.trainplan.web.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +11,14 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.CrossInfo;
+import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
+import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.PlanTrainCheckService;
 import org.railway.com.trainplan.service.PlanTrainStnService;
@@ -51,14 +56,42 @@ public class PlanTrainStnController {
 	@Autowired
 	private RemoteService remoteService;
 	
+	//fortest
+	@Autowired
+	private BaseDao baseDao;
 	@ResponseBody
 	@RequestMapping(value = "/mytest", method = RequestMethod.POST)
 	public Result getTest(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		String ljqc = reqMap.get("ljqc").toString();
 		//System.err.println("ljqc == " + ljqc);
-		Ljzd ljzd = commonService.getLjInfo(ljqc);
-		System.err.println("ljdm==" + ljzd.getLjdm());
+		//Ljzd ljzd = commonService.getLjInfo(ljqc);
+		//System.err.println("ljdm==" + ljzd.getLjdm());
+		List<CrossInfo> alllist = new ArrayList<CrossInfo>();
+		for(int i = 0;i<10;i++){
+			CrossInfo cross = new CrossInfo();
+			cross.setCreatePeople("people"+i);
+			alllist.add(cross);
+		}
+		if(alllist != null && alllist.size() > 0){
+			//保存交路信息
+			//baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
+			
+		}
+		ArrayList<CrossTrainInfo> crossTrains = new ArrayList<CrossTrainInfo>();
+    	//保存列车
+		for(int i = 0;i<10;i++){
+			CrossTrainInfo cross = new CrossTrainInfo();
+			cross.setCrossId(i);
+			crossTrains.add(cross);
+		}
+		
+		if(crossTrains != null && crossTrains.size() > 0 ){
+			
+			baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
+		}
+		
+		
 		return result;
 	}
 	

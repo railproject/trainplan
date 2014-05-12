@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="crossDao">
+
+
+	<insert id="addCrossInfo"  parameterType="java.util.List" >
+
+		insert into base_cross
+		(BASE_CROSS_ID,
+		BASE_CHART_ID,BASE_CHART_NAME,CROSS_START_DATE,CROSS_END_DATE,
+		CROSS_NAME,CROSS_SPARE_NAME,ALTERNATE_DATE,ALTERNATE_TRAIN_NBR,
+		SPARE_FLAG,CUT_OLD,GROUP_TOTAL_NBR,PAIR_NBR,
+		HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,
+		APPOINT_DAY,CROSS_SECTION,THROUGH_LINE,START_BUREAU,
+		TOKEN_VEH_BUREAU,TOKEN_VEH_DEPT,TOKEN_VEH_DEPOT,TOKEN_PSG_BUREAU,
+		TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
+		DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
+		CREAT_PEOPLE_ORG,CREAT_TIME)
+		select SEQ_BASE_CROSS.nextVal,A.* FROM
+		(<foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+            #{item.chartId,jdbcType=NUMERIC},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
+            #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
+            #{item.spareFlag,jdbcType=NUMERIC},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
+            #{item.highlineFlag,jdbcType=NUMERIC}, #{item.highlineRule,jdbcType=NUMERIC},#{item.commonlineRule,jdbcType=NUMERIC},#{item.appointWeek,jdbcType=VARCHAR},
+            #{item.appointDay,jdbcType=VARCHAR},#{item.crossSection,jdbcType=VARCHAR},#{item.throughline,jdbcType=VARCHAR},#{item.startBureau,jdbcType=VARCHAR},
+            #{item.tokenVehBureau,jdbcType=VARCHAR},#{item.tokenVehDept,jdbcType=VARCHAR},#{item.tokenVehDepot,jdbcType=VARCHAR},#{item.tokenPsgBureau,jdbcType=VARCHAR},
+            #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
+            #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
+            #{item.createPeopleOrg,jdbcType=VARCHAR},
+            <choose>
+			<when test="item.createTime != null">
+				to_date(#{item.createTime},'yyyy-MM-dd hh24:mi:ss')
+			</when>
+			<otherwise>
+				null
+			</otherwise>
+	    	</choose>
+            from dual 
+             </foreach>
+        ) A	
+	</insert>
+
+	<insert id="addCrossTrainInfo" parameterType="java.util.List">
+	     insert into base_cross_train
+	     (BASE_CROSS_TRAIN_ID,
+	     BASE_CROSS_ID,TRAIN_SORT,TRAIN_NBR,BASE_TRAIN_ID,
+	     START_STN,START_BUREAU,END_STN,END_BUREAU,
+	     DAY_GAP,ALTERNATE_TRAIN_NBR,ALTERNATE_TIME,SPARE_FLAG,
+	     SPARE_APPLY_FLAG,HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,
+	     APPOINT_WEEK,APPOINT_DAY)
+	     select SEQ_BASE_CROSS_TRAIN.nextVal,A.* from
+	     (<foreach collection="list" item="item" index="index"
+            separator="UNION">
+	       SELECT
+	       #{item.crossId,jdbcType=NUMERIC},#{item.trainSort,jdbcType=NUMERIC},#{item.trainNbr,jdbcType=VARCHAR},#{item.baseTrainId,jdbcType=VARCHAR},
+	       #{item.startStn,jdbcType=VARCHAR}, #{item.startBureau,jdbcType=VARCHAR},#{item.endStn,jdbcType=VARCHAR},#{item.endBureau,jdbcType=VARCHAR},
+	       #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
+	       #{item.spareApplyFlage,jdbcType=NUMERIC}, #{item.highlineFlag,jdbcType=NUMERIC},#{item.highlineRule,jdbcType=NUMERIC},#{item.commonLineRule,jdbcType=NUMERIC},
+	       #{item.appointWeek,jdbcType=VARCHAR},#{item.appointDay,jdbcType=VARCHAR}
+	       from dual
+	       
+	      </foreach>
+	     ) A
+	</insert>
+
+</mapper>

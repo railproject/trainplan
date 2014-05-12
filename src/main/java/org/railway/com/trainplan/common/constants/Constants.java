@@ -84,4 +84,10 @@ public class Constants {
 	public static final String TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU = "trainPlanDao.findPlanTrainByStartBureauAndRundate";
     //findPlanTrainByStartBureauCount
 	public static final String TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU_COUNT = "trainPlanDao.findPlanTrainByStartBureauCount";
+
+    /****CrossMapper.xml  ****/
+    //表base_cross插入数据addCrossInfo
+	public static final String CROSSDAO_ADD_CROSS_INFO = "crossDao.addCrossInfo";
+	//表base_cross_train插入数据addCrossTrainInfo
+	public static final String CROSSDAO_ADD_CROSS_TRAIN_INFO = "crossDao.addCrossTrainInfo";
 }
