@@ -41,21 +41,24 @@ $(function(){
         }
     });
     $("#compare").click(function() {
-        model.open_compare("", {title: "图形对比"});
+
+        model.open_compare("", {title: "图形对比", height: $(window).height()});
+//        model._getDialog("mycanvas.html", {}).dialog("open")
     })
 });
 
 function AuditModel() {
     var self = this;
 
-    self._default = {
+    var _default = {
         autoOpen: false,
-        height: 400,
+        height: $(window).height()/3,
         width: 500,
         title: "",
-        position: [1100,0],
-        maxWidth: 600,
-        minHeight: 600
+        position: [($(window).width() - 500), 0],
+        maxWidth: 870,
+        maxHeight: $(window).height()
+
     };
 
     //客运计划时刻表框
@@ -71,17 +74,18 @@ function AuditModel() {
 
     self._getDialog = function(page, options) {
         self._default = {
-            autoOpen: options.autoOpen || self._default.autoOpen,
-            height: options.height || self._default.height,
-            width: options.width || self._default.width,
-            title: options.title || self._default.title,
-            position: options.position || self._default.position,
-            maxWidth: options.maxWidth || self._default.maxWidth,
-            minHeight: options.minHeight || self._default.minHeight,
+            autoOpen: options.autoOpen || _default.autoOpen,
+            height: options.height || _default.height,
+            width: options.width || _default.width,
+            title: options.title || _default.title,
+            position: options.position || _default.position,
+            maxWidth: _default.maxWidth,
+            maxHeight: _default.maxHeight,
+            closeText: "关闭",
             close: options.close
         };
-        var $dialog = $('<div class="dialog" style="overflow: auto"></div>')
-            .html('<iframe src="' + page + '" width="100%" height="100%" marginWidth=0 frameSpacing=0 marginHeight=0 scrolling=no frameborder="0px"></iframe>')
+        var $dialog = $('<div class="dialog" style="overflow: hidden"></div>')
+            .html('<iframe src="' + page + '" width="100%" height="100%" marginWidth=0 frameSpacing=0 marginHeight=0 scrolling=auto frameborder="0px"></iframe>')
             .dialog(self._default);
         return $dialog;
     };
