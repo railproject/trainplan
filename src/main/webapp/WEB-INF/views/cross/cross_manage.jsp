@@ -245,7 +245,7 @@ text-align: center;
 </script>
 
 </head>
-<body class="Iframe_body">
+<body class="Iframe_body" style="margin-left:50px;margin-right:50px;">
 	<!--以上为必须要的-->
 
 	<div id="file_upload_dlg" class="easyui-dialog" title="上传对数文件"
