@@ -31,11 +31,12 @@ import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
-import org.railway.com.trainplan.repository.mybatis.CrossMybatisDao;
-import org.railway.com.trainplan.repository.mybatis.CrossTrainMybatisDao;
+import org.railway.com.trainplan.entity.Ljzd;
+import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,12 @@ public class CrossService{
 //	
 //	@Autowired
 //	private CrossTrainMybatisDao crossTrainMybatisDao;
+	
+	@Autowired
+	private CommonService commonService;
+	
+	@Autowired
+	private BaseDao baseDao;
 	
 	public static void main(String[] args) throws IOException, IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		InputStream is = new FileInputStream(
@@ -99,24 +106,13 @@ public class CrossService{
 		
 		//可以从数据库中获取
 		Map<String, String> tokenPsgDeptValuesMap = new HashMap<String, String>();
-		tokenPsgDeptValuesMap.put("B","哈");
-		tokenPsgDeptValuesMap.put("T","沈");
-		tokenPsgDeptValuesMap.put("P","京");
-		tokenPsgDeptValuesMap.put("V","太");
-		tokenPsgDeptValuesMap.put("C","呼");
-		tokenPsgDeptValuesMap.put("F","郑");
-		tokenPsgDeptValuesMap.put("N","武");
-		tokenPsgDeptValuesMap.put("Y","西");
-		tokenPsgDeptValuesMap.put("K","济");
-		tokenPsgDeptValuesMap.put("H","上");
-		tokenPsgDeptValuesMap.put("G","南");
-		tokenPsgDeptValuesMap.put("Q","广");
-		tokenPsgDeptValuesMap.put("Z","宁");
-		tokenPsgDeptValuesMap.put("W","成");
-		tokenPsgDeptValuesMap.put("M","昆");
-		tokenPsgDeptValuesMap.put("J","兰");
-		tokenPsgDeptValuesMap.put("R","乌");
-		tokenPsgDeptValuesMap.put("O","青");
+		//路局字典信息
+		List<Ljzd> lizdList = commonService.getFullStationInfo();
+		if(lizdList !=null && lizdList.size() > 0){
+			for(Ljzd dto : lizdList){
+				tokenPsgDeptValuesMap.put(dto.getLjpym(), dto.getLjjc());
+			}
+		}
 		valuesMap.put("tokenPsgDept", tokenPsgDeptValuesMap); 
 		 
 		
@@ -152,11 +148,16 @@ public class CrossService{
 			} 
 			service.shutdown();
 			
-//			//保存交路
-//			crossMybatisDao.saveCrossBeach(alllist);
-//			//保存列车
-//			crossTrainMybatisDao.saveCrossTrainInfoBeach(crossTrains);
-			
+			if(alllist != null && alllist.size() > 0){
+				//保存交路信息
+				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
+				
+			}
+        	//保存列车
+			if(crossTrains != null && crossTrains.size() > 0 ){
+				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
+			}
+	
 			BeanInfo  beaninfo = Introspector.getBeanInfo(CrossInfo.class);
 			 
 			PropertyDescriptor[] pds = beaninfo.getPropertyDescriptors();

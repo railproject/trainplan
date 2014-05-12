@@ -4,8 +4,8 @@ import java.util.UUID;
 
 public class CrossTrainInfo {
 	
-	private String crossTainId = UUID.randomUUID().toString();//BASE_CROSS_TRAIN_ID
-	private String crossId;//BASE_CROSS_ID
+	private int crossTainId ;//BASE_CROSS_TRAIN_ID
+	private int crossId;//BASE_CROSS_ID
 	private int trainSort;//TRAIN_SORT
 	private String baseTrainId;
 	private String trainNbr;//TRAIN_NBR
@@ -39,16 +39,16 @@ public class CrossTrainInfo {
 	public void setTargetTime(String targetTime) {
 		this.targetTime = targetTime;
 	}
-	public String getCrossTainId() {
+	public int getCrossTainId() {
 		return crossTainId;
 	}
-	public void setCrossTainId(String crossTainId) {
+	public void setCrossTainId(int crossTainId) {
 		this.crossTainId = crossTainId;
 	}
-	public String getCrossId() {
+	public int getCrossId() {
 		return crossId;
 	}
-	public void setCrossId(String crossId) {
+	public void setCrossId(int crossId) {
 		this.crossId = crossId;
 	}
 	public int getTrainSort() {

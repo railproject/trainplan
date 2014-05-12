@@ -33,14 +33,14 @@ public class CrossController {
 		Result result = new Result(); 
 			System.out.println("-----------------------haha -------------------------------------");
 //				FileOutputStream fos = new FileOutputStream(new File("E:/text.txt"));
-			try {
+			/*try {
 				System.out.println(reqMap.get("plainId"));
 				System.out.println(reqMap.get("appointDay"));
 				crossService.actionExcel(file.getInputStream());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 
+			} */
 		return result;
 	}
 }
