@@ -10,6 +10,7 @@ import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.PlanTrain;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.PagingInfo;
@@ -251,14 +252,22 @@ public class PlanTrainCheckService {
 				obj.setEndTimeStr(DateUtil.format(obj.getEndTime(), "MMdd HH:mm"));
 				//获取局
 				try {
-					obj.setStartBureau(commonService.getLjInfo(obj.getStartBureauFull()).getLjjc());
+					Ljzd ljzd = commonService.getLjInfo(obj.getStartBureauFull());
+					if(ljzd != null ){
+						obj.setStartBureau(ljzd.getLjjc());
+					}
+					
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
 				}
 				//获取局
 				try {
-					obj.setEndBureau(commonService.getLjInfo(obj.getEndBureauFull()).getLjjc());
+					Ljzd ljzd =commonService.getLjInfo(obj.getEndBureauFull());
+					if(ljzd != null ){
+						obj.setEndBureau(ljzd.getLjjc());
+					}
+					
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
