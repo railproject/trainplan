@@ -1224,3 +1224,12 @@ transform: translateX(10px);
     padding-left: 5px;
     padding-right: 5px;
 }
+.rc-handle-container {
+    position: relative;
+}
+.rc-handle {
+    position: absolute;
+    width: 7px;
+    cursor: ew-resize;
+    margin-left: -3px;
+}
