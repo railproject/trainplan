@@ -417,26 +417,30 @@ public class CrossService{
 				train.setTrainSort(i);
 				train.setCrossId(cross.getCrossId());
 				train.setTrainNbr(trains[i]); 
-				//
-				if(alertNateTrains != null){
-					 train.setAlertNateTrainNbr(alertNateTrains[i]);
-				}
-				//
-				if(alertNateDate != null ){
-					if(alertNateDate.length == 1){
-						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
-					}else{
-						train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
-					}  
-				}
-				//
-				if(spareFlag != null){
-					if(spareFlag.length == 1){
-						train.setSpareFlag(Integer.parseInt(spareFlag[0]));
-					}else{
-						train.setSpareFlag(Integer.parseInt(spareFlag[i]));
+				try{
+					//
+					if(alertNateTrains != null){
+						 train.setAlertNateTrainNbr(alertNateTrains[i]);
 					}
-				}  
+					//
+					if(alertNateDate != null ){
+						if(alertNateDate.length == 1){
+							train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+						}else{
+							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+						}  
+					}
+					//
+					if(spareFlag != null){
+						if(spareFlag.length == 1){
+							train.setSpareFlag(Integer.parseInt(spareFlag[0]));
+						}else{
+							train.setSpareFlag(Integer.parseInt(spareFlag[i]));
+						}
+					}  
+				}catch(Exception e){
+					logger.error("创建列车信息出错:" , e);
+				}
 				crossTrains.add(train);
 			} 
 		   ExecutorService service=Executors.newCachedThreadPool();
@@ -450,10 +454,10 @@ public class CrossService{
 				CrossTrainInfo crossTrain = completion.take().get();
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
-					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
+					cross.setCrossStartDate(crossTrain.getSourceTargetTime().replace("-", ""));
 				}
 				if(cross.getCrossName().endsWith(crossTrain.getTrainNbr())){ 
-					cross.setCrossEndDate(crossTrain.getTargetTime());
+					cross.setCrossEndDate(crossTrain.getTargetTime().replace("-", ""));
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -471,31 +475,35 @@ public class CrossService{
 		LinkedList<CrossTrainInfo> crossSpareTrains = new LinkedList<CrossTrainInfo>(); 
 		if(crossSpareNames != null){
 			for(int i = 0; i < crossSpareNames.length; i++){
-				train = new CrossTrainInfo();
-				train.setCrossId(cross.getCrossId());
-				train.setTrainSort(crossTrains.size() + i);
-				train.setTrainNbr(crossSpareNames[i]); 
-				train.setSpareApplyFlage(1); 
-				//
-				if(alertNateTrains != null){
-					 train.setAlertNateTrainNbr(alertNateTrains[i]);
-				}
-				//
-				if(alertNateDate != null){
-					if(alertNateDate.length == 1){
-						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
-					}else{
-						train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
-					}  
-				}
-				//
-				if(spareFlag != null){
-					if(spareFlag.length == 1){
-						train.setSpareFlag(Integer.parseInt(spareFlag[0]));
-					}else{
-						train.setSpareFlag(Integer.parseInt(spareFlag[i]));
+				try{
+					train = new CrossTrainInfo();
+					train.setCrossId(cross.getCrossId());
+					train.setTrainSort(crossTrains.size() + i);
+					train.setTrainNbr(crossSpareNames[i]); 
+					train.setSpareApplyFlage(1);  
+					//
+					if(alertNateTrains != null){
+						 train.setAlertNateTrainNbr(alertNateTrains[i]);
 					}
-				}  
+					//
+					if(alertNateDate != null){
+						if(alertNateDate.length == 1){
+							train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+						}else{
+							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+						}  
+					}
+					//
+					if(spareFlag != null){
+						if(spareFlag.length == 1){
+							train.setSpareFlag(Integer.parseInt(spareFlag[0]));
+						}else{
+							train.setSpareFlag(Integer.parseInt(spareFlag[i]));
+						}
+					}  
+				}catch(Exception e){
+					logger.error("创建列车信息出错:" , e);
+				}
 				crossSpareTrains.add(train);
 			} 
 			

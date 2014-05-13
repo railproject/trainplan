@@ -95,8 +95,59 @@ function CrossModel() {
 		} 
 	};
 	
-	self.uploadCrossFile = function(){
-		
+	self.uploadCrossFile = function(){ 
+	        //starting setting some animation when the ajax starts and completes
+	        $("#loading")
+	        .ajaxStart(function(){
+	            $(this).show();
+	        })
+	        .ajaxComplete(function(){
+	            $(this).hide();
+	        });
+	       
+	        /*
+	            prepareing ajax file upload
+	            url: the url of script file handling the uploaded files
+	                        fileElementId: the file type of input element id and it will be the index of  $_FILES Array()
+	            dataType: it support json, xml
+	            secureuri:use secure protocol
+	            success: call back function when the ajax complete
+	            error: callback function when the ajax failed
+	           
+	                */
+	        $.ajaxFileUpload
+	        (
+	            {
+	                url:'cross/fileUpload',
+	                secureuri:false,
+	                fileElementId:'fileToUpload',
+	                dataType: 'json',
+	                data :JSON.stringify({ 
+	    				chartId : self.searchModle().chart().chartId, //车次号  
+	    				startDay: self.searchModle().startDay()
+	    			}),
+	                success: function (data, status)
+	                {
+	                	alert(1111);
+	                    if(typeof(data.error) != 'undefined')
+	                    {
+	                        if(data.error != '')
+	                        {
+	                            alert(data.error);
+	                        }else
+	                        {
+	                            alert(data.msg);
+	                        }
+	                    }
+	                },
+	                error: function (data, status, e)
+	                {
+	                    alert(e);
+	                }
+	            }
+	        ) 
+	        return false; 
+	    
 	}
 	
 	 
@@ -1019,12 +1070,11 @@ function openLogin() {
 	<div id="file_upload_dlg" class="easyui-dialog" title="上传对数文件"
 		data-options="iconCls:'icon-save'"
 		style="width: 400px; height: 200px; padding: 10px">
+		<img id="loading" src="assets/images/loading.gif" style="display:none;">
 		<form id="file_upload_id" name="file_upload_name" action="cross/fileUpload"
-			method="post" enctype="multipart/form-data">
-			<input type="text"  name="chartId" data-bind="value: searchModle().chart()? searchModle().chart().chartId: ''"/>
-			<input type="text"  name="startDay" data-bind="value: searchModle().startDay() ? searchModle().startDay(): ''"/>
+			method="post" enctype="multipart/form-data"> 
 			<div>
-				<input type="file" class="btn btn-success" name="fileName" />
+				<input id="fileToUpload" type="file" size="45" name="fileToUpload" class="btn btn-success" name="fileName" />
 			</div>
 			<div>
 			     <a type="button"
@@ -1032,7 +1082,7 @@ function openLogin() {
 				<!-- <input type="submit"  value="上传" data-bind=/> -->
 			</div>
 		</form>
-	</div>
+	</div> 
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
