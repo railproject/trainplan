@@ -33,6 +33,11 @@
             border-color:#dfe4ee;
             text-align:center;
         }
+        .buttonlines {
+            width: 100px;
+            border-radius: 4px;
+            margin-right: 10px
+        }
     </style>
 </head>
 <body class="Iframe-body">
@@ -49,24 +54,39 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-2 col-md-2 col-lg-2">
+                        <div class="col-xs-12 col-md-12 col-lg-12">
                             <form class="form-inline" role="form">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="请选择日期" id="date_selector"/>
+                                    <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
+                                    <button href="#" class="btn btn-default" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">校验</button>
+                                    <a id="compare" href="#" class="btn btn-default" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">图形对比</a>
+                                    <select id="bureau" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="options: bureauList, optionsText: function(item) {
+                                        return item.name
+                                    }, value: bureau">
+                                    </select>
+                                    <button href="#" class="btn btn-default" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">生成运行线</button>
+                                    <button href="#" class="btn btn-default" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">客调审核</button>
+                                    <button href="#" class="btn btn-default disabled" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">值班主任审核</button>
                                 </div>
                             </form>
                         </div>
-                        <div class="col-xs-4 col-md-4 col-sm-4 col-lg-4">
+                        <%--<div class="col-xs-4 col-md-4 col-sm-4 col-lg-4">
                             <form class="form-inline" role="form">
                                 <div class="input-group">
                                     <button href="#" class="btn btn-default margin-right-10" role="button">校验</button>
                                     <a id="compare" href="#" class="btn btn-default margin-right-10" role="button">图形对比</a>
+                                    <select class="form-control buttonlines" data-bind="options: bureauList, optionsText: function(item) {
+                                        return item.name
+                                    }, value: function(item) {
+                                        return item.code
+                                    }">
+                                    </select>
                                     <button href="#" class="btn btn-default margin-right-10" role="button">生成运行线</button>
                                     <button href="#" class="btn btn-default margin-right-10" role="button">客调审核</button>
                                     <button href="#" class="btn btn-default margin-right-10 disabled" role="button">值班主任审核</button>
                                 </div>
                             </form>
-                        </div>
+                        </div>--%>
                     </div>
                     <div class="row">
                         <div class="panel panel-default marginbottom0">
@@ -117,15 +137,15 @@
                                                     <tbody data-bind="foreach: kyjhTable">
                                                     <tr data-bind="value: id, click: $parent.showInPanel">
                                                         <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
-                                                        <td class="text-center" data-bind="text: $index"></td>
+                                                        <td class="text-center" data-bind="text: ($index() + 1)"></td>
                                                         <td class="text-center" data-bind="text: serial"></td>
-                                                        <td class="text-center" data-bind="text: startSTN">成都</td>
-                                                        <td class="text-center" data-bind="text: endSTN">北京</td>
-                                                        <td class="text-center" data-bind="text: runDate">5-10</td>
-                                                        <td class="text-center" data-bind="text: command">123</td>
-                                                        <td class="text-center" data-bind="text: tele">123</td>
-                                                        <td class="text-center" data-bind="text: flag">已上图</td>
-                                                        <td class="text-center" data-bind="text: generateDateTime">5-9 12:21</td>
+                                                        <td class="text-center" data-bind="text: startSTN"></td>
+                                                        <td class="text-center" data-bind="text: endSTN"></td>
+                                                        <td class="text-center" data-bind="text: runDate"></td>
+                                                        <td class="text-center" data-bind="text: command"></td>
+                                                        <td class="text-center" data-bind="text: tele"></td>
+                                                        <td class="text-center" data-bind="text: flag"></td>
+                                                        <td class="text-center" data-bind="text: generateDateTime"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

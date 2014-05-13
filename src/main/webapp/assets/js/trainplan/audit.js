@@ -10,8 +10,7 @@ $(function(){
 
     bindActions();
 
-    kyjhModel.loadKYJH(moment($("#date_selector").val()).format("YYYYMMDD"));
-
+    kyjhModel.loadBureau();
     ko.applyBindings(kyjhModel);
 
 });
@@ -65,7 +64,8 @@ function AuditActions() {
             self.update_kyjh_time(params)
         } else {
             options.close = self.close_kyjh_time;
-            self.kyjh_time = self._getDialog("audit/plan/timetable", options);
+            var url = "audit/plan/timetable/" + kyjhModel.bureau().code + "/" + params.train_id;
+            self.kyjh_time = self._getDialog(url, options);
             self.kyjh_time.dialog("open");
         }
     }
@@ -199,7 +199,9 @@ function bindActions() {
     //bind actions
     $("#kyjh_time").click(function() {
         if($(this).is(':checked')){
-            model.open_kyjh_time("", {title: "客运开行计划时刻表"});
+            var params = {};
+            params.train_id = "7292688";
+            model.open_kyjh_time(params, {title: "客运开行计划时刻表"});
         } else {
             model.close_kyjh_time();
         }
@@ -235,6 +237,27 @@ function KYJHModel() {
 
     self.kyjhTable = ko.observableArray();
 
+    self.bureauList = ko.observableArray();
+
+    self.bureau = ko.observable();
+
+    self.loadBureau = function() {
+        $.ajax({
+            url: "base/bureau/all",
+            method: "GET",
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(list) {
+            self.bureauList.removeAll();
+            for( var i = 0; i < list.length; i++) {
+                self.bureauList.push(list[i]);
+            }
+        }).fail(function() {
+
+        }).always(function() {
+            kyjhModel.loadKYJH(moment($("#date_selector").val()).format("YYYYMMDD"));
+        })
+    }
+
     self.currentDate = null;
 
     self.paramDate = null;
@@ -242,7 +265,7 @@ function KYJHModel() {
     self.loadKYJH = function(date) {
         self.paramDate = date;
         $.ajax({
-            url: "audit/plan/runplan/" + date,
+            url: "audit/plan/runplan/" + date + "/" + self.bureau().code + "/1",
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {
