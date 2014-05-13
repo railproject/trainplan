@@ -22,7 +22,9 @@ public class RunPlanSTNDTO {
 
     private int psg;
 
-    public RunPlanSTNDTO(Map<String, Object> map) {
+    private boolean owner;
+
+    public RunPlanSTNDTO(Map<String, Object> map, String bureau) {
         this.id = MapUtils.getIntValue(map, "PLAN_TRAIN_STN_ID", 0);
         this.name = MapUtils.getString(map, "STN_NAME", "");
         java.sql.Timestamp dbArrDateTime = (java.sql.Timestamp)map.get("ARR_TIME");
@@ -39,6 +41,7 @@ public class RunPlanSTNDTO {
         }
         this.trackName = MapUtils.getString(map, "TRACK_NAME", "");
         this.psg = MapUtils.getIntValue(map, "PSG_FLG", 1);
+        this.owner = MapUtils.getString(map, "STN_BUREAU", "") == bureau;
     }
 
     public int getId() {
@@ -87,5 +90,13 @@ public class RunPlanSTNDTO {
 
     public void setPsg(int psg) {
         this.psg = psg;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
     }
 }

@@ -25,11 +25,11 @@ public class RunPlanService {
         Map<String, Object> map = MapUtils.EMPTY_MAP;
         map.put("date", date);
         map.put("bureau", bureau);
-        map.put("type", type);
+//        map.put("type", type);
         return runPlanDAO.findRunPlan(map);
     }
 
-    public List<Map<String, Object>> findRunPlanStn(String bureau, String train_id) {
-        return runPlanDAO.findRunPlanStnByTrain(bureau, train_id);
+    public List<Map<String, Object>> findRunPlanStn(String train_id) {
+        return runPlanDAO.findRunPlanStnByTrain(train_id);
     }
 }

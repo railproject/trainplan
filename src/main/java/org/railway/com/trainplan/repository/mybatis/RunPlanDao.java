@@ -10,5 +10,5 @@ import java.util.Map;
 public interface RunPlanDao {
     List<Map<String, Object>> findRunPlan(Map<String ,Object> map);
 
-    List<Map<String, Object>> findRunPlanStnByTrain(String train_id, String date);
+    List<Map<String, Object>> findRunPlanStnByTrain(String train_id);
 }
