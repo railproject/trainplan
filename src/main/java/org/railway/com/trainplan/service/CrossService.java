@@ -143,6 +143,8 @@ public class CrossService{
 		}
 		System.err.println("tokenPsgDeptValuesMap==" + tokenPsgDeptValuesMap);
 		valuesMap.put("tokenPsgBureau", tokenPsgDeptValuesMap); 
+		valuesMap.put("startBureau", tokenPsgDeptValuesMap); 
+		
 		 
 		
 		// TODO Auto-generated method stub
@@ -229,6 +231,7 @@ public class CrossService{
 				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
 				
 			}
+			System.err.println("crossTrains===" + crossTrains);
         	//保存列车
 			if(crossTrains != null && crossTrains.size() > 0 ){
 				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
@@ -416,7 +419,7 @@ public class CrossService{
 					 train.setAlertNateTrainNbr(alertNateTrains[i]);
 				}
 				//
-				if(alertNateDate != null){
+				if(alertNateDate != null ){
 					if(alertNateDate.length == 1){
 						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
 					}else{
