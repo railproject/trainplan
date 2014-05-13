@@ -43,24 +43,24 @@ public class TransferController {
 	
 	@RequestMapping(value = "planDesign", method = RequestMethod.GET)
 	public String planDesign() {
-		return "plan/plan_Design";
+		return "plan/plan_design";
 	}
 	
 	@RequestMapping(value = "planConstruction", method = RequestMethod.GET)
 	public String planConstruction() {
-		return "plan/plan_Construction";
+		return "plan/plan_construction";
 	}
 	
-	//@ResponseBody
-	@RequestMapping(value = "/plan/planReview", method = RequestMethod.POST)
+	@RequestMapping(value = "/plan/planView", method = RequestMethod.POST)
 	public ModelAndView planReviews(HttpServletRequest request){
 		ModelAndView model = new ModelAndView("plan/plan_view");
 		System.err.println("startDate==" + request.getParameter("startDate"));
 		System.err.println("days==" + request.getParameter("days"));
-		System.err.println("scheme==" + request.getParameter("scheme"));
+		System.err.println("scheme==" + request.getParameter("schemeVal"));
+		System.err.println("scheme==" + request.getParameter("schemeText"));
 		
-		model.addObject("schemeVal", request.getParameter("scheme"));
-		//model.addObject("schemeText",);
+		model.addObject("schemeVal", request.getParameter("schemeVal"));
+		model.addObject("schemeText", request.getParameter("schemeText"));
 		model.addObject("days",request.getParameter("days"));
 		model.addObject("startDate",request.getParameter("startDate"));
 

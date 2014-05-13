@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<% 
+String basePath = request.getContextPath();
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -8,18 +11,24 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>新图初始化</title>
 <!-- Bootstrap core CSS -->
-<link href="../../assets/css/custom-bootstrap.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
-<link href="../../assets/css/datepicker.css" rel="stylesheet">
-<link  type="text/css" rel="stylesheet" href="../../assets/css/font-awesome.min.css"/>
+<link href="<%=basePath %>/assets/oldAssets/css/datepicker.css" rel="stylesheet">
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
 <!-- Custom styles for this template -->
-<link href="../../assets/css/style.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
 
 
-<!--<script src="../../assets/js/exporting.js"></script>-->
+<!--<script src="<%=basePath %>/assets/oldAssets/js/exporting.js"></script>-->
 </head>
 <body class="Iframe_body">
 <!--以上为必须要的-->
+
+<input id="basePath_hidden" type="hidden" value="<%=basePath %>">
+<input id="schemeVal_hidden" type="hidden" value="${schemeVal}">
+<input id="schemeText_hidden" type="hidden" value="${schemeText}">
+<input id="startDate_hidden" type="hidden" value="${startDate}">
+<input id="days_hidden" type="hidden" value="${days}">
 
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
@@ -27,8 +36,8 @@
 </ol>
 <p class="col-md-12 col-sm-12 col-xs-12  text-left" style="border-bottom:1px dashed #ccc;padding-top:25px;padding-bottom:5px;margin-bottom:5px;color:#1838A5;">
 	<b>
-		方案名：<label id="plan_view_label_schemeText"></label>&nbsp;&nbsp;&nbsp;
-		启用日期：<label id="plan_view_label_startDate"></label></b>&nbsp;&nbsp;&nbsp;
+		方案名：${schemeText}&nbsp;&nbsp;&nbsp;
+		启用日期：${startDate}</b>&nbsp;&nbsp;&nbsp;
 		当前进度：<label id="plan_view_label_planCurrentStatus"></label>&nbsp;&nbsp;&nbsp;
 		<font color="red"><b>错误数：<label id="plan_view_label_planErrorRecord"></label>条</b></font>
 </p>
@@ -142,17 +151,17 @@
 </div>
 
 
-<script src="../../assets/js/jquery.js"></script>
-<script src="../../assets/js/html5.js"></script>
-<script src="../../assets/js/bootstrap.min.js"></script>
-<script src="../../assets/js/respond.min.js"></script>
-<script src="../../assets/lib/knockout/knockout.js"></script>
-<script src="../../assets/js/jquery.dataTables.js"></script>
-<script src="../../assets/lib/sockjs/sockjs.js"></script>
-<script src="../../assets/lib/stomp/lib/stomp.min.js"></script>
-<script src="../../assets/js/highcharts.js"></script>
-<script src="../../assets/js/jquery.gritter.min.js"></script>
-<script src="../../js/common.js"></script>
-<script src="../../js/plan/plan_view.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/lib/knockout/knockout.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/lib/sockjs/sockjs.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/lib/stomp/lib/stomp.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/highcharts.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/plan/plan_view.js"></script>
 </body>
 </html>

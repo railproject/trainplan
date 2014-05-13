@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<% 
+String basePath = request.getContextPath();
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,18 +11,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>开行计划汇总</title>
 <!-- Bootstrap core CSS -->
-<link href="../../assets/css/custom-bootstrap.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
-<link href="../../assets/css/datepicker.css" rel="stylesheet">
-<link  type="text/css" rel="stylesheet" href="../../assets/css/font-awesome.min.css"/>
-<link  type="text/css" rel="stylesheet" href="../../assets/css/datepicker.css">
+<link href="<%=basePath %>/assets/oldAssets/css/datepicker.css" rel="stylesheet">
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/datepicker.css">
 <!-- Custom styles for this template -->
-<link href="../../assets/css/style.css" rel="stylesheet">
-<script src="../../assets/js/jquery.js"></script>
-<script src="../../assets/js/html5.js"></script>
-<script src="../../assets/js/bootstrap.min.js"></script>
-<script src="../../assets/js/respond.min.js"></script>
-<script src="../../assets/js/jquery.dataTables.js"></script>
+<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
 <script type="text/javascript">
 $(function () {
 	jQuery('#growl-success').click(function(){
@@ -27,7 +30,7 @@ $(function () {
 			title: 'This is a regular notice!',
 			text: 'This will fade out after a certain amount of time.',
 	      class_name: 'growl-success',
-	      image: '../../assets/img/screen.png',
+	      image: '<%=basePath %>/assets/oldAssets/img/screen.png',
 			sticky: false,
 			time: ''
 		 });
@@ -38,7 +41,7 @@ $(function () {
 			title: 'This is a regular notice!',
 			text: 'This will fade out after a certain amount of time.',
 	      class_name: 'growl-warning',
-	      image: '../../assets/img/screen.png',
+	      image: '<%=basePath %>/assets/oldAssets/img/screen.png',
 			sticky: false,
 			time: ''
 		 });
@@ -49,7 +52,7 @@ $(function () {
 			title: 'This is a regular notice!',
 			text: 'This will fade out after a certain amount of time.',
 	      class_name: 'growl-danger',
-	      image: '../../assets/img/screen.png',
+	      image: '<%=basePath %>/assets/oldAssets/img/screen.png',
 			sticky: false,
 			time: ''
 		 });
@@ -60,9 +63,10 @@ $(function () {
 
 </script>
 
-<!--<script src="../../assets/js/exporting.js"></script>-->
+<!--<script src="<%=basePath %>/assets/oldAssets/js/exporting.js"></script>-->
 </head>
 <body class="Iframe_body">
+<input id="basePath_hidden" type="hidden" value="<%=basePath %>">
 <!--以上为必须要的-->
 
 <ol class="breadcrumb">
@@ -137,9 +141,9 @@ $(function () {
 
 
 
-<script src="../../assets/js/jquery.gritter.min.js"></script>
-<script src="../../assets/js/datepicker.js"></script>
-<script src="../../js/common.js"></script>
-<script src="../../js/plan/plan_review_all.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/plan/plan_review_all.js"></script>
 </body>
 </html>

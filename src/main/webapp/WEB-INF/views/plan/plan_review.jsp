@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<% 
+String basePath = request.getContextPath();
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -8,22 +11,23 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>核查编制图定开行</title>
 <!-- Bootstrap core CSS -->
-<link href="../../assets/css/custom-bootstrap.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
-<link href="../../assets/css/datepicker.css" rel="stylesheet">
-<link  type="text/css" rel="stylesheet" href="../../assets/css/font-awesome.min.css"/>
-<link  type="text/css" rel="stylesheet" href="../../assets/css/datepicker.css">
+<link href="<%=basePath %>/assets/oldAssets/css/datepicker.css" rel="stylesheet">
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/datepicker.css">
 <!-- Custom styles for this template -->
-<link href="../../assets/css/style.css" rel="stylesheet">
-<script src="../../assets/js/jquery.js"></script>
-<script src="../../assets/js/html5.js"></script>
-<script src="../../assets/js/bootstrap.min.js"></script>
-<script src="../../assets/js/respond.min.js"></script>
-<script src="../../assets/js/jquery.dataTables.js"></script>
+<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
 
 
 </head>
 <body class="Iframe_body">
+<input id="basePath_hidden" type="hidden" value="<%=basePath %>">
 <!--以上为必须要的-->
 
 <ol class="breadcrumb">
@@ -133,7 +137,7 @@
 		            <div style="text-align:center;margin:-5px 0 10px 0;">序号</div></th>
 		            <th rowspan="2" width="100px">
 		            	<div style="text-align:center;margin:-5px 0 10px 0;">车次</div></th>
-		            <th colspan="3" onmouseover="myonmouseover(this)" onmouseout="myonmouseout(this)"><div style="text-align:center;">始发</div></th>
+		            <th colspan="3"><div style="text-align:center;">始发</div></th>
 		            <th colspan="3"><div style="text-align:center;">终到</div></th>
 		            <th rowspan="2"><div style="text-align:center;margin:-5px 0 10px 0;">经过局</div></th>
 		            <th rowspan="2" width="60px"><div style="text-align:center;margin:-5px 0 10px 0;">所属交路</div></th>
@@ -203,10 +207,10 @@
 
 
 
-<script src="../../assets/js/jquery.gritter.min.js"></script>
-<script src="../../js/util/pagination.js" type="text/javascript"></script>
-<script src="../../assets/js/datepicker.js"></script>
-<script src="../../js/common.js"></script>
-<script src="../../js/plan/plan_review.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/util/pagination.js" type="text/javascript"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/plan/plan_review.js"></script>
 </body>
 </html>

@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<% 
+String basePath = request.getContextPath();
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,23 +11,24 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>核查编制图定开行</title>
 <!-- Bootstrap core CSS -->
-<link href="../../assets/css/custom-bootstrap.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
-<link href="../../assets/css/datepicker.css" rel="stylesheet">
-<link  type="text/css" rel="stylesheet" href="../../assets/css/font-awesome.min.css"/>
-<link  type="text/css" rel="stylesheet" href="../../assets/css/datepicker.css">
-<link rel="stylesheet" href="../../assets/js/pagination.css" />  
+<link href="<%=basePath %>/assets/oldAssets/css/datepicker.css" rel="stylesheet">
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/datepicker.css">
+<link rel="stylesheet" href="<%=basePath %>/assets/oldAssets/js/pagination.css" />  
 <!-- Custom styles for this template -->
-<link href="../../assets/css/style.css" rel="stylesheet">
-<script src="../../assets/js/jquery.js"></script>
-<script src="../../assets/js/html5.js"></script>
-<script src="../../assets/js/bootstrap.min.js"></script>
-<script src="../../assets/js/respond.min.js"></script>
-<script src="../../assets/js/jquery.dataTables.js"></script> 
+<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script> 
 
 
 </head>
 <body class="Iframe_body">
+<input id="basePath_hidden" type="hidden" value="<%=basePath %>">
 <!--以上为必须要的-->
 
 <ol class="breadcrumb">
@@ -103,18 +107,18 @@
       </div>
       <!--panel-body--> 
     </div> 
-<script src="../../assets/js/jquery.js"></script>
-<script src="../../assets/js/html5.js"></script>
-<script src="../../assets/js/bootstrap.min.js"></script>
-<script src="../../assets/js/respond.min.js"></script> 
-<script src="../../assets/js/jquery.dataTables.js"></script>
-<script src="../../assets/lib/sockjs/sockjs.js"></script>
-<script src="../../assets/lib/stomp/lib/stomp.min.js"></script>  
-<script src="../../assets/js/datepicker.js"></script>
-<script src="../../assets/js/jquery.gritter.min.js"></script> 
-<script src="../../js/common.js"></script> 
-<script src="../../assets/js/jquery.pagination.js" type="text/javascript"></script> 
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script> 
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/lib/sockjs/sockjs.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/lib/stomp/lib/stomp.min.js"></script>  
+<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
+<script src="<%=basePath %>/assets/js/trainplan/common.js"></script> 
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.pagination.js" type="text/javascript"></script> 
 
-<script src="../../js/plan/plan_review_lines.js"></script> 
+<script src="<%=basePath %>/assets/js/trainplan/plan/plan_review_lines.js"></script> 
 </body>
 </html>
