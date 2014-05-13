@@ -104,6 +104,8 @@ function myCanvasFillTextWithColor(context, colorParam, textObj) {
 
 function myCanvasFillText(context, textObj) {
 	context.beginPath();
+	context.strokeStyle = "#000000";
+	context.fillStyle = "#000000";
 	// 设置字体
 	context.font = "Bold 12px Arial";
 	// 设置对齐方式
