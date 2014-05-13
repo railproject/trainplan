@@ -64,7 +64,7 @@ function AuditActions() {
             self.update_kyjh_time(params)
         } else {
             options.close = self.close_kyjh_time;
-            var url = "audit/plan/timetable/" + kyjhModel.bureau().code + "/" + params.train_id;
+            var url = "audit/plan/timetable/" + kyjhModel.bureau().code + "/" + params;
             self.kyjh_time = self._getDialog(url, options);
             self.kyjh_time.dialog("open");
         }
@@ -82,7 +82,7 @@ function AuditActions() {
     }
 
     self.update_kyjh_time = function(params) {
-
+        $(self.kyjh_time).find("iframe").attr("src", "audit/plan/timetable/" + kyjhModel.bureau().code + "/" + params);
     }
 
     //客运计划时经由
@@ -164,7 +164,7 @@ function AuditActions() {
             self.update_compare(params);
         } else {
             options.close = self.close_compare;
-            self.compare = self._getDialog("audit/planline/2014-05-13/B/123", options);
+            self.compare = self._getDialog("audit/planline/" + kyjhModel.bureau().code + "/" + params);
             self.compare.dialog("open");
         }
     }
@@ -181,6 +181,20 @@ function AuditActions() {
     self.compare_opened = function() {
         return self.compare != null;
     }
+
+    self.select_all = function() {
+        $("#left_table").find("thead input[type=checkbox]").click(function() {
+            if($(this).is(':checked')){
+                $("#left_table").find("tbody input[type=checkbox]").each(function (index, ele) {
+                    $(ele).prop('checked', true);
+                })
+            } else {
+                $("#left_table").find("tbody input[type=checkbox]").each(function (index, ele) {
+                    $(ele).prop('checked', false);
+                })
+            }
+        })
+    }
 }
 
 
@@ -196,12 +210,14 @@ function bindActions() {
         $("#date_selector").datepicker('setValue', new Date());
     }
 
+    model.select_all();
+
     //bind actions
     $("#kyjh_time").click(function() {
         if($(this).is(':checked')){
             var params = {};
-            params.train_id = "7292688";
-            model.open_kyjh_time(params, {title: "客运开行计划时刻表"});
+//            params.train_id = "7292688";
+            model.open_kyjh_time("", {title: "客运开行计划时刻表"});
         } else {
             model.close_kyjh_time();
         }
@@ -282,10 +298,13 @@ function KYJHModel() {
         })
     }
 
-    self.showInPanel = function(ev) {
-        model.update_kyjh_time(ev.id);
-        model.update_kyjh_routing(ev.id);
-        model.update_yxx_time(ev.id);
-        model.update_yxx_routing(ev.id);
+    self.update_kyjh_panel = function(ev) {
+        model.open_kyjh_time(ev.id, {title: "客运开行计划时刻表"});
+        model.open_kyjh_routing(ev.id, {title: "客运开行计划经由"});
+    }
+
+    self.update_yxx_panel = function() {
+        model.open_yxx_time(ev.id, {title: "运行线时刻表"});
+        model.open_yxx_routing(ev.id, {title: "运行线经由"});
     }
 }
