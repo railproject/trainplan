@@ -22,10 +22,15 @@ public class CrossTrainInfo {
 	private int highlineRule = 1;//HIGHLINE_RULE
 	private int commonLineRule;//COMMONLINE_RULE
 	private String appointWeek;//APPOINT_WEEK
-	private String appointDay;//APPOINT_DAY 
-	
+	private String appointDay;//APPOINT_DAY
 	private String sourceTargetTime;
 	private String targetTime;
+	/**以下字段是表unit_cross_train中用到  **/
+	//unit_cross_train表id
+	private String unitCrossTrainId;
+	//unit_cross表id
+	private String unitCrossId;
+	
 	
 	public String getSourceTargetTime() {
 		return sourceTargetTime;
@@ -153,6 +158,18 @@ public class CrossTrainInfo {
 	}
 	public void setBaseTrainId(String baseTrainId) {
 		this.baseTrainId = baseTrainId;
+	}
+	public String getUnitCrossTrainId() {
+		return unitCrossTrainId;
+	}
+	public void setUnitCrossTrainId(String unitCrossTrainId) {
+		this.unitCrossTrainId = unitCrossTrainId;
+	}
+	public String getUnitCrossId() {
+		return unitCrossId;
+	}
+	public void setUnitCrossId(String unitCrossId) {
+		this.unitCrossId = unitCrossId;
 	}
 	
 	

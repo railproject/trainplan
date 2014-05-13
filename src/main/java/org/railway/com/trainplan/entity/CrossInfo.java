@@ -27,37 +27,44 @@ public class CrossInfo {
 	private int elecSupply;
 	private int dejCollect;
 	private int airCondition;
-	private String crossName; 
-	private String chartId;
-	private String chartName;
-	private String crossStartDate;
-	private String crossEndDate;
-	private String crossSpareName;
+	private String tokenPsgBureau;
+	private String tokenVehBureau;
+	private String startBureau;
+	private String pairNbr;
 	private String alterNateDate;
 	private String alterNateTranNbr;
-	private String spareFlag;
-	private String pairNbr;
+	private String crossName;
+	private String crossSpareName;
 	private String highlineFlag;
+	private String throughline;
 	private String appointWeek;
 	private String appointDay;
+	private String createPeople; 
+	private String createPeopleOrg; 
 	private String crossSection;
-	private String throughline;
-	private String startBureau;
-	private String tokenVehBureau;
+	private String crossStartDate;
+	private String crossEndDate;
+	private String checkPeople; 
+	private String checkPeopleOrg;
+	private String crhType;
+	private String note;
 	private String tokenVehDept;
 	private String tokenVehDepot;
-	private String tokenPsgBureau;
 	private String tokenPsgDept;
 	private String tokenPsgDepot;
+	private String spareFlag;
 	private String locoType;
-	private String crhType;
-
-	private String note; 
-	private String createPeople; 
-	private String createPeopleOrg;  
 	private String createTime ;
-	
-	
+	private String chartId;
+	private String chartName;
+	/****以下字段unit_cross表用到  ****/
+	//unit_cross表主键
+	private String unitCrossId;
+	//编组名
+	private String marshallingName;
+	//组数序号,只有unit_cross表中有
+	private int groupSerialNbr;
+		
 	public String getCrossIdForExcel() {
 		return crossIdForExcel;
 	}
@@ -282,6 +289,37 @@ public class CrossInfo {
 		this.createTime = createTime;
 	}
 	 
+	
+	public String getCheckPeople() {
+		return checkPeople;
+	}
+	public void setCheckPeople(String checkPeople) {
+		this.checkPeople = checkPeople;
+	}
+	public String getCheckPeopleOrg() {
+		return checkPeopleOrg;
+	}
+	public void setCheckPeopleOrg(String checkPeopleOrg) {
+		this.checkPeopleOrg = checkPeopleOrg;
+	}
+	public String getUnitCrossId() {
+		return unitCrossId;
+	}
+	public void setUnitCrossId(String unitCrossId) {
+		this.unitCrossId = unitCrossId;
+	}
+	public String getMarshallingName() {
+		return marshallingName;
+	}
+	public void setMarshallingName(String marshallingName) {
+		this.marshallingName = marshallingName;
+	}
+	public int getGroupSerialNbr() {
+		return groupSerialNbr;
+	}
+	public void setGroupSerialNbr(int groupSerialNbr) {
+		this.groupSerialNbr = groupSerialNbr;
+	}
 	public static void main(String args[]){
 		System.err.println(new Date());
 		
