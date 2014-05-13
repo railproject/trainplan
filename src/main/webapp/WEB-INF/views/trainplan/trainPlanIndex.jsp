@@ -1,21 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<% 
+String basePath = request.getContextPath();
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>铁路实施计划平台</title>
-<link href="assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
-<link  type="text/css" rel="stylesheet" href="assets/oldAssets/css/font-awesome.min.css"/>
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
 <!-- Custom styles for this template -->
-<link href="assets/oldAssets/css/style.css" rel="stylesheet">
-<script src="assets/oldAssets/js/jquery.js"></script>
-<script src="assets/oldAssets/js/html5.js"></script>
-<script src="assets/oldAssets/js/bootstrap.min.js"></script>
-<script src="assets/oldAssets/js/respond.min.js"></script>
+<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script>
 <script type="text/javascript" defer="defer">
   //被嵌入的Iframe根据不同的屏幕高度自适应
  $(window).load(function () {
@@ -51,7 +53,7 @@
 <body>
 <div class="header">
   <div class="row">
-    <div class="pull-left logo_name"><img src="assets/img/login-logo.png" height="50px"></div>
+    <div class="pull-left logo_name"><img src="<%=basePath %>/assets/img/login-logo.png" height="50px"></div>
     <div class="col-md-4 col-sm-4 col-xs-4 pull-right">
       <div class="btn-group pull-right" style="margin-top:15px;">
         <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>Admin <span class="caret"></span></button>
