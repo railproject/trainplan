@@ -1,4 +1,4 @@
-﻿package org.railway.com.trainplan.service;
+package org.railway.com.trainplan.service;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
