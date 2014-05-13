@@ -1,5 +1,6 @@
 package org.railway.com.trainplan.entity;
 
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -14,7 +15,18 @@ public class CrossInfo {
 	//CREAT_PEOPLE_ORG	CREAT_TIME 
 	//LOCO_TYPE	CRH_TYPE	ELEC_SUPPLY	DEJ_COLLECT	AIR_CONDITION	NOTE	CREAT_PEOPLE	
 		//CREAT_PEOPLE_ORG	CREAT_TIME 
-	private int crossId ;
+	private String crossId = UUID.randomUUID().toString() ;
+	
+	private String crossIdForExcel;
+	
+
+	private int highlineRule;
+	private int commonlineRule;
+	private int cutOld;
+	private int groupTotalNbr;
+	private int elecSupply;
+	private int dejCollect;
+	private int airCondition;
 	private String crossName; 
 	private String chartId;
 	private String chartName;
@@ -24,12 +36,8 @@ public class CrossInfo {
 	private String alterNateDate;
 	private String alterNateTranNbr;
 	private String spareFlag;
-	private int cutOld;
-	private int groupTotalNbr;
-	private float pairNbr;
-	private int highlineFlag;
-	private String highlineRule;
-	private String commonlineRule;
+	private String pairNbr;
+	private String highlineFlag;
 	private String appointWeek;
 	private String appointDay;
 	private String crossSection;
@@ -43,20 +51,25 @@ public class CrossInfo {
 	private String tokenPsgDepot;
 	private String locoType;
 	private String crhType;
-	private int elecSupply;
-	private int dejCollect;
-	private int airCondition;
+
 	private String note; 
 	private String createPeople; 
 	private String createPeopleOrg;  
-	private String createTime;
+	private String createTime ;
 	
+	
+	public String getCrossIdForExcel() {
+		return crossIdForExcel;
+	}
+	public void setCrossIdForExcel(String crossIdForExcel) {
+		
+	}
 	 
-	public int getCrossId() {
+	public String getCrossId() {
 		return crossId;
 	}
-	public void setCrossId(int crossId) {
-//		this.crossId = crossId;
+	public void setCrossId(String crossId) {
+    	this.crossId = crossId;
 	}
 	public String getCrossName() {
 		return crossName;
@@ -124,28 +137,28 @@ public class CrossInfo {
 	public void setGroupTotalNbr(int groupTotalNbr) {
 		this.groupTotalNbr = groupTotalNbr;
 	}
-	public float getPairNbr() {
+	public String getPairNbr() {
 		return pairNbr;
 	}
-	public void setPairNbr(float pairNbr) {
+	public void setPairNbr(String pairNbr) {
 		this.pairNbr = pairNbr;
 	}
-	public int getHighlineFlag() {
+	public String getHighlineFlag() {
 		return highlineFlag;
 	}
-	public void setHighlineFlag(int highlineFlag) {
+	public void setHighlineFlag(String highlineFlag) {
 		this.highlineFlag = highlineFlag;
 	}
-	public String getHighlineRule() {
+	public int getHighlineRule() {
 		return highlineRule;
 	}
-	public void setHighlineRule(String highlineRule) {
+	public void setHighlineRule(int highlineRule) {
 		this.highlineRule = highlineRule;
 	}
-	public String getCommonlineRule() {
+	public int getCommonlineRule() {
 		return commonlineRule;
 	}
-	public void setCommonlineRule(String commonlineRule) {
+	public void setCommonlineRule(int commonlineRule) {
 		this.commonlineRule = commonlineRule;
 	}
 	public String getAppointWeek() {
@@ -270,7 +283,8 @@ public class CrossInfo {
 	}
 	 
 	public static void main(String args[]){
-		System.err.println("" + UUID.randomUUID().toString());
+		System.err.println(new Date());
+		
 	}
 
 }

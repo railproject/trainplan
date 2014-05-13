@@ -60,7 +60,7 @@ public class CrossService{
 				"C:\\Users\\Administrator\\Desktop\\work\\交路相关\\对数表模板1.xls");
 		
 		CrossService a = new CrossService();
-		a.actionExcel(is); 
+//		a.actionExcel(is); 
 //		System.out.println("G11(".substring(0,"G11(".indexOf('(')));
 	}
 
@@ -98,10 +98,10 @@ public class CrossService{
 	}
 	
 	
-	public void actionExcel(InputStream inputStream) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void actionExcel(InputStream inputStream, String chartId, String startDay) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// TODO Auto-generated method stub
 		LinkedHashMap<String, String> pm = new LinkedHashMap<String, String>();
-		pm.put("crossId", "");
+		pm.put("crossIdForExcel", "");
 		pm.put("crossName", "");
 		pm.put("crossSpareName", "");
 		pm.put("alterNateDate", "");
@@ -141,7 +141,8 @@ public class CrossService{
 				tokenPsgDeptValuesMap.put(dto.getLjpym(), dto.getLjjc());
 			}
 		}
-		valuesMap.put("tokenPsgDept", tokenPsgDeptValuesMap); 
+		System.err.println("tokenPsgDeptValuesMap==" + tokenPsgDeptValuesMap);
+		valuesMap.put("tokenPsgBureau", tokenPsgDeptValuesMap); 
 		 
 		
 		// TODO Auto-generated method stub
@@ -149,13 +150,13 @@ public class CrossService{
 			HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
 			int num = workbook.getNumberOfSheets();		
 			List<CrossInfo> alllist = new ArrayList<CrossInfo>();
-//			for(int i = 0; i < num; i++){
-				HSSFSheet sheet = workbook.getSheetAt(1);
+			for(int i = 0; i < num; i++){
+				HSSFSheet sheet = workbook.getSheetAt(i);
 				ExcelUtil<CrossInfo> test = new ExcelUtil<CrossInfo>(pm, sheet, CrossInfo.class);
 				test.setValueMapping(valuesMap);
 				List<CrossInfo> list = test.getEntities(-1);
 				alllist.addAll(list);  
-//			}
+			}
 			
 			ExecutorService service=Executors.newFixedThreadPool(10);
 			CompletionService<List<CrossTrainInfo>> completion=new ExecutorCompletionService<List<CrossTrainInfo>>(service);
@@ -163,6 +164,11 @@ public class CrossService{
 			ArrayList<CrossTrainInfo> crossTrains = new ArrayList<CrossTrainInfo>();
 			
 			for(int i = 0; i < alllist.size(); i++){
+				CrossInfo crossInfo = alllist.get(i);
+				crossInfo.setChartId(chartId);
+				 if(crossInfo.getAlterNateDate() == null){
+					 crossInfo.setAlterNateDate(startDay);
+				 }
 				completion.submit(new CrossCompletionService(alllist.get(i)));
 			}
 			
@@ -176,16 +182,7 @@ public class CrossService{
 			} 
 			service.shutdown();
 			
-			if(alllist != null && alllist.size() > 0){
-				//保存交路信息
-				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
-				
-			}
-        	//保存列车
-			if(crossTrains != null && crossTrains.size() > 0 ){
-				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
-			}
-	
+			//fortest
 			BeanInfo  beaninfo = Introspector.getBeanInfo(CrossInfo.class);
 			 
 			PropertyDescriptor[] pds = beaninfo.getPropertyDescriptors();
@@ -195,8 +192,8 @@ public class CrossService{
 						PropertyDescriptor pd = pds[i];
 						String propertyName = pd.getName();  
 						if(key.equals(propertyName)){
-							Method method = pd.getReadMethod();
-							System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
+							//Method method = pd.getReadMethod();
+							//System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
 							break; 
 						}
 					}
@@ -213,7 +210,7 @@ public class CrossService{
 						
 						PropertyDescriptor pd = pds[i];
 						Method method = pd.getReadMethod();
-						System.out.print(pd.getName() + "=" + method.invoke(cross, null) + ",");
+						//System.out.print(pd.getName() + "=" + method.invoke(cross, null) + ",");
 //						String propertyName = pd.getName();  
 //						if(key.equals(propertyName)){
 //							Method method = pd.getReadMethod();
@@ -224,6 +221,20 @@ public class CrossService{
 				}
 				logger.debug("");
 			}
+			
+			////////////////////////
+			
+			if(alllist != null && alllist.size() > 0){
+				//保存交路信息
+				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
+				
+			}
+        	//保存列车
+			if(crossTrains != null && crossTrains.size() > 0 ){
+				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
+			}
+	
+			
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
 		}catch(IOException e){
@@ -390,7 +401,7 @@ public class CrossService{
 			String crossName = cross.getCrossName();
 			String[] crossSpareNames = cross.getCrossSpareName() == null ? null : cross.getCrossSpareName().split("-");
 			String[] alertNateTrains = cross.getAlterNateTranNbr() == null ? null : cross.getAlterNateTranNbr().split("-");
-			String[] alertNaateDate = cross.getAlterNateDate() == null ? null : cross.getAlterNateDate().split("-");
+			String[] alertNateDate = cross.getAlterNateDate() == null ? null : cross.getAlterNateDate().split("-");
 			String[] spareFlag = cross.getSpareFlag() == null ? null : cross.getSpareFlag().split("-");
 			String[] trains = crossName.split("-");
 			LinkedList<CrossTrainInfo> crossTrains = new LinkedList<CrossTrainInfo>();
@@ -402,11 +413,15 @@ public class CrossService{
 				train.setTrainNbr(trains[i]); 
 				//
 				if(alertNateTrains != null){
-					train.setAlertNateTrainNbr(alertNateTrains[i]);
+					 train.setAlertNateTrainNbr(alertNateTrains[i]);
 				}
 				//
-				if(alertNaateDate != null){
-					train.setAlertNateTime(alertNaateDate[i] + " 02:00:00");
+				if(alertNateDate != null){
+					if(alertNateDate.length == 1){
+						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+					}else{
+						train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+					}  
 				}
 				//
 				if(spareFlag != null){
@@ -417,9 +432,7 @@ public class CrossService{
 					}
 				}  
 				crossTrains.add(train);
-			}
-			
-		   
+			} 
 		   ExecutorService service=Executors.newCachedThreadPool();
 		   CompletionService<CrossTrainInfo> completion=new ExecutorCompletionService<CrossTrainInfo>(service);
 		   
@@ -459,11 +472,15 @@ public class CrossService{
 				train.setSpareApplyFlage(1); 
 				//
 				if(alertNateTrains != null){
-					train.setAlertNateTrainNbr(alertNateTrains[i]);
+					 train.setAlertNateTrainNbr(alertNateTrains[i]);
 				}
 				//
-				if(alertNaateDate != null){
-					train.setAlertNateTime(alertNaateDate[i] + " 02:00:00");
+				if(alertNateDate != null){
+					if(alertNateDate.length == 1){
+						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+					}else{
+						train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+					}  
 				}
 				//
 				if(spareFlag != null){

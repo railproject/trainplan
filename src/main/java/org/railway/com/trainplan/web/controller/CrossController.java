@@ -1,5 +1,8 @@
 package org.railway.com.trainplan.web.controller;
 
+import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,18 +40,33 @@ public class CrossController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
-	public Result getFullStationTrains( @RequestParam("fileName") MultipartFile file, @RequestBody Map<String,Object> reqMap){
+	public Result getFullStationTrains(@RequestParam("fileName") MultipartFile file){
 		Result result = new Result(); 
 			System.out.println("-----------------------haha -------------------------------------");
 //				FileOutputStream fos = new FileOutputStream(new File("E:/text.txt"));
-			/*try {
-				System.out.println(reqMap.get("plainId"));
-				System.out.println(reqMap.get("appointDay"));
-				crossService.actionExcel(file.getInputStream());
+		  try {
+//				System.out.println(reqMap.get("chartId"));
+//				System.out.println(reqMap.get("appointDay"));
+//				System.out.println(reqMap.get("chartId")); 
+//				String chartId = reqMap.get("chartId") == null ? "" : String.valueOf(reqMap.get("chartId")); 
+//				String appointDay = reqMap.get("chartId") == null ? "" : String.valueOf(reqMap.get("chartId")); 
+				crossService.actionExcel(file.getInputStream(), "", "");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} */
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IntrospectionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 		return result;
 	}
 	
