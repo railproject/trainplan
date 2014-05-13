@@ -141,7 +141,8 @@ public class CrossService{
 				tokenPsgDeptValuesMap.put(dto.getLjpym(), dto.getLjjc());
 			}
 		}
-		valuesMap.put("tokenPsgDept", tokenPsgDeptValuesMap); 
+		System.err.println("tokenPsgDeptValuesMap==" + tokenPsgDeptValuesMap);
+		valuesMap.put("tokenPsgBureau", tokenPsgDeptValuesMap); 
 		 
 		
 		// TODO Auto-generated method stub
@@ -149,13 +150,13 @@ public class CrossService{
 			HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
 			int num = workbook.getNumberOfSheets();		
 			List<CrossInfo> alllist = new ArrayList<CrossInfo>();
-//			for(int i = 0; i < num; i++){
-				HSSFSheet sheet = workbook.getSheetAt(1);
+			for(int i = 0; i < num; i++){
+				HSSFSheet sheet = workbook.getSheetAt(i);
 				ExcelUtil<CrossInfo> test = new ExcelUtil<CrossInfo>(pm, sheet, CrossInfo.class);
 				test.setValueMapping(valuesMap);
 				List<CrossInfo> list = test.getEntities(-1);
 				alllist.addAll(list);  
-//			}
+			}
 			
 			ExecutorService service=Executors.newFixedThreadPool(10);
 			CompletionService<List<CrossTrainInfo>> completion=new ExecutorCompletionService<List<CrossTrainInfo>>(service);
@@ -176,16 +177,7 @@ public class CrossService{
 			} 
 			service.shutdown();
 			
-			if(alllist != null && alllist.size() > 0){
-				//保存交路信息
-				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
-				
-			}
-        	//保存列车
-			if(crossTrains != null && crossTrains.size() > 0 ){
-				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
-			}
-	
+			//fortest
 			BeanInfo  beaninfo = Introspector.getBeanInfo(CrossInfo.class);
 			 
 			PropertyDescriptor[] pds = beaninfo.getPropertyDescriptors();
@@ -195,8 +187,8 @@ public class CrossService{
 						PropertyDescriptor pd = pds[i];
 						String propertyName = pd.getName();  
 						if(key.equals(propertyName)){
-							Method method = pd.getReadMethod();
-							System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
+							//Method method = pd.getReadMethod();
+							//System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
 							break; 
 						}
 					}
@@ -213,7 +205,7 @@ public class CrossService{
 						
 						PropertyDescriptor pd = pds[i];
 						Method method = pd.getReadMethod();
-						System.out.print(pd.getName() + "=" + method.invoke(cross, null) + ",");
+						//System.out.print(pd.getName() + "=" + method.invoke(cross, null) + ",");
 //						String propertyName = pd.getName();  
 //						if(key.equals(propertyName)){
 //							Method method = pd.getReadMethod();
@@ -224,6 +216,20 @@ public class CrossService{
 				}
 				logger.debug("");
 			}
+			
+			////////////////////////
+			
+			if(alllist != null && alllist.size() > 0){
+				//保存交路信息
+				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
+				
+			}
+        	//保存列车
+			if(crossTrains != null && crossTrains.size() > 0 ){
+				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
+			}
+	
+			
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
 		}catch(IOException e){

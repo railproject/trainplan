@@ -93,23 +93,16 @@
 		(<foreach collection="list" item="item" index="index"
             separator="UNION">
             SELECT
-            #{item.chartId,jdbcType=NUMERIC},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
+            #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
             #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
-            #{item.spareFlag,jdbcType=NUMERIC},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
-            #{item.highlineFlag,jdbcType=NUMERIC}, #{item.highlineRule,jdbcType=NUMERIC},#{item.commonlineRule,jdbcType=NUMERIC},#{item.appointWeek,jdbcType=VARCHAR},
+            #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
+            #{item.highlineFlag,jdbcType=VARCHAR}, #{item.highlineRule,jdbcType=NUMERIC},#{item.commonlineRule,jdbcType=NUMERIC},#{item.appointWeek,jdbcType=VARCHAR},
             #{item.appointDay,jdbcType=VARCHAR},#{item.crossSection,jdbcType=VARCHAR},#{item.throughline,jdbcType=VARCHAR},#{item.startBureau,jdbcType=VARCHAR},
             #{item.tokenVehBureau,jdbcType=VARCHAR},#{item.tokenVehDept,jdbcType=VARCHAR},#{item.tokenVehDepot,jdbcType=VARCHAR},#{item.tokenPsgBureau,jdbcType=VARCHAR},
             #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
             #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
             #{item.createPeopleOrg,jdbcType=VARCHAR},
-            <choose>
-			<when test="item.createTime != null">
-				to_date(#{item.createTime},'yyyy-MM-dd hh24:mi:ss')
-			</when>
-			<otherwise>
-				null
-			</otherwise>
-	    	</choose>
+            sysdate
             from dual 
              </foreach>
         ) A	
