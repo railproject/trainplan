@@ -50,33 +50,35 @@ public class CrossController {
 	@RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
 	public Result getFullStationTrains(HttpServletRequest request, HttpServletResponse response){
 		Result result = new Result(); 
-		  try {  
+//		  try {  
 				MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
 				String chartId = request.getParameter("chartId");
 				String startDay = request.getParameter("startDay");
-			    Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();   
-			    for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {   
-			    	// 上传文件 
-			    	MultipartFile mf = entity.getValue();  
-			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay);
-			  	}  
+				System.out.println(chartId);
+				System.out.println(startDay);
+//			    Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();   
+//			    for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {   
+//			    	// 上传文件 
+//			    	MultipartFile mf = entity.getValue();  
+//			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay);
+//			  	}  
  
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IntrospectionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IllegalAccessException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IllegalArgumentException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (InvocationTargetException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IntrospectionException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} 
 		return result;
 	}
 	
@@ -89,7 +91,7 @@ public class CrossController {
 	@RequestMapping(value = "/getCrossInfo", method = RequestMethod.POST)
 	public Result getCrossInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
-//		//车辆担当局
+		//车辆担当局
 //		Object tokenVehBureau = reqMap.get("tokenVehBureau");
 //		//始发局
 //		Object startBureau = reqMap.get("startBureau");

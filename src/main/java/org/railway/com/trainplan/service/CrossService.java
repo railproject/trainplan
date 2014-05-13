@@ -4,15 +4,17 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -34,7 +36,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
-import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
@@ -49,7 +50,9 @@ import com.sun.jersey.api.client.WebResource;
 @Service
 public class CrossService{
 	private static final Logger logger = Logger.getLogger(CommonService.class);
-	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd"); 
 
 	@Autowired
 	private CommonService commonService;
@@ -57,12 +60,18 @@ public class CrossService{
 	@Autowired
 	private BaseDao baseDao;
 	
-	public static void main(String[] args) throws IOException, IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public static void main(String[] args) throws IOException, IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException {
 //		InputStream is = new FileInputStream(
 //				"C:\\Users\\Administrator\\Desktop\\work\\交路相关\\对数表模板1.xls");
 //		
 //		CrossService a = new CrossService();
-		System.out.println(StringUtils.isEmpty(""));
+//		System.out.println(StringUtils.isEmpty(""));
+		Date date = dateFormat.parse("20140518");   
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, 4 - 1);
+	 
+		System.out.println(dateFormat.format(calendar.getTime()));
 //		a.actionExcel(is); 
 //		System.out.println("G11(".substring(0,"G11(".indexOf('(')));
 	}
@@ -454,15 +463,27 @@ public class CrossService{
 				CrossTrainInfo crossTrain = completion.take().get();
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
-					cross.setCrossStartDate(crossTrain.getSourceTargetTime().replace("-", ""));
+					cross.setCrossStartDate(crossTrain.getAlertNateTime());
 				}
 				if(cross.getCrossName().endsWith(crossTrain.getTrainNbr())){ 
-					cross.setCrossEndDate(crossTrain.getTargetTime().replace("-", ""));
+					if(crossTrain.getAlertNateTime() == cross.getCrossStartDate()){
+						Date date = dateFormat.parse(cross.getCrossStartDate());   
+						Calendar calendar = new GregorianCalendar();
+						calendar.setTime(date);
+						calendar.add(Calendar.DATE, cross.getGroupTotalNbr() - 1);
+					 
+						cross.setCrossEndDate(dateFormat.format(calendar.getTime()));
+					}else{
+						cross.setCrossEndDate(crossTrain.getAlertNateTime());
+					}
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

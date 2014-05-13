@@ -49,24 +49,7 @@ $(function() {
 	var cross = new CrossModel();
 	ko.applyBindings(cross); 
 	 
-	cross.init();
-	cross.loadCrosses([ {
-		"index" : 1,
-		"crossName" : "G1"
-	}, {
-		"index" : 2,
-		"crossName" : "G2"
-	}, {
-		"index" : 3,
-		"crossName" : "G3" 
-	}, {
-		"index" : 4,
-		"crossName" : "G4"
-	}, {
-		"index" : 5,
-		"crossName" : "G5"
-	} ]);
-
+	cross.init(); 
 });
 
 
@@ -103,21 +86,11 @@ function CrossModel() {
 	        })
 	        .ajaxComplete(function(){
 	            $(this).hide();
-	        });
-	       
-	        /*
-	            prepareing ajax file upload
-	            url: the url of script file handling the uploaded files
-	                        fileElementId: the file type of input element id and it will be the index of  $_FILES Array()
-	            dataType: it support json, xml
-	            secureuri:use secure protocol
-	            success: call back function when the ajax complete
-	            error: callback function when the ajax failed
-	           
-	                */
+	        }); 
+	        alert(self.searchModle().chart().chartId);
+	        alert(self.searchModle().startDay());
 	        $.ajaxFileUpload
-	        (
-	            {
+	        ({
 	                url:'cross/fileUpload',
 	                secureuri:false,
 	                fileElementId:'fileToUpload',
@@ -127,8 +100,7 @@ function CrossModel() {
 	    				startDay: self.searchModle().startDay()
 	    			}),
 	                success: function (data, status)
-	                {
-	                	alert(1111);
+	                { 
 	                    if(typeof(data.error) != 'undefined')
 	                    {
 	                        if(data.error != '')
@@ -144,11 +116,9 @@ function CrossModel() {
 	                {
 	                    alert(e);
 	                }
-	            }
-	        ) 
+	            });
 	        return false; 
-	    
-	}
+	} ;
 	
 	 
 	//当前选中的交路对象
@@ -196,25 +166,42 @@ function CrossModel() {
 	self.cross_totalCount = 0;
 	//currentIndex 
 	
-	var rowLookup = {};  
-	
 	self.init = function(){  
-		self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
-		self.searchModle().loadBureau(self.gloabBureaus); 
-		self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
+		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
+		//self.searchModle().loadBureau(self.gloabBureaus); 
+		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
 		
-		/* $.ajax({
-			url : "cross/queryBureau",
+		
+		 $.ajax({
+				url : "plan/getSchemeList",
+				cache : false,
+				type : "GET",
+				dataType : "json",
+				contentType : "application/json",
+				success : function(result) {    
+					if (result != null && result != "undefind" && result.code == "0") {
+						if (result.data !=null) { 
+							self.searchModle().loadChats(result.data); 
+						}
+						 
+					} else {
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					} 
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+		    });
+		
+	    $.ajax({
+			url : "plan/getFullStationInfo",
 			cache : false,
 			type : "POST",
 			dataType : "json",
-			contentType : "application/json",
-			data :JSON.stringify({
-				runDate : _plan_construction_selectdate.val(),//开行日期
-				trainNbr : train.value, //车次号 
-				currentIndex : self.currentIndex,
-				pageSize : self.pageSize
-			}),
+			contentType : "application/json", 
 			success : function(result) {    
 				if (result != null && result != "undefind" && result.code == "0") {
 					if (result.data !=null) { 
@@ -234,68 +221,66 @@ function CrossModel() {
 			complete : function(){
 				commonJsScreenUnLock();
 			}
-	    }); */
+	    });
 		
 		
 	};
 	
-	self.loadCrosses = function(crosses) {  
-		$.each(crosses,function(n, crossInfo){
+	self.loadCrosses = function() {  
+		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
 			rowLookup[row.crossName] = row;
-		}); 
-// 	$.ajax({
-//		url : "cross/queryCrosses",
-//		cache : false,
-//		type : "POST",
-//		dataType : "json",
-//		contentType : "application/json",
-//		data :JSON.stringify({
-//			runDate : _plan_construction_selectdate.val(),//开行日期
-//			trainNbr : train.value, //车次号 
-//			currentIndex : self.currentIndex,
-//			pageSize : self.pageSize
-//		}),
-//		success : function(result) {    
-//			if (result != null && result != "undefind" && result.code == "0") {
-//				if (result.data !=null) { 
-//					$.each(result.data,function(n, crossInfo){
-//						var row = new CrossRow(crossInfo);
-//						self.crossRows.push(row);
-//						rowLookup[row.name] = row;
-//					});
-//				}
-//				 
-//			} else {
-//				showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-//			} 
-//		},
-//		error : function() {
-//			showErrorDialog("接口调用失败");
-//		},
-//		complete : function(){
-//			commonJsScreenUnLock();
-//		}
-//	});
-	
-};
-
-	self.saveCrossInfo = function() { 
-		alert(self.currentCross().tokenVehBureau())
-	}
-	self.showTrains = function(row) {
+		});  */
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag().value; 
 		var sureFlag = self.searchModle().sureFlag().value; 
-		var startBureauCode = self.searchModle().startBureau(); 
-		
-		alert(self.searchModle().chart().chartId)
-		 
+		var startBureauCode = self.searchModle().startBureau(); 	  
+		 $.ajax({
+				url : "cross/getCrossInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({ 
+					tokenVehBureau : bureauCode, 
+					highlineFlag : highlingFlag,  
+					sureFlag : sureFlag == "-1" ? null : sureFlag,  
+					startBureau : startBureauCode  
+				}),
+				success : function(result) {    
+					if (result != null && result != "undefind" && result.code == "0") {
+						if (result.data !=null && result.data.length > 0) {  
+							self.currentCross(new CrossRow(result.data[0]));
+							if(result.data[0].trains != null){
+								$.each(result.data,function(n, crossInfo){
+									var row = new TrainRow(crossInfo);
+									self.trains.push(row); 
+								});
+							}
+						}
+						 
+					} else {
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					} 
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+	};
+
+	self.saveCrossInfo = function() { 
+		alert(self.currentCross().tokenVehBureau())
+	};
+	self.showTrains = function(row) {  
 		self.trains.remove(function(item) {
 			return true;
 		}); 
-		self.currentCross(new CrossRow({"crossId":"1",
+		/* self.currentCross(new CrossRow({"crossId":"1",
 			"crossName":"1", 
 			"chartId":"1",
 			"chartName":"1",
@@ -357,16 +342,27 @@ function CrossModel() {
 		$.each(trains,function(n, crossInfo){
 			var row = new TrainRow(crossInfo);
 			self.trains.push(row); 
-		});
-		  
-	/* 	$.ajax({
-			url : "cross/queryCrosses",
+		}); 
+		 self.currentTrain =  ko.observable(rowLookup[row.crossName]);
+			var trains = rowLookup[row.name].trains;
+			for ( var i = 0; i < trains.length; i++) {
+				var row = new TrainRow(trains[i]);
+				self.trains.push(row);
+				rowLooktrains[row.crossName] = row;
+			}  
+		*/
+	/* var bureauCode = self.searchModle().bureau(); 
+	var highlingFlag = self.searchModle().highlingFlag().value; 
+	var sureFlag = self.searchModle().sureFlag().value; 
+	var startBureauCode = self.searchModle().startBureau(); 	 */  
+	 $.ajax({
+			url : "cross/getCrossTrainInfo",
 			cache : false,
 			type : "POST",
 			dataType : "json",
 			contentType : "application/json",
-			data :JSON.stringify({ 
-				crossId : row.crossId //车次号  
+			data :JSON.stringify({  
+				crossId : row.crossId  
 			}),
 			success : function(result) {    
 				if (result != null && result != "undefind" && result.code == "0") {
@@ -390,33 +386,10 @@ function CrossModel() {
 			complete : function(){
 				commonJsScreenUnLock();
 			}
-		});
-	    self.currentTrain =  ko.observable(rowLookup[row.crossName]);
-		var trains = rowLookup[row.name].trains;
-		for ( var i = 0; i < trains.length; i++) {
-			var row = new TrainRow(trains[i]);
-			self.trains.push(row);
-			rowLooktrains[row.crossName] = row;
-		} 
-	
-	  */
+		}); 
 		
-	}; 
-} ;
-
-
-function FileUploadModle(){
-	self = this;
-	self.charts = ko.observableArray();
-	self.startDate = ko.observable(); 
-	
-	self.loadChart = function(charts){
-		for ( var i = 0; i < charts.length; i++) {
-			var row = new CrossRow(charts[i]);
-			self.charts.push(row); 
-		} 
-	};
-} 
+	};   
+}
 
 function searchModle(){
 	self = this;  
@@ -448,8 +421,8 @@ function searchModle(){
 	}; 
 	
 	self.loadChats = function(charts){   
-		for ( var i = 0; i < charts.length; i++) {  
-			self.charts.push(charts[i]);  
+		for ( var i = 0; i < charts.length; i++) {   
+			self.charts.push({"chartId": charts[i].schemeId, "name": charts[i].schemeName});  
 		} 
 	}; 
 	
@@ -457,8 +430,8 @@ function searchModle(){
 
 function BureausRow(data) {
 	var self = this;  
-	self.shortName = data.shortName;   
-	self.code = data.code;   
+	self.shortName = data.ljjc;   
+	self.code = data.ljpym;   
 	//方案ID 
 }
 
