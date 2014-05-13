@@ -36,7 +36,8 @@ function myCanvasDrawLine(context,lineWidth, color, fromX, fromY, toX, toY) {
 	context.lineWidth = lineWidth;
 	context.moveTo(fromX, fromY);
 	context.lineTo(toX, toY);
-	context.stroke();
+	context.stroke();//绘画
+	context.closePath();//关闭path
 }
 
 
@@ -66,7 +67,7 @@ function myCanvasDrawDashLineY(context,lineWidth, color, fromX, fromY, toX, toY,
 function myCanvasDrawCircle(context, circle) {
 	context.beginPath();
 	context.save();
-	context.strokeStyle = circle.strokeStyle;
+	context.strokeStyle = circle.color;
 	context.fillStyle = circle.fillStyle;
 	context.arc(circle.x,circle.y,circle.radius,0,Math.PI*2,false);
 	
@@ -74,6 +75,17 @@ function myCanvasDrawCircle(context, circle) {
 	context.stroke();
 	context.fill();
 	context.restore();
+	context.closePath();
+};
+
+
+
+function windowToCanvas(canvas, x, y) {
+	var bbox = canvas.getBoundingClientRect();
+	return {
+		x:(x-bbox.left)*(canvas.width/bbox.width),
+		y:(y-bbox.top)*(canvas.height/bbox.height)
+	};
 };
 
 
@@ -101,9 +113,4 @@ function myCanvasFillText(context, textObj) {
 
 
 
-/**
- * 交路接续
- */
-function myCanvasDrawJljx(context) {
-	
-}
+
