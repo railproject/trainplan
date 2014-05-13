@@ -28,11 +28,13 @@ import java.util.concurrent.Executors;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
@@ -56,10 +58,11 @@ public class CrossService{
 	private BaseDao baseDao;
 	
 	public static void main(String[] args) throws IOException, IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		InputStream is = new FileInputStream(
-				"C:\\Users\\Administrator\\Desktop\\work\\交路相关\\对数表模板1.xls");
-		
-		CrossService a = new CrossService();
+//		InputStream is = new FileInputStream(
+//				"C:\\Users\\Administrator\\Desktop\\work\\交路相关\\对数表模板1.xls");
+//		
+//		CrossService a = new CrossService();
+		System.out.println(StringUtils.isEmpty(""));
 //		a.actionExcel(is); 
 //		System.out.println("G11(".substring(0,"G11(".indexOf('(')));
 	}
@@ -168,7 +171,7 @@ public class CrossService{
 			for(int i = 0; i < alllist.size(); i++){
 				CrossInfo crossInfo = alllist.get(i);
 				crossInfo.setChartId(chartId);
-				 if(crossInfo.getAlterNateDate() == null){
+				 if(StringUtils.isEmpty(crossInfo.getAlterNateDate())){
 					 crossInfo.setAlterNateDate(startDay);
 				 }
 				completion.submit(new CrossCompletionService(alllist.get(i)));
@@ -402,10 +405,10 @@ public class CrossService{
 		private LinkedList<CrossTrainInfo> createTrainsForCross(CrossInfo cross){
 			logger.debug("");
 			String crossName = cross.getCrossName();
-			String[] crossSpareNames = cross.getCrossSpareName() == null ? null : cross.getCrossSpareName().split("-");
-			String[] alertNateTrains = cross.getAlterNateTranNbr() == null ? null : cross.getAlterNateTranNbr().split("-");
-			String[] alertNateDate = cross.getAlterNateDate() == null ? null : cross.getAlterNateDate().split("-");
-			String[] spareFlag = cross.getSpareFlag() == null ? null : cross.getSpareFlag().split("-");
+			String[] crossSpareNames =StringUtils.isEmpty( cross.getCrossSpareName()) ? null : cross.getCrossSpareName().split("-");
+			String[] alertNateTrains = StringUtils.isEmpty(cross.getAlterNateTranNbr()) ? null : cross.getAlterNateTranNbr().split("-");
+			String[] alertNateDate = StringUtils.isEmpty(cross.getAlterNateDate()) ? null : cross.getAlterNateDate().split("-");
+			String[] spareFlag = StringUtils.isEmpty(cross.getSpareFlag())? null : cross.getSpareFlag().split("-");
 			String[] trains = crossName.split("-");
 			LinkedList<CrossTrainInfo> crossTrains = new LinkedList<CrossTrainInfo>();
 			CrossTrainInfo train = null;
@@ -414,26 +417,30 @@ public class CrossService{
 				train.setTrainSort(i);
 				train.setCrossId(cross.getCrossId());
 				train.setTrainNbr(trains[i]); 
-				//
-				if(alertNateTrains != null){
-					 train.setAlertNateTrainNbr(alertNateTrains[i]);
-				}
-				//
-				if(alertNateDate != null ){
-					if(alertNateDate.length == 1){
-						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
-					}else{
-						train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
-					}  
-				}
-				//
-				if(spareFlag != null){
-					if(spareFlag.length == 1){
-						train.setSpareFlag(Integer.parseInt(spareFlag[0]));
-					}else{
-						train.setSpareFlag(Integer.parseInt(spareFlag[i]));
+				try{
+					//
+					if(alertNateTrains != null){
+						 train.setAlertNateTrainNbr(alertNateTrains[i]);
 					}
-				}  
+					//
+					if(alertNateDate != null ){
+						if(alertNateDate.length == 1){
+							train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+						}else{
+							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+						}  
+					}
+					//
+					if(spareFlag != null){
+						if(spareFlag.length == 1){
+							train.setSpareFlag(Integer.parseInt(spareFlag[0]));
+						}else{
+							train.setSpareFlag(Integer.parseInt(spareFlag[i]));
+						}
+					}  
+				}catch(Exception e){
+					logger.error("创建列车信息出错:" , e);
+				}
 				crossTrains.add(train);
 			} 
 		   ExecutorService service=Executors.newCachedThreadPool();
@@ -447,10 +454,10 @@ public class CrossService{
 				CrossTrainInfo crossTrain = completion.take().get();
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
-					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
+					cross.setCrossStartDate(crossTrain.getSourceTargetTime().replace("-", ""));
 				}
 				if(cross.getCrossName().endsWith(crossTrain.getTrainNbr())){ 
-					cross.setCrossEndDate(crossTrain.getTargetTime());
+					cross.setCrossEndDate(crossTrain.getTargetTime().replace("-", ""));
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -468,31 +475,35 @@ public class CrossService{
 		LinkedList<CrossTrainInfo> crossSpareTrains = new LinkedList<CrossTrainInfo>(); 
 		if(crossSpareNames != null){
 			for(int i = 0; i < crossSpareNames.length; i++){
-				train = new CrossTrainInfo();
-				train.setCrossId(cross.getCrossId());
-				train.setTrainSort(crossTrains.size() + i);
-				train.setTrainNbr(crossSpareNames[i]); 
-				train.setSpareApplyFlage(1); 
-				//
-				if(alertNateTrains != null){
-					 train.setAlertNateTrainNbr(alertNateTrains[i]);
-				}
-				//
-				if(alertNateDate != null){
-					if(alertNateDate.length == 1){
-						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
-					}else{
-						train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
-					}  
-				}
-				//
-				if(spareFlag != null){
-					if(spareFlag.length == 1){
-						train.setSpareFlag(Integer.parseInt(spareFlag[0]));
-					}else{
-						train.setSpareFlag(Integer.parseInt(spareFlag[i]));
+				try{
+					train = new CrossTrainInfo();
+					train.setCrossId(cross.getCrossId());
+					train.setTrainSort(crossTrains.size() + i);
+					train.setTrainNbr(crossSpareNames[i]); 
+					train.setSpareApplyFlage(1);  
+					//
+					if(alertNateTrains != null){
+						 train.setAlertNateTrainNbr(alertNateTrains[i]);
 					}
-				}  
+					//
+					if(alertNateDate != null){
+						if(alertNateDate.length == 1){
+							train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+						}else{
+							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+						}  
+					}
+					//
+					if(spareFlag != null){
+						if(spareFlag.length == 1){
+							train.setSpareFlag(Integer.parseInt(spareFlag[0]));
+						}else{
+							train.setSpareFlag(Integer.parseInt(spareFlag[i]));
+						}
+					}  
+				}catch(Exception e){
+					logger.error("创建列车信息出错:" , e);
+				}
 				crossSpareTrains.add(train);
 			} 
 			

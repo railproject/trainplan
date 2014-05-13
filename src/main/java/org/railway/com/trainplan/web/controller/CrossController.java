@@ -1,12 +1,19 @@
 package org.railway.com.trainplan.web.controller;
 
 import java.beans.IntrospectionException;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,12 +24,13 @@ import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
  
 
@@ -40,17 +48,19 @@ public class CrossController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
-	public Result getFullStationTrains(@RequestParam("fileName") MultipartFile file){
+	public Result getFullStationTrains(HttpServletRequest request, HttpServletResponse response){
 		Result result = new Result(); 
-			System.out.println("-----------------------haha -------------------------------------");
-//				FileOutputStream fos = new FileOutputStream(new File("E:/text.txt"));
-		  try {
-//				System.out.println(reqMap.get("chartId"));
-//				System.out.println(reqMap.get("appointDay"));
-//				System.out.println(reqMap.get("chartId")); 
-//				String chartId = reqMap.get("chartId") == null ? "" : String.valueOf(reqMap.get("chartId")); 
-//				String appointDay = reqMap.get("chartId") == null ? "" : String.valueOf(reqMap.get("chartId")); 
-				crossService.actionExcel(file.getInputStream(), "", "");
+		  try {  
+				MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
+				String chartId = request.getParameter("chartId");
+				String startDay = request.getParameter("startDay");
+			    Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();   
+			    for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {   
+			    	// 上传文件 
+			    	MultipartFile mf = entity.getValue();  
+			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay);
+			  	}  
+ 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
