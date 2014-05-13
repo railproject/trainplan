@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -49,14 +51,16 @@
                     </tr>
                     </thead>
                     <tbody data-bind="foreach: timetable">
-                    <tr>
-                        <td class="text-center" data-bind="text: $index"></td>
-                        <td class="text-center" data-bind="text: name"></td>
-                        <td class="text-center" data-bind="text: arrDateTime"></td>
-                        <td class="text-center" data-bind="text: dptDateTime"></td>
-                        <td class="text-center" data-bind="text: trackName"></td>
-                        <td class="text-center" data-bind="text: psg"></td>
-                    </tr>
+                    <c:forEach var="row" items="${list}">
+                        <tr>
+                            <td class="text-center">${row}</td>
+                            <td class="text-center">${row.name}</td>
+                            <td class="text-center">${row.arrDateTime}</td>
+                            <td class="text-center">${row.dptDateTime}</td>
+                            <td class="text-center">${row.trackName}</td>
+                            <td class="text-center">${row.psg}</td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>
