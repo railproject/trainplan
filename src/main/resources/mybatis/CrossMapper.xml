@@ -89,7 +89,6 @@
 		TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
 		DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
 		CREAT_PEOPLE_ORG,CREAT_TIME)
-		A.* FROM
 		(<foreach collection="list" item="item" index="index"
             separator="UNION">
             SELECT
@@ -106,7 +105,7 @@
             sysdate
             from dual 
              </foreach>
-        ) A	
+        ) 
 	</insert>
 
 	<insert id="addCrossTrainInfo" parameterType="java.util.List">
@@ -117,11 +116,10 @@
 	     DAY_GAP,ALTERNATE_TRAIN_NBR,ALTERNATE_TIME,SPARE_FLAG,
 	     SPARE_APPLY_FLAG,HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,
 	     APPOINT_WEEK,APPOINT_DAY)
-	     A.* from
 	     (<foreach collection="list" item="item" index="index"
             separator="UNION">
 	       SELECT
-	       #{item.crossTainId,jdbcType=VARCHAR}
+	       #{item.crossTainId,jdbcType=VARCHAR},
 	       #{item.crossId,jdbcType=VARCHAR},#{item.trainSort,jdbcType=NUMERIC},#{item.trainNbr,jdbcType=VARCHAR},#{item.baseTrainId,jdbcType=VARCHAR},
 	       #{item.startStn,jdbcType=VARCHAR}, #{item.startBureau,jdbcType=VARCHAR},#{item.endStn,jdbcType=VARCHAR},#{item.endBureau,jdbcType=VARCHAR},
 	       #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
@@ -130,7 +128,7 @@
 	       from dual
 	       
 	      </foreach>
-	     ) A
+	     ) 
 	</insert>
 	
 	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
