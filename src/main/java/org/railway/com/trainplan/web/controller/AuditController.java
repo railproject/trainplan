@@ -36,9 +36,9 @@ public class AuditController {
     @RequestMapping(value = "plan/runplan/stn/{bureau}/{train_id}", method = RequestMethod.GET)
     public List<RunPlanSTNDTO> getRunPlanSTN(@PathVariable String bureau, @PathVariable String train_id) {
         List<RunPlanSTNDTO> result = new ArrayList<RunPlanSTNDTO>();
-        List<Map<String, Object>> list = runPlanService.findRunPlanStn(bureau, train_id);
+        List<Map<String, Object>> list = runPlanService.findRunPlanStn(train_id);
         for(Map<String, Object> map: list) {
-            result.add(new RunPlanSTNDTO(map));
+            result.add(new RunPlanSTNDTO(map, bureau));
         }
         return result;
     }
