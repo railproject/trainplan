@@ -382,11 +382,11 @@ public class CrossService{
 							//设置列车在计划平台ID
 							train.setBaseTrainId(curTrain.getString("id"));
 							//设置始局
-							train.setStartBureau(sourceItemDto.getString("bureauName"));
+							train.setStartBureau(commonService.getLjInfo(sourceItemDto.getString("bureauName")).getLjpym());
 							//设置始发站
 							train.setStartStn(sourceItemDto.getString("nodeName"));
 							//设置终到局
-							train.setEndBureau(targetItemDto.getString("bureauName"));
+							train.setEndBureau(commonService.getLjInfo(targetItemDto.getString("bureauName")).getLjpym());
 							//设置中档站
 							train.setEndStn(targetItemDto.getString("nodeName"));
 						}
