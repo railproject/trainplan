@@ -7,7 +7,7 @@
 	<select id="findRunPlan" parameterType="map" resultType="map">
         SELECT TR.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, TR.TRAIN_NBR AS TRAIN_NBR, TR.START_STN AS START_STN, TR.END_STN AS END_STN, TR.RUN_DATE AS RUN_DATE,
         TR.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TR.DAILYPLAN_TIME AS DAILYPLAN_TIME, TR.HIGHLINE_FLAG AS HIGHLINE_FLAG
-        FROM PLAN_TRAIN TR WHERE TR.START_BUREAU = ${bureau} AND TR.RUN_DATE = ${date}
+        FROM PLAN_TRAIN TR WHERE TR.START_BUREAU = '${bureau}' AND TR.RUN_DATE = '${date}'
 	</select>
 
     <select id="findRunPlanStnByTrain" parameterType="string" resultType="map">

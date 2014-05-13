@@ -2,6 +2,7 @@ package org.railway.com.trainplan.service;
 
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.repository.mybatis.BaseDataDao;
+import org.railway.com.trainplan.repository.mybatis.BureauDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,15 @@ public class BaseDataService {
     @Autowired
     private BaseDataDao baseDataDao;
 
+    @Autowired
+    private BureauDao bureauDao;
+
     public List<Map<String, Object>> getFJCDic(String bureauCode) {
         baseDataDao.getFJKDicByBureauCode(bureauCode);
         return null;
+    }
+
+    public List<Map<String, Object>> getBureauList() {
+        return bureauDao.getBureauList();
     }
 }
