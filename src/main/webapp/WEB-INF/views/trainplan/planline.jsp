@@ -6,14 +6,14 @@
 </head>
 <body>
 
-<script src="../../../assets/js/jquery.js"></script>
-<script src="../../../assets/js/html5.js"></script>
-<script src="../../../assets/js/moment.min.js"></script>
-<script src="../../../assets/js/trainplan/util/fishcomponent.js"></script>
-<script src="../../../assets/js/trainplan/util/canvas.util.js"></script>
-<script src="../../../assets/js/trainplan/util/canvas.component.js"></script>
-<script src="../../../assets/js/trainplan/train_runline_data.js"></script>
-<script src="../../../assets/js/trainplan/train_runline_canvas.js"></script>
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/html5.js"></script>
+<script src="assets/js/moment.min.js"></script>
+<script src="assets/js/trainplan/util/fishcomponent.js"></script>
+<script src="assets/js/trainplan/util/canvas.util.js"></script>
+<script src="assets/js/trainplan/util/canvas.component.js"></script>
+<script src="assets/js/trainplan/train_runline_data.js"></script>
+<script src="assets/js/trainplan/train_runline_canvas.js"></script>
 
 
 
