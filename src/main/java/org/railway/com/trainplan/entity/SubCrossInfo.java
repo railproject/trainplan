@@ -1,10 +1,12 @@
 package org.railway.com.trainplan.entity;
 
 public class SubCrossInfo {
-    private int rownumstart;
-    private int rownumend;
+  
 	private int crossId ;
 	private String crossName;
+	private String tokenVehBureau;
+	private String startBureau;
+	private String highlineFlag;
 	public int getCrossId() {
 		return crossId;
 	}
@@ -17,18 +19,24 @@ public class SubCrossInfo {
 	public void setCrossName(String crossName) {
 		this.crossName = crossName;
 	}
-	public int getRownumstart() {
-		return rownumstart;
+	public String getTokenVehBureau() {
+		return tokenVehBureau;
 	}
-	public void setRownumstart(int rownumstart) {
-		this.rownumstart = rownumstart;
+	public void setTokenVehBureau(String tokenVehBureau) {
+		this.tokenVehBureau = tokenVehBureau;
 	}
-	public int getRownumend() {
-		return rownumend;
+	public String getStartBureau() {
+		return startBureau;
 	}
-	public void setRownumend(int rownumend) {
-		this.rownumend = rownumend;
-	} 
+	public void setStartBureau(String startBureau) {
+		this.startBureau = startBureau;
+	}
+	public String getHighlineFlag() {
+		return highlineFlag;
+	}
+	public void setHighlineFlag(String highlineFlag) {
+		this.highlineFlag = highlineFlag;
+	}
 	
 	
 }
