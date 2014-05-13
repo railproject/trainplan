@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.web.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.service.RunLineService;
 import org.railway.com.trainplan.service.RunPlanService;
 import org.railway.com.trainplan.web.dto.RunPlanSTNDTO;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -20,6 +23,8 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/")
 public class IndexController {
+
+    private final static Log logger = LogFactory.getLog(IndexController.class);
 
     @Autowired
     private RunPlanService runPlanService;
@@ -49,9 +54,25 @@ public class IndexController {
         return "trainplan/routing";
     }
 
-    @RequestMapping(value = "audit/planline/{date}/{bureau}/{train_id}", method = RequestMethod.GET)
-    public String canvas(@PathVariable String date, @PathVariable String bureau, @PathVariable String train_id) {
+    @RequestMapping(value = "audit/planline/{date}/{bureau}", method = RequestMethod.GET)
+    public String canvas(@PathVariable String date, @PathVariable String bureau, @PathVariable String train_id,
+                         @RequestParam(value = "plans") String plans, @RequestParam(value = "lines") String lines) {
+        logger.debug("date:" + date);
+        logger.debug("bureau:" + bureau);
+        logger.debug("train_id:" + train_id);
+        logger.debug(plans);
+        logger.debug(lines);
+        return "trainplan/planline";
+    }
 
+    @RequestMapping(value = "audit/planline", method = RequestMethod.GET)
+    public String graphic(@RequestParam(value = "date") String date, @PathVariable(value = "bureau") String bureau, @PathVariable String train_id,
+                         @RequestParam(value = "plans") String plans, @RequestParam(value = "lines") String lines) {
+        logger.debug("date:" + date);
+        logger.debug("bureau:" + bureau);
+        logger.debug("train_id:" + train_id);
+        logger.debug(plans);
+        logger.debug(lines);
         return "trainplan/planline";
     }
 }
