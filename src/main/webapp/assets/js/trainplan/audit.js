@@ -164,7 +164,7 @@ function AuditActions() {
             self.update_compare(params);
         } else {
             options.close = self.close_compare;
-            self.compare = self._getDialog("audit/planline", options);
+            self.compare = self._getDialog("audit/planline/2014-05-13/B/123", options);
             self.compare.dialog("open");
         }
     }
