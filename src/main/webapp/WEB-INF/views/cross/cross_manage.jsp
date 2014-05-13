@@ -232,7 +232,9 @@ function CrossModel() {
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag().value; 
 		var sureFlag = self.searchModle().sureFlag().value; 
-		var startBureauCode = self.searchModle().startBureau().code; 
+		var startBureauCode = self.searchModle().startBureau(); 
+		
+		alert(self.searchModle().chart().chartId)
 		 
 		self.trains.remove(function(item) {
 			return true;
@@ -377,6 +379,8 @@ function searchModle(){
 	self.bureau = ko.observable();
 	
 	self.chart =  ko.observable();
+	
+	self.startDay = ko.observable();
 	
 	self.startBureau = ko.observable();
 	
@@ -526,7 +530,7 @@ function openLogin() {
 						   <div class="row" style="margin: 5px 0 5px 0;">
 								<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
 						        <div class="pull-left">
-						           <input class="form-control" style="width:179px;" placeholder="" id="input_cross_start_day">
+						           <input class="form-control" style="width:179px;" placeholder="" data-bind="value: searchModle().startDay">
 						        </div>
 						        <button class="btn btn-primary" type="button" style="margin-left: 10px;"
 								id="btn_cross_upload" onclick="openLogin()">导入EXCEL</button>
@@ -932,7 +936,7 @@ function openLogin() {
 				   </section>
 				</div>
 				<div class="row" style="margin: 15px 0 10px 10px;">
-					<div class="pull-left" style="width: 100%%;">
+					<div class="pull-left" style="width: 100%;">
 					<section class="panel panel-default" >
 				         <div class="panel-heading"><i class="fa fa-table"></i>列车信息</div>
 				          <div class="panel-body" style="overflow-y:auto">
@@ -1012,6 +1016,8 @@ function openLogin() {
 		style="width: 400px; height: 200px; padding: 10px">
 		<form id="file_upload_id" name="file_upload_name" action="cross/fileUpload"
 			method="post" enctype="multipart/form-data">
+			<input type="text"  name="chartId" data-bind="value: searchModle().chart()? searchModle().chart().chartId: ''"/>
+			<input type="text"  name="startDay" data-bind="value: searchModle().startDay() ? searchModle().startDay(): ''"/>
 			<div>
 				<input type="file"  name="fileName" />
 			</div>

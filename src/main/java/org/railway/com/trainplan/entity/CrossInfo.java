@@ -16,6 +16,10 @@ public class CrossInfo {
 	//LOCO_TYPE	CRH_TYPE	ELEC_SUPPLY	DEJ_COLLECT	AIR_CONDITION	NOTE	CREAT_PEOPLE	
 		//CREAT_PEOPLE_ORG	CREAT_TIME 
 	private String crossId = UUID.randomUUID().toString() ;
+	
+	private String crossIdForExcel;
+	
+
 	private int highlineRule;
 	private int commonlineRule;
 	private int cutOld;
@@ -53,6 +57,13 @@ public class CrossInfo {
 	private String createPeopleOrg;  
 	private String createTime ;
 	
+	
+	public String getCrossIdForExcel() {
+		return crossIdForExcel;
+	}
+	public void setCrossIdForExcel(String crossIdForExcel) {
+		
+	}
 	 
 	public String getCrossId() {
 		return crossId;

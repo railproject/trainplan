@@ -60,7 +60,7 @@ public class CrossService{
 				"C:\\Users\\Administrator\\Desktop\\work\\交路相关\\对数表模板1.xls");
 		
 		CrossService a = new CrossService();
-		a.actionExcel(is); 
+//		a.actionExcel(is); 
 //		System.out.println("G11(".substring(0,"G11(".indexOf('(')));
 	}
 
@@ -98,10 +98,10 @@ public class CrossService{
 	}
 	
 	
-	public void actionExcel(InputStream inputStream) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void actionExcel(InputStream inputStream, String chartId, String startDay) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// TODO Auto-generated method stub
 		LinkedHashMap<String, String> pm = new LinkedHashMap<String, String>();
-		pm.put("crossId", "");
+		pm.put("crossIdForExcel", "");
 		pm.put("crossName", "");
 		pm.put("crossSpareName", "");
 		pm.put("alterNateDate", "");
@@ -164,6 +164,11 @@ public class CrossService{
 			ArrayList<CrossTrainInfo> crossTrains = new ArrayList<CrossTrainInfo>();
 			
 			for(int i = 0; i < alllist.size(); i++){
+				CrossInfo crossInfo = alllist.get(i);
+				crossInfo.setChartId(chartId);
+				 if(crossInfo.getAlterNateDate() == null){
+					 crossInfo.setAlterNateDate(startDay);
+				 }
 				completion.submit(new CrossCompletionService(alllist.get(i)));
 			}
 			
@@ -396,7 +401,7 @@ public class CrossService{
 			String crossName = cross.getCrossName();
 			String[] crossSpareNames = cross.getCrossSpareName() == null ? null : cross.getCrossSpareName().split("-");
 			String[] alertNateTrains = cross.getAlterNateTranNbr() == null ? null : cross.getAlterNateTranNbr().split("-");
-			String[] alertNaateDate = cross.getAlterNateDate() == null ? null : cross.getAlterNateDate().split("-");
+			String[] alertNateDate = cross.getAlterNateDate() == null ? null : cross.getAlterNateDate().split("-");
 			String[] spareFlag = cross.getSpareFlag() == null ? null : cross.getSpareFlag().split("-");
 			String[] trains = crossName.split("-");
 			LinkedList<CrossTrainInfo> crossTrains = new LinkedList<CrossTrainInfo>();
@@ -408,11 +413,15 @@ public class CrossService{
 				train.setTrainNbr(trains[i]); 
 				//
 				if(alertNateTrains != null){
-					train.setAlertNateTrainNbr(alertNateTrains[i]);
+					 train.setAlertNateTrainNbr(alertNateTrains[i]);
 				}
 				//
-				if(alertNaateDate != null){
-					train.setAlertNateTime(alertNaateDate[i] + " 02:00:00");
+				if(alertNateDate != null){
+					if(alertNateDate.length == 1){
+						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+					}else{
+						train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+					}  
 				}
 				//
 				if(spareFlag != null){
@@ -423,9 +432,7 @@ public class CrossService{
 					}
 				}  
 				crossTrains.add(train);
-			}
-			
-		   
+			} 
 		   ExecutorService service=Executors.newCachedThreadPool();
 		   CompletionService<CrossTrainInfo> completion=new ExecutorCompletionService<CrossTrainInfo>(service);
 		   
@@ -465,11 +472,15 @@ public class CrossService{
 				train.setSpareApplyFlage(1); 
 				//
 				if(alertNateTrains != null){
-					train.setAlertNateTrainNbr(alertNateTrains[i]);
+					 train.setAlertNateTrainNbr(alertNateTrains[i]);
 				}
 				//
-				if(alertNaateDate != null){
-					train.setAlertNateTime(alertNaateDate[i] + " 02:00:00");
+				if(alertNateDate != null){
+					if(alertNateDate.length == 1){
+						train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+					}else{
+						train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+					}  
 				}
 				//
 				if(spareFlag != null){
