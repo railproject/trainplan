@@ -434,9 +434,10 @@ public class CrossService{
 					//
 					if(alertNateDate != null ){
 						if(alertNateDate.length == 1){
-							train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
-						}else{
-							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+							train.setAlertNateTime(alertNateDate[0]);
+							train.setAlertNateTime(alertNateDate[0]);
+						}else{ 
+							train.setAlertNateTime(alertNateDate[i]);
 						}  
 					}
 					//
@@ -466,13 +467,8 @@ public class CrossService{
 					cross.setCrossStartDate(crossTrain.getAlertNateTime());
 				}
 				if(cross.getCrossName().endsWith(crossTrain.getTrainNbr())){ 
-					if(crossTrain.getAlertNateTime() == cross.getCrossStartDate()){
-						Date date = dateFormat.parse(cross.getCrossStartDate());   
-						Calendar calendar = new GregorianCalendar();
-						calendar.setTime(date);
-						calendar.add(Calendar.DATE, cross.getGroupTotalNbr() - 1);
-					 
-						cross.setCrossEndDate(dateFormat.format(calendar.getTime()));
+					if(crossTrain.getAlertNateTime() == cross.getCrossStartDate()){ 
+						cross.setCrossEndDate(crossTrain.getAlertNateTime());
 					}else{
 						cross.setCrossEndDate(crossTrain.getAlertNateTime());
 					}
@@ -483,7 +479,7 @@ public class CrossService{
 			} catch (ExecutionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -509,9 +505,13 @@ public class CrossService{
 					//
 					if(alertNateDate != null){
 						if(alertNateDate.length == 1){
-							train.setAlertNateTime(alertNateDate[0] + " 02:00:00");
+							Date date = dateFormat.parse(alertNateDate[0]);   
+							Calendar calendar = new GregorianCalendar();
+							calendar.setTime(date);
+							calendar.add(Calendar.DATE, i);
+							train.setAlertNateTime(dateFormat.format(calendar.getTime()));
 						}else{
-							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+							train.setAlertNateTime(alertNateDate[i]);
 						}  
 					}
 					//
