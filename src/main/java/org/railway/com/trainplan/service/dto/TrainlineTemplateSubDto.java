@@ -1,10 +1,15 @@
 package org.railway.com.trainplan.service.dto;
+
+import java.util.UUID;
+
 /**
  * 基本运行线中始发站，终到站以及经由站基本信息对象
  * @author join
  *
  */
 public class TrainlineTemplateSubDto {
+	
+	private String planTrainStnId ;
 	 //站点名称
 	private String name;
 	//到站时间
@@ -31,6 +36,12 @@ public class TrainlineTemplateSubDto {
 	private Integer runDays;
 	
 	
+	public String getPlanTrainStnId() {
+		return planTrainStnId;
+	}
+	public void setPlanTrainStnId(String planTrainStnId) {
+		this.planTrainStnId = planTrainStnId;
+	}
 	public Integer getRunDays() {
 		return runDays;
 	}

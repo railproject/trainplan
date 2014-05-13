@@ -2,6 +2,7 @@ package org.railway.com.trainplan.service.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 基本图方案包含的基本图运行线对象
@@ -10,6 +11,7 @@ import java.util.List;
  */
 public class TrainlineTemplateDto {
 	private List<TrainlineTemplateSubDto> stationList = new ArrayList<TrainlineTemplateSubDto>();
+	private String planTrainId ;
    //开行日期
 	private String runDate;
 	//车次
@@ -34,6 +36,12 @@ public class TrainlineTemplateDto {
 	private String trainType;
 	
 	
+	public String getPlanTrainId() {
+		return planTrainId;
+	}
+	public void setPlanTrainId(String planTrainId) {
+		this.planTrainId = planTrainId;
+	}
 	public String getTrainType() {
 		return trainType;
 	}

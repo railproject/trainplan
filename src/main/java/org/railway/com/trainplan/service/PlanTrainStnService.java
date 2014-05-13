@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -14,6 +15,7 @@ import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.SpringContextUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.PlanTrainStn;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
@@ -165,7 +167,7 @@ public class PlanTrainStnService {
 					
 					for (TrainlineTemplateDto dto : list) {
 						String runDate = tempStartDate;
-						BigDecimal trainId=null;
+						String trainId= UUID.randomUUID().toString();
 						try{
 						
 						runDate = DateUtil.format(DateUtil.parse(runDate),"yyyy-MM-dd");
@@ -188,15 +190,22 @@ public class PlanTrainStnService {
 					    int successCount = baseDao.insertBySql(Constants.TRAINPLANDAO_ADD_TRAIN_PLAN, paramMap);
 						logger.info("count of inserting into train_plan==" + successCount);
 						//获取当前的plan_train_id  plan_train_id
-						Map map = (Map)baseDao.selectOneBySql(Constants.TRAINPLANDAO_GET_MAX_PLANTRAIN_ID, null);
-						trainId = (BigDecimal)map.get("plan_train_id");
+						//Map map = (Map)baseDao.selectOneBySql(Constants.TRAINPLANDAO_GET_MAX_PLANTRAIN_ID, null);
+						//trainId = (BigDecimal)map.get("plan_train_id");
 						// 获取经由信息
 						List<TrainlineTemplateSubDto> stationList = dto
 								.getStationList();
 						//System.err.println("stationList==" + stationList);
 						if (stationList != null && stationList.size() > 0) {
-
+                            
+							List<PlanTrainStn> tempList = new ArrayList<PlanTrainStn>();
+							
 							for (TrainlineTemplateSubDto dtoStn : stationList) {
+								
+								PlanTrainStn tempSubDto = new PlanTrainStn();
+								//数据库主键
+								String planTrainStnId = UUID.randomUUID().toString();
+								tempSubDto.setPlanTrainStnId(planTrainStnId);
 								
 								String sourceTime = dtoStn.getSourceTime();
 								int daycountSouce = Integer.valueOf(sourceTime.substring(0,1));
@@ -208,23 +217,24 @@ public class PlanTrainStnService {
 								trueRunDate = DateUtil.getDateByDay(runDate, -daycountTarget);
 								String targettime = trueRunDate+ " "+ StringUtil.handleTime(targetTime);
                                
-								Map<String,Object> paramMapStn = new HashMap<String,Object>();
-								paramMapStn.put("planTrainId",trainId );
-								paramMapStn.put("arrTime",sourcetime );
-								paramMapStn.put("dptTime",targettime );
-								paramMapStn.put("baseArrTime",sourcetime );
-								paramMapStn.put("baseDptTime",targettime );
-								paramMapStn.put("stnName",dtoStn.getName() );
-								paramMapStn.put("stnBureauFull",dtoStn.getStnBureauFull() );
-								paramMapStn.put("stnSort", dtoStn.getIndex());
-								paramMapStn.put("trackName", dtoStn.getTrackName());
-								paramMapStn.put("runDays",dtoStn.getRunDays() );
-								//插入数据表train_plan_stn
-								int successCountStn = baseDao.insertBySql(Constants.TRAINPLANDAO_ADD_TRAIN_PLAN_STN, paramMapStn);
-								logger.info("count of inserting into train_plan_stn==" + successCountStn);
+								
+								tempSubDto.setArrTime(sourcetime);
+								tempSubDto.setDptTime(targettime);
+								tempSubDto.setBaseArrTime(sourcetime);
+								tempSubDto.setBaseDptTime(targettime );
+								tempSubDto.setStnName(dtoStn.getName());
+								tempSubDto.setStnBureauFull(dtoStn.getStnBureauFull());
+								tempSubDto.setStnSort(dtoStn.getIndex());
+								tempSubDto.setTrackName(dtoStn.getTrackName());
+								tempSubDto.setRunDays(dtoStn.getRunDays());
+								
+								tempList.add(tempSubDto);
 								
 								
 							}
+							//批量插入数据表train_plan_stn
+							int successCountStn = baseDao.insertBySql(Constants.TRAINPLANDAO_ADD_TRAIN_PLAN_STN, tempList);
+							logger.info("count of inserting into train_plan_stn==" + successCountStn);
 							
 						}
 

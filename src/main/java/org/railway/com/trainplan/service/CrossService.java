@@ -191,7 +191,7 @@ public class CrossService{
 					crossTrains.addAll(completion.take().get());
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			} 
 			service.shutdown();
@@ -251,9 +251,9 @@ public class CrossService{
 	
 			
 		}catch(FileNotFoundException e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}catch(IOException e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 	} 
@@ -286,7 +286,7 @@ public class CrossService{
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		};
 		 
 	}
@@ -395,7 +395,7 @@ public class CrossService{
 					 
 				}catch (Exception e) {
 					// TODO: handle exception
-					e.printStackTrace();
+					//e.printStackTrace();
 				}   
 			} 
 		}
@@ -475,13 +475,13 @@ public class CrossService{
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (ExecutionException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		   }
 		   service.shutdown();
@@ -537,10 +537,10 @@ public class CrossService{
 				completion.take().get();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (ExecutionException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		   }
 		   service.shutdown();
