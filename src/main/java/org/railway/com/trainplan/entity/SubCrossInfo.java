@@ -2,15 +2,15 @@ package org.railway.com.trainplan.entity;
 
 public class SubCrossInfo {
   
-	private int crossId ;
+	private String crossId ;
 	private String crossName;
 	private String tokenVehBureau;
 	private String startBureau;
 	private String highlineFlag;
-	public int getCrossId() {
+	public String getCrossId() {
 		return crossId;
 	}
-	public void setCrossId(int crossId) {
+	public void setCrossId(String crossId) {
 		this.crossId = crossId;
 	}
 	public String getCrossName() {
