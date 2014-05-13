@@ -1,61 +1,33 @@
 /**
  * Created by star on 5/10/14.
  */
+var kyjhModel;
+var model;
 $(function(){
-    $("#date_selector").datepicker({format: "yyyy-mm-dd"});
-    var date = $.url().param("date");
-    if (date) {
-        $("#date_selector").val(date);
-    } else {
-        $("#date_selector").datepicker('setValue', new Date());
-    }
+    // 绑定按钮事件
+    kyjhModel = new KYJHModel();
+    model = new AuditActions();
 
-    var model = new AuditModel();
+    bindActions();
 
-    $("#kyjh_time").click(function() {
-        if($(this).is(':checked')){
-            model.open_kyjh_time("", {title: "客运开行计划时刻表"});
-        } else {
-            model.close_kyjh_time();
-        }
-    });
-    $("#kyjh_routing").click(function() {
-        if($(this).is(':checked')){
-            model.open_kyjh_routing("", {title: "客运开行计划经由"});
-        } else {
-            model.close_kyjh_routing();
-        }
-    });
-    $("#yxx_time").click(function() {
-        if($(this).is(':checked')){
-            model.open_yxx_time("", {title: "运行线时刻表"})
-        } else {
-            model.close_yxx_time();
-        }
-    });
-    $("#yxx_routing").click(function() {
-        if($(this).is(':checked')){
-            model.open_yxx_routing("", {title: "运行线经由"});
-        } else {
-            model.close_yxx_routing();
-        }
-    });
-    $("#compare").click(function() {
-        model.open_compare("", {title: "图形对比"});
-    })
+    kyjhModel.loadKYJH(moment($("#date_selector").val()).format("YYYYMMDD"));
+
+    ko.applyBindings(kyjhModel);
+
 });
 
-function AuditModel() {
+function AuditActions() {
     var self = this;
 
-    self._default = {
+    var _default = {
         autoOpen: false,
-        height: 400,
+        height: $(window).height()/3,
         width: 500,
         title: "",
-        position: [1100,0],
-        maxWidth: 600,
-        minHeight: 600
+        position: [($(window).width() - 500), 0],
+        maxWidth: 870,
+        maxHeight: $(window).height()
+
     };
 
     //客运计划时刻表框
@@ -71,17 +43,18 @@ function AuditModel() {
 
     self._getDialog = function(page, options) {
         self._default = {
-            autoOpen: options.autoOpen || self._default.autoOpen,
-            height: options.height || self._default.height,
-            width: options.width || self._default.width,
-            title: options.title || self._default.title,
-            position: options.position || self._default.position,
-            maxWidth: options.maxWidth || self._default.maxWidth,
-            minHeight: options.minHeight || self._default.minHeight,
+            autoOpen: options.autoOpen || _default.autoOpen,
+            height: options.height || _default.height,
+            width: options.width || _default.width,
+            title: options.title || _default.title,
+            position: options.position || _default.position,
+            maxWidth: _default.maxWidth,
+            maxHeight: _default.maxHeight,
+            closeText: "关闭",
             close: options.close
         };
-        var $dialog = $('<div class="dialog" style="overflow: auto"></div>')
-            .html('<iframe src="' + page + '" width="100%" height="100%" marginWidth=0 frameSpacing=0 marginHeight=0 scrolling=no frameborder="0px"></iframe>')
+        var $dialog = $('<div class="dialog" style="overflow: hidden"></div>')
+            .html('<iframe src="' + page + '" width="100%" height="100%" marginWidth=0 frameSpacing=0 marginHeight=0 scrolling=auto frameborder="0px"></iframe>')
             .dialog(self._default);
         return $dialog;
     };
@@ -92,7 +65,7 @@ function AuditModel() {
             self.update_kyjh_time(params)
         } else {
             options.close = self.close_kyjh_time;
-            self.kyjh_time = self._getDialog("timetable.html", options);
+            self.kyjh_time = self._getDialog("audit/timetable", options);
             self.kyjh_time.dialog("open");
         }
     }
@@ -118,7 +91,7 @@ function AuditModel() {
             self.update_kyjh_routing(params);
         } else {
             options.close = self.close_kyjh_routing;
-            self.kyjh_routing = self._getDialog("routing.html", options);
+            self.kyjh_routing = self._getDialog("audit/routing", options);
             self.kyjh_routing.dialog("open");
         }
     }
@@ -142,7 +115,7 @@ function AuditModel() {
             self.update_yxx_time(params);
         } else {
             options.close = self.close_yxx_time;
-            self.yxx_time = self._getDialog("timetable.html", options);
+            self.yxx_time = self._getDialog("audit/timetable", options);
             self.yxx_time.dialog("open");
         }
 
@@ -167,7 +140,7 @@ function AuditModel() {
             self.update_yxx_routing(params);
         } else {
             options.close = self.close_yxx_routing;
-            self.yxx_routing = self._getDialog("routing.html", options);
+            self.yxx_routing = self._getDialog("audit/routing", options);
             self.yxx_routing.dialog("open");
         }
     }
@@ -207,5 +180,89 @@ function AuditModel() {
 
     self.compare_opened = function() {
         return self.compare != null;
+    }
+}
+
+
+function bindActions() {
+
+    $("#date_selector").datepicker({format: "yyyy-mm-dd"}).on('changeDate', function (ev) {
+        kyjhModel.loadKYJH(moment(ev.date).format("YYYYMMDD"));
+    });;
+    var date = $.url().param("date");
+    if (date) {
+        $("#date_selector").val(date);
+    } else {
+        $("#date_selector").datepicker('setValue', new Date());
+    }
+
+    //bind actions
+    $("#kyjh_time").click(function() {
+        if($(this).is(':checked')){
+            model.open_kyjh_time("", {title: "客运开行计划时刻表"});
+        } else {
+            model.close_kyjh_time();
+        }
+    });
+    $("#kyjh_routing").click(function() {
+        if($(this).is(':checked')){
+            model.open_kyjh_routing("", {title: "客运开行计划经由"});
+        } else {
+            model.close_kyjh_routing();
+        }
+    });
+    $("#yxx_time").click(function() {
+        if($(this).is(':checked')){
+            model.open_yxx_time("", {title: "运行线时刻表"})
+        } else {
+            model.close_yxx_time();
+        }
+    });
+    $("#yxx_routing").click(function() {
+        if($(this).is(':checked')){
+            model.open_yxx_routing("", {title: "运行线经由"});
+        } else {
+            model.close_yxx_routing();
+        }
+    });
+    $("#compare").click(function() {
+        model.open_compare("", {title: "图形对比", height: $(window).height()});
+    })
+}
+
+function KYJHModel() {
+    var self = this;
+
+    self.kyjhTable = ko.observableArray();
+
+    self.currentDate = null;
+
+    self.paramDate = null;
+
+    self.loadKYJH = function(date) {
+        self.paramDate = date;
+        $.ajax({
+            url: "audit/runplan/" + date,
+            method: "GET",
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(list) {
+            self.kyjhTable.removeAll();
+            for( var i = 0; i < list.length; i++) {
+                self.kyjhTable.push(list[i]);
+            }
+            // 表头固定
+            $("#left_table").freezeHeader();
+        }).fail(function() {
+
+        }).always(function() {
+
+        })
+    }
+
+    self.showInPanel = function(ev) {
+        model.update_kyjh_time(ev.id);
+        model.update_kyjh_routing(ev.id);
+        model.update_yxx_time(ev.id);
+        model.update_yxx_routing(ev.id);
     }
 }

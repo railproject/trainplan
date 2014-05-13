@@ -31,9 +31,13 @@ import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
+import org.railway.com.trainplan.entity.Ljzd;
+import org.railway.com.trainplan.repository.mybatis.BaseDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.Client;
@@ -44,23 +48,57 @@ import com.sun.jersey.api.client.WebResource;
 public class CrossService{
 	private static final Logger logger = Logger.getLogger(CommonService.class);
 	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-//	@Autowired
-//	private CrossMybatisDao crossMybatisDao;
-//	
-//	@Autowired
-//	private CrossTrainMybatisDao crossTrainMybatisDao;
+
+	@Autowired
+	private CommonService commonService;
+	
+	@Autowired
+	private BaseDao baseDao;
 	
 	public static void main(String[] args) throws IOException, IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		InputStream is = new FileInputStream(
 				"C:\\Users\\Administrator\\Desktop\\work\\交路相关\\对数表模板1.xls");
 		
 		CrossService a = new CrossService();
-		a.actionExcel1(is); 
+		a.actionExcel(is); 
 //		System.out.println("G11(".substring(0,"G11(".indexOf('(')));
 	}
 
+	/**
+	 * 查询cross信息
+	 * @param reqMap
+	 * @return
+	 */
+	public List<CrossInfo>  getCrossInfo(Map<String,Object> reqMap){
+		List<CrossInfo>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_INFO, reqMap);
+		return list;
+	}
 	
-	public void actionExcel1(InputStream inputStream) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	/**
+	 * 通过crossid查询crossinfo信息
+	 * @param crossId
+	 * @return
+	 */
+	public CrossInfo getCrossInfoForCrossid(String crossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("crossId", crossId);
+		return (CrossInfo)baseDao.selectOneBySql(Constants.CROSSDAO_GET_CROSS_INFO_FOR_CROSSID, paramMap);
+	    
+	}
+	
+	/**
+	 * 通过crossid查询crosstrainInfo信息
+	 * @param crossId
+	 * @return
+	 */
+	public List<CrossTrainInfo> getCrossTrainInfoForCrossid(String crossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("crossId", crossId);
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_TRAIN_INFO_FOR_CROSSID, paramMap);
+	}
+	
+	
+	public void actionExcel(InputStream inputStream) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// TODO Auto-generated method stub
 		LinkedHashMap<String, String> pm = new LinkedHashMap<String, String>();
 		pm.put("crossId", "");
@@ -96,25 +134,15 @@ public class CrossService{
 		
 		//可以从数据库中获取
 		Map<String, String> tokenPsgDeptValuesMap = new HashMap<String, String>();
-		tokenPsgDeptValuesMap.put("B","哈");
-		tokenPsgDeptValuesMap.put("T","沈");
-		tokenPsgDeptValuesMap.put("P","京");
-		tokenPsgDeptValuesMap.put("V","太");
-		tokenPsgDeptValuesMap.put("C","呼");
-		tokenPsgDeptValuesMap.put("F","郑");
-		tokenPsgDeptValuesMap.put("N","武");
-		tokenPsgDeptValuesMap.put("Y","西");
-		tokenPsgDeptValuesMap.put("K","济");
-		tokenPsgDeptValuesMap.put("H","上");
-		tokenPsgDeptValuesMap.put("G","南");
-		tokenPsgDeptValuesMap.put("Q","广");
-		tokenPsgDeptValuesMap.put("Z","宁");
-		tokenPsgDeptValuesMap.put("W","成");
-		tokenPsgDeptValuesMap.put("M","昆");
-		tokenPsgDeptValuesMap.put("J","兰");
-		tokenPsgDeptValuesMap.put("R","乌");
-		tokenPsgDeptValuesMap.put("O","青");
-		valuesMap.put("tokenPsgDept", tokenPsgDeptValuesMap); 
+		//路局字典信息
+		List<Ljzd> lizdList = commonService.getFullStationInfo();
+		if(lizdList !=null && lizdList.size() > 0){
+			for(Ljzd dto : lizdList){
+				tokenPsgDeptValuesMap.put(dto.getLjpym(), dto.getLjjc());
+			}
+		}
+		System.err.println("tokenPsgDeptValuesMap==" + tokenPsgDeptValuesMap);
+		valuesMap.put("tokenPsgBureau", tokenPsgDeptValuesMap); 
 		 
 		
 		// TODO Auto-generated method stub
@@ -122,13 +150,13 @@ public class CrossService{
 			HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
 			int num = workbook.getNumberOfSheets();		
 			List<CrossInfo> alllist = new ArrayList<CrossInfo>();
-//			for(int i = 0; i < num; i++){
-				HSSFSheet sheet = workbook.getSheetAt(1);
+			for(int i = 0; i < num; i++){
+				HSSFSheet sheet = workbook.getSheetAt(i);
 				ExcelUtil<CrossInfo> test = new ExcelUtil<CrossInfo>(pm, sheet, CrossInfo.class);
 				test.setValueMapping(valuesMap);
 				List<CrossInfo> list = test.getEntities(-1);
 				alllist.addAll(list);  
-//			}
+			}
 			
 			ExecutorService service=Executors.newFixedThreadPool(10);
 			CompletionService<List<CrossTrainInfo>> completion=new ExecutorCompletionService<List<CrossTrainInfo>>(service);
@@ -149,11 +177,7 @@ public class CrossService{
 			} 
 			service.shutdown();
 			
-//			//保存交路
-//			crossMybatisDao.saveCrossBeach(alllist);
-//			//保存列车
-//			crossTrainMybatisDao.saveCrossTrainInfoBeach(crossTrains);
-			
+			//fortest
 			BeanInfo  beaninfo = Introspector.getBeanInfo(CrossInfo.class);
 			 
 			PropertyDescriptor[] pds = beaninfo.getPropertyDescriptors();
@@ -163,8 +187,8 @@ public class CrossService{
 						PropertyDescriptor pd = pds[i];
 						String propertyName = pd.getName();  
 						if(key.equals(propertyName)){
-							Method method = pd.getReadMethod();
-							System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
+							//Method method = pd.getReadMethod();
+							//System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
 							break; 
 						}
 					}
@@ -181,7 +205,7 @@ public class CrossService{
 						
 						PropertyDescriptor pd = pds[i];
 						Method method = pd.getReadMethod();
-						System.out.print(pd.getName() + "=" + method.invoke(cross, null) + ",");
+						//System.out.print(pd.getName() + "=" + method.invoke(cross, null) + ",");
 //						String propertyName = pd.getName();  
 //						if(key.equals(propertyName)){
 //							Method method = pd.getReadMethod();
@@ -192,103 +216,28 @@ public class CrossService{
 				}
 				logger.debug("");
 			}
+			
+			////////////////////////
+			
+			if(alllist != null && alllist.size() > 0){
+				//保存交路信息
+				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
+				
+			}
+        	//保存列车
+			if(crossTrains != null && crossTrains.size() > 0 ){
+				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
+			}
+	
+			
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 		
-	}
-	
-	private LinkedList<CrossTrainInfo> createTrainsForCross(CrossInfo cross){ 
-		
-//		String crossName = cross.getCrossName();
-//		String[] crossSpareNames = cross.getCrossSpareName() == null ? null : cross.getCrossSpareName().split("-");
-//		String[] alertNateTrains = cross.getAlterNateTranNbr() == null ? null : cross.getAlterNateTranNbr().split("-");
-//		String[] alertNaateDate = cross.getAlterNateDate() == null ? null : cross.getAlterNateDate().split("-");
-//		String[] spareFlag = cross.getSpareFlag() == null ? null : cross.getSpareFlag().split("-");
-//		String[] trains = crossName.split("-");
-//		LinkedList<CrossTrainInfo> crossTrains = new LinkedList<CrossTrainInfo>();
-//		CrossTrainInfo train = null;
-//		for(int i = 0; i < trains.length; i++){
-//			train = new CrossTrainInfo();
-//			train.setTrainSort(i);
-//			train.setCrossId(cross.getCrossId());
-//			train.setTrainNbr(trains[i]); 
-//			//
-//			if(alertNateTrains != null){
-//				train.setAlertNateTrainNbr(alertNateTrains[i]);
-//			}
-//			//
-//			if(alertNaateDate != null){
-//				train.setAlertNateTime(alertNaateDate[i] + " 02:00:00");
-//			}
-//			//
-//			if(spareFlag != null){
-//				if(spareFlag.length == 1){
-//					train.setSpareFlag(Integer.parseInt(spareFlag[0]));
-//				}else{
-//					train.setSpareFlag(Integer.parseInt(spareFlag[i]));
-//				}
-//			}  
-//			crossTrains.add(train);
-//		}
-//		
-//	 
-//	   ExecutorService service=Executors.newCachedThreadPool();
-//	   CompletionService<CrossTrainInfo> completion=new ExecutorCompletionService<CrossTrainInfo>(service);
-//	   
-//	   for(int i=0; i < crossTrains.size(); i++){
-//		   completion.submit(new GetTrainInfoCompletionService(crossTrains.get(i)));
-//	   }
-//	   for(int i=0;i<10;i++){
-//		   logger.debug(completion.take().get());
-//	   }
-//	   service.shutdown();
-//			 
-//		setDayGapForTrains(crossTrains); 
-//		
-//		
-//		LinkedList<CrossTrainInfo> crossSpareTrains = new LinkedList<CrossTrainInfo>();
-//		
-//		
-//		if(crossSpareNames != null){
-//			for(int i = 0; i < crossSpareNames.length; i++){
-//				train = new CrossTrainInfo();
-//				train.setCrossId(cross.getCrossId());
-//				train.setTrainSort(crossTrains.size() + i);
-//				train.setTrainNbr(crossSpareNames[i]); 
-//				//
-//				if(alertNateTrains != null){
-//					train.setAlertNateTrainNbr(alertNateTrains[i]);
-//				}
-//				//
-//				if(alertNaateDate != null){
-//					train.setAlertNateTime(alertNaateDate[i] + " 02:00:00");
-//				}
-//				//
-//				if(spareFlag != null){
-//					if(spareFlag.length == 1){
-//						train.setSpareFlag(Integer.parseInt(spareFlag[0]));
-//					}else{
-//						train.setSpareFlag(Integer.parseInt(spareFlag[i]));
-//					}
-//				} 
-//				trainInfoFromPain(train); 
-//				crossSpareTrains.add(train);
-//			}
-//			 
-//			setDayGapForTrains(crossSpareTrains);
-//			
-//			crossTrains.addAll(crossSpareTrains);
-//		}
-//		 
-////		String trains = crossName.split("-");
-//		logger.debug("crossTrains=" + crossTrains.size());
-//		
-//		return crossTrains; 
-		return null;
-	}
+	} 
+
 	
 	private void setDayGapForTrains(LinkedList<CrossTrainInfo> crossTrains){
 		for(int i = 0; i < crossTrains.size(); i++){
@@ -322,100 +271,10 @@ public class CrossService{
 		 
 	}
 	
-	/**
-	 * 获取列车基本信息
-	 * @param train
-	 */
-	
- 
-	 
-	public void actionExcel(InputStream inputStream) {
-		// TODO Auto-generated method stub
-		LinkedHashMap<String, String> pm = new LinkedHashMap<String, String>();
-		pm.put("crossId", "");
-		pm.put("crossName", "");
-		pm.put("crossSpareName", "");
-		pm.put("alterNateDate", "");
-		pm.put("alterNateTranNbr", "");
-		pm.put("spareFlag", ""); 
-		pm.put("cutOld", ""); 
-		pm.put("groupTotalNbr", "");
-		pm.put("pairNbr", ""); 
-		pm.put("highlineFlag", ""); 
-		pm.put("highlineRule", "");
-		pm.put("commonlineRule", "");
-		pm.put("appointWeek", "");  
-		pm.put("appointDay", ""); 
-		pm.put("crossSection", ""); 
-		pm.put("throughline", "");  
-		pm.put("startBureau", "");  
-		pm.put("tokenVehDept", ""); 
-		pm.put("tokenVehDepot", ""); 
-		pm.put("tokenPsgBureau", "");  
-		pm.put("tokenPsgDept", "");  
-		pm.put("locoType", "");
-		pm.put("crhType", ""); 
-		pm.put("elecSupply", "");
-		pm.put("dejCollect", "");
-		pm.put("airCondition", "");
-		pm.put("note", ""); 
-		
-		Map<String,  Map<String, String>> valuesMap = new HashMap<String, Map<String, String>>();
-		
-		Map<String, String> tokenPsgDeptValuesMap = new HashMap<String, String>();
-		
-		tokenPsgDeptValuesMap.put( "C", "长沙");
-		tokenPsgDeptValuesMap.put("S", "上");
-		tokenPsgDeptValuesMap.put("N", "南");
-		valuesMap.put("tokenPsgDept", tokenPsgDeptValuesMap);  
-		// TODO Auto-generated method stub
-		try{
-			HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
-			int num = workbook.getNumberOfSheets();		
-			List<CrossInfo> alllist = new ArrayList<CrossInfo>();
-			for(int i = 0; i < num; i++){
-				HSSFSheet sheet = workbook.getSheetAt(i);
-				ExcelUtil<CrossInfo> test = new ExcelUtil<CrossInfo>(pm, sheet, CrossInfo.class);
-				test.setValueMapping(valuesMap);
-				List<CrossInfo> list = test.getEntities(-1);
-				alllist.addAll(list);  
-			}
-			ArrayList<CrossTrainInfo> crossTrains = new ArrayList<CrossTrainInfo>();
-			
-			
-			for(CrossInfo cross: alllist){
-				crossTrains.addAll(this.createTrainsForCross(cross));
-			}
-			
-			
-			
-//			for(CrossExcelInfo)
-//			logger.debug("---------------" + alllist.get(0).getCrossName());
-			
-//			BeanInfo beaninfo beaninfo = Introspector.getBeanInfo(CrossExcelInfo.class);
-//			 
-//			PropertyDescriptor[] pds = beaninfo.getPropertyDescriptors();
-//			for(CrossExcelInfo cross: alllist){
-//				for(String key : pm.keySet()){
-//					for(int i = 0; i < pds.length; i++){
-//						PropertyDescriptor pd = pds[i];
-//						String propertyName = pd.getName();  
-//						if(key.equals(propertyName)){
-//							Method method = pd.getReadMethod();
-//							System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
-//							break; 
-//						}
-//					}
-//				}
-//				logger.debug();
-//			}
-		}catch(FileNotFoundException e){
-			e.printStackTrace();
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		
-	}
+
+
+
+
 	/**
 	 * 用于并行处理交路
 	 * @author Administrator

@@ -14,4 +14,6 @@ public interface CrossTrainMybatisDao {
 	void saveCrossTrainInfoBeach(List<CrossTrainInfo> crosses);
 
 	void delete(String id);
+	
+	void deleteBach(String ids);
 }

@@ -4,8 +4,8 @@ import java.util.UUID;
 
 public class CrossTrainInfo {
 	
-	private String crossTainId = UUID.randomUUID().toString();//BASE_CROSS_TRAIN_ID
-	private String crossId;//BASE_CROSS_ID
+	private String crossTainId =  UUID.randomUUID().toString();//BASE_CROSS_TRAIN_ID
+	private String  crossId;//BASE_CROSS_ID
 	private int trainSort;//TRAIN_SORT
 	private String baseTrainId;
 	private String trainNbr;//TRAIN_NBR
