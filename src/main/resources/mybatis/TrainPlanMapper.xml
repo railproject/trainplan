@@ -41,14 +41,99 @@
 
 	</select>
 
-	<insert id="addTrainPlan" parameterType="map">
+	<insert id="addTrainPlanStn"  parameterType="java.util.List">
+		insert into plan_train_stn
+		(PLAN_TRAIN_STN_ID,
+		PLAN_TRAIN_ID,
+		STN_NAME,
+		STN_BUREAU_FULL,
+		STN_SORT,
+		TRACK_NAME,
+		RUN_DAYS,
+		ARR_TIME,
+		DPT_TIME,
+		BASE_ARR_TIME,
+		BASE_DPT_TIME
+		)
+		 (<foreach collection="list" item="item" index="index"
+            separator="UNION">
+	       SELECT
+	       #{item.planTrainStnId,jdbcType=VARCHAR},
+	       #{item.planTrainId,jdbcType=VARCHAR},
+	       #{item.stnName,jdbcType=VARCHAR},
+	       #{item.stnBureauFull,jdbcType=VARCHAR},
+	       #{item.stnSort,jdbcType=NUMERIC},
+	       #{item.trackName,jdbcType=VARCHAR},
+	       #{item.runDays,jdbcType=NUMERIC},
+	       <choose>
+			<when test="item.arrTime != null">
+				to_date(#{arrTime},'yyyy-MM-dd hh24:mi:ss'),
+			</when>
+			<otherwise>
+				null,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="item.dptTime != null">
+				to_date(#{dptTime},'yyyy-MM-dd hh24:mi:ss'),
+			</when>
+			<otherwise>
+				null,
+			</otherwise>
+		</choose>
+		   <choose>
+			<when test="item.baseArrTime != null">
+				to_date(#{baseArrTime},'yyyy-MM-dd hh24:mi:ss'),
+			</when>
+			<otherwise>
+				null,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="item.baseDptTime != null">
+				to_date(#{baseDptTime},'yyyy-MM-dd hh24:mi:ss')
+			</when>
+			<otherwise>
+				null
+			</otherwise>
+		</choose>
+	       from dual
+	       
+	      </foreach>
+	     ) 
+	</insert>
+	
+	
+	<insert id="addTrainPlan"  parameterType="java.util.List">
 
 		insert into plan_train
-		(PLAN_TRAIN_ID,RUN_DATE,TRAIN_NBR,START_TIME,END_TIME,START_STN,END_STN,BASE_CHART_ID,BASE_TRAIN_ID,START_BUREAU_FULL,END_BUREAU_FULL,TRAIN_TYPE)
-		values
-		(SEQ_PLAN_TRAIN.nextVal,#{runDate},#{trainNbr},
-		<choose>
-			<when test="startTime != null">
+		(PLAN_TRAIN_ID,
+		RUN_DATE,
+		TRAIN_NBR,
+		START_STN,
+		END_STN,
+		BASE_CHART_ID,
+		BASE_TRAIN_ID,
+		START_BUREAU_FULL,
+		END_BUREAU_FULL,
+		TRAIN_TYPE,
+		START_TIME,
+		END_TIME)
+		  (<foreach collection="list" item="item" index="index"
+            separator="UNION">
+	       SELECT
+	       #{item.planTrainId,jdbcType=VARCHAR},
+	       #{item.runDate,jdbcType=VARCHAR},
+	       #{item.trainNbr,jdbcType=VARCHAR},
+	       #{item.startStn,jdbcType=VARCHAR},
+	       #{item.endStn,jdbcType=VARCHAR},
+	       #{item.baseChartId,jdbcType=VARCHAR},
+	       #{item.baseTrainId,jdbcType=VARCHAR},
+	       #{item.startBureau,jdbcType=VARCHAR},
+	       #{item.endBureau,jdbcType=VARCHAR},
+	       #{item.trainType,jdbcType=VARCHAR},
+	       <choose>
+			<when test="item.startTime != null">
 				to_date(#{startTime},'yyyy-MM-dd hh24:mi:ss'),
 			</when>
 			<otherwise>
@@ -56,14 +141,17 @@
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="endTime != null">
-				to_date(#{endTime},'yyyy-MM-dd hh24:mi:ss'),
+			<when test="item.endTime != null">
+				to_date(#{endTime},'yyyy-MM-dd hh24:mi:ss')
 			</when>
 			<otherwise>
-				null,
+				null
 			</otherwise>
 		</choose>
-		#{startStn},#{endStn},#{baseChartId},#{baseTrainId},#{startBureauFull},#{endBureauFull},#{trainType})
+	       from dual
+	       
+	      </foreach>
+	     ) 
 	</insert>
 
 	<select id="getMaxPlanTrainId" resultType="map">
@@ -71,21 +159,7 @@
 		plan_train_id desc) where rownum = 1
 	</select>
 
-	<insert id="addTrainPlanStn" parameterType="map">
-		insert into plan_train_stn
-		(PLAN_TRAIN_STN_ID,PLAN_TRAIN_ID,ARR_TIME,DPT_TIME,BASE_ARR_TIME,BASE_DPT_TIME,STN_NAME,STN_BUREAU_FULL,STN_SORT,TRACK_NAME,RUN_DAYS)
-		values
-		(SEQ_PLAN_TRAIN_STN.nextVal,$planTrainId$,
-		to_date(#{arrTime},'yyyy-MM-dd hh24:mi:ss'),
-		to_date(#{dptTime},'yyyy-MM-dd hh24:mi:ss'),
-		to_date(#{baseArrTime},'yyyy-MM-dd hh24:mi:ss'),
-		to_date(#{baseDptTime},'yyyy-MM-dd hh24:mi:ss'),
-		#{stnName},
-		#{stnBureauFull},
-		$stnSort$,
-		#{trackName},
-		$runDays$)
-	</insert>
+
 
 	<select id="getTrainTimeDetail" parameterType="map" resultType="map">
 		SELECT case when a.START_STN=b.STN_NAME then '1' else '0' end

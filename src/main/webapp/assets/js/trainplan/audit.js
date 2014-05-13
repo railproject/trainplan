@@ -65,7 +65,7 @@ function AuditActions() {
             self.update_kyjh_time(params)
         } else {
             options.close = self.close_kyjh_time;
-            self.kyjh_time = self._getDialog("audit/timetable", options);
+            self.kyjh_time = self._getDialog("audit/plan/timetable", options);
             self.kyjh_time.dialog("open");
         }
     }
@@ -91,7 +91,7 @@ function AuditActions() {
             self.update_kyjh_routing(params);
         } else {
             options.close = self.close_kyjh_routing;
-            self.kyjh_routing = self._getDialog("audit/routing", options);
+            self.kyjh_routing = self._getDialog("audit/plan/routing", options);
             self.kyjh_routing.dialog("open");
         }
     }
@@ -115,7 +115,7 @@ function AuditActions() {
             self.update_yxx_time(params);
         } else {
             options.close = self.close_yxx_time;
-            self.yxx_time = self._getDialog("audit/timetable", options);
+            self.yxx_time = self._getDialog("audit/line/timetable", options);
             self.yxx_time.dialog("open");
         }
 
@@ -140,7 +140,7 @@ function AuditActions() {
             self.update_yxx_routing(params);
         } else {
             options.close = self.close_yxx_routing;
-            self.yxx_routing = self._getDialog("audit/routing", options);
+            self.yxx_routing = self._getDialog("audit/line/routing", options);
             self.yxx_routing.dialog("open");
         }
     }
@@ -164,7 +164,7 @@ function AuditActions() {
             self.update_compare(params);
         } else {
             options.close = self.close_compare;
-            self.compare = self._getDialog("mycanvas.html", options);
+            self.compare = self._getDialog("audit/planline/2014-05-13/B/123", options);
             self.compare.dialog("open");
         }
     }
@@ -242,7 +242,7 @@ function KYJHModel() {
     self.loadKYJH = function(date) {
         self.paramDate = date;
         $.ajax({
-            url: "audit/runplan/" + date,
+            url: "audit/plan/runplan/" + date,
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {

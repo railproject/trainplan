@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace必须指向Dao接口 -->
-<mapper namespace="org.railway.com.trainplan.repository.mybatis.RunPlanDAO">
+<mapper namespace="org.railway.com.trainplan.repository.mybatis.RunPlanDao">
 
-	<select id="findRunPlanByDate" parameterType="string" resultType="map">
+	<select id="findRunPlan" parameterType="map" resultType="map">
         SELECT T.PLAN_TRAIN_ID as PLAN_TRAIN_ID, T.TRAIN_NBR as TRAIN_NBR,
         T.START_STN as START_STN, T.END_STN as END_STN, T.RUN_DATE as RUN_DATE,
         T.DAILYPLAN_FLAG as DAILYPLAN_FLAG, T.DAILYPLAN_TIME as DAILYPLAN_TIME,
