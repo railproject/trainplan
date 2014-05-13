@@ -38,6 +38,7 @@
 <script src="assets/js/knockout.js"></script>
 <script src="assets/js/jquery.jeditable.js"></script>
 <script src="assets/js/jquery.dataTables.editable.js"></script>
+<script src="assets/js/ajaxfileupload.js"></script>
 <script src="js/cross.js"></script> 
 <script type="text/javascript">
 
@@ -92,7 +93,11 @@ function CrossModel() {
 				break;
 			}
 		} 
-	}; 
+	};
+	
+	self.uploadCrossFile = function(){
+		
+	}
 	
 	 
 	//当前选中的交路对象
@@ -1019,10 +1024,12 @@ function openLogin() {
 			<input type="text"  name="chartId" data-bind="value: searchModle().chart()? searchModle().chart().chartId: ''"/>
 			<input type="text"  name="startDay" data-bind="value: searchModle().startDay() ? searchModle().startDay(): ''"/>
 			<div>
-				<input type="file"  name="fileName" />
+				<input type="file" class="btn btn-success" name="fileName" />
 			</div>
 			<div>
-				<input type="submit"  value="上传" />
+			     <a type="button"
+					class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: uploadCrossFile">上传</a>
+				<!-- <input type="submit"  value="上传" data-bind=/> -->
 			</div>
 		</form>
 	</div>
