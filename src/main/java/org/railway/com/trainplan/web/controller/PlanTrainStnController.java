@@ -111,13 +111,14 @@ public class PlanTrainStnController {
 		*/
 		//CrossService a = new CrossService();
 		//测试插入unit_cross表
-		try{
+		/*try{
 			String baseCrossId = reqMap.get("baseCrossId").toString();
 			System.err.println("baseCrossId==" + baseCrossId);
 			crossService.completeUnitCrossInfo(baseCrossId);
 		}catch(Exception e){
 			e.printStackTrace();
-		}
+		}*/
+		
 		
 		return result;
 	}

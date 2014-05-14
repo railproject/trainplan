@@ -148,7 +148,7 @@
 	     COMMONLINE_RULE AS commonLineRule,
 	     APPOINT_WEEK AS appointWeek,
 	     APPOINT_DAY AS appointDay
-	     from unit_cross_train where UNIT_CROSS_TRAIN_ID=#{unitCrossTrainId}    
+	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId}    
    </select>
    
   
