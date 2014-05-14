@@ -299,7 +299,7 @@
 	</select>
 
   <select id="getUnitCrossInfoCount"  parameterType="map" resultType="map">
-     select count(*) as  from UNIT_CROSS where 1=1  
+     select count(*) as  count from UNIT_CROSS where 1=1  
      <if test="tokenVehBureau != null">
 			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
 		</if>

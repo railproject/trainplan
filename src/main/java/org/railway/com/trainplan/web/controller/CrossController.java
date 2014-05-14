@@ -140,6 +140,7 @@ public class CrossController {
 	    	result.setData(page);
 	    }catch(Exception e){
 			logger.error("getUnitCrossInfo error==" + e.getMessage());
+			e.printStackTrace();
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
 		}
