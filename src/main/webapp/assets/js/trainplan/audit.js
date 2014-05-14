@@ -266,7 +266,7 @@ function bindActions() {
         if(plans == "" && lines == "") {
             console.log("select some checkbox");
         } else {
-            model.open_compare("plans=" + plans + "&lines" + lines, {title: "图形对比", height: $(window).height()});
+            model.open_compare("plans=" + plans + "&lines" + lines, {title: "图形对比", height: $(window).height(), width: 800});
         }
     })
 }
