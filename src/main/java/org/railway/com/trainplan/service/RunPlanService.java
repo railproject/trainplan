@@ -32,4 +32,12 @@ public class RunPlanService {
     public List<Map<String, Object>> findRunPlanStn(String train_id) {
         return runPlanDAO.findRunPlanStnByTrain(train_id);
     }
+
+    public List<Map<String, Object>> findRunPlans(String train_ids) {
+        return runPlanDAO.findRunPlanByTrainIds(train_ids);
+    }
+
+    public List<Map<String, Object>> findPlanLineSTNs(String train_ids) {
+        return runPlanDAO.findPlanLineSTNs(train_ids);
+    }
 }

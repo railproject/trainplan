@@ -164,7 +164,10 @@ function AuditActions() {
             self.update_compare(params);
         } else {
             options.close = self.close_compare;
-            self.compare = self._getDialog("audit/planline/" + kyjhModel.bureau().code + "/" + params);
+            var queryStr = "date=" + $("#date_selector").val();
+            queryStr += "&bureau=" + kyjhModel.bureau().code;
+            queryStr += "&" + params;
+            self.compare = self._getDialog("audit/planline?" + queryStr, options);
             self.compare.dialog("open");
         }
     }
@@ -244,7 +247,21 @@ function bindActions() {
         }
     });
     $("#compare").click(function() {
-        model.open_compare("", {title: "图形对比", height: $(window).height()});
+        console.log($("input[name='plan']:checked").serialize());
+        console.log($("input[name='line']:checked").serialize());
+        var plans = "";
+        var lines = "";
+        $("input[name='plan']:checked").each(function(index, ele) {
+            plans += $(ele).val() + ",";
+        });
+        $($("input[name='line']:checked")).each(function(index, ele) {
+            lines += $(ele).val() + ",";
+        })
+        if(plans == "" && lines == "") {
+            console.log("select some checkbox");
+        } else {
+            model.open_compare("plans=" + plans + "&lines" + lines, {title: "图形对比", height: $(window).height()});
+        }
     })
 }
 
