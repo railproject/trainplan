@@ -19,10 +19,10 @@ import org.springframework.stereotype.Component;
  * @author calvin
  * 
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
-@Component
+//@Retention(RetentionPolicy.RUNTIME)
+//@Target(ElementType.TYPE)
+//@Documented
+//@Component
 public @interface MyBatisRepository {
 	String value() default "";
 }

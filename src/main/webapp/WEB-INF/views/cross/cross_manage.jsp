@@ -1,4 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" %> 
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+<% 
+String basePath = request.getContextPath();
+%>
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -17,10 +21,9 @@
 	href="assets/css/font-awesome.min.css" />
 <link type="text/css" rel="stylesheet"
 	href="assets/css/datepicker.css">
-<!-- Custom styles for this template -->
-<link href="assets/css/style.css" rel="stylesheet"> 
-<link href="assets/css/cross/cross.css" rel="stylesheet">
-
+<!-- Custom styles for this template --> 
+<link href="assets/css/cross/cross.css" rel="stylesheet"> 
+ 
 <script src="assets/js/jquery.js"></script>
 <script src="assets/js/html5.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
@@ -41,6 +44,9 @@
 <script type="text/javascript" src="assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="assets/js/ajaxfileupload.js"></script> 
 <script type="text/javascript" src="assets/js/trainplan/cross/cross.js"></script>  
+<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
+<script src="<%=basePath %>/assets/js/trainplan/common.js"></script> 
  
 </head>
 <body class="Iframe_body" style="margin-left:50px;margin-right:50px;">
@@ -71,7 +77,7 @@
 						   <div class="row" style="margin: 5px 0 5px 0;">
 								<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
 						        <div class="pull-left">
-						           <input class="form-control" style="width:179px;" placeholder="" data-bind="value: searchModle().startDay">
+						           <input class="form-control" id="cross_start_day" style="width:179px;" placeholder="" data-bind="value: searchModle().startDay">
 						        </div>
 						        <button class="btn btn-primary" type="button" style="margin-left: 10px;"
 								id="btn_cross_upload" data-bind="click: showUploadDlg">导入EXCEL</button>
@@ -149,26 +155,33 @@
 											<a type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_delete">删除</a>
 											  <a type="button" class="btn btn-success" data-toggle="modal"
-												data-target="#" id="btn_cross_createCrossUnit">生成基本交路单元</a>
+												data-target="#" id="btn_cross_createCrossUnit" data-bind="click: createUnitCrossInfo">生成基本交路单元</a>
 										</div> 
 										<table class="table table-bordered table-striped table-hover" 
 											id="cross_table_crossInfo">
 											<thead>
 												<tr style="height: 25px">
-													<th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0"></th>
+													<th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
 													<th style="width: 15%" align="center">序号</th>
 													<th style="width: 60%" align="center">车底交路名</th>
 													<th style="width: 15%" align="center">状态</th>
 												</tr>
 											</thead>
 											<tbody data-bind="foreach: crossRows">
-												<tr data-bind="click: $parent.showTrains, visible: visiableRow" >
-												    <td align="center"><input type="checkbox"></td>
-													<td data-bind="text: $index "></td>
-													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName"></td>
-													<td >已审核</td>
+												<tr data-bind=" visible: visiableRow" >
+												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
+													<td data-bind=" text: $index()+1 , click: $parent.showTrains"></td>
+													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains"></td>
+													<td style="color: green;">已审核</td>
 												</tr> 
-											</tbody>
+											</tbody> 
+											<tr data-bind="visiable: totalCount() > pageSize">
+												<table>
+												  <tr>
+													<td >共<span data-bind="html: totalCount()"></span>条 当前<span data-bind="html: currentIndex+1"></span>到<span data-bind="html: crossRows().length + 1"></span></td><td colspan="2" data-bind="click: loadNCrosses">下一页</td><td colspan="2" data-bind="click: loadPCrosses">上一页</td>
+												  </tr>
+												</table>
+											</tr>
 										</table>
 									</div>
 								</div> 
@@ -558,7 +571,7 @@
 		<form id="file_upload_id" name="file_upload_name" action="cross/fileUpload"
 			method="post" enctype="multipart/form-data"> 
 			<div>
-				<input id="fileToUpload" type="file" size="45" name="fileToUpload" class="btn btn-success" name="fileName" />
+				<input id="fileToUpload" type="file" size="45" name="fileToUpload"  name="fileName" />
 			</div>
 			<div>
 			     <a type="button"

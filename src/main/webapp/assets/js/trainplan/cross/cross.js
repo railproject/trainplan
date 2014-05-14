@@ -1,4 +1,3 @@
-
 $(function() {
 	$("#file_upload_dlg").dialog("close"); 
 	$("#cross_train_time_dlg").dialog("close"); 
@@ -9,8 +8,8 @@ $(function() {
 	cross.init();   
 });
 
-var highlingFlags = [{"value": -1, "text": ""},{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
-var sureFlags = [{"value": -1, "text": ""},{"value": "0", "text": "已审核"},{"value": 1, "text": "未审核"}];
+var highlingFlags = [{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
+var sureFlags = [{"value": "0", "text": "已审核"},{"value": 1, "text": "未审核"}];
 var highlingrules = [{"value": 1, "text": "平日"},{"value": 2, "text": "周末"},{"value": 3, "text": "高峰"}];
 var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔日"}];
  
@@ -25,10 +24,40 @@ function CrossModel() {
 	//交路列表
 	self.crossRows = ko.observableArray(); 
 	
+	self.crossAllcheckBox = ko.observable(0);
+	
 	self.gloabBureaus = []; 
 	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
+	
+	self.selectCrosses = function(){
+//		self.crossAllcheckBox(); 
+		$.each(self.crossRows(), function(i, crossRow){ 
+			if(self.crossAllcheckBox() == 1){
+				crossRow.selected(0);
+			}else{
+				crossRow.selected(1); 
+			} 
+		}); 
+	};
+	
+	self.selectCross = function(row){
+//		self.crossAllcheckBox();
+		console.log(row.selected());
+		if(row.selected() == 0){
+			self.crossAllcheckBox(1);
+			$.each(self.crossRows(), function(i, crossRow){ 
+				console.log("==="+ crossRow.selected());
+				if(crossRow.selected() != 1 && crossRow != row){
+					self.crossAllcheckBox(0);
+					return false;
+				}  
+			}); 
+		}else{
+			self.crossAllcheckBox(0);
+		} 
+	};
 	
 	// cross基础信息中的下拉列表  
 	self.loadBureau = function(bureaus){   
@@ -56,10 +85,18 @@ function CrossModel() {
 				 } 
 			  }); 
 		 };
-	}
+	};
 	
 	self.uploadCrossFile = function(){ 
 	        //starting setting some animation when the ajax starts and completes
+		    var chart = self.searchModle().chart();
+		    var startDay = $("#cross_start_day").val().replace(/-/g, "");
+		    if(chart == null){
+		    	showErrorDialog("请选择一个方案");
+		    	$("#file_upload_dlg").dialog("close"); 
+		    	return;
+		    }  
+		    
 	        $("#loading")
 	        .ajaxStart(function(){
 	            $(this).show();
@@ -69,7 +106,7 @@ function CrossModel() {
 	        });  
 	        $.ajaxFileUpload
 	        ({
-                url:'cross/fileUpload?chartId=' + self.searchModle().chart().chartId + "&startDay="+ self.searchModle().startDay(),
+                url:'cross/fileUpload?chartId=' + chart.chartId + "&startDay="+ startDay,
                 secureuri:false,
                 fileElementId:'fileToUpload',
                 type : "POST",
@@ -81,14 +118,18 @@ function CrossModel() {
                 error: function (data, status, e)
                 {
                     alert(e);
+                },
+                handleError: function(data, status, e){
+                	
                 }
             }); 
 	        return true;
 	} ;
 	
 	 
+	
 	//当前选中的交路对象
-	self.currentCross = ko.observable(new CrossRow({"crossId":"1",
+	self.currentCross = ko.observable(new CrossRow({"crossId":"",
 		"crossName":"", 
 		"chartId":"",
 		"chartName":"",
@@ -129,20 +170,32 @@ function CrossModel() {
 	
 	self.pageSize = 50; 
 	
-	self.cross_totalCount = 0;
+	self.totalCount = ko.observable(60);
 	//currentIndex 
+	self.currdate =function(){
+		var d = new Date();
+		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
+		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
+		var days = d.getDate(); 
+		return year+"-"+month+"-"+days;
+	};
 	
 	self.init = function(){  
 		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
 		//self.searchModle().loadBureau(self.gloabBureaus); 
 		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
 		 
+		$("#cross_start_day").datepicker();
+		self.searchModle().startDay(self.currdate()); 
+		
+		//获取当期系统日期 
 		 $.ajax({
 				url : "plan/getSchemeList",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
+				data :JSON.stringify({}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null) { 
@@ -190,7 +243,16 @@ function CrossModel() {
 		
 		
 	}; 
-	self.loadCrosses = function() {  
+	
+	self.loadPCrosses = function(){
+		self.loadCrosses();
+	 
+	};
+	self.loadNCrosses = function(){
+		self.loadCrosses(1);
+	};
+	
+	self.loadCrosses = function(action) {  
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -198,9 +260,14 @@ function CrossModel() {
 		});  */
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag(); 
-		var sureFlag = self.searchModle().sureFlag(); 
-		var startBureauCode = self.searchModle().startBureau();  
-		
+		var sureFlag = self.searchModle().sureFlag();
+		var startBureauCode = self.searchModle().startBureau(); 
+		var currentIndex = 0; 
+		 // 如果是重新查询
+		 if(action == 1){
+			 currentIndex = self.crossRows().length;
+		 }
+		 
 		 $.ajax({
 				url : "cross/getCrossInfo",
 				cache : false,
@@ -209,27 +276,32 @@ function CrossModel() {
 				contentType : "application/json",
 				data :JSON.stringify({ 
 					tokenVehBureau : bureauCode, 
-					highlineFlag : highlingFlag,  
+					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
 					sureFlag : sureFlag == "-1" ? null : sureFlag,  
 					startBureau : startBureauCode,
-					rownumstart : self.currentIndex,
-					rownumend : self.currentIndex + self.pageSize
+					rownumstart : currentIndex, 
+					rownumend : currentIndex + self.pageSize 
 				}),
 				success : function(result) {    
+					if(action == 0){ 
+						$.each(self.crossRows(),function(n, crossRow){
+							crossRow.visiableRow(false);
+						});
+					}else{ 
+						self.crossRows.remove(function(item) {
+							return true;
+						});  
+					}
 					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {   
-							if(result.data[0] != null){ 
-								$.each(self.crossRows,function(n, crossRow){
-									crossRow.visiableRow = false;
-								})
-								$.each(result.data,function(n, crossInfo){
-									self.crossRows.push(new CrossRow(crossInfo)); 
-									
-								}); 
-							}
-							 $("#cross_table_crossInfo").freezeHeader();
-							
-						}  
+						 
+						if(result.data.data != null){  
+							$.each(result.data.data,function(n, crossInfo){
+								self.crossRows.push(new CrossRow(crossInfo));  
+							});  
+							self.totalCount(result.data.totalRecord); 
+						} 
+						 $("#cross_table_crossInfo").freezeHeader(); 
+						 
 					} else {
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					} 
@@ -251,10 +323,37 @@ function CrossModel() {
 		$("#file_upload_dlg").dialog("open");
 	};
 	
+	self.createUnitCrossInfo = function(){ 
+		var crossIds = "";
+		for(var i = 0; i < self.crossRows().length; i++){ 
+			if(self.crossRows()[i].selected() == 1){ 
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += self.crossRows()[i].crossId;
+			}  
+		}
+		 $.ajax({
+				url : "cross/completeUnitCrossInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					crossIds : crossIds
+				}),
+				success : function(result) {     
+					if(result.code == 0){
+						showSuccessDialog("生成交路单元成功");
+					}else{
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					}
+				}
+			}); 
+	};
+	
 	self.showTrains = function(row) {  
 		self.trains.remove(function(item) {
 			return true;
-		});  
+		});   
 		 $.ajax({
 				url : "cross/getCrossTrainInfo",
 				cache : false,
@@ -347,23 +446,22 @@ function CrossRow(data) {
 	//方案ID 
 }
 
-function CrossRow(data) {
-	var self = this; 
-	self.id = data.chartId;
-	self.chartName = data.crossName; 
-	//方案ID 
-}
+ 
 
 function CrossRow(data) {
 	var self = this; 
 	
 	self.visiableRow =  ko.observable(true); 
 	
+	self.selected =  ko.observable(0);
+	
 	self.crossId = data.crossId; 
 	
 	self.shortNameFlag =  ko.observable(true);
 	
 	self.crossName = ko.observable(data.crossName); 
+	
+	
 	
 	self.shortName = ko.computed(function(){
 		trainNbrs = data.crossName.split('-');

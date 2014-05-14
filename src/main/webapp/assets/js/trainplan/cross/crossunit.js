@@ -9,8 +9,8 @@ $(function() {
 	cross.init();   
 });
 
-var highlingFlags = [{"value": -1, "text": ""},{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
-var sureFlags = [{"value": -1, "text": ""},{"value": "0", "text": "已审核"},{"value": 1, "text": "未审核"}];
+var highlingFlags = [{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
+var sureFlags = [{"value": "0", "text": "已审核"},{"value": 1, "text": "未审核"}];
 var highlingrules = [{"value": 1, "text": "平日"},{"value": 2, "text": "周末"},{"value": 3, "text": "高峰"}];
 var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔日"}];
  
@@ -56,7 +56,35 @@ function CrossModel() {
 				 } 
 			  }); 
 		 };
-	}
+	};
+	
+	self.createUnitPlain = function(){ 
+		var crossIds = "";
+		for(var i = 0; i < self.crossRows().length; i++){ 
+			if(self.crossRows()[i].selected() == 1){ 
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += self.crossRows()[i].crossId;
+			}  
+		}
+		 $.ajax({
+				url : "cross/updateUnitCrossId",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					crossIds : crossIds
+				}),
+				success : function(result) {    
+					if(result.code == 0){
+						showSuccessDialog("更新成功");
+					}else{
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					}
+				}
+			}); 
+	};
+	
 	
 	self.uploadCrossFile = function(){ 
 	        //starting setting some animation when the ajax starts and completes
@@ -88,8 +116,8 @@ function CrossModel() {
 	
 	 
 	//当前选中的交路对象
-	self.currentCross = ko.observable(new CrossRow({"crossId":"1",
-		"crossName":"", 
+	self.currentCross = ko.observable(new CrossRow({"unitCrossId":"1",
+		"unitCrossName":"", 
 		"chartId":"",
 		"chartName":"",
 		"crossStartDate":"",
@@ -138,11 +166,12 @@ function CrossModel() {
 		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
 		 
 		 $.ajax({
-				url : "plan/getSchemeList",
+				url : "../plan/getSchemeList",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
+				data :JSON.stringify({}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null) { 
@@ -161,7 +190,7 @@ function CrossModel() {
 		    });
 		
 	    $.ajax({
-			url : "plan/getFullStationInfo",
+			url : "../plan/getFullStationInfo",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -190,7 +219,7 @@ function CrossModel() {
 		
 		
 	}; 
-	self.loadCrosses = function() {  
+	self.loadCrosses = function(action) {  
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -199,36 +228,51 @@ function CrossModel() {
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag(); 
 		var sureFlag = self.searchModle().sureFlag(); 
-		var startBureauCode = self.searchModle().startBureau();  
+		var startBureauCode = self.searchModle().startBureau(); 
+		var chart = self.searchModle().chart();
+		
+		var currentIndex = 0; 
+		 // 如果是重新查询
+		 if(action == 1){
+			 currentIndex = self.crossRows().length;
+		 }
 		
 		 $.ajax({
-				url : "cross/getCrossInfo",
+				url : "../cross/getUnitCrossInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({ 
 					tokenVehBureau : bureauCode, 
-					highlineFlag : highlingFlag,  
+					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
 					sureFlag : sureFlag == "-1" ? null : sureFlag,  
 					startBureau : startBureauCode,
-					rownumstart : self.currentIndex,
-					rownumend : self.currentIndex + self.pageSize
+					rownumstart : currentIndex,
+					chartId : chart == null ? null : chart.chartId,
+					rownumend : currentIndex + self.pageSize
 				}),
 				success : function(result) {    
+					if(action == 0){ 
+						$.each(self.crossRows(),function(n, crossRow){
+							crossRow.visiableRow(false);
+						});
+					}else{ 
+						self.crossRows.remove(function(item) {
+							return true;
+						});  
+					} 
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {   
-							if(result.data[0] != null){ 
-								$.each(self.crossRows,function(n, crossRow){
-									crossRow.visiableRow = false;
-								})
-								$.each(result.data,function(n, crossInfo){
-									self.crossRows.push(new CrossRow(crossInfo)); 
-									
-								}); 
+							if(result.data[0] != null){  
+								if(result.data[0] != null){  
+									$.each(result.data,function(n, crossInfo){
+										self.crossRows.push(new CrossRow(crossInfo)); 
+										
+									}); 
+								} 
 							}
-							 $("#cross_table_crossInfo").freezeHeader();
-							
+							 $("#cross_table_crossInfo").freezeHeader(); 
 						}  
 					} else {
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
@@ -251,26 +295,26 @@ function CrossModel() {
 		$("#file_upload_dlg").dialog("open");
 	}; 
 	
-	self.showTrains = function(row) {  
+	self.showTrains = function(row) {   
 		self.trains.remove(function(item) {
 			return true;
-		});  
+		});   
 		 $.ajax({
-				url : "cross/getCrossTrainInfo",
+				url : "../cross/getUnitCrossTrainInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossId : row.crossId  
+					unitCrossId : row.crossId
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {  
-							 
-							self.currentCross(new CrossRow(result.data[0].crossInfo));
-							if(result.data[0].crossTrainInfo != null){
-								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
+						if (result.data !=null && result.data.length > 0) {   
+							
+							self.currentCross(new CrossRow(result.data[0].unitCrossInfo));
+							if(result.data[0].unitCrossTrainInfo != null){
+								$.each(result.data[0].unitCrossTrainInfo,function(n, crossInfo){
 									var row = new TrainRow(crossInfo);
 									self.trains.push(row); 
 								});
@@ -338,39 +382,27 @@ function BureausRow(data) {
 	self.shortName = data.ljjc;   
 	self.code = data.ljpym;   
 	//方案ID 
-}
-
-function CrossRow(data) {
-	var self = this; 
-	self.id = data.chartId;
-	self.chartName = data.crossName; 
-	//方案ID 
-}
-
-function CrossRow(data) {
-	var self = this; 
-	self.id = data.chartId;
-	self.chartName = data.crossName; 
-	//方案ID 
-}
+} 
 
 function CrossRow(data) {
 	var self = this; 
 	
-	self.visiableRow =  ko.observable(true); 
+	self.visiableRow =  ko.observable(true);  
 	
-	self.crossId = data.crossId; 
+	console.log(data.unitCrossId);
 	
-	self.shortNameFlag =  ko.observable(true);
+	self.crossId = data.unitCrossId; 
 	
-	self.crossName = ko.observable(data.crossName); 
+	self.shortNameFlag =  ko.observable(true); 
+	 
+	self.crossName = ko.observable(data.marshallingName);  
 	
 	self.shortName = ko.computed(function(){
-		trainNbrs = data.crossName.split('-');
-		if(trainNbrs.length > 2){
+		trainNbrs = data.marshallingName != null ? data.marshallingName.split('-') : [];
+		if(trainNbrs.length > 3){
 			return trainNbrs[0] + '...' + trainNbrs[trainNbrs.length-1];
 		}else{
-			return data.crossName;
+			return data.marshallingName;
 		}
 	}); 
 	//方案ID
@@ -393,6 +425,8 @@ function CrossRow(data) {
 	self.crossSection = ko.observable(data.crossSection);
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 
+	
+	self.groupSertalNbr = ko.observable(data.groupSertalNbr);
 	//车辆担当局 
 	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
 	
@@ -417,7 +451,7 @@ function TrainModel() {
 
 function TrainRow(data) {
 	var self = this; 
-	self.crossTainId  = data.crossTainId;//BASE_CROSS_TRAIN_ID
+	self.crossTainId  = data.unitCrossTainId;//BASE_CROSS_TRAIN_ID
 	self.crossId = data.crossId;//BASE_CROSS_ID
 	self.trainSort = data.trainSort;//TRAIN_SORT
 	self.baseTrainId = data.baseTrainId;

@@ -7,46 +7,46 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>核查编制图定开行</title>
 <!-- Bootstrap core CSS -->
-<link href="assets/css/cross/custom-bootstrap.css" rel="stylesheet">
+<link href="../assets/css/cross/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
-<link href="assets/css/datepicker.css" rel="stylesheet">
-<link href="assets/easyui/themes/default/easyui.css"
+<link href="../assets/css/datepicker.css" rel="stylesheet">
+<link href="../assets/easyui/themes/default/easyui.css"
 	rel="stylesheet">
-<link href="assets/easyui/themes/icon.css" rel="stylesheet">
+<link href="../assets/easyui/themes/icon.css" rel="stylesheet">
 <link type="text/css" rel="stylesheet"
-	href="assets/css/font-awesome.min.css" />
+	href="../assets/css/font-awesome.min.css" />
 <link type="text/css" rel="stylesheet"
-	href="assets/css/datepicker.css">
+	href="../assets/css/datepicker.css">
 <!-- Custom styles for this template -->
-<link href="assets/css/style.css" rel="stylesheet"> 
-<link href="assets/css/cross/cross.css" rel="stylesheet">
+<link href="../assets/css/style.css" rel="stylesheet"> 
+<link href="../assets/css/cross/cross.css" rel="stylesheet">
 
-<script src="assets/js/jquery.js"></script>
-<script src="assets/js/html5.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/respond.min.js"></script>
-<script src="assets/js/jquery.dataTables.js"></script>
-<script src="assets/easyui/jquery.easyui.min.js"></script>
-<link href="assets/easyui/themes/icon.css" rel="stylesheet">
+<script src="../assets/js/jquery.js"></script>
+<script src="../assets/js/html5.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/respond.min.js"></script>
+<script src="../assets/js/jquery.dataTables.js"></script>
+<script src="../assets/easyui/jquery.easyui.min.js"></script>
+<link href="../assets/easyui/themes/icon.css" rel="stylesheet">
 <link type="text/css" rel="stylesheet"
-	href="assets/css/font-awesome.min.css" />
+	href="../assets/css/font-awesome.min.css" />
 <link type="text/css" rel="stylesheet"
-	href="assets/css/datepicker.css">
+	href="../assets/css/datepicker.css">
 <!-- Custom styles for this template -->
-<link href="assets/css/style.css" rel="stylesheet">
-<script src="assets/easyui/jquery.easyui.min.js"></script>
-<script src="assets/js/knockout.js"></script>
-<script src="assets/js/jquery.jeditable.js"></script>
-<script src="assets/js/jquery.dataTables.editable.js"></script>
-<script type="text/javascript" src="assets/js/jquery.freezeheader.js"></script>
-<script type="text/javascript" src="assets/js/ajaxfileupload.js"></script> 
-<script type="text/javascript" src="assets/js/trainplan/cross/crossunit.js"></script>  
+<link href="../assets/css/style.css" rel="stylesheet">
+<script src="../assets/easyui/jquery.easyui.min.js"></script>
+<script src="../assets/js/knockout.js"></script>
+<script src="../assets/js/jquery.jeditable.js"></script>
+<script src="../assets/js/jquery.dataTables.editable.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.freezeheader.js"></script>
+<script type="text/javascript" src="../assets/js/ajaxfileupload.js"></script> 
+<script type="text/javascript" src="../assets/js/trainplan/cross/crossunit.js"></script>  
 </head> 
 <body class="Iframe_body" style="margin-left:50px;margin-right:50px;">
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">对数表维护</a></li>
+		<li><a href="../#">交路基本单元维护</a></li>
 	</ol>
 	
         
@@ -54,38 +54,22 @@
 	<div class="pull-left" style="width: 24%;">
 		<!--分栏框开始-->
 		<div id="plan_view_div_palnDayDetail" class="panel panel-default">
-			<div class="row" style="margin: 10px 10px 10px 10px;">
-			    <section class="panel panel-default">
-			        <div class="panel-heading"><i class="fa fa-table"></i>导入对数表</div>
-			        <div class="panel-body">
-			        <form class="form-horizontal" role="form">    
-					        <div class="row" >
-								<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 26px">
-												方案:&nbsp;</label> 
-								<div class="pull-left">
-									<select style="width: 269px" id="input_cross_chart_id"
-										class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
-									</select>
-								</div>  
-						  </div> 
-						   <div class="row" style="margin: 5px 0 5px 0;">
-								<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
-						        <div class="pull-left">
-						           <input class="form-control" style="width:179px;" placeholder="" data-bind="value: searchModle().startDay">
-						        </div>
-						        <button class="btn btn-primary" type="button" style="margin-left: 10px;"
-								id="btn_cross_upload" onclick="openLogin()">导入EXCEL</button>
-						     </div>
-					</form>
-			        </div>
-			   </section> 
-			</div>
+			 
 			<div class="row" style="margin: 5px 10px 10px 10px;">
 			    <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
 			        <div class="panel-body">
 						<form class="form-horizontal" role="form"> 
-								<div class="row">
+						         <div class="row" >
+									<label for="exampleInputEmail3" class="control-label pull-left">
+													方案:&nbsp;</label> 
+									<div class="pull-left">
+										<select style="width: 269px" id="input_cross_chart_id"
+											class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+										</select>
+									</div>  
+							  </div> 
+								<div class="row" style="margin-top: 5px;">
 									<div class="form-group"
 										style="float: left; margin-left: 0px; margin-top: 0px;"> 
 										<div class="row">
