@@ -61,7 +61,7 @@ public class RunLineService {
         return data;
     }
 
-    public List<Map<String, Object>> getRunLineSTN(String line_id) {
+    public Map<String, Object> getRunLineSTN(String line_id) {
         logger.debug("line_id: " + line_id);
         ObjectMapper objectMapper = new ObjectMapper();
         List<Map<String, Object>> lineStn = new ArrayList<Map<String, Object>>();
@@ -77,19 +77,13 @@ public class RunLineService {
             }
             String resp = response.getEntity(String.class);
             Map<String, Object> result = objectMapper.readValue(resp, Map.class);
-            List<Map<String, Object>> data = (List<Map<String, Object>>) result.get("data");
-            Map<String, Object> map = data.get(0);
-            Map<String, Map<String, Object>> timeTable = (Map<String, Map<String, Object>>) map.get("scheduleDto");
-            lineStn.add(timeTable.get("sourceItemDto"));
-            List<Map<String, Object>> routingTable = (List<Map<String, Object>>) timeTable.get("routeItemDtos");
-            lineStn.addAll(routingTable);
-            lineStn.add(timeTable.get("targetItemDto"));
+            lineStn = (List<Map<String, Object>>) result.get("data");
         } catch (JsonProcessingException e) {
             logger.error(e.getMessage());
         } catch (IOException e) {
             logger.error(e);
         }
-        return lineStn;
+        return lineStn.get(0);
     }
 
 
