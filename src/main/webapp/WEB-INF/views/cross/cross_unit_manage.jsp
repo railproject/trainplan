@@ -40,15 +40,15 @@
 <script src="assets/js/jquery.dataTables.editable.js"></script>
 <script type="text/javascript" src="assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="assets/js/ajaxfileupload.js"></script> 
-<script type="text/javascript" src="assets/js/trainplan/cross/cross.js"></script>  
- 
-</head>
+<script type="text/javascript" src="assets/js/trainplan/cross/crossunit.js"></script>  
+</head> 
 <body class="Iframe_body" style="margin-left:50px;margin-right:50px;">
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">对数表维护</a></li>
-	</ol> 
+	</ol>
+	
         
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 24%;">
@@ -74,7 +74,7 @@
 						           <input class="form-control" style="width:179px;" placeholder="" data-bind="value: searchModle().startDay">
 						        </div>
 						        <button class="btn btn-primary" type="button" style="margin-left: 10px;"
-								id="btn_cross_upload" data-bind="click: showUploadDlg">导入EXCEL</button>
+								id="btn_cross_upload" onclick="openLogin()">导入EXCEL</button>
 						     </div>
 					</form>
 			        </div>
@@ -511,7 +511,7 @@
 											<th style="width: 8%">终到站</th>
 											<th style="width: 5%">终到局</th>
 											<th style="width: 5%">线型</th>
-											<th style="width: 5%">间隔(天)</th>
+											<th style="width: 5%">间隔天数</th>
 											<th style="width: 5%">开行状态</th>
 											<th style="width: 5%">交替车次</th>
 											<th style="width: 11%">交替时间</th>
