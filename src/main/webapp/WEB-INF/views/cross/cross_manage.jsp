@@ -38,505 +38,17 @@
 <script src="assets/js/knockout.js"></script>
 <script src="assets/js/jquery.jeditable.js"></script>
 <script src="assets/js/jquery.dataTables.editable.js"></script>
-<script src="assets/js/ajaxfileupload.js"></script>
-<script src="js/cross.js"></script> 
-<script type="text/javascript">
-
-$(function() {
-	$("#file_upload_dlg").dialog("close"); 
-	$("#cross_train_time_dlg").dialog("close"); 
-	
-	var cross = new CrossModel();
-	ko.applyBindings(cross); 
-	 
-	cross.init(); 
-});
-
-
-
-
-function CrossModel() {
-	var self = this;
-		//列车列表
-	self.trains = ko.observableArray();
-	//交路列表
-	self.crossRows = ko.observableArray(); 
-	
-	self.gloabBureaus = []; 
-	
-	//车辆担当局
-	self.searchModle = ko.observable(new searchModle());
-	
-	// cross基础信息中的下拉列表  
-	self.loadBureau = function(bureaus){   
-		for ( var i = 0; i < bureaus.length; i++) {  
-			self.tokenVehBureaus.push(new BureausRow(bureaus[i])); 
-			if(bureaus[i].code == self.tokenVehBureau()){
-				self.tokenVehBureau(bureaus[i]);
-				break;
-			}
-		} 
-	};
-	
-	self.uploadCrossFile = function(){ 
-	        //starting setting some animation when the ajax starts and completes
-	        $("#loading")
-	        .ajaxStart(function(){
-	            $(this).show();
-	        })
-	        .ajaxComplete(function(){
-	            $(this).hide();
-	        }); 
-	        alert(self.searchModle().chart().chartId);
-	        alert(self.searchModle().startDay());
-	        $.ajaxFileUpload
-	        ({
-	                url:'cross/fileUpload',
-	                secureuri:false,
-	                fileElementId:'fileToUpload',
-	                dataType: 'json',
-	                data :JSON.stringify({ 
-	    				chartId : self.searchModle().chart().chartId, //车次号  
-	    				startDay: self.searchModle().startDay()
-	    			}),
-	                success: function (data, status)
-	                { 
-	                    if(typeof(data.error) != 'undefined')
-	                    {
-	                        if(data.error != '')
-	                        {
-	                            alert(data.error);
-	                        }else
-	                        {
-	                            alert(data.msg);
-	                        }
-	                    }
-	                },
-	                error: function (data, status, e)
-	                {
-	                    alert(e);
-	                }
-	            });
-	        return false; 
-	} ;
-	
-	 
-	//当前选中的交路对象
-	self.currentCross = ko.observable(new CrossRow({"crossId":"1",
-		"crossName":"", 
-		"chartId":"",
-		"chartName":"",
-		"crossStartDate":"",
-		"crossEndDate":"",
-		"crossSpareName":"",
-		"alterNateDate":"",
-		"alterNateTranNbr":"",
-		"spareFlag":"",
-		"cutOld":"",
-		"groupTotalNbr":"",
-		"pairNbr":"",
-		"highlineFlag":"",
-		"highlineRule":"",
-		"commonlineRule":"",
-		"appointWeek":"",
-		"appointDay":"",
-		"crossSection":"",
-		"throughline":"",
-		"startBureau":"",
-		"tokenVehBureau":"",
-		"tokenVehDept":"",
-		"tokenVehDepot":"",
-		"tokenPsgBureau":"",
-		"tokenPsgDept":"",
-		"tokenPsgDepot":"",
-		"locoType":"",
-		"crhType":"",
-		"elecSupply":"",
-		"dejCollect":"",
-		"airCondition":"",
-		"note":"", 
-		"createPeople":"", 
-		"createPeopleOrg":"",  
-		"createTime":""}));
-	
-	self.currentIndex = 0;
-	
-	self.pageSize = 50; 
-	
-	self.cross_totalCount = 0;
-	//currentIndex 
-	
-	self.init = function(){  
-		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
-		//self.searchModle().loadBureau(self.gloabBureaus); 
-		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
-		
-		
-		 $.ajax({
-				url : "plan/getSchemeList",
-				cache : false,
-				type : "GET",
-				dataType : "json",
-				contentType : "application/json",
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null) { 
-							self.searchModle().loadChats(result.data); 
-						}
-						 
-					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-					} 
-				},
-				error : function() {
-					showErrorDialog("接口调用失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-		    });
-		
-	    $.ajax({
-			url : "plan/getFullStationInfo",
-			cache : false,
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json", 
-			success : function(result) {    
-				if (result != null && result != "undefind" && result.code == "0") {
-					if (result.data !=null) { 
-						$.each(result.data,function(n, bureau){
-							var row = new BureausRow(bureau);
-							self.gloabBureaus.push(row); 
-						});
-					}
-					 
-				} else {
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-				} 
-			},
-			error : function() {
-				showErrorDialog("接口调用失败");
-			},
-			complete : function(){
-				commonJsScreenUnLock();
-			}
-	    });
-		
-		
-	};
-	
-	self.loadCrosses = function() {  
-		/* $.each(crosses,function(n, crossInfo){
-			var row = new CrossRow(crossInfo);
-			self.crossRows.push(row);
-			rowLookup[row.crossName] = row;
-		});  */
-		var bureauCode = self.searchModle().bureau(); 
-		var highlingFlag = self.searchModle().highlingFlag().value; 
-		var sureFlag = self.searchModle().sureFlag().value; 
-		var startBureauCode = self.searchModle().startBureau(); 	  
-		 $.ajax({
-				url : "cross/getCrossInfo",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({ 
-					tokenVehBureau : bureauCode, 
-					highlineFlag : highlingFlag,  
-					sureFlag : sureFlag == "-1" ? null : sureFlag,  
-					startBureau : startBureauCode  
-				}),
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {  
-							self.currentCross(new CrossRow(result.data[0]));
-							if(result.data[0].trains != null){
-								$.each(result.data,function(n, crossInfo){
-									var row = new TrainRow(crossInfo);
-									self.trains.push(row); 
-								});
-							}
-						}
-						 
-					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-					} 
-				},
-				error : function() {
-					showErrorDialog("接口调用失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-			}); 
-	};
-
-	self.saveCrossInfo = function() { 
-		alert(self.currentCross().tokenVehBureau())
-	};
-	self.showTrains = function(row) {  
-		self.trains.remove(function(item) {
-			return true;
-		}); 
-		/* self.currentCross(new CrossRow({"crossId":"1",
-			"crossName":"1", 
-			"chartId":"1",
-			"chartName":"1",
-			"crossStartDate":"1",
-			"crossEndDate":"1",
-			"crossSpareName":"1",
-			"alterNateDate":"1",
-			"alterNateTranNbr":"1",
-			"spareFlag":"1",
-			"cutOld":"1",
-			"groupTotalNbr":"1",
-			"pairNbr":"1",
-			"highlineFlag":"1",
-			"highlineRule":"1",
-			"commonlineRule":"1",
-			"appointWeek":"1",
-			"appointDay":"1",
-			"crossSection":"1",
-			"throughline":"1",
-			"startBureau":"1",
-			"tokenVehBureau":"B",
-			"tokenVehDept":"1",
-			"tokenVehDepot":"1",
-			"tokenPsgBureau":"1",
-			"tokenPsgDept":"1",
-			"tokenPsgDepot":"1",
-			"locoType":"1",
-			"crhType":"1",
-			"elecSupply":"1",
-			"dejCollect":"1",
-			"airCondition":"1",
-			"note":"1", 
-			"createPeople":"1", 
-			"createPeopleOrg":"1",  
-			"createTime":"1"}));
-		
-		self.currentCross().loadBureau(self.gloabBureaus);
-		
-		var trains = [{"crossTainId ":"1",
-			"crossId":"1",
-			"trainSort":"1",
-			"baseTrainId":"1",
-			"trainNbr":"1",
-			"startStn":"1",
-			"startBureau":"1",
-			"endStn":"1",
-			"endBureau":"1",
-			"dayGap":"1",
-			"alertNateTrainNbr":"1",
-			"alertNateTime":"1",
-			"spareFlag":"1",
-			"spareApplyFlage":"1",
-			"highlineFlag":"1",
-			"highlineRule":"1",
-			"commonLineRule":"1",
-			"appointWeek":"1",
-			"appointDay":"1"}];
-		
-		$.each(trains,function(n, crossInfo){
-			var row = new TrainRow(crossInfo);
-			self.trains.push(row); 
-		}); 
-		 self.currentTrain =  ko.observable(rowLookup[row.crossName]);
-			var trains = rowLookup[row.name].trains;
-			for ( var i = 0; i < trains.length; i++) {
-				var row = new TrainRow(trains[i]);
-				self.trains.push(row);
-				rowLooktrains[row.crossName] = row;
-			}  
-		*/
-	/* var bureauCode = self.searchModle().bureau(); 
-	var highlingFlag = self.searchModle().highlingFlag().value; 
-	var sureFlag = self.searchModle().sureFlag().value; 
-	var startBureauCode = self.searchModle().startBureau(); 	 */  
-	 $.ajax({
-			url : "cross/getCrossTrainInfo",
-			cache : false,
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json",
-			data :JSON.stringify({  
-				crossId : row.crossId  
-			}),
-			success : function(result) {    
-				if (result != null && result != "undefind" && result.code == "0") {
-					if (result.data !=null && result.data.length > 0) {  
-						self.currentCross(new CrossRow(result.data[0]));
-						if(result.data[0].trains != null){
-							$.each(result.data,function(n, crossInfo){
-								var row = new TrainRow(crossInfo);
-								self.trains.push(row); 
-							});
-						}
-					}
-					 
-				} else {
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-				} 
-			},
-			error : function() {
-				showErrorDialog("接口调用失败");
-			},
-			complete : function(){
-				commonJsScreenUnLock();
-			}
-		}); 
-		
-	};   
-}
-
-function searchModle(){
-	self = this;  
-	self.bureaus = ko.observableArray();  
-	self.startBureaus = ko.observableArray();
-	
-	self.charts = ko.observableArray();
-	 
-	self.highlingFlags = [{"value": "-1", "text": ""},{"value": "0", "text": "普线"},{"value": "1", "text": "高线"},{"value": "2", "text": "混合"}];
-	self.sureFlags = [{"value": "-1", "text": ""},{"value": "0", "text": "已审核"},{"value": "1", "text": "未审核"}];
-	
-	self.highlingFlag = ko.observable();
-	
-	self.sureFlag = ko.observable();
-	
-	self.bureau = ko.observable();
-	
-	self.chart =  ko.observable();
-	
-	self.startDay = ko.observable();
-	
-	self.startBureau = ko.observable();
-	
-	self.loadBureau = function(bureaus){   
-		for ( var i = 0; i < bureaus.length; i++) {  
-			self.bureaus.push(new BureausRow(bureaus[i])); 
-			self.startBureaus.push(new BureausRow(bureaus[i]));  
-		} 
-	}; 
-	
-	self.loadChats = function(charts){   
-		for ( var i = 0; i < charts.length; i++) {   
-			self.charts.push({"chartId": charts[i].schemeId, "name": charts[i].schemeName});  
-		} 
-	}; 
-	
-}
-
-function BureausRow(data) {
-	var self = this;  
-	self.shortName = data.ljjc;   
-	self.code = data.ljpym;   
-	//方案ID 
-}
-
-function CrossRow(data) {
-	var self = this;
-	
-	self.id = data.chartId;
-	self.chartName = data.crossName; 
-	//方案ID 
-}
-
-function CrossRow(data) {
-	var self = this; 
-	self.id = data.chartId;
-	self.chartName = data.crossName; 
-	//方案ID 
-}
-
-function CrossRow(data) {
-	var self = this; 
-	self.crossId = data.crossId;
-	self.crossName = ko.observable(data.crossName);  
-	
-	//方案ID
-	self.chartId = ko.observable(data.chartId);
-	self.chartName = ko.observable(data.chartName);
-	self.crossStartDate = ko.observable(data.crossStartDate);
-	self.crossEndDate = ko.observable(data.crossEndDate);
-	self.crossSpareName = ko.observable(data.crossSpareName);
-	self.alterNateDate = ko.observable(data.alterNateDate);
-	self.alterNateTranNbr = ko.observable(data.alterNateTranNbr);
-	self.spareFlag = ko.observable(data.spareFlag);
-	self.cutOld = ko.observable(data.cutOld);
-	self.groupTotalNbr = ko.observable(data.groupTotalNbr);
-	self.pairNbr = ko.observable(data.pairNbr);
-	self.highlineFlag = ko.observable(data.highlineFlag);
-	self.highlineRule = ko.observable(data.highlineRule);
-	self.commonlineRule = ko.observable(data.commonlineRule);
-	self.appointWeek = ko.observable(data.appointWeek);
-	self.appointDay = ko.observable(data.appointDay);
-	self.crossSection = ko.observable(data.crossSection);
-	self.throughline = ko.observable(data.throughline);
-	self.startBureau = ko.observable(data.startBureau); 
-	//车辆担当局 
-	self.tokenVehBureau = ko.observable(data.tokenVehBureau);
-	
-	
-	self.tokenVehDept = ko.observable(data.tokenVehDept);
-	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
-	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
-	self.tokenPsgDept = ko.observable(data.tokenPsgDept);
-	self.tokenPsgDepot = ko.observable(data.tokenPsgDepot);
-	self.locoType = ko.observable(data.locoType);
-	self.crhType = ko.observable(data.crhType);
-	self.elecSupply = ko.observable(data.elecSupply);
-	self.dejCollect = ko.observable(data.dejCollect);
-	self.airCondition = ko.observable(data.airCondition);
-	self.note = ko.observable(data.note);  
-};
-
-function TrainModel() {
-	var self = this;
-	self.rows = ko.observableArray();
-	self.rowLookup = {};
-}
-
-function TrainRow(data) {
-	var self = this; 
-	self.crossTainId  = data.crossTainId;//BASE_CROSS_TRAIN_ID
-	self.crossId = data.crossId;//BASE_CROSS_ID
-	self.trainSort = data.trainSort;//TRAIN_SORT
-	self.baseTrainId = data.baseTrainId
-	self.trainNbr = data.trainNbr;//TRAIN_NBR
-	self.startStn = data.startStn;//START_STN
-	self.startBureau = data.startBureau;//START_BUREAU
-	self.endStn = data.endStn;//END_STN
-	self.endBureau = data.endBureau;//END_BUREAU
-	self.dayGap = data.dayGap;//DAY_GAP
-	self.alertNateTrainNbr = data.alertNateTrainNbr;//ALTERNATE_TRAIN_NBR
-	self.alertNateTime = data.alertNateTime;//ALTERNATE_TIME
-	self.spareFlag = data.spareFlag;//SPARE_FLAG
-	self.spareApplyFlage = data.spareApplyFlage;//SPARE_APPLY_FLAG
-	self.highlineFlag = data.highlineFlag ;//HIGHLINE_FLAG
-	self.highlineRule = data.highlineRule;//HIGHLINE_RULE
-	self.commonLineRule = data.commonLineRule;//COMMONLINE_RULE
-	self.appointWeek = data.appointWeek;//APPOINT_WEEK
-	self.appointDay = data.appointDay;//APPOINT_DAY 
-	
-	self.otherRule = self.appointWeek + " " + self.appointDay;
-
-} ;
-
-
-function openLogin() {
-	$("#file_upload_dlg").dialog("open");
-}
-</script>
+<script type="text/javascript" src="assets/js/jquery.freezeheader.js"></script>
+<script type="text/javascript" src="assets/js/ajaxfileupload.js"></script> 
+<script type="text/javascript" src="assets/js/trainplan/cross/cross.js"></script>  
+ 
 </head>
 <body class="Iframe_body" style="margin-left:50px;margin-right:50px;">
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">对数表维护</a></li>
-	</ol>
-	
+	</ol> 
         
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 24%;">
@@ -552,7 +64,7 @@ function openLogin() {
 												方案:&nbsp;</label> 
 								<div class="pull-left">
 									<select style="width: 269px" id="input_cross_chart_id"
-										class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name'">
+										class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
 									</select>
 								</div>  
 						  </div> 
@@ -562,7 +74,7 @@ function openLogin() {
 						           <input class="form-control" style="width:179px;" placeholder="" data-bind="value: searchModle().startDay">
 						        </div>
 						        <button class="btn btn-primary" type="button" style="margin-left: 10px;"
-								id="btn_cross_upload" onclick="openLogin()">导入EXCEL</button>
+								id="btn_cross_upload" data-bind="click: showUploadDlg">导入EXCEL</button>
 						     </div>
 					</form>
 			        </div>
@@ -580,25 +92,25 @@ function openLogin() {
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												车辆担当局:</label>
 											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width: 65px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code'"></select>
+												<select style="width: 65px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' "></select>
 											</div>
 											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 												始发局:</label>
 											<div class="pull-left" style="margin-left: 5px;">
-											<select style="width: 65px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code'"></select>
+											<select style="width: 65px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
 											</div> 
 										</div>    
 										<div class="row"  style="margin-top: 5px;">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												铁路线类型:</label>
 											<div class="pull-left" style="margin-left: 5px;">
-											    <select  style="width: 60px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text'"></select>
+											    <select  style="width: 60px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
 											</div>
 											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 33px;">
 												状态:</label>
 											<div class="pull-left" style="margin-left: 5px;">
 												<select style="width: 65px" id="input_cross_sure_flag"
-													class="form-control" data-bind="options: searchModle().sureFlags, value: searchModle().sureFlag, optionsText: 'text'">
+													class="form-control" data-bind="options: searchModle().sureFlags, value: searchModle().sureFlag, optionsText: 'text' , optionsCaption: ''">
 												</select>
 											</div>
 											
@@ -615,16 +127,14 @@ function openLogin() {
 												车次:&nbsp;</label>
 											<div class="pull-left">
 												<input type="text" class="form-control" style="width: 100px;"
-													placeholder="车次" id="input_cross_filter_trainNbr">
+													placeholder="车次" id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event: { change: filterCrosses}">
 											</div>
 										 
 											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 												交路名:&nbsp;</label>
 											<div class="pull-left">
 												<select style="width: 65px" id="input_cross_filter_showFlag"
-													class="form-control">
-													<option value="1">简称</option>
-													<option value="2">全称</option>
+													class="form-control" data-bind="options: [{'code': 1, 'text': '简称'},{'code': 2, 'text': '全称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
 												</select>
 											</div>  
 										</div>
@@ -652,12 +162,12 @@ function openLogin() {
 												</tr>
 											</thead>
 											<tbody data-bind="foreach: crossRows">
-												<tr data-bind="click: $parent.showTrains">
-												    <td><input type="checkbox"></td>
+												<tr data-bind="click: $parent.showTrains, visible: visiableRow" >
+												    <td align="center"><input type="checkbox"></td>
 													<td data-bind="text: $index "></td>
-													<td data-bind="text: crossName"></td>
+													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName"></td>
 													<td >已审核</td>
-												</tr>
+												</tr> 
 											</tbody>
 										</table>
 									</div>
@@ -722,14 +232,14 @@ function openLogin() {
 										</div></td>
 								</tr>
 							</table> -->
-							<div class="pull-left">
+							<div class="pull-left" id="left_div">
 								<div class="row" style="margin: 0px 0 5px 0;"> 
 										<label for="exampleInputEmail3"
 											class="control-label pull-left"> 车底交路名:&nbsp;</label>
 										<div class="pull-left" style="margin-left: 26px;">
 											<input type="text" class="form-control" style="width: 520px;" data-bind="value: crossName"
 												id="plan_construction_input_trainNbr">
-										</div>
+										</div> 
 										<div class="pull-left">
 											<input type="radio" class="pull-left" class="form-control" 
 												style="width: 20px; margin-left: 38px; margin-top: 5px"
@@ -876,7 +386,7 @@ function openLogin() {
 								<div class="row" style="margin: 5px 0 0px 0;">
 									<label class="control-label pull-left"> 车辆担当局:&nbsp;</label>
 										<div class="pull-left">
-											<select style="width: 65px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code'"></select>
+											<select style="width: 65px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code' , optionsCaption: ''"></select>
 											<!-- <input type="text" class="form-control" style="width: 30px;"  data-bind="value: tokenVehBureau"> -->
 										</div>
 									<label  class="control-label pull-left" style=" margin-left: 20px;"> 车辆段/动车段:&nbsp;</label>
@@ -890,8 +400,9 @@ function openLogin() {
 									<label for="exampleInputEmail3"
 											class="control-label pull-left" style=" margin-left: 30px;" > 客运担当局:&nbsp;</label>
 									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 30px;" data-bind="value: tokenPsgDept">
-										<select style="width: 65px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgDept, optionsText: 'shortName', optionsValue:'code'"></select>
+										<!-- <input type="text" class="form-control" style="width: 30px;" data-bind="value: tokenPsgDept"> -->
+										
+										<select style="width: 65px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
 									</div>
 									<label for="exampleInputEmail3"
 										class="control-label pull-left" style=" margin-left: 20px;" > 客运段:&nbsp;</label>
@@ -1000,10 +511,10 @@ function openLogin() {
 											<th style="width: 8%">终到站</th>
 											<th style="width: 5%">终到局</th>
 											<th style="width: 5%">线型</th>
-											<th style="width: 5%">间隔天数</th>
+											<th style="width: 5%">间隔(天)</th>
 											<th style="width: 5%">开行状态</th>
 											<th style="width: 5%">交替车次</th>
-											<th style="width: 10%">交替时间</th>
+											<th style="width: 11%">交替时间</th>
 											<th style="width: 5%">备用套跑</th>
 											<th style="width: 5%">高线规律</th>
 											<th style="width: 5%">普线规律</th>

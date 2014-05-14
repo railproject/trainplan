@@ -104,6 +104,7 @@
                                     <i class="fa fa-home"></i>客运开行计划
                                 </div>
                                 <div class="panel-body paddingtop0 paddingleftright5">
+                                    <%--
                                     <div class="row">
                                         <div class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
                                             <form class="form-inline" role="form">
@@ -116,6 +117,7 @@
                                             </form>
                                         </div>
                                     </div>
+                                    --%>
                                     <div class="row">
                                         <dev class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
                                             <div class="table-responsive">
@@ -135,10 +137,10 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody data-bind="foreach: kyjhTable">
-                                                    <tr data-bind="value: id, click: $parent.showInPanel">
+                                                    <tr data-bind="attr: {train_id: id}">
                                                         <td class="text-center"><input class="checkbox-inline" type="checkbox"/></td>
                                                         <td class="text-center" data-bind="text: ($index() + 1)"></td>
-                                                        <td class="text-center" data-bind="text: serial"></td>
+                                                        <td class="text-center"><a href="#" data-bind="text: serial, click: $parent.update_kyjh_panel"></a></td>
                                                         <td class="text-center" data-bind="text: startSTN"></td>
                                                         <td class="text-center" data-bind="text: endSTN"></td>
                                                         <td class="text-center" data-bind="text: runDate"></td>
@@ -161,6 +163,7 @@
                                     <i class="fa fa-home"></i>运行线
                                 </div>
                                 <div class="panel-body paddingtop0 paddingleftright5">
+                                    <%--
                                     <div class="row">
                                         <div class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
                                             <form class="form-inline" role="form">
@@ -173,6 +176,7 @@
                                             </form>
                                         </div>
                                     </div>
+                                    --%>
                                     <div class="row">
                                         <dev class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
                                             <div class="table-responsive">
