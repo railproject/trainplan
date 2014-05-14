@@ -80,12 +80,14 @@
    <select id="getUnitCrossInfoForUnitCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
       select 
         UNIT_CROSS_ID as unitCrossId,
-        MARSHALLING_NAME as crossName, 
+        MARSHALLING_NAME as marshallingName, 
 		GROUP_SERIAL_NBR as groupSerialNbr,
         BASE_CHART_ID as chartId,
         BASE_CHART_NAME as chartName,
         CROSS_START_DATE as crossStartDate,
         CROSS_END_DATE as crossEndDate,
+        
+        CROSS_NAME as crossName,
         CROSS_SPARE_NAME as crossSpareName,
         ALTERNATE_DATE as alterNateDate,
         ALTERNATE_TRAIN_NBR as alterNateTranNbr,
@@ -285,7 +287,7 @@
 
    <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select m.*  from  (select 
-		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as unitCrossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from UNIT_CROSS
+		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from UNIT_CROSS
 		) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
 		<if test="tokenVehBureau != null">
 			AND tokenVehBureau= #{tokenVehBureau}
