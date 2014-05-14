@@ -21,6 +21,8 @@ public class PlanLineDTO {
         this.endStn = MapUtils.getString(map, "END_STN", "");
     }
 
+    public PlanLineDTO() {}
+
     public String getTrainName() {
         return trainName;
     }
