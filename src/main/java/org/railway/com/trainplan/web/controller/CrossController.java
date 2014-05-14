@@ -1,16 +1,12 @@
 package org.railway.com.trainplan.web.controller;
 
 import java.beans.IntrospectionException;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +20,6 @@ import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,35 +45,33 @@ public class CrossController {
 	@RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
 	public Result getFullStationTrains(HttpServletRequest request, HttpServletResponse response){
 		Result result = new Result(); 
-//		  try {  
+		  try {  
 				MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
 				String chartId = request.getParameter("chartId");
-				String startDay = request.getParameter("startDay");
-				System.out.println(chartId);
-				System.out.println(startDay);
-//			    Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();   
-//			    for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {   
-//			    	// 上传文件 
-//			    	MultipartFile mf = entity.getValue();  
-//			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay);
-//			  	}  
+				String startDay = request.getParameter("startDay"); 
+			    Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();   
+			    for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {   
+			    	// 上传文件 
+			    	MultipartFile mf = entity.getValue();  
+			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay);
+			  	}  
  
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IllegalAccessException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IllegalArgumentException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (InvocationTargetException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IntrospectionException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IntrospectionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 		return result;
 	}
 	
