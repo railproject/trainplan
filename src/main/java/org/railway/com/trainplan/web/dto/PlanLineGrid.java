@@ -7,20 +7,20 @@ import java.util.List;
  * Created by star on 5/14/14.
  */
 public class PlanLineGrid {
-    private List<String> days = new ArrayList<String>();
+    private List<PlanLineGridX> days = new ArrayList<PlanLineGridX>();
 
     private List<PlanLineGridY> crossStns = new ArrayList<PlanLineGridY>();
 
-    public PlanLineGrid(List<String> days, List<PlanLineGridY> crossStns) {
+    public PlanLineGrid(List<PlanLineGridX> days, List<PlanLineGridY> crossStns) {
         this.days = days;
         this.crossStns = crossStns;
     }
 
-    public List<String> getDays() {
+    public List<PlanLineGridX> getDays() {
         return days;
     }
 
-    public void setDays(List<String> days) {
+    public void setDays(List<PlanLineGridX> days) {
         this.days = days;
     }
 

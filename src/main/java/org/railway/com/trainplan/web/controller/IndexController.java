@@ -126,9 +126,9 @@ public class IndexController {
         LocalDate ss = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(startList.get(0));
         Date eee = new Date(endList.get(endList.size() - 1).getTime());
         LocalDate ee = new LocalDate(eee);
-        List<String> gridXList = new ArrayList<String>();
+        List<PlanLineGridX> gridXList = new ArrayList<PlanLineGridX>();
         while(!ss.isAfter(ee)) {
-            gridXList.add(ss.toString("yyyy-MM-dd"));
+            gridXList.add(new PlanLineGridX(ss.toString("yyyy-MM-dd")));
             ss = ss.plusDays(1);
         }
         PlanLineGrid grid = new PlanLineGrid(gridXList, planLineGridYList);
