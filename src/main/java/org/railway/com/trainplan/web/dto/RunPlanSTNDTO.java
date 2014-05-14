@@ -1,10 +1,9 @@
 package org.railway.com.trainplan.web.dto;
 
 import org.apache.commons.collections.MapUtils;
-import org.joda.time.LocalDate;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -26,23 +25,22 @@ public class RunPlanSTNDTO {
     private boolean owner;
 
     public RunPlanSTNDTO(Map<String, Object> map, String bureau) {
+        SimpleDateFormat ff = new SimpleDateFormat("MM-dd hh:mm");
         this.id = MapUtils.getIntValue(map, "PLAN_TRAIN_STN_ID", 0);
         this.name = MapUtils.getString(map, "STN_NAME", "");
         java.sql.Timestamp dbArrDateTime = (java.sql.Timestamp)map.get("ARR_TIME");
         if(dbArrDateTime != null) {
             Date date = new Date(dbArrDateTime.getTime());
-            LocalDate localDate = new LocalDate(date);
-            this.arrDateTime = localDate.toString("MM-dd hh:mm", Locale.CHINESE);
+            this.arrDateTime = ff.format(date);
         }
         java.sql.Timestamp dbDptDateTime = (java.sql.Timestamp)map.get("DPT_TIME");
         if(dbDptDateTime != null) {
             Date date = new Date(dbDptDateTime.getTime());
-            LocalDate localDate = new LocalDate(date);
-            this.dptDateTime = localDate.toString("MM-dd hh:mm", Locale.CHINESE);
+            this.dptDateTime = ff.format(date);
         }
         this.trackName = MapUtils.getString(map, "TRACK_NAME", "");
         this.psg = MapUtils.getIntValue(map, "PSG_FLG", 1);
-        this.owner = MapUtils.getString(map, "STN_BUREAU", "") == bureau;
+        this.owner = MapUtils.getString(map, "STN_BUREAU", "").equals(bureau);
     }
 
     public int getId() {

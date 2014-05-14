@@ -164,7 +164,10 @@ function AuditActions() {
             self.update_compare(params);
         } else {
             options.close = self.close_compare;
-            self.compare = self._getDialog("audit/planline/" + $("#date_selector").val() + "/" + kyjhModel.bureau().code + "?" + params, options);
+            var queryStr = "date=" + $("#date_selector").val();
+            queryStr += "&bureau=" + kyjhModel.bureau().code;
+            queryStr += "&" + params;
+            self.compare = self._getDialog("audit/planline?" + queryStr, options);
             self.compare.dialog("open");
         }
     }
