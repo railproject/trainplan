@@ -270,6 +270,19 @@
 	     ) 
 	</insert>
 	
+	<select id="getCrossInfoTotalCount" parameterType="map" resultType="map">
+	  select count(*) as count from BASE_CROSS where 1=1
+	  <if test="tokenVehBureau != null">
+			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+		</if>
+		<if test="startBureau != null">
+		   AND START_BUREAU = #{startBureau}
+		</if>
+		<if test="highlineFlag != null">
+		AND HIGHLINE_FLAG = #{highlineFlag}
+		</if>
+	</select>
+	
 	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select m.*  from  (select 
 		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from BASE_CROSS
@@ -285,6 +298,21 @@
 		</if>
 	</select>
 
+  <select id="getUnitCrossInfoCount"  parameterType="map" resultType="map">
+     select count(*) from UNIT_CROSS where 1=1  
+     <if test="tokenVehBureau != null">
+			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+		</if>
+		<if test="startBureau != null">
+		   AND START_BUREAU = #{startBureau}
+		</if>
+		<if test="highlineFlag != null">
+		AND HIGHLINE_FLAG = #{highlineFlag}
+		</if>
+  </select>
+  
+  
+  
    <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select m.*  from  (select 
 		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as marshallingName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from UNIT_CROSS
@@ -299,5 +327,12 @@
 		AND highlineFlag = #{highlineFlag}
 		</if>
 	</select>
+	
+	<select id="getTrainNbrFromUnitCross" parameterType="String" resultType="map">
+		select DISTINCT(B.TRAIN_NBR),A.BASE_CHART_ID from unit_cross A ,base_cross_train B 
+        where A.BASE_CROSS_ID = B.BASE_CROSS_ID AND A.UNIT_CROSS_ID=#{unitCrossId}
+	</select>
+
+
  
 </mapper>

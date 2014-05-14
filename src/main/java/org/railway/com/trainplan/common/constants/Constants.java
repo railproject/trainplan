@@ -28,6 +28,8 @@ public class Constants {
 	public static final String GET_TRAINLINE_TEMPLATES = "/rail/template/TrainlineTemplates";
 	//查询始发日期为给定日期范围的日计划运行线统计数
 	public static final String GET_TRAINLINS = "/rail/plan";
+	//5.2.4	更新给定列车的基本图运行线车底交路id
+	public static final String UPDATE_UNIT_CROSS_ID = "/rail/template/TrainlineTemplates/VehicleCycles";
 	/****站点类型【1：始发 2：经由 3：终到】 ***/
 	public static final String STATION_BEGIN = "1";
 	public static final String STATION_ROUTE = "2";
@@ -92,6 +94,8 @@ public class Constants {
 	public static final String CROSSDAO_ADD_CROSS_TRAIN_INFO = "crossDao.addCrossTrainInfo";
 	//查询crossinfo信息
 	public static final String CROSSDAO_GET_CROSS_INFO = "crossDao.getCrossInfo";
+	//查询crossinfo信息的条数
+	public static final String CROSSDAO_GET_CROSS_INFO_COUNT = "crossDao.getCrossInfoTotalCount";
     //通过crossid获取crossinfo信息 
 	public static final String  CROSSDAO_GET_CROSS_INFO_FOR_CROSSID = "crossDao.getCrossInfoForCrossid";
 	//通过crossid查询crosstrainInfo信息   
@@ -105,5 +109,10 @@ public class Constants {
     public static final String CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID = "crossDao.getUnitCrossTrainInfoForUnitCrossid";
     //分页查询表unit_cross  getUnitCrossInfo
     public static final String CROSSDAO_GET_UNIT_CROSS_INFO = "crossDao.getUnitCrossInfo";
-
+    //分页查询的总条数 
+    public static final String CROSSDAO_GET_UNIT_CROSS_INFO_COUNT = "crossDao.getUnitCrossInfoCount";
+    //通过unit_cross_id查询train_nbr  getTrainNbrFromUnitCross
+    public static final String CROSSDAO_GET_TRAINNBR_FROM_UNIT_CROSS = "crossDao.getTrainNbrFromUnitCross";
+   //
+    //
 }

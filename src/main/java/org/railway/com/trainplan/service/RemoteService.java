@@ -257,8 +257,28 @@ public class RemoteService {
 		return returnList ;
 	}
 	
-	
-	
+	/**
+	 * 5.2.4	更新给定列车的基本图运行线车底交路id
+	 * @param schemeId 方案id
+	 * @param vehicleCycleId 交路id
+	 * @param trainNbrs  以逗号分隔的车次字符串
+	 * @return
+	 */
+	public String updateUnitCrossId(String schemeId,String vehicleCycleId,String trainNbrs)  throws Exception{
+		Map<String,Object> request = new HashMap<String,Object>();
+		request.put("schemeId",schemeId);
+		request.put("vehicleCycleId", vehicleCycleId);
+		request.put("property", "name");
+		List trainsList = new ArrayList();
+		trainsList.add(trainNbrs);
+		request.put("trainlines", trainsList);
+		System.err.println("updateUnitCrossId---request==" + request);
+		//调用后台的接口
+		Map response = RestClientUtils.post(Constants.SERVICE_URL
+				+ Constants.UPDATE_UNIT_CROSS_ID, request, Map.class);
+		System.err.println("updateUnitCrossId---response==" + response);
+		return "";
+	}
 	/**
 	 * 对站点设置基本信息
 	 * 

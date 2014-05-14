@@ -80,6 +80,16 @@ public class CrossService{
 	}
 
 	/**
+	 * 根据unitCrossid查询trainNbr,以逗号分隔组成一个字符串
+	 * @param unitCrossId
+	 * @return 以逗号分隔的trainNbr的字符串
+	 */
+	 public List<Map<String,String>> getTrainNbrFromUnitCrossId(String unitCrossId){
+		 List<Map<String,String>> list = baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINNBR_FROM_UNIT_CROSS, unitCrossId);
+		
+		 return list;
+	 }
+	/**
 	 * 生成交路单元
 	 * @param baseCrossId
 	 * @throws Exception
@@ -174,6 +184,20 @@ public class CrossService{
 	}
 	
 	/**
+	 * 查询 unitcross信息总条数
+	 */
+	public int getCrossInfoCount(Map<String,Object> reqMap){
+		List<Map<String,Object>>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_INFO_COUNT, reqMap);
+		int count = 0;
+		if(list != null){
+			//只有一条数据
+			Map<String,Object> map = list.get(0);
+			count = (Integer)map.get("COUNT");
+		}
+		return count;
+	}
+	
+	/**
 	 * 查询unitcross信息
 	 * @param reqMap
 	 * @return
@@ -181,6 +205,19 @@ public class CrossService{
 	public List<CrossInfo>  getUnitCrossInfo(Map<String,Object> reqMap){
 		List<CrossInfo>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO, reqMap);
 		return list;
+	}
+	/**
+	 * 查询 unitcross信息总条数
+	 */
+	public int getUnitCrossInfoCount(Map<String,Object> reqMap){
+		List<Map<String,Object>>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO_COUNT, reqMap);
+		int count = 0;
+		if(list != null){
+			//只有一条数据
+			Map<String,Object> map = list.get(0);
+			count = (Integer)map.get("COUNT");
+		}
+		return count;
 	}
 	
 	/**

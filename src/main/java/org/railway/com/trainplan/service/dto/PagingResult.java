@@ -17,6 +17,10 @@ public class PagingResult {
 		this.data = data;
 	}
 
+	public PagingResult(long totalRecord,Object data){
+		this.totalPage = totalRecord;
+		this.data = data;
+	}
 	public long getTotalRecord() {
 		return totalRecord;
 	}

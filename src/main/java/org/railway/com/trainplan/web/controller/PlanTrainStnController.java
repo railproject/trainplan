@@ -99,7 +99,7 @@ public class PlanTrainStnController {
         //result.setData(crossinfo);
 		
 		//fortest导入
-		/*InputStream is;
+		InputStream is;
 		try {
 			is = new FileInputStream(
 					"C:\\test.xls");
@@ -108,7 +108,7 @@ public class PlanTrainStnController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
 		//CrossService a = new CrossService();
 		//测试插入unit_cross表
 		/*try{

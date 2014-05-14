@@ -18,6 +18,8 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.service.CrossService;
+import org.railway.com.trainplan.service.RemoteService;
+import org.railway.com.trainplan.service.dto.PagingResult;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +43,9 @@ public class CrossController {
 	 
 	 @Autowired
 	private CrossService crossService;
+	
+	@Autowired
+	private RemoteService remoteService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
@@ -77,6 +82,49 @@ public class CrossController {
 	}
 	
 	/**
+	 * 5.2.4	更新给定列车的基本图运行线车底交路id
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateUnitCrossId", method = RequestMethod.POST)
+	public Result updateUnitCrossId(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result(); 
+		String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
+		try{
+			if(unitCrossIds != null){
+				String[] unitcrossArray = unitCrossIds.split(",");
+				for(String unitCrossId :unitcrossArray){
+					List<Map<String,String>> listMap = crossService.getTrainNbrFromUnitCrossId(unitCrossId);
+					if(listMap !=null && listMap.size() > 0){
+						StringBuffer trainNbrBf = new StringBuffer();
+						//方案id
+						String baseChartId="";
+						int size = listMap.size();
+						for(int i = 0;i<size;i++){
+							String trainNbr = listMap.get(i).get("TRAIN_NBR");
+							baseChartId = listMap.get(i).get("BASE_CHART_ID");
+							
+							trainNbrBf.append(trainNbr);
+							if( i != size -1 ){
+								trainNbrBf.append(",");
+							}
+						}
+						//调用后台接口
+						remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrBf.toString());
+					}
+					
+				}
+			}
+		}catch(Exception e){
+			logger.error("updateUnitCrossId error==" + e.getMessage());
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		}
+	
+		return result;
+	}
+	/**
 	 * 获取车底交路信息
 	 * @param reqMap
 	 * @return
@@ -88,7 +136,8 @@ public class CrossController {
 		List<CrossInfo> list = null;
 	    try{
 	    	list = crossService.getUnitCrossInfo(reqMap);
-	    	result.setData(list);
+	    	PagingResult page = new PagingResult((long)crossService.getUnitCrossInfoCount(reqMap),list);
+	    	result.setData(page);
 	    }catch(Exception e){
 			logger.error("getUnitCrossInfo error==" + e.getMessage());
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
@@ -112,7 +161,8 @@ public class CrossController {
 		List<CrossInfo> list = null;
 	    try{
 	    	list = crossService.getCrossInfo(reqMap);
-	    	result.setData(list);
+	    	PagingResult page = new PagingResult((long)crossService.getCrossInfoCount(reqMap),list);
+	    	result.setData(page);
 	    }catch(Exception e){
 			logger.error("getCrossInfo error==" + e.getMessage());
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
