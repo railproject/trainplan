@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by star on 5/12/14.
  */
 public class RunPlanSTNDTO {
-    private int id;
+    private String id;
 
     private String name;
 
@@ -26,7 +26,7 @@ public class RunPlanSTNDTO {
 
     public RunPlanSTNDTO(Map<String, Object> map, String bureau) {
         SimpleDateFormat ff = new SimpleDateFormat("MM-dd hh:mm");
-        this.id = MapUtils.getIntValue(map, "PLAN_TRAIN_STN_ID", 0);
+        this.id = MapUtils.getString(map, "PLAN_TRAIN_STN_ID", "");
         this.name = MapUtils.getString(map, "STN_NAME", "");
         java.sql.Timestamp dbArrDateTime = (java.sql.Timestamp)map.get("ARR_TIME");
         if(dbArrDateTime != null) {
@@ -43,11 +43,20 @@ public class RunPlanSTNDTO {
         this.owner = MapUtils.getString(map, "STN_BUREAU", "").equals(bureau);
     }
 
-    public int getId() {
+    public RunPlanSTNDTO(Map<String, Object> map, String bureau, int flag) {
+        this.id = MapUtils.getString(map, "id", "");
+        this.name = MapUtils.getString(map , "name", "");
+        this.arrDateTime = MapUtils.getString(map, "sourceTimeDto2", "");
+        this.dptDateTime = MapUtils.getString(map , "targetTimeDto2", "");
+        this.trackName = MapUtils.getString(map, "trackName", "");
+        this.owner = MapUtils.getString(map, "bureauShortName", "").equals(bureau);
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

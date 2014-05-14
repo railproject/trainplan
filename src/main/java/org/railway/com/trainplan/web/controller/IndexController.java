@@ -52,6 +52,18 @@ public class IndexController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "audit/line/timetable/{bureau}/{line_id}", method = RequestMethod.GET)
+    public ModelAndView yxxTimeTable(@PathVariable String bureau, @PathVariable String line_id, ModelAndView modelAndView) {
+        modelAndView.setViewName("trainplan/timetable");
+        List<RunPlanSTNDTO> result = new ArrayList<RunPlanSTNDTO>();
+        List<Map<String, Object>> list =runLineService.getRunLineSTN(line_id);
+        for(Map<String, Object> map: list) {
+            result.add(new RunPlanSTNDTO(map, bureau, 0));
+        }
+        modelAndView.addObject("list", result);
+        return modelAndView;
+    }
+
     @RequestMapping(value = "audit/plan/routing", method = RequestMethod.GET)
     public String routing() {
         return "trainplan/routing";

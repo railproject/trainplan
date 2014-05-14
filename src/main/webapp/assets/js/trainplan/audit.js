@@ -115,7 +115,8 @@ function AuditActions() {
             self.update_yxx_time(params);
         } else {
             options.close = self.close_yxx_time;
-            self.yxx_time = self._getDialog("audit/line/timetable", options);
+            var url = "audit/line/timetable/" + kyjhModel.bureau().name + "/" + params;
+            self.yxx_time = self._getDialog(url, options);
             self.yxx_time.dialog("open");
         }
 
@@ -128,7 +129,7 @@ function AuditActions() {
     }
 
     self.update_yxx_time = function(params) {
-
+        $(self.kyjh_time).find("iframe").attr("src", "audit/line/timetable/" + kyjhModel.bureau().name + "/" + params);
     }
 
     self.yxx_time_opened = function() {
@@ -140,7 +141,7 @@ function AuditActions() {
             self.update_yxx_routing(params);
         } else {
             options.close = self.close_yxx_routing;
-            self.yxx_routing = self._getDialog("audit/line/routing", options);
+            self.yxx_routing = self._getDialog("audit/plan/routing", options);
             self.yxx_routing.dialog("open");
         }
     }
@@ -178,7 +179,10 @@ function AuditActions() {
     }
 
     self.update_compare = function(params) {
-
+        var queryStr = "date=" + $("#date_selector").val();
+        queryStr += "&bureau=" + kyjhModel.bureau().code;
+        queryStr += "&" + params;
+        $(self.kyjh_time).find("iframe").attr("src", "audit/planline?" + queryStr);
     }
 
     self.compare_opened = function() {
@@ -205,6 +209,7 @@ function bindActions() {
 
     $("#date_selector").datepicker({format: "yyyy-mm-dd"}).on('changeDate', function (ev) {
         kyjhModel.loadKYJH(moment(ev.date).format("YYYYMMDD"));
+        kyjhModel.loadYXX(moment(ev.date).format("YYYYMMDD"));
     });;
     var date = $.url().param("date");
     if (date) {
@@ -247,8 +252,9 @@ function bindActions() {
         }
     });
     $("#compare").click(function() {
-        console.log($("input[name='plan']:checked").serialize());
-        console.log($("input[name='line']:checked").serialize());
+        if(($("input[name='plan']:checked").size() > 1) || ($("input[name='line']:checked").size() > 1)){
+            return false;
+        }
         var plans = "";
         var lines = "";
         $("input[name='plan']:checked").each(function(index, ele) {
@@ -270,6 +276,8 @@ function KYJHModel() {
 
     self.kyjhTable = ko.observableArray();
 
+    self.yxxTable = ko.observableArray();
+
     self.bureauList = ko.observableArray();
 
     self.bureau = ko.observable();
@@ -288,6 +296,7 @@ function KYJHModel() {
 
         }).always(function() {
             kyjhModel.loadKYJH(moment($("#date_selector").val()).format("YYYYMMDD"));
+            kyjhModel.loadYXX(moment($("#date_selector").val()).format("YYYYMMDD"));
         })
     }
 
@@ -315,12 +324,31 @@ function KYJHModel() {
         })
     }
 
+    self.loadYXX = function(date) {
+        $.ajax({
+            url: "audit/plan/runline/" + date + "/" + self.bureau().name + "/1",
+            method: "GET",
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(list) {
+            self.yxxTable.removeAll();
+            for( var i = 0; i < list.length; i++) {
+                self.yxxTable.push(list[i]);
+            }
+            // 表头固定
+            $("#right_table").freezeHeader();
+        }).fail(function() {
+
+        }).always(function() {
+
+        })
+    }
+
     self.update_kyjh_panel = function(ev) {
         model.open_kyjh_time(ev.id, {title: "客运开行计划时刻表"});
         model.open_kyjh_routing(ev.id, {title: "客运开行计划经由"});
     }
 
-    self.update_yxx_panel = function() {
+    self.update_yxx_panel = function(ev) {
         model.open_yxx_time(ev.id, {title: "运行线时刻表"});
         model.open_yxx_routing(ev.id, {title: "运行线经由"});
     }
