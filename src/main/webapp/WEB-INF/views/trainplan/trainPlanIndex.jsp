@@ -82,15 +82,15 @@ String basePath = request.getContextPath();
       	<ul>
           <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-list-alt"></i>局别始发汇总</a></li>
           <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-list-alt"></i>局别接入汇总</a></li>
-          <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-external-link"></i>日计划查询</a></li>
+          <li><a href="<%=basePath %>/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-external-link"></i>日计划查询</a></li>
         </ul>
       </li>
       <li><a target="contentFrame" class="menu_one"><i class="fa fa-road"></i>客运列车<i class="fa fa-caret-down pull-right"></i> </a>
         <ul>
-          <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-alt"></i>开行计划汇总</a></li>
-          <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>核查编制图定开行</a></li>
-          <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>批量上图</a></li>
-          <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-external-link"></i>新图初始化</a></li>
+          <li><a href="<%=basePath %>/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-alt"></i>开行计划汇总</a></li>
+          <li><a href="<%=basePath %>/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>核查编制图定开行</a></li>
+          <li><a href="<%=basePath %>/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>批量上图</a></li>
+          <li><a href="<%=basePath %>/default/transfer/planDesign" target="contentFrame"><i class="fa fa-external-link"></i>新图初始化</a></li>
         </ul>
       </li>
       <li><a href="${ctx}/default/transfer/planConstruction" class="menu_one" target="contentFrame"><i class="fa fa-truck"></i>货运列车 </a></li>
