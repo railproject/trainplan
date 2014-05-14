@@ -9,15 +9,16 @@ public class SubCrossInfo {
 	private String tokenVehBureau;
 	private String startBureau;
 	private String highlineFlag;
-	private String marshallingNmae;
+	private String marshallingName;
 	
 	
 	
-	public String getMarshallingNmae() {
-		return marshallingNmae;
+
+	public String getMarshallingName() {
+		return marshallingName;
 	}
-	public void setMarshallingNmae(String marshallingNmae) {
-		this.marshallingNmae = marshallingNmae;
+	public void setMarshallingName(String marshallingName) {
+		this.marshallingName = marshallingName;
 	}
 	public String getUnitCrossId() {
 		return unitCrossId;
