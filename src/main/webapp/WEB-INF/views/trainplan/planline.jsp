@@ -5,7 +5,7 @@
 String basePath = request.getContextPath();
 Object runplan =  request.getAttribute("runplan");
 Object runline =  request.getAttribute("runline");
-Object grid =  request.getAttribute("list");
+Object grid =  request.getAttribute("grid");
 
 System.err.println("grid="+grid);
 System.err.println("runplan="+runplan);
