@@ -285,8 +285,9 @@
 	
 	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select m.*  from  (select 
+	   ROWNUM as num,
 		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from BASE_CROSS
-		) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
+		) m  where num >=#{rownumstart} AND num &lt;#{rownumend} 
 		<if test="tokenVehBureau != null">
 			AND tokenVehBureau= #{tokenVehBureau}
 		</if>
@@ -315,8 +316,9 @@
   
    <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select m.*  from  (select 
+	   ROWNUM as num,
 		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as marshallingName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from UNIT_CROSS
-		) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
+		) m  where num >=#{rownumstart} AND num &lt;#{rownumend} 
 		<if test="tokenVehBureau != null">
 			AND tokenVehBureau= #{tokenVehBureau}
 		</if>
