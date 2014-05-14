@@ -18,7 +18,7 @@ public class PlanTrain implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
     //列车id
-	private Long planTrainId;//PLAN_TRAIN_ID;
+	private String planTrainId;//PLAN_TRAIN_ID;
 	//车次
 	private String trainNbr;//TRAIN_NBR;
 	//始发站
@@ -49,10 +49,10 @@ public class PlanTrain implements Serializable{
 	//@Id
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	//@Column(name = "PLAN_TRAIN_ID", unique = true, nullable = false)
-	public Long getPlanTrainId() {
+	public String getPlanTrainId() {
 		return planTrainId;
 	}
-	public void setPlanTrainId(Long planTrainId) {
+	public void setPlanTrainId(String planTrainId) {
 		this.planTrainId = planTrainId;
 	}
 	

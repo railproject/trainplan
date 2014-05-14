@@ -306,7 +306,7 @@
     	 END_STN as endStn,RUN_DATE as  runDate,START_TIME as startTime,
 	     END_TIME as endTime,BASE_CHART_ID as baseChartId,BASE_TRAIN_ID as baseTrainId,
 	     START_BUREAU as startBureau,END_BUREAU as endBureau,END_BUREAU_FULL as endBureauFull,
-	     START_BUREAU_FULL as startBureauFull,rownum rownum1 from plan_train where run_date=#{runDate} and  START_BUREAU_FULL=#{startBureauFull} 
+	     START_BUREAU_FULL as startBureauFull,rownum as rownum1 from plan_train where run_date=#{runDate} and  START_BUREAU_FULL=#{startBureauFull} 
 	     <if test="trainNbr != null">
 			and TRAIN_NBR=#{trainNbr}
          </if>

@@ -16,7 +16,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	var _stnArray = stnArray;
 	var _stnOffsetY = 45;	//第一个站横虚线y对于_startY（画布y起始位置）的偏移量
 	var _startX = 100;	//默认100 x开始位置
-	var _startY = 100;	//默认100 y开始位置
+	var _startY = 50;	//默认100 y开始位置
 	var _stepX = 1;		//默认1	x步长 每一分钟X轴步长为1px
 	var _stepY = 50;	//默认100 y步长
 	var _xScale = 10;	//默认10 x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数
@@ -29,7 +29,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 //	this.initVariables = function() {
 		
 		if (_xDateArray.length <=2) {
-			_xScale = 2;	//x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数
+			_xScale = 4;	//x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数
 			_drawYMoreFlag = true;	//每一天x长度范围内需要绘制更多竖线
 		}
 
@@ -81,8 +81,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		var _hour = moment(time).format("HH");
 		var _minute = moment(time).format("mm");
 
-		console.log("~~~Circle time:"+time+" _date:"+_date +"    _hour:"+_hour + "  _minute:"+_minute);
-		
 		var _oneDayWidth = _stepX*24*60/_xScale;	//一天的x宽度
 		var _dayWidth = this.getStnArcXIndex(_date)*_oneDayWidth;	//x平移天数刻度
 		var _minuteWidth = (parseInt(_hour)*60 + parseInt(_minute))*_stepX/_xScale;
@@ -116,13 +114,14 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		for(var i=0, _len = _stnArray.length;i<_len;i++) {
 			var _obj = _stnArray[i];
 			_y = _startY+i*_stepY+_stnOffsetY;//
-			_context.lineWidth = 1;
-			_context.strokeStyle = color;//"green";
 			myCanvasFillText(_context, {
 				text : _obj.stnName,
 				fromX : _fillTextStartX,
 				fromY : _y+5
 			});
+
+			_context.lineWidth = 1;
+			_context.strokeStyle = color;//"green";
 			_context.dashedLineTo(_startX-10, _y, _xDashedLineEnd, _y, 10);//横虚线     10:虚线间隔10px
 		}
 	};

@@ -4,6 +4,10 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="org.railway.com.trainplan.repository.mybatis.BaseDataDao">
 	<select id="getFJKDicByBureauCode" parameterType="string" resultType="map">
-        SELECT * FROM JHPT_JCSJ.ZDFJK FJK WHERE FJK.SSJ = #{bureauCode} OR FJK.LJ = #{bureauCode}
+        SELECT * FROM JHPT_JCSJ.ZDFJK FJK WHERE FJK.SSJ = #{bureauCode} OR FJK.LJ = '#{bureauCode}'
 	</select>
+
+    <select id="getBureauList" resultType="map">
+        SELECT CZSJ, CZSM, SJSXSJ, LJDM, LJPYM, LJQC, LJJC FROM JHPT_JCSJ.LJZD ORDER BY LJDM
+    </select>
 </mapper> 

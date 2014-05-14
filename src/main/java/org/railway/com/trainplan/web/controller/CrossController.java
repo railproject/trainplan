@@ -134,4 +134,22 @@ public class CrossController {
 		return result;
 	}
 	
+	/**
+	 * 生成基本交路单元
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/completeUnitCrossInfo", method = RequestMethod.POST)
+	public Result completeUnitCrossInfo(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			
+		}catch(Exception e){
+			logger.error("completeUnitCrossInfo error==" + e.getMessage());
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		}
+		return result;
+	}
 }

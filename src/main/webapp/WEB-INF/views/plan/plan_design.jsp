@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <% 
-String rootPath = request.getContextPath();
+String basePath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -11,15 +11,17 @@ String rootPath = request.getContextPath();
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>新图初始化</title>
 <!-- Bootstrap core CSS -->
-<link href="../../assets/css/custom-bootstrap.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
-<link  type="text/css" rel="stylesheet" href="../../assets/css/font-awesome.min.css"/>
-<link  type="text/css" rel="stylesheet" href="../../assets/css/datepicker.css">
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
+<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/datepicker.css">
 <!-- Custom styles for this template -->
-<link href="../../assets/css/style.css" rel="stylesheet">
-<link href="../../assets/easyui/themes/default/easyui.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/oldAssets/easyui/themes/default/easyui.css" rel="stylesheet">
 </head>
 <body class="Iframe_body">
+<input id="basePath_hidden" type="hidden" value="<%=basePath %>">
+
 <!--以上为必须要的-->
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
@@ -39,7 +41,7 @@ String rootPath = request.getContextPath();
         <!--一一-->
         <div class="tab-pane fade active in" id="home">
           <div class="panel-body row">
-            <form class="bs-example form-horizontal" style="margin:0;"  action="<%=rootPath%>/default/transfer/plan/planReview" method="POST"  >
+            <form class="bs-example form-horizontal" style="margin:0;"  action="<%=basePath%>/default/transfer/plan/planView" method="POST"  >
               <!--1开始-->
               <div class="form-group" style="margin:0;"> 
                 <!--1.1开始-->
@@ -49,7 +51,8 @@ String rootPath = request.getContextPath();
                   <div class="form-group">
                     <label class="col-md-4 col-sm-4 col-xs-4 control-label text-right" >方案：</label>
                     	<div class="col-md-4 col-sm-4 col-xs-4">
-                    	<select id="input_plan_design_scheme" class="form-control" name="scheme">
+                    	<input id="input_plan_design_scheme_text" name="schemeText" type="hidden"/>
+                    	<select id="input_plan_design_scheme" class="form-control" name="schemeVal" onchange="planDesignSchemeChange()">
 				        </select>
 				        </div>
                   </div>
@@ -73,9 +76,7 @@ String rootPath = request.getContextPath();
               <!--1结束--> 
               <!--1开始-->
                <div class=" form-group text-center"> 
-               <a class="btn btn-primary" style="cursor:pointer;" href="#" onclick="submitPlan()">&nbsp;提交&nbsp;</a> 
-               <!-- <button type="submit" class="btn btn-primary" style="cursor:pointer;" onclick="submitPlan()" >&nbsp;提交&nbsp; </button>
-                -->
+              	<button type="submit" class="btn btn-primary" style="cursor:pointer;">&nbsp;提交&nbsp; </button>
                </div>
             </form>
           </div>
@@ -94,17 +95,17 @@ String rootPath = request.getContextPath();
 
 <!--分栏框结束--> 
 
-<script src="../../assets/js/jquery.js"></script> 
-<script src="../../assets/js/html5.js"></script> 
-<script src="../../assets/js/bootstrap.min.js"></script> 
-<script src="../../assets/js/respond.min.js"></script> 
-<script src="../../assets/js/jquery.dataTables.js"></script>
-<script src="../../assets/easyui/jquery.easyui.min.js"></script>
-<script src="../../assets/js/highcharts.js"></script>
-<script src="../../assets/js/datepicker.js"></script>
-<script src="../../assets/js/jquery.gritter.min.js"></script>
-<script src="../../js/util/util.js"></script>
-<script src="../../js/common.js"></script>
-<script src="../../js/plan/plan_design.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script> 
+<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script> 
+<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script> 
+<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script> 
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/easyui/jquery.easyui.min.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/highcharts.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
+<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/util/util.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/plan/plan_design.js"></script>
 </body>
 </html>

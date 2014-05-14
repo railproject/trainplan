@@ -136,13 +136,13 @@
 		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from BASE_CROSS
 		) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
 		<if test="tokenVehBureau != null">
-			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+			AND tokenVehBureau= #{tokenVehBureau}
 		</if>
 		<if test="startBureau != null">
-		   AND START_BUREAU = #{startBureau}
+		   AND startBureau = #{startBureau}
 		</if>
 		<if test="highlineFlag != null">
-		AND HIGHLINE_FLAG = #{highlineFlag}
+		AND highlineFlag = #{highlineFlag}
 		</if>
 	</select>
 

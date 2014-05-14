@@ -4,6 +4,7 @@ import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -31,13 +32,13 @@ public class RunPlanSTNDTO {
         if(dbArrDateTime != null) {
             Date date = new Date(dbArrDateTime.getTime());
             LocalDate localDate = new LocalDate(date);
-            this.arrDateTime = localDate.toString("MM-dd hh:mm");
+            this.arrDateTime = localDate.toString("MM-dd hh:mm", Locale.CHINESE);
         }
         java.sql.Timestamp dbDptDateTime = (java.sql.Timestamp)map.get("DPT_TIME");
         if(dbDptDateTime != null) {
             Date date = new Date(dbDptDateTime.getTime());
             LocalDate localDate = new LocalDate(date);
-            this.dptDateTime = localDate.toString("MM-dd hh:mm");
+            this.dptDateTime = localDate.toString("MM-dd hh:mm", Locale.CHINESE);
         }
         this.trackName = MapUtils.getString(map, "TRACK_NAME", "");
         this.psg = MapUtils.getIntValue(map, "PSG_FLG", 1);
