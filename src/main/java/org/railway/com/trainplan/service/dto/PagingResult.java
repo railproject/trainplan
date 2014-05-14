@@ -18,7 +18,7 @@ public class PagingResult {
 	}
 
 	public PagingResult(long totalRecord,Object data){
-		this.totalPage = totalRecord;
+		this.totalRecord = totalRecord;
 		this.data = data;
 	}
 	public long getTotalRecord() {
