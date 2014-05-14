@@ -1,18 +1,24 @@
 package org.railway.com.trainplan.web.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.railway.com.trainplan.service.RunLineService;
 import org.railway.com.trainplan.service.RunPlanService;
-import org.railway.com.trainplan.web.dto.RunPlanSTNDTO;
+import org.railway.com.trainplan.web.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by star on 5/12/14.
@@ -20,6 +26,8 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/")
 public class IndexController {
+
+    private final static Log logger = LogFactory.getLog(IndexController.class);
 
     @Autowired
     private RunPlanService runPlanService;
@@ -49,9 +57,84 @@ public class IndexController {
         return "trainplan/routing";
     }
 
-    @RequestMapping(value = "audit/planline/{date}/{bureau}/{train_id}", method = RequestMethod.GET)
-    public String canvas(@PathVariable String date, @PathVariable String bureau, @PathVariable String train_id) {
-
+    @RequestMapping(value = "audit/planline/{date}/{bureau}", method = RequestMethod.GET)
+    public String canvas(@PathVariable String date, @PathVariable String bureau,
+                         @RequestParam(value = "plans") String plans, @RequestParam(value = "lines") String lines) {
+        logger.debug("date:" + date);
+        logger.debug("bureau:" + bureau);
+        logger.debug("plans:" + plans);
+        logger.debug("lines:" +lines);
         return "trainplan/planline";
+    }
+
+    @RequestMapping(value = "audit/planline", method = RequestMethod.GET)
+    public ModelAndView graphic(@RequestParam(value = "date") String date, @RequestParam(value = "bureau") String bureau,
+                          @RequestParam(value = "plans", defaultValue = "") String plans,
+                          @RequestParam(value = "lines", defaultValue = "") String lines,
+                          ModelAndView modelAndView) throws JsonProcessingException {
+        modelAndView.setViewName("trainplan/planline");
+        if(plans.endsWith(",")) {
+            plans = plans.substring(0, plans.length() - 1);
+        }
+        if(lines.endsWith(",")) {
+            lines = lines.substring(0, lines.length() - 1);
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<PlanLineDTO> runplan = new ArrayList<PlanLineDTO>();
+        List<Map<String, Object>> planList = runPlanService.findRunPlans(plans);
+        List<Map<String, Object>> planLineY = runPlanService.findPlanLineSTNs(plans);
+        List<String> startList = new ArrayList<String>();
+        List<java.sql.Timestamp> endList = new ArrayList<java.sql.Timestamp>();
+        PlanLineDTO planLineDTO = null;
+        for(int i = 0; i < planList.size(); i++) {
+            Map<String, Object> row = planList.get(i);
+            if(planLineDTO == null || !planLineDTO.getTrainName().equals(MapUtils.getString(row, "TRAIN_NBR"))) {
+                planLineDTO = new PlanLineDTO(planList.get(i));
+                runplan.add(planLineDTO);
+                startList.add(MapUtils.getString(row, "RUN_DATE"));
+            }
+            PlanLineSTNDTO planLineSTNDTO = new PlanLineSTNDTO(row);
+            planLineDTO.getTrainStns().add(planLineSTNDTO);
+            endList.add((java.sql.Timestamp) row.get("ARR_TIME"));
+            endList.add((java.sql.Timestamp) row.get("DPT_TIME"));
+        }
+        String runplanStr = objectMapper.writeValueAsString(runplan);
+        logger.debug("runplan: " + runplanStr);
+        modelAndView.addObject("runplan", runplanStr);
+
+        // Grid
+        List<PlanLineGridY> planLineGridYList = new ArrayList<PlanLineGridY>();
+        for(Map<String, Object> map: planLineY) {
+            planLineGridYList.add(new PlanLineGridY(MapUtils.getString(map, "STN_NAME")));
+        }
+
+        Collections.sort(startList, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                LocalDate d1 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o1);
+                LocalDate d2 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o2);
+                return d1.compareTo(d2);
+            }
+        });
+
+        Collections.sort(endList, new Comparator<java.sql.Timestamp>() {
+            @Override
+            public int compare(java.sql.Timestamp o1, java.sql.Timestamp o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        LocalDate ss = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(startList.get(0));
+        Date eee = new Date(endList.get(endList.size() - 1).getTime());
+        LocalDate ee = new LocalDate(eee);
+        List<String> gridXList = new ArrayList<String>();
+        while(!ss.isAfter(ee)) {
+            gridXList.add(ss.toString("yyyy-MM-dd"));
+            ss = ss.plusDays(1);
+        }
+        PlanLineGrid grid = new PlanLineGrid(gridXList, planLineGridYList);
+        String gridStr = objectMapper.writeValueAsString(grid);
+        logger.debug("grid: " + gridStr);
+        modelAndView.addObject("grid", gridStr);
+        return modelAndView;
     }
 }
