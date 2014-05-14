@@ -42,8 +42,8 @@ $(function(){
 	 * 绘制客运开行计划
 	 */
 	this.drawPlanLines = function() {
-		for(var i=0, _len=canvasData.runline.length;i<_len;i++) {
-			myCanvasComponent.drawTrainRunLine(true, "#8236ac", canvasData.runline[i]);
+		for(var i=0, _len=canvasData.runplan.length;i<_len;i++) {
+			myCanvasComponent.drawTrainRunLine(true, "#8236ac", canvasData.runplan[i]);
 		}
 		
 	};
@@ -52,8 +52,8 @@ $(function(){
 	 * 绘制运行线
 	 */
 	this.drawRunLines = function() {
-		for(var i=0, _len=canvasData.runplan.length;i<_len;i++) {
-			myCanvasComponent.drawTrainRunLine(true, "#72b5d2", canvasData.runplan[i]);
+		for(var i=0, _len=canvasData.runline.length;i<_len;i++) {
+			myCanvasComponent.drawTrainRunLine(true, "#72b5d2", canvasData.runline[i]);
 		}
 		
 	};
@@ -68,7 +68,7 @@ $(function(){
 	_self.drawPlanLines();
 
 	//3.绘制运行线
-	_self.drawRunLines();
+	//_self.drawRunLines();
 });
 
 
