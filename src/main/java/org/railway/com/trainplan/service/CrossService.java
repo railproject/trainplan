@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -30,11 +31,13 @@ import java.util.concurrent.Executors;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
@@ -77,12 +80,106 @@ public class CrossService{
 	}
 
 	/**
+	 * 生成交路单元
+	 * @param baseCrossId
+	 * @throws Exception
+	 */
+	public void completeUnitCrossInfo(String baseCrossId) throws Exception{
+		//
+		CrossInfo crossInfo = getCrossInfoForCrossid(baseCrossId);
+		List<CrossTrainInfo> listCrossTrainInfo = getCrossTrainInfoForCrossid(baseCrossId);
+		System.err.println("listCrossTrainInfo.size==" + listCrossTrainInfo.size());
+		List<CrossInfo> list = prepareUnitCrossInfo(crossInfo);
+		System.err.println("list.size==" + list.size());
+		List<CrossTrainInfo> listCrossTrain = prepareUnitCrossTrainInfo(listCrossTrainInfo,list);
+		System.err.println("listCrossTrain.size===" + listCrossTrain.size());
+		int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_INFO, list);
+		System.err.println("count=====" + count);
+		int trainCount = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_TRAIN_INFO, listCrossTrain);
+		System.err.println("trainCount=====" + trainCount);
+	}
+	
+	/**
+	 * 
+	 * @param crossTrainInfoList 通过crossid对表base_cross_train查询结果
+	 * @param crossInfoList 通过crossid对表base_cross查询并对groupTotalNbr进行分组的结果
+	 * @return 需要插入到表unit_cross_train表中的数据
+	 */
+	private List<CrossTrainInfo> prepareUnitCrossTrainInfo(List<CrossTrainInfo> crossTrainInfoList,List<CrossInfo> crossInfoList) throws Exception{
+		List<CrossTrainInfo> list = new ArrayList<CrossTrainInfo>();
+		if(crossTrainInfoList != null && crossTrainInfoList.size() > 0){
+			for(CrossTrainInfo crossTrainInfo : crossTrainInfoList){
+				
+				if(crossInfoList != null && crossInfoList.size() > 0){
+					for(CrossInfo crossInfo : crossInfoList){
+						CrossTrainInfo temp = new CrossTrainInfo();
+						BeanUtils.copyProperties(temp, crossTrainInfo);
+						temp.setUnitCrossId(crossInfo.getUnitCrossId());
+						//设置主键
+						temp.setUnitCrossTrainId(UUID.randomUUID().toString());
+						list.add(temp);
+					}
+				}
+				
+			}
+		}
+		System.err.println("CrossTrainInfo_list=====" + list);
+		return list;
+	}
+	/**
+	 * 准备unit_cross表中数据
+	 * @param crossInfo
+	 * @return
+	 */
+	private List<CrossInfo>  prepareUnitCrossInfo(CrossInfo crossInfo) throws Exception{
+		List<CrossInfo> list = new ArrayList<CrossInfo>();
+		//组数（需几组车底担当）
+		int groupTotalNbr = crossInfo.getGroupTotalNbr();
+		//交路开始日期,格式yyyyMMdd
+		String crossStartDate = crossInfo.getCrossStartDate();
+		String crossEndDate = crossInfo.getCrossEndDate();
+		System.err.println("crossStartDate11==" + crossStartDate);
+		System.err.println("crossEndDate11==" + crossEndDate);
+		String crossName = crossInfo.getCrossName();
+		if(groupTotalNbr >0 ){
+			for(int i = 1;i<=groupTotalNbr;i++){
+				CrossInfo tempInfo = new CrossInfo();
+				BeanUtils.copyProperties(tempInfo, crossInfo);
+				String crossStartDateTemp = DateUtil.getDateByDay(DateUtil.getFormateDay(crossStartDate), -i);
+				String crossEndDateTemp = DateUtil.getDateByDay(DateUtil.getFormateDay(crossEndDate), -i);
+				
+				System.err.println("crossStartDateTemp==" + crossStartDateTemp);
+				System.err.println("crossEndDateTemp==" + crossEndDateTemp);
+				
+				tempInfo.setCrossStartDate(crossStartDateTemp.replaceAll("-", ""));
+				tempInfo.setCrossEndDate(crossEndDateTemp.replace("-", ""));
+				tempInfo.setUnitCrossId(UUID.randomUUID().toString());
+				tempInfo.setMarshallingName(crossName+"-"+i);
+				//组数序号
+				tempInfo.setGroupSerialNbr(i);
+				list.add(tempInfo);
+			}
+		}
+		System.err.println("CrossInfo_list=====" + list);
+		return list;
+	}
+	/**
 	 * 查询cross信息
 	 * @param reqMap
 	 * @return
 	 */
 	public List<CrossInfo>  getCrossInfo(Map<String,Object> reqMap){
 		List<CrossInfo>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_INFO, reqMap);
+		return list;
+	}
+	
+	/**
+	 * 查询unitcross信息
+	 * @param reqMap
+	 * @return
+	 */
+	public List<CrossInfo>  getUnitCrossInfo(Map<String,Object> reqMap){
+		List<CrossInfo>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO, reqMap);
 		return list;
 	}
 	
@@ -108,6 +205,31 @@ public class CrossService{
 		paramMap.put("crossId", crossId);
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_TRAIN_INFO_FOR_CROSSID, paramMap);
 	}
+	
+	
+	/**
+	 * 通过UNITcrossid查询UNITcrossinfo信息
+	 * @param crossId
+	 * @return
+	 */
+	public CrossInfo getUnitCrossInfoForUnitCrossid(String unitCrossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("unitCrossId", unitCrossId);
+		return (CrossInfo)baseDao.selectOneBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO_FOR_UNIT_CROSSID, paramMap);
+	    
+	}
+	
+	/**
+	 * 通过crossid查询crosstrainInfo信息
+	 * @param crossId
+	 * @return
+	 */
+	public List<CrossTrainInfo> getUnitCrossTrainInfoForUnitCrossid(String unitCrossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("unitCrossId", unitCrossId);
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
+	}
+	
 	
 	
 	public void actionExcel(InputStream inputStream, String chartId, String startDay) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {

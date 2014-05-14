@@ -96,5 +96,14 @@ public class Constants {
 	public static final String  CROSSDAO_GET_CROSS_INFO_FOR_CROSSID = "crossDao.getCrossInfoForCrossid";
 	//通过crossid查询crosstrainInfo信息   
 	public static final String CROSSDAO_GET_CROSS_TRAIN_INFO_FOR_CROSSID = "crossDao.getCrossTrainInfoForCrossid";
+    //插入表unit_cross  addUnitCrossInfo
+	public static final String CROSSDAO_ADD_UNIT_CROSS_INFO="crossDao.addUnitCrossInfo";
+	//插入表unit_cross_train
+	public static final String CROSSDAO_ADD_UNIT_CROSS_TRAIN_INFO="crossDao.addUnitCrossTrainInfo";
+    //根据unit_cross_id查询unitcrossInfo信息 getUnitCrossInfoForUnitCrossid
+	public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_UNIT_CROSSID="crossDao.getUnitCrossInfoForUnitCrossid";
+    public static final String CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID = "crossDao.getUnitCrossTrainInfoForUnitCrossid";
+    //分页查询表unit_cross  getUnitCrossInfo
+    public static final String CROSSDAO_GET_UNIT_CROSS_INFO = "crossDao.getUnitCrossInfo";
 
 }

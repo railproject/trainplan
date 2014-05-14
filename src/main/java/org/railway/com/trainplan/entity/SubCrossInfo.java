@@ -2,11 +2,27 @@ package org.railway.com.trainplan.entity;
 
 public class SubCrossInfo {
   
+	private String unitCrossId;
+	private String unitCrossName;
 	private String crossId ;
 	private String crossName;
 	private String tokenVehBureau;
 	private String startBureau;
 	private String highlineFlag;
+	
+	
+	public String getUnitCrossId() {
+		return unitCrossId;
+	}
+	public void setUnitCrossId(String unitCrossId) {
+		this.unitCrossId = unitCrossId;
+	}
+	public String getUnitCrossName() {
+		return unitCrossName;
+	}
+	public void setUnitCrossName(String unitCrossName) {
+		this.unitCrossName = unitCrossName;
+	}
 	public String getCrossId() {
 		return crossId;
 	}

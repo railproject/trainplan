@@ -148,7 +148,7 @@ public class PlanTrainCheckService {
 				//只有一条数据
 				if(listTotalCount != null){
 					Map<String,Object> countMap = listTotalCount.get(0);
-					totalCount = StringUtil.strToInteger(StringUtil.objToStr(countMap.get("count")));
+					totalCount = StringUtil.strToInteger(StringUtil.objToStr(countMap.get("COUNT")));
 					
 				}
 				for(Map<String,Object> map : list){

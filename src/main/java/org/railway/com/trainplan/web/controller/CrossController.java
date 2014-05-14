@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.service.CrossService;
@@ -88,15 +89,33 @@ public class CrossController {
 	 * @return
 	 */
 	@ResponseBody
+	@RequestMapping(value = "/getUnitCrossInfo", method = RequestMethod.POST)
+	public Result getUnitCrossInfo(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result(); 
+		List<CrossInfo> list = null;
+	    try{
+	    	list = crossService.getUnitCrossInfo(reqMap);
+	    	result.setData(list);
+	    }catch(Exception e){
+			logger.error("getUnitCrossInfo error==" + e.getMessage());
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		}
+	
+		return result;
+	}
+	
+	
+	/**
+	 * 获取车底交路信息
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
 	@RequestMapping(value = "/getCrossInfo", method = RequestMethod.POST)
 	public Result getCrossInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
-		//车辆担当局
-//		Object tokenVehBureau = reqMap.get("tokenVehBureau");
-//		//始发局
-//		Object startBureau = reqMap.get("startBureau");
-//		//铁路线类型
-//		Object highlineFlag = reqMap.get("highlineFlag");
+
 		List<CrossInfo> list = null;
 	    try{
 	    	list = crossService.getCrossInfo(reqMap);
@@ -109,6 +128,38 @@ public class CrossController {
 	
 		return result;
 	}
+	
+	/**
+	 * 获取车底交路信息
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getUnitCrossTrainInfo", method = RequestMethod.POST)
+	public Result getUnitCrossTrainInfo(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		String unitCrossId = (String)reqMap.get("unitCrossId");
+		logger.debug("unitCrossId==" + unitCrossId);
+		 try{
+		    	//先获取unitcross基本信息
+			 CrossInfo crossinfo = crossService.getUnitCrossInfoForUnitCrossid(unitCrossId);
+			 //再获取unitcrosstrainInfo信息
+			 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
+		     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
+		     Map<String,Object> dataMap = new HashMap<String,Object>();
+		     dataMap.put("unitCrossInfo", crossinfo);
+		     dataMap.put("unitCrossTrainInfo", list);
+		     dataList.add(dataMap);
+			 result.setData(dataList);
+		    }catch(Exception e){
+				logger.error("getUnitCrossTrainInfo error==" + e.getMessage());
+				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			}
+		
+		return result;
+	}
+	
 	
 	/**
 	 * 获取车底交路信息
@@ -151,7 +202,16 @@ public class CrossController {
 	public Result completeUnitCrossInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			
+			//crossid以逗号分隔
+			String crossId = StringUtil.objToStr(reqMap.get("crossIds"));
+			logger.debug("crossId==" + crossId);
+			if(crossId != null){
+				String[] crossIds = crossId.split(",");
+				for(String crossid :crossIds){
+					//根据crossid生成交路单元
+					crossService.completeUnitCrossInfo(crossid);
+				}
+			}
 		}catch(Exception e){
 			logger.error("completeUnitCrossInfo error==" + e.getMessage());
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());

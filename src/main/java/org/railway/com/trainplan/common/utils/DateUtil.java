@@ -204,7 +204,21 @@ public class DateUtil {
 		 return days;
 	}
 	
-	
+	/**
+	 * 将yyyyMMdd格式时间转为yyyy-MM-dd格式
+	 * @param day 格式为yyyyMMdd
+	 * @return 格式为yyyy-MM-dd
+	 */
+	public static String getFormateDay(String day){
+		Date date = null;
+		try {
+			date = parseDate(day,defaultDatePattern2);
+		} catch (ParseException e) {
+			
+			//e.printStackTrace();
+		}
+		return format(date,defaultDatePattern1);
+	}
 	public static void main(String[] args) {
 		//System.out.println(getDuration(1310067170,1390267170));
 		//System.out.println(System.currentTimeMillis()/1000);
