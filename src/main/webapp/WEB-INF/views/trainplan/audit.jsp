@@ -195,18 +195,18 @@
                                                         <th class="text-center">审核时间</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="text-center"><input class="checkbox-inline" name="line" type="checkbox"/></td>
-                                                        <td class="text-center">1</td>
-                                                        <td class="text-center">T7</td>
-                                                        <td class="text-center">成都</td>
-                                                        <td class="text-center">北京</td>
-                                                        <td class="text-center">5-11</td>
-                                                        <td class="text-center">张三</td>
-                                                        <td class="text-center">5-10 9:04</td>
-                                                        <td class="text-center">李四</td>
-                                                        <td class="text-center">5-10 10:01</td>
+                                                    <tbody data-bind="foreach: yxxTable">
+                                                    <tr data-bind="attr: {line_id: id}">
+                                                        <td class="text-center"><input class="checkbox-inline" name="line" type="checkbox" data-bind="value: id"/></td>
+                                                        <td class="text-center" data-bind="text: ($index() + 1)"></td>
+                                                        <td class="text-center"><a href="#" data-bind="text: serial, click: $parent.update_yxx_panel"></a></td>
+                                                        <td class="text-center" data-bind="text: startSTN"></td>
+                                                        <td class="text-center" data-bind="text: endSTN"></td>
+                                                        <td class="text-center" data-bind="text: runDate"></td>
+                                                        <td class="text-center" data-bind="text: dk"></td>
+                                                        <td class="text-center" data-bind="text: kdauditDate"></td>
+                                                        <td class="text-center" data-bind="text: zbzr"></td>
+                                                        <td class="text-center" data-bind="text: zbzrauditDate"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

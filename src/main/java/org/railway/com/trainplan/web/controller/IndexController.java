@@ -52,6 +52,24 @@ public class IndexController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "audit/line/timetable/{bureau}/{line_id}", method = RequestMethod.GET)
+    public ModelAndView yxxTimeTable(@PathVariable String bureau, @PathVariable String line_id, ModelAndView modelAndView) {
+        modelAndView.setViewName("trainplan/timetable");
+        List<RunPlanSTNDTO> result = new ArrayList<RunPlanSTNDTO>();
+        List<Map<String, Object>> lineStn = new ArrayList<Map<String, Object>>();
+        Map<String, Object> map =runLineService.getRunLineSTN(line_id);
+        Map<String, Map<String, Object>> timeTable = (Map<String, Map<String, Object>>) map.get("scheduleDto");
+        lineStn.add(timeTable.get("sourceItemDto"));
+        List<Map<String, Object>> routingTable = (List<Map<String, Object>>) timeTable.get("routeItemDtos");
+        lineStn.addAll(routingTable);
+        lineStn.add(timeTable.get("targetItemDto"));
+        for(Map<String, Object> tmp: lineStn) {
+            result.add(new RunPlanSTNDTO(tmp, bureau, 0));
+        }
+        modelAndView.addObject("list", result);
+        return modelAndView;
+    }
+
     @RequestMapping(value = "audit/plan/routing", method = RequestMethod.GET)
     public String routing() {
         return "trainplan/routing";
@@ -79,6 +97,7 @@ public class IndexController {
         if(lines.endsWith(",")) {
             lines = lines.substring(0, lines.length() - 1);
         }
+        // runplan
         ObjectMapper objectMapper = new ObjectMapper();
         List<PlanLineDTO> runplan = new ArrayList<PlanLineDTO>();
         List<Map<String, Object>> planList = runPlanService.findRunPlans(plans);
@@ -101,6 +120,34 @@ public class IndexController {
         String runplanStr = objectMapper.writeValueAsString(runplan);
         logger.debug("runplan: " + runplanStr);
         modelAndView.addObject("runplan", runplanStr);
+
+        // runline
+        String[] line_ids = lines.split(",");
+        List<PlanLineDTO> runline = new ArrayList<PlanLineDTO>();
+        for(String line_id: line_ids) {
+            Map<String, Object> l1 =runLineService.getRunLineSTN(line_id);
+            PlanLineDTO pld = new PlanLineDTO();
+            pld.setTrainName(MapUtils.getString(l1, "name", ""));
+            pld.setStartStn(MapUtils.getString(l1, "sourceNodeName", ""));
+            pld.setEndStn(MapUtils.getString(l1, "targetBureauName", ""));
+            List<PlanLineSTNDTO> trainStns = new ArrayList<PlanLineSTNDTO>();
+            pld.setTrainStns(trainStns);
+
+            List<Map<String, Object>> lineStn = new ArrayList<Map<String, Object>>();
+            Map<String, Map<String, Object>> timeTable = (Map<String, Map<String, Object>>) l1.get("scheduleDto");
+            lineStn.add(timeTable.get("sourceItemDto"));
+            List<Map<String, Object>> routingTable = (List<Map<String, Object>>) timeTable.get("routeItemDtos");
+            lineStn.addAll(routingTable);
+            lineStn.add(timeTable.get("targetItemDto"));
+            for(Map<String, Object> tmp: lineStn) {
+                PlanLineSTNDTO planLineSTNDTO = new PlanLineSTNDTO(tmp, 1);
+                trainStns.add(planLineSTNDTO);
+            }
+        }
+        String runlineStr = objectMapper.writeValueAsString(runplan);
+        logger.debug("runline: " + runlineStr);
+        modelAndView.addObject("runline", runlineStr);
+
 
         // Grid
         List<PlanLineGridY> planLineGridYList = new ArrayList<PlanLineGridY>();
@@ -135,6 +182,8 @@ public class IndexController {
         String gridStr = objectMapper.writeValueAsString(grid);
         logger.debug("grid: " + gridStr);
         modelAndView.addObject("grid", gridStr);
+
+
         return modelAndView;
     }
 }
