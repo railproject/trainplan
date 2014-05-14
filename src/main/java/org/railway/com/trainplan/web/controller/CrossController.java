@@ -136,7 +136,7 @@ public class CrossController {
 		List<CrossInfo> list = null;
 	    try{
 	    	list = crossService.getUnitCrossInfo(reqMap);
-	    	PagingResult page = new PagingResult((long)crossService.getUnitCrossInfoCount(reqMap),list);
+	    	PagingResult page = new PagingResult(crossService.getUnitCrossInfoCount(reqMap),list);
 	    	result.setData(page);
 	    }catch(Exception e){
 			logger.error("getUnitCrossInfo error==" + e.getMessage());
@@ -161,7 +161,7 @@ public class CrossController {
 		List<CrossInfo> list = null;
 	    try{
 	    	list = crossService.getCrossInfo(reqMap);
-	    	PagingResult page = new PagingResult((long)crossService.getCrossInfoCount(reqMap),list);
+	    	PagingResult page = new PagingResult(crossService.getCrossInfoCount(reqMap),list);
 	    	result.setData(page);
 	    }catch(Exception e){
 			logger.error("getCrossInfo error==" + e.getMessage());

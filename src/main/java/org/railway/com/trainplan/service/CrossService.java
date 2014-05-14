@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -186,13 +187,13 @@ public class CrossService{
 	/**
 	 * 查询 unitcross信息总条数
 	 */
-	public int getCrossInfoCount(Map<String,Object> reqMap){
+	public long getCrossInfoCount(Map<String,Object> reqMap){
 		List<Map<String,Object>>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_INFO_COUNT, reqMap);
-		int count = 0;
+		long count = 0;
 		if(list != null){
 			//只有一条数据
 			Map<String,Object> map = list.get(0);
-			count = (Integer)map.get("COUNT");
+			count =(( BigDecimal)map.get("COUNT")).longValue();
 		}
 		return count;
 	}
@@ -209,13 +210,13 @@ public class CrossService{
 	/**
 	 * 查询 unitcross信息总条数
 	 */
-	public int getUnitCrossInfoCount(Map<String,Object> reqMap){
+	public long getUnitCrossInfoCount(Map<String,Object> reqMap){
 		List<Map<String,Object>>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO_COUNT, reqMap);
-		int count = 0;
+		long count = 0;
 		if(list != null){
 			//只有一条数据
 			Map<String,Object> map = list.get(0);
-			count = (Integer)map.get("COUNT");
+			count =(( BigDecimal)map.get("COUNT")).longValue();
 		}
 		return count;
 	}
