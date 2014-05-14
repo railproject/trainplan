@@ -109,7 +109,7 @@ function myCanvasFillText(context, textObj) {
 	// 设置字体
 	context.font = "Bold 12px Arial";
 	// 设置对齐方式
-	context.textAlign = "center";
+	context.textAlign = textObj.textAlign,//"right";
 	context.fillText(textObj.text, textObj.fromX, textObj.fromY);
 };
 

@@ -68,7 +68,7 @@ $(function(){
 	_self.drawPlanLines();
 
 	//3.绘制运行线
-	//_self.drawRunLines();
+	_self.drawRunLines();
 });
 
 

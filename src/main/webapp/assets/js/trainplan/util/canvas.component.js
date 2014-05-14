@@ -15,7 +15,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	var _xDateArray = xDateArray;
 	var _stnArray = stnArray;
 	var _stnOffsetY = 45;	//第一个站横虚线y对于_startY（画布y起始位置）的偏移量
-	var _startX = 100;	//默认100 x开始位置
+	var _startX = 150;	//默认100 x开始位置
 	var _startY = 50;	//默认100 y开始位置
 	var _stepX = 1;		//默认1	x步长 每一分钟X轴步长为1px
 	var _stepY = 50;	//默认100 y步长
@@ -108,13 +108,14 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	 * @param color	//颜色
 	 */
 	this.drawGridX = function(color) {
-		var _fillTextStartX = _startX - 80;	//站台名称开始点X
+		var _fillTextStartX = _startX - 20;	//站台名称开始点X
 		var _xDashedLineEnd = _endX+20; 	//每站虚线（横向）x终点    +20是为了造成延伸效果
 		var _y = 0;
 		for(var i=0, _len = _stnArray.length;i<_len;i++) {
 			var _obj = _stnArray[i];
 			_y = _startY+i*_stepY+_stnOffsetY;//
 			myCanvasFillText(_context, {
+				textAlign:"right",
 				text : _obj.stnName,
 				fromX : _fillTextStartX,
 				fromY : _y+5
@@ -139,12 +140,14 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		}
 		//顶端显示
 		myCanvasFillText(_context, {
+			textAlign:"center",
 			text : text,//0 6 12 18 
 			fromX : fromX,
 			fromY : _startY-5
 		});
 		//底端显示
 		myCanvasFillText(_context, {
+			textAlign:"center",
 			text : text,//0 6 12 18 
 			fromX : fromX,
 			fromY : _endY+15
@@ -172,12 +175,14 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		for (var i = 0,_len=_xDateArray.length; i<_len; i++) {
 			//网格顶端显示 2014-05-12 一天范围内的 日期文本显示 
 			myCanvasFillText(_context, {
+				textAlign:"center",
 				text : _xDateArray[i].runDate,
 				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
 				fromY : _startY-35
 			});
 			//网格底端显示 2014-05-12
 			myCanvasFillText(_context, {
+				textAlign:"center",
 				text : _xDateArray[i].runDate,
 				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
 				fromY : _endY +35
@@ -220,6 +225,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		for (var i = 0,_len=_xDateArray.length; i<_len; i++) {
 			//一天范围内的 日期文本显示  如：2014-05-12
 			myCanvasFillText(_context, {
+				textAlign:"center",
 				text : _xDateArray[i].runDate,
 				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
 				fromY : _startY-30
