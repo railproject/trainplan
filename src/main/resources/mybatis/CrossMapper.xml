@@ -287,16 +287,18 @@
 	  select m.*  from  (select 
 	   ROWNUM as num,
 		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from BASE_CROSS
-		) m  where num >=#{rownumstart} AND num &lt;#{rownumend} 
+		where 1=1 
 		<if test="tokenVehBureau != null">
-			AND tokenVehBureau= #{tokenVehBureau}
+			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
 		</if>
 		<if test="startBureau != null">
-		   AND startBureau = #{startBureau}
+		   AND START_BUREAU = #{startBureau}
 		</if>
 		<if test="highlineFlag != null">
-		AND highlineFlag = #{highlineFlag}
+		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
+		) m  where num >=#{rownumstart} AND num &lt;#{rownumend} 
+		
 	</select>
 
   <select id="getUnitCrossInfoCount"  parameterType="map" resultType="map">
@@ -318,16 +320,18 @@
 	  select m.*  from  (select 
 	   ROWNUM as num,
 		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as marshallingName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from UNIT_CROSS
-		) m  where num >=#{rownumstart} AND num &lt;#{rownumend} 
+		where 1=1 
 		<if test="tokenVehBureau != null">
-			AND tokenVehBureau= #{tokenVehBureau}
+			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
 		</if>
 		<if test="startBureau != null">
-		   AND startBureau = #{startBureau}
+		   AND START_BUREAU = #{startBureau}
 		</if>
 		<if test="highlineFlag != null">
-		AND highlineFlag = #{highlineFlag}
+		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
+		) m  where num >=#{rownumstart} AND num &lt;#{rownumend} 
+		
 	</select>
 	
 	<select id="getTrainNbrFromUnitCross" parameterType="String" resultType="map">
