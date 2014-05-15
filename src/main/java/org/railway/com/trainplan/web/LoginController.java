@@ -22,15 +22,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login() {
-		return "login";
+		return "trainplan/login";
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String fail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName, Model model) {
 		model.addAttribute(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM, userName);
-		return "login";
+		return "trainplan/audit";
 	}
 
 }

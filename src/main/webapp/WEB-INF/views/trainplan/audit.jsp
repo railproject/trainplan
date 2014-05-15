@@ -137,7 +137,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody data-bind="foreach: kyjhTable">
-                                                    <tr data-bind="attr: {train_id: id}">
+                                                    <tr>
                                                         <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="value: id"/></td>
                                                         <td class="text-center" data-bind="text: ($index() + 1)"></td>
                                                         <td class="text-center"><a href="#" data-bind="text: serial, click: $parent.update_kyjh_panel"></a></td>
@@ -196,7 +196,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody data-bind="foreach: yxxTable">
-                                                    <tr data-bind="attr: {line_id: id}">
+                                                    <tr>
                                                         <td class="text-center"><input class="checkbox-inline" name="line" type="checkbox" data-bind="value: id"/></td>
                                                         <td class="text-center" data-bind="text: ($index() + 1)"></td>
                                                         <td class="text-center"><a href="#" data-bind="text: serial, click: $parent.update_yxx_panel"></a></td>
