@@ -268,6 +268,45 @@ public class CrossService{
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
 	}
 	
+	/**
+	 * 根据baseCrossid查询crossName
+	 * @param baseCrossId
+	 * @return
+	 */
+	public String  getCrossNameWithBaseCrossId(String baseCrossId){
+		String crossName = "";
+		List<Map<String,String>> list =baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSSNAME_WITH_BASE_CROSSID, baseCrossId);
+	   if(list !=null && list.size() > 0){
+		   //只有一条数据
+		   Map<String,String> map = list.get(0);
+		   crossName = map.get("CROSS_NAME");
+	   }
+	   return crossName;
+	}
+	
+	/**
+	 * 通过baseCrossId 查询cross_start_date和cross_end_date
+	 * @param baseCrossId
+	 * @return
+	 */
+	public Map<String,String> getCrossDateWithBaseCrossId(String baseCrossId){
+		List<Map<String,String>> list = baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSSDATE_WITH_BASE_CROSSID, baseCrossId);
+		 Map<String,String> map = null;
+		if(list !=null && list.size() > 0){
+			 //只有一条数据
+			 map = list.get(0);
+
+		 }
+		return map;
+	}
+	/**
+	 * 通过baseCorssId查询train_nbr,train_sort等信息
+	 * @param baseCrossId
+	 * @return
+	 */
+	public List<Map<String,Object>> getTrainNbrWithBaseCrossId(String baseCrossId){
+		return baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID, baseCrossId);
+	}
 	
 	
 	public void actionExcel(InputStream inputStream, String chartId, String startDay) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
