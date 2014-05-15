@@ -96,13 +96,14 @@ public class CrossController {
 	public Result updateUnitCrossId(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
 		String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
+		logger.info("updateUnitCrossId----unitCrossIds=="+unitCrossIds);
 		try{
 			if(unitCrossIds != null){
 				String[] unitcrossArray = unitCrossIds.split(",");
 				for(String unitCrossId :unitcrossArray){
 					List<Map<String,String>> listMap = crossService.getTrainNbrFromUnitCrossId(unitCrossId);
 					if(listMap !=null && listMap.size() > 0){
-						StringBuffer trainNbrBf = new StringBuffer();
+						
 						//方案id
 						String baseChartId="";
 						int size = listMap.size();

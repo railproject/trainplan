@@ -270,11 +270,11 @@ public class RemoteService {
 		request.put("vehicleCycleId", vehicleCycleId);
 		request.put("property", "name");
 		request.put("trainlines", trainNbrs);
-		System.err.println("updateUnitCrossId---request==" + request);
+		logger.info("updateUnitCrossId---request==" + request);
 		//调用后台的接口
 		Map response = RestClientUtils.post(Constants.SERVICE_URL
 				+ Constants.UPDATE_UNIT_CROSS_ID, request, Map.class);
-		System.err.println("updateUnitCrossId---response==" + response);
+		logger.info("updateUnitCrossId---response==" + response);
 		return "";
 	}
 	/**
