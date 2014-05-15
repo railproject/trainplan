@@ -1,4 +1,6 @@
 
+
+
 /**
  * @param context 画布对象
  * @param startX x起始位置
@@ -11,6 +13,7 @@
  */
 var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	//function(context,startX,startY,stepX,stepY,xScale,xDateArray, stnArray)
+	var _self = this;
 	var _context = context;
 	var _xDateArray = xDateArray;
 	var _stnArray = stnArray;
@@ -298,80 +301,94 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 					  ]
 		          }
 	 */
-	this.drawTrainRunLine = function(flag, colorParam, paramObj) {
-		var _y = 0;					//到达站和出发站的y坐标
-		var _dayWidth = 0;			//x平移天数刻度
-		var _parentDeptStn = {};	//上一站出发点x y坐标
+	this.drawTrainRunLine = function(flagParam, colorParam, paramObj) {
+		this.flag = flagParam;	//是否绘制起止标记
+		this.color = colorParam;//初始颜色
+		this.obj = paramObj;	//单个车次及其经由信息
+		this.isCurrent = false;
+		this.lineWidth = 2;
 		
-		var _arrMinuteArray = [];	//到达点小时+分钟
-		var _arrMinuteWidth = 0;	//到达点x平移分钟刻度
-		var _arrTimeX = 0;			//到达点x标
+	    this.drawLine = function(ctx, x, y) {
 
-		var _dptMinuteArray = [];	//出发点小时+分钟
-		var _dptMinuteWidth = 0;	//出发点x平移分钟刻度
-		var _dptTimeX = 0;			//出发点x标
-
-		var _oneDayWidth = _stepX*24*60/_xScale;	//一天的x宽度
-		var _len = paramObj.trainStns.length;
-		
-		//绘制起止标记
-		if (flag && _len > 0) {
-			if(paramObj.startStn == paramObj.trainStns[0].stnName) {//列车经由第一站==始发站   则绘制开始标记
-				this.drawTrainStartArrows(colorParam, paramObj.trainStns[0]);
-			}
-			
-			if(paramObj.endStn == paramObj.trainStns[_len-1].stnName) {//列车经由最后一站==终到站   则绘制终到标记
-				this.drawTrainEndArrows(colorParam, paramObj.trainStns[_len-1]);
-			}
-		}
-		
-		//绘制列车运行线
-		for(var i=0; i<_len;i++) {
-			var _obj = paramObj.trainStns[i];
-			_y = this.getY(_obj.stnName);	//该车站Y标
-			_arrTimeX = this.getX(_obj.arrTime);//计算到达点x标
-			_dptTimeX = this.getX(_obj.dptTime);//计算出发点x标
-
-			//绘制到达点
-			myCanvasDrawCircle(_context, {
-				x:_arrTimeX,
-				y:_y,
-				radius:2,//半径
-				color: colorParam,
-				fillStyle:colorParam
-			});
-			
-			//绘制出发点
-			myCanvasDrawCircle(_context, {
-				x:_dptTimeX,
-				y:_y,
-				radius:2,	//半径
-				color:colorParam,
-				fillStyle:colorParam
-			});
-
-			if (i == 0) {
-//				console.log("~~~Circle x1:"+_arrTimeX +"    y1:"+_y + "  x2:"+_dptTimeX +"    y2:"+_y);
+			var _y = 0;					//到达站和出发站的y坐标
+			var _arrTimeX = 0;//计算到达点x标
+			var _dptTimeX = 0;//计算出发点x标
+			var _len = this.obj.trainStns.length;
+	    	ctx.save();
+	    	ctx.beginPath();
+	    	
+			//绘制起止标记
+			if (this.flag && _len > 0) {
+				if(this.obj.startStn == this.obj.trainStns[0].stnName) {//列车经由第一站==始发站   则绘制开始标记
+					_self.drawTrainStartArrows(colorParam, this.obj.trainStns[0]);
+				}
 				
-				
-				//绘制列车名称
-				myCanvasFillTextWithColor(_context, colorParam, {
-					text : paramObj.trainName,
-					fromX : _dptTimeX,
-					fromY : _y-15
-				});
-			} else {
-				//连接上一站出发点到本站到达点
-				myCanvasDrawLine(_context, 2, colorParam, _parentDeptStn.x, _parentDeptStn.y, _arrTimeX, _y);
+				if(this.obj.endStn == this.obj.trainStns[_len-1].stnName) {//列车经由最后一站==终到站   则绘制终到标记
+					_self.drawTrainEndArrows(colorParam, this.obj.trainStns[_len-1]);
+				}
 			}
 			
-			//连接本站到达点和出发点
-			myCanvasDrawLine(_context, 2, colorParam, _arrTimeX, _y, _dptTimeX, _y);
+	
+			//绘制列车运行线
+			for(var i=0; i<_len;i++) {
+				var _obj = this.obj.trainStns[i];
+				_y = _self.getY(_obj.stnName);	//该车站Y标
+				_arrTimeX = _self.getX(_obj.arrTime);//计算到达点x标
+				_dptTimeX = _self.getX(_obj.dptTime);//计算出发点x标
+	
+				//绘制到达点
+				ctx.moveTo(_arrTimeX, _y);
+				ctx.arc(_arrTimeX,_y, 2, 0, Math.PI*2, false);
+				//绘制出发点
+				ctx.moveTo(_dptTimeX, _y);
+				ctx.arc(_dptTimeX, _y, 2, 0, Math.PI*2, false);
+	
+				if (i == 0) {
+					//绘制列车名称
+					myCanvasFillTextWithColor(_context, colorParam, {
+						text : this.obj.trainName,
+						fromX : _dptTimeX,
+						fromY : _y-15
+					});
+				} else {
+					//连接上一站出发点到本站到达点
+					myCanvasDrawLine(_context, this.lineWidth, colorParam, _parentDeptStn.x, _parentDeptStn.y, _arrTimeX, _y);
+				}
+				
+				//连接本站到达点和出发点
+				myCanvasDrawLine(_context, this.lineWidth, colorParam, _arrTimeX, _y, _dptTimeX, _y);
+	
+				//保存上一站出发点x y坐标
+				_parentDeptStn = {x:_dptTimeX, y: _y};
+			}
+			
+			console.log("ctx.isPointInStroke(x, y):"+ctx.isPointInStroke(x, y)+ "   x:"+x+"   y:"+y+" currentLine:"+!currentLine+"   this.isCurrent:"+this.isCurrent);
+	        console.log("ctx.isPointInStroke(x, y):"+ctx.isPointInStroke(x, y)+ "    (x && y && ctx.isPointInStroke(x, y)):"+(x && y && ctx.isPointInStroke(x, y)));
+	        
+			if((x && y && (ctx.isPointInStroke(x, y)||ctx.isPointInPath(x, y)) && !currentLine ) || this.isCurrent) {
+                ctx.strokeStyle = '#ff0000';
+                ctx.fillStyle = '#ff0000';
+                this.color = '#ff0000';
+                currentLine = this;
+                this.isCurrent = true;
+            } else {
+                ctx.strokeStyle = colorParam;
+                ctx.fillStyle = colorParam;
+            }
+            ctx.stroke();//绘画
+            ctx.fill();
 
-			//保存上一站出发点x y坐标
-			_parentDeptStn = {x:_dptTimeX, y: _y};
-		}
+	    };
+
 	};
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 绘制开始标记  开始使用dptTime
@@ -449,7 +466,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 			return "down";//down
 		}
 		return "";
-	}
+	};
 	
 	
 	/**
@@ -549,8 +566,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	
 	
 
-
 	
 };
+
 
 

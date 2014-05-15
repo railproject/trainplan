@@ -16,12 +16,12 @@ for(var i=0;i<4;i++) {
  * x\y坐标请求接口返回数据格式
  */
 var gridData = {
-		code : "0",	//非0即接口内部异常
-		message:"",
-		data:{
+//		code : "0",	//非0即接口内部异常
+//		message:"",
+//		data:{
 			days:dateArray,//[{runDate:"2014-05-10"},{runDate:"2014-05-11"}]
 			crossStns:[{stnName:"成都"},{stnName:"遂宁"},{stnName:"南充"},{stnName:"蓬安"},{stnName:"营山"},{stnName:"土溪"},{stnName:"达州"},{stnName:"安康"},{stnName:"华山"},{stnName:"北京西"}]
-		}
+//		}
 };
 
 
@@ -31,11 +31,8 @@ var gridData = {
 /*==================================================
  *按交路绘图请求接口返回数据格式
  */
-var myJlData = {
-		code : "0",//非0即接口内部异常
-		message:"",
-		data:[
-		      {
+var myJlData = 
+	[{
 		    	  crossName:"K818-K817-1",
 		    	  jxgx:[//接续关系数组
 		    	        {fromStnName:"北京西",fromTime:"2014-05-11 21:07",toStnName:"北京西",toTime:"2014-05-12 08:35"}
@@ -81,5 +78,10 @@ var myJlData = {
 		      
 		      
 		
-		]
-};
+		];
+
+
+
+var canvasData = {};
+canvasData.grid = gridData;
+canvasData.jlData = myJlData;//交路数据

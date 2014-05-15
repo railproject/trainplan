@@ -62,10 +62,10 @@ public class PlanTrainStnController {
 	private BaseDao baseDao;
 	@ResponseBody
 	@RequestMapping(value = "/mytest", method = RequestMethod.POST)
-	public Result getTest(@RequestBody Map<String,Object> reqMap){
+	public Result getTest(@RequestBody Map<String,Object> reqMap) throws Exception{
 		Result result = new Result();
-		String ljqc = reqMap.get("ljqc").toString();
-		System.err.println("ljqc == " + ljqc);
+		//String ljqc = reqMap.get("ljqc").toString();
+		//System.err.println("ljqc == " + ljqc);
 		//Ljzd ljzd = commonService.getLjInfo(ljqc);
 		//System.err.println("ljdm==" + ljzd.getLjdm());
 		/*List<CrossInfo> alllist = new ArrayList<CrossInfo>();
@@ -99,7 +99,7 @@ public class PlanTrainStnController {
         //result.setData(crossinfo);
 		
 		//fortest导入
-		InputStream is;
+		/*InputStream is;
 		try {
 			is = new FileInputStream(
 					"C:\\test.xls");
@@ -107,7 +107,7 @@ public class PlanTrainStnController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		//CrossService a = new CrossService();
 		//测试插入unit_cross表
@@ -119,7 +119,9 @@ public class PlanTrainStnController {
 			e.printStackTrace();
 		}*/
 		
-		
+		String baseTrainId = reqMap.get("baseTrainId").toString();
+		//测试根据车次查询车次信息
+		remoteService.getTrainLinesInfoWithId(baseTrainId);
 		return result;
 	}
 	

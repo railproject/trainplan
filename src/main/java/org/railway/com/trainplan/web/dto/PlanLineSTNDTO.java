@@ -16,6 +16,7 @@ public class PlanLineSTNDTO {
     private String dptTime;
     private int stayTime;
 
+    public PlanLineSTNDTO(){}
     public PlanLineSTNDTO(Map<String, Object> map) {
         SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         this.runDays = MapUtils.getIntValue(map, "RUN_DAYS", 0);
