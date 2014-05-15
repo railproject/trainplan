@@ -270,7 +270,7 @@ public class CrossService{
 	
 	
 	
-	public void actionExcel(InputStream inputStream, String chartId, String startDay) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void actionExcel(InputStream inputStream, String chartId, String startDay, String chartName) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// TODO Auto-generated method stub
 		LinkedHashMap<String, String> pm = new LinkedHashMap<String, String>();
 		pm.put("crossIdForExcel", "");
@@ -316,6 +316,7 @@ public class CrossService{
 		System.err.println("tokenPsgDeptValuesMap==" + tokenPsgDeptValuesMap);
 		valuesMap.put("tokenPsgBureau", tokenPsgDeptValuesMap); 
 		valuesMap.put("startBureau", tokenPsgDeptValuesMap); 
+		valuesMap.put("tokenVehDept", tokenPsgDeptValuesMap);
 		
 		 
 		
@@ -340,6 +341,7 @@ public class CrossService{
 			for(int i = 0; i < alllist.size(); i++){
 				CrossInfo crossInfo = alllist.get(i);
 				crossInfo.setChartId(chartId);
+				crossInfo.setChartName(chartName);
 				 if(StringUtils.isEmpty(crossInfo.getAlterNateDate())){
 					 crossInfo.setAlterNateDate(startDay);
 				 }
@@ -492,6 +494,8 @@ public class CrossService{
 					if(trainNbr.indexOf("(") >= 0){
 						trainNbr = trainNbr.substring(0, trainNbr.indexOf("(")).trim();
 						
+						
+						
 						stn = trainNbr.substring(trainNbr.indexOf("(") + 1, trainNbr.indexOf(")")).trim();
 					}
 					WebResource webResource = client.resource("http://10.1.191.135:7003/rail/template/TrainlineTemplates?name=" + trainNbr); 
@@ -520,12 +524,25 @@ public class CrossService{
 							sourceItemDto = scheduleDto.getJSONObject("sourceItemDto");
 							targetItemDto = scheduleDto.getJSONObject("targetItemDto"); 
 							//如果车次中有站名，如果不匹配就返回
-							if(stn != null){  
-								if(stn.equals(sourceItemDto.getString("nodeName")) 
-												|| stn.equals(targetItemDto.getString("nodeName"))){
+							if(stn != null){ 
+								String startStn = sourceItemDto.getString("name");
+								String endStn = targetItemDto.getString("name");
+								String fixStnYw = startStn + ":" + endStn; 
+								String fixStnZw = startStn + "：" + endStn; 
+								if(stn.equals(startStn) 
+										|| stn.equals(endStn) 
+										||  stn.equals(fixStnYw)
+										||  stn.equals(fixStnZw)){
 									findFlag = true;
 									break;
-								}
+								} 
+								 
+//								sourceItemDto.getString("name")
+//								if(stn.equals(sourceItemDto.getString("name")) 
+//												|| stn.equals(targetItemDto.getString("nodeName"))){
+//									findFlag = true;
+//									break;
+//								}
 							}else{//如果没有站名做标示就取第一个列车，应该只有一辆吧 
 								if(obj.size() > 1){
 									logger.error(trainNbr + ",有两辆列车从计划平台陪查询出来，默认取了第一辆");

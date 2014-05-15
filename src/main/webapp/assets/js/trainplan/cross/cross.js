@@ -1,6 +1,10 @@
 $(function() {
 	$("#file_upload_dlg").dialog("close"); 
-	$("#cross_train_time_dlg").dialog("close"); 
+	$("#cross_train_time_dlg").dialog("close");
+	$("#cross_map_dlg").dialog("close"); 
+	$("#cross_train_dlg").dialog("close");
+	$("#cross_train_time_dlg").dialog("close");
+	
 	
 	var cross = new CrossModel();
 	ko.applyBindings(cross); 
@@ -96,28 +100,28 @@ function CrossModel() {
 		    	$("#file_upload_dlg").dialog("close"); 
 		    	return;
 		    }  
-		    
-	        $("#loading")
-	        .ajaxStart(function(){
-	            $(this).show();
-	        })
-	        .ajaxComplete(function(){
-	            $(this).hide();
-	        });  
+		    if($("#fileToUpload").val() == null || $("#fileToUpload").val() == ""){
+		    	showErrorDialog("没有可导入的文件"); 
+		    	return;
+		    }
+		    $("#loading").show();
 	        $.ajaxFileUpload
 	        ({
-                url:'cross/fileUpload?chartId=' + chart.chartId + "&startDay="+ startDay,
+                url:'cross/fileUpload?chartId=' + chart.chartId + "&startDay="+ startDay + "&chartName=" + chart.name,
                 secureuri:false,
                 fileElementId:'fileToUpload',
                 type : "POST",
-                dataType: 'json', 
+                dataType: 'json',  
                 success: function (data, status)
                 { 
                 	showSuccessDialog("上传成功");
+                	$("#loading").hide();
+                },
+                error: function(result){
+                	showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+                	$("#loading").hide();
                 }
-            }).done(function(result){
-            	showSuccessDialog("上传成功");
-            }); 
+            });  
 	        return true;
 	} ;
 	
@@ -161,9 +165,9 @@ function CrossModel() {
 		"createPeopleOrg":"",  
 		"createTime":""}));
 	
-	self.currentIndex = 0;
+	self.currentIndex = ko.observable(0);
 	
-	self.pageSize = 50; 
+	self.pageSize = ko.observable(20); 
 	
 	self.totalCount = ko.observable(0);
 	//currentIndex 
@@ -172,6 +176,8 @@ function CrossModel() {
 		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
 		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
 		var days = d.getDate(); 
+		month = ("" + month).length == 1 ? "0" + month : month;
+		days = ("" + days).length == 1 ? "0" + days : days;
 		return year+"-"+month+"-"+days;
 	};
 	
@@ -222,8 +228,7 @@ function CrossModel() {
 							self.gloabBureaus.push({"shortName": bureau.ljjc, "code": bureau.ljpym});
 							gloabBureaus.push({"shortName": bureau.ljjc, "code": bureau.ljpym});
 						});
-					}
-					 
+					} 
 				} else {
 					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 				} 
@@ -240,14 +245,29 @@ function CrossModel() {
 	}; 
 	
 	self.loadPCrosses = function(){
-		self.loadCrosses();
-	 
+		var currentIndex = self.currentIndex();   
+		if(currentIndex == 0){
+			return;
+		}
+		self.currentIndex(currentIndex - self.pageSize());  
+		self.loadCrosseForPage();
 	};
 	self.loadNCrosses = function(){
-		self.loadCrosses(1);
+		var currentIndex = self.currentIndex();  
+		self.currentIndex(currentIndex + self.pageSize());
+		if(self.currentIndex() > self.totalCount()){
+			self.currentIndex(currentIndex);
+			return
+		}
+		self.loadCrosseForPage();
 	};
 	
-	self.loadCrosses = function(action) {  
+	self.loadCrosses = function(){
+		self.currentIndex(0);
+		self.loadCrosseForPage();
+	};
+	
+	self.loadCrosseForPage = function() {   
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -256,14 +276,9 @@ function CrossModel() {
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag(); 
 		var sureFlag = self.searchModle().sureFlag();
-		var startBureauCode = self.searchModle().startBureau(); 
-		var currentIndex = 0; 
-		 // 如果是重新查询
-		 if(action == 1){
-			 currentIndex = self.crossRows().length;
-		 }
+		var startBureauCode = self.searchModle().startBureau();  
 		 
-		 $.ajax({
+		$.ajax({
 				url : "cross/getCrossInfo",
 				cache : false,
 				type : "POST",
@@ -274,19 +289,19 @@ function CrossModel() {
 					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
 					sureFlag : sureFlag == "-1" ? null : sureFlag,  
 					startBureau : startBureauCode,
-					rownumstart : currentIndex, 
-					rownumend : currentIndex + self.pageSize 
+					rownumstart : self.currentIndex(), 
+					rownumend : self.currentIndex() + self.pageSize() 
 				}),
 				success : function(result) {    
-					if(action == 0){ 
-						$.each(self.crossRows(),function(n, crossRow){
-							crossRow.visiableRow(false);
-						});
-					}else{ 
+//					if(action == 1){ 
+//						$.each(self.crossRows(),function(n, crossRow){
+//							crossRow.visiableRow(false);
+//						});
+//					}else{ 
 						self.crossRows.remove(function(item) {
 							return true;
 						});  
-					}
+//					}
 					if (result != null && result != "undefind" && result.code == "0") {
 						 
 						if(result.data.data != null){  
@@ -316,6 +331,20 @@ function CrossModel() {
 	
 	self.showUploadDlg = function(){
 		$("#file_upload_dlg").dialog("open");
+	};
+	
+	self.showCrossMapDlg = function(){
+		//$("#cross_map_dlg").find("iframe").attr("src", "");
+		$("#cross_map_dlg").dialog("open");
+	};
+	
+	self.showCrossTrainDlg = function(){
+		$("#cross_train_dlg").dialog("open");
+	};
+	
+	self.showCrossTrainTimeDlg = function(){
+		//$("#cross_map_dlg").find("iframe").attr("src", "");
+		$("#cross_train_time_dlg").dialog("open");
 	};
 	
 	self.createUnitCrossInfo = function(){ 

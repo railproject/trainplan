@@ -52,7 +52,7 @@ public class CrossInfo {
 	private String tokenVehDepot;
 	private String tokenPsgDept;
 	private String tokenPsgDepot;
-	private String spareFlag;
+	private String spareFlag = "1";
 	private String locoType;
 	private String createTime ;
 	private String chartId;
