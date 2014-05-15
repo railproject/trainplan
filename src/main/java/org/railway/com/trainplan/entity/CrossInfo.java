@@ -20,8 +20,8 @@ public class CrossInfo {
 	private String crossIdForExcel;
 	
 
-	private int highlineRule;
-	private int commonlineRule;
+	private String highlineRule;
+	private String commonlineRule;
 	private int cutOld;
 	private int groupTotalNbr;
 	private int elecSupply;
@@ -35,7 +35,7 @@ public class CrossInfo {
 	private String alterNateTranNbr;
 	private String crossName;
 	private String crossSpareName;
-	private String highlineFlag;
+	private String highlineFlag; 
 	private String throughline;
 	private String appointWeek;
 	private String appointDay;
@@ -156,16 +156,17 @@ public class CrossInfo {
 	public void setHighlineFlag(String highlineFlag) {
 		this.highlineFlag = highlineFlag;
 	}
-	public int getHighlineRule() {
+	 
+	public String getHighlineRule() {
 		return highlineRule;
 	}
-	public void setHighlineRule(int highlineRule) {
+	public void setHighlineRule(String highlineRule) {
 		this.highlineRule = highlineRule;
 	}
-	public int getCommonlineRule() {
+	public String getCommonlineRule() {
 		return commonlineRule;
 	}
-	public void setCommonlineRule(int commonlineRule) {
+	public void setCommonlineRule(String commonlineRule) {
 		this.commonlineRule = commonlineRule;
 	}
 	public String getAppointWeek() {
