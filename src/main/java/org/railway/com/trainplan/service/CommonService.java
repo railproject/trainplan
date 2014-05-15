@@ -2,6 +2,7 @@ package org.railway.com.trainplan.service;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommonService {
 	private static final Logger logger = Logger.getLogger(CommonService.class);
 	
+	private static Map<String, Ljzd> map = new HashMap<String, Ljzd>();
+	
 	@Autowired
 	private LjzdMybatisDao ljzdDao;
 	
@@ -39,8 +42,12 @@ public class CommonService {
 	/**
 	 * 通过路局全称查询路基基本信息
 	 */
-	public Ljzd getLjInfo(String ljqc) {	
+	public Ljzd getLjInfo(String ljqc) {
+		if(map.get(ljqc) != null){
+			return map.get(ljqc);
+		}
 		Ljzd dto = (Ljzd)baseDao.selectOneBySql(Constants.LJZDDAO_GET_LJ_INFO, ljqc);
+		map.put(ljqc, dto);
 		return dto;
 	}
 

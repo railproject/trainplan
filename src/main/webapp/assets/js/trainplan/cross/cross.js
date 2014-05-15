@@ -107,11 +107,16 @@ function CrossModel() {
 		    $("#loading").show();
 	        $.ajaxFileUpload
 	        ({
-                url:'cross/fileUpload?chartId=' + chart.chartId + "&startDay="+ startDay + "&chartName=" + chart.name,
+                url:'cross/fileUpload',
                 secureuri:false,
                 fileElementId:'fileToUpload',
                 type : "POST",
                 dataType: 'json',  
+                data:{
+                	chartId:chart.chartId,
+                	startDay:startDay,
+                	chartName:chart.name
+                },
                 success: function (data, status)
                 { 
                 	showSuccessDialog("上传成功");
@@ -244,7 +249,7 @@ function CrossModel() {
 		
 	}; 
 	
-	self.loadPCrosses = function(){
+	self.loadPCrosses = function(){ 
 		var currentIndex = self.currentIndex();   
 		if(currentIndex == 0){
 			return;
@@ -331,6 +336,13 @@ function CrossModel() {
 	
 	self.showUploadDlg = function(){
 		$("#file_upload_dlg").dialog("open");
+//		var diag = new Dialog();
+//		diag.Title = "上传对数文件";
+//		diag.Width = 400;
+//		diag.Height = 200;
+//		diag.InnerHtml = $("#file_upload_dlg").html();
+//		//diag.URL = "javascript:void(document.write(\'这是弹出窗口中的内容\'))";
+//		diag.show();
 	};
 	
 	self.showCrossMapDlg = function(){
