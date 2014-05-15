@@ -264,14 +264,12 @@ public class RemoteService {
 	 * @param trainNbrs  以逗号分隔的车次字符串
 	 * @return
 	 */
-	public String updateUnitCrossId(String schemeId,String vehicleCycleId,String trainNbrs)  throws Exception{
+	public String updateUnitCrossId(String schemeId,String vehicleCycleId,List<String> trainNbrs)  throws Exception{
 		Map<String,Object> request = new HashMap<String,Object>();
 		request.put("schemeId",schemeId);
 		request.put("vehicleCycleId", vehicleCycleId);
 		request.put("property", "name");
-		List trainsList = new ArrayList();
-		trainsList.add(trainNbrs);
-		request.put("trainlines", trainsList);
+		request.put("trainlines", trainNbrs);
 		System.err.println("updateUnitCrossId---request==" + request);
 		//调用后台的接口
 		Map response = RestClientUtils.post(Constants.SERVICE_URL

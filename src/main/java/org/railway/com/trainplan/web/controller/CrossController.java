@@ -101,17 +101,15 @@ public class CrossController {
 						//方案id
 						String baseChartId="";
 						int size = listMap.size();
+						List<String> trainNbrs = new ArrayList<String>();
 						for(int i = 0;i<size;i++){
 							String trainNbr = listMap.get(i).get("TRAIN_NBR");
 							baseChartId = listMap.get(i).get("BASE_CHART_ID");
+							trainNbrs.add(trainNbr);
 							
-							trainNbrBf.append(trainNbr);
-							if( i != size -1 ){
-								trainNbrBf.append(",");
-							}
 						}
 						//调用后台接口
-						remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrBf.toString());
+						remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrs);
 					}
 					
 				}

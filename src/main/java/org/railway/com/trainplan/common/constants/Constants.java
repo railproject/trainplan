@@ -20,7 +20,7 @@ public class Constants {
 	//TODO:后台服务地址，以后要改为配置文件
 	//后台接口地址
 	//TODO 从配置文件中获取不到值
-	@Value("#{restConfig['SERVICE_URL']}")
+	@Value("#{restConfig['SERVICE_URL']}")//公共的测试地址：10.1.191.135:7003  金磊的：10.1.132.149:7001
 	public static  String SERVICE_URL = "http://10.1.191.135:7003";//PropertiesConfiguration.getStringValue("SERVICE_URL");
 	//获取方案列表
 	public static final String GET_SCHEME_LIST = "/rail/template/TemplateSchemes";
