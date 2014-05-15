@@ -20,7 +20,7 @@ function AuditActions() {
 
     var _default = {
         autoOpen: false,
-        height: $(window).height()/3,
+        height: $(window).height()/2,
         width: 500,
         title: "",
         position: [($(window).width() - 500), 0],
@@ -129,7 +129,7 @@ function AuditActions() {
     }
 
     self.update_yxx_time = function(params) {
-        $(self.kyjh_time).find("iframe").attr("src", "audit/line/timetable/" + kyjhModel.bureau().name + "/" + params);
+        $(self.yxx_time).find("iframe").attr("src", "audit/line/timetable/" + kyjhModel.bureau().name + "/" + params);
     }
 
     self.yxx_time_opened = function() {

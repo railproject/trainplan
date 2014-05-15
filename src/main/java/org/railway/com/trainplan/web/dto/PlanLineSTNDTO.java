@@ -36,9 +36,9 @@ public class PlanLineSTNDTO {
     public PlanLineSTNDTO(Map<String, Object> map, int line) {
         this.stnName = MapUtils.getString(map, "name", "");
         this.arrTime = MapUtils.getString(map, "sourceTimeDto2", "");
-        this.arrTime = this.arrTime.substring(0, 15);
+        this.arrTime = this.arrTime.substring(0, 16);
         this.dptTime = MapUtils.getString(map, "targetTimeDto2", "");
-        this.dptTime = this.dptTime.substring(0, 15);
+        this.dptTime = this.dptTime.substring(0, 16);
     }
 
     public int getRunDays() {

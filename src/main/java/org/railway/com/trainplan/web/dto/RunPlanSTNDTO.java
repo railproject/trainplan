@@ -47,7 +47,13 @@ public class RunPlanSTNDTO {
         this.id = MapUtils.getString(map, "id", "");
         this.name = MapUtils.getString(map , "name", "");
         this.arrDateTime = MapUtils.getString(map, "sourceTimeDto2", "");
+        if(this.arrDateTime.length() > 0) {
+            this.arrDateTime = this.arrDateTime.substring(5, 16);
+        }
         this.dptDateTime = MapUtils.getString(map , "targetTimeDto2", "");
+        if(this.dptDateTime.length() > 0) {
+            this.dptDateTime = this.dptDateTime.substring(5, 16);
+        }
         this.trackName = MapUtils.getString(map, "trackName", "");
         this.owner = MapUtils.getString(map, "bureauShortName", "").equals(bureau);
     }

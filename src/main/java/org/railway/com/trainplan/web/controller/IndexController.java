@@ -130,7 +130,7 @@ public class IndexController {
             runline.add(pld);
             pld.setTrainName(MapUtils.getString(l1, "name", ""));
             pld.setStartStn(MapUtils.getString(l1, "sourceNodeName", ""));
-            pld.setEndStn(MapUtils.getString(l1, "targetBureauName", ""));
+            pld.setEndStn(MapUtils.getString(l1, "targetNodeName", ""));
             List<PlanLineSTNDTO> trainStns = new ArrayList<PlanLineSTNDTO>();
             pld.setTrainStns(trainStns);
 
