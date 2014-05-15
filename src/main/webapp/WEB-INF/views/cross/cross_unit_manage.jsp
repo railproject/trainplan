@@ -48,7 +48,7 @@ String basePath = request.getContextPath();
 <script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
 <script src="<%=basePath %>/assets/js/trainplan/common.js"></script> 
 </head> 
-<body class="Iframe_body" style="margin-left:50px;margin-right:50px;">
+<body class="Iframe_body">
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
@@ -59,54 +59,53 @@ String basePath = request.getContextPath();
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 24%;">
 		<!--分栏框开始-->
-		<div id="plan_view_div_palnDayDetail" class="panel panel-default">
-			 
+		<div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
 			<div class="row" style="margin: 5px 10px 10px 10px;">
 			    <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
 			        <div class="panel-body">
 						<form class="form-horizontal" role="form"> 
-						         <div class="row" >
+						        <div class="row" style="width: 100%">
 									<label for="exampleInputEmail3" class="control-label pull-left">
 													方案:&nbsp;</label> 
-									<div class="pull-left">
-										<select style="width: 269px" id="input_cross_chart_id"
+									<div class="pull-left" style="width: 80%">
+										<select style="width: 90%" id="input_cross_chart_id"
 											class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
 										</select>
 									</div>  
-							  </div> 
-								<div class="row" style="margin-top: 5px;">
+							    </div> 
+								<div class="row" style="margin-top: 5px;width: 100%">
 									<div class="form-group"
-										style="float: left; margin-left: 0px; margin-top: 0px;"> 
-										<div class="row">
+										style="float: left; margin-left: 0px; margin-top: 0px;width: 100%"> 
+										<div class="row"  style="width: 100%">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												车辆担当局:</label>
-											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width: 65px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' "></select>
+											<div class="pull-left" style="margin-left: 5px;width: 20%">
+												<select style="width:90%" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' "></select>
 											</div>
 											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 												始发局:</label>
-											<div class="pull-left" style="margin-left: 5px;">
-											<select style="width: 65px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
+											<div class="pull-left" style="margin-left: 5px;width: 20%">
+											<select style="width: 90%" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
 											</div> 
 										</div>    
-										<div class="row"  style="margin-top: 5px;">
+										<div class="row"  style="margin-top: 5px;width: 100%">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												铁路线类型:</label>
-											<div class="pull-left" style="margin-left: 5px;">
-											    <select  style="width: 60px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
+											<div class="pull-left" style="margin-left: 5px;width: 20%">
+											    <select  style="width:90%" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
 											</div>
 											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 33px;">
 												状态:</label>
-											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width: 65px" id="input_cross_sure_flag"
+											<div class="pull-left" style="margin-left: 5px;width: 20%">
+												<select style="width: 90%" id="input_cross_sure_flag"
 													class="form-control" data-bind="options: searchModle().sureFlags, value: searchModle().sureFlag, optionsText: 'text' , optionsCaption: ''">
 												</select>
 											</div>
 											
 											<div class="pull-right">
 												<a type="button" class="btn btn-success" data-toggle="modal"
-													data-target="#" id="btn_cross_search" style="margin-left: 15px;" data-bind="click: loadCrosses">查询</a>
+													data-target="#" id="btn_cross_search" style="margin-left: 10px;" data-bind="click: loadCrosses">查询</a>
 											</div>
 										</div>
 								 
@@ -162,7 +161,7 @@ String basePath = request.getContextPath();
 											<tr data-bind="visiable: totalCount() > pageSize">
 												<table>
 												  <tr>
-													<td >共<span data-bind="html: totalCount()"></span>条 当前<span data-bind="html: currentIndex+1"></span>到<span data-bind="html: crossRows().length"></span></td><td colspan="2" data-bind="click: loadNCrosses">下一页</td><td colspan="2" data-bind="click: loadPCrosses">上一页</td>
+													<td>共<span data-bind="html: totalCount()"></span>条</td><td>当前<span data-bind="html: currentIndex()"></span>到<span data-bind="html: (currentIndex()%pageSize()==0 ? ((totalCount() == 0) ? 0 : currentIndex() + pageSize()) : currentIndex() + currentIndex()%pageSize())"></span></td><td data-bind="click: loadNCrosses"><span class="btn btn-success">下一页</span></td><td colspan="2" data-bind="click: loadPCrosses"><span class="btn btn-success">上一页</span></td>
 												  </tr>
 												</table>
 											</tr>
@@ -375,9 +374,7 @@ String basePath = request.getContextPath();
 									<div class="pull-left">
 										<input type="text" class="form-control" style="width: 140px;"
 											placeholder=""  data-bind="value: appointDay">
-									</div>
-									 
-									 
+									</div> 
 								</div>
 								
 								<div class="row" style="margin: 5px 0 0px 0;">
@@ -472,7 +469,7 @@ String basePath = request.getContextPath();
 					  </div>
 				   </section>
 				</div>
-				<div class="row" style="margin: 15px 0 10px 10px;">
+				<div class="row" style="margin: 15px 10px 10px 10px;">
 					<div class="pull-left" style="width: 100%;">
 					<section class="panel panel-default" >
 				         <div class="panel-heading"><i class="fa fa-table"></i>列车信息</div>
@@ -480,28 +477,30 @@ String basePath = request.getContextPath();
 							<div class="table-responsive">
 								<div class="form-group"
 									style="margin-left: 10px; margin-top: 5px;">
-									  <a type="button"
+									<a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_add">添加</a> <a type="button"
+										id="cross_train_add" data-bind="click: showCrossTrainDlg">添加</a> 
+									<a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save"> 修改</a> <a type="button"
+										id="cross_train_save" data-bind="click: showCrossTrainDlg"> 修改</a> 
+									<a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
 										id="cross_train_delete">删除</a>
-										 <a type="button"
+									<a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">时刻表</a>
-										 <a type="button"
+										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">时刻表</a>
+									<a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">详点</a>
-										 <a type="button"
+										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">详点</a>
+									<a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">交路图</a>
+										id="cross_train_delete" data-bind="click: showCrossMapDlg">交路图</a>
 								</div>
 								<table class="table table-bordered table-striped table-hover"
 									id="cross_trainInfo">
 									<thead>
 										<tr>
-											<th style="width: 3%">序号</th>
+											<th style="width: 5%">序号</th>
 											<th style="width: 8%">车次</th>
 											<th style="width: 8%">始发站</th>
 											<th style="width: 5%">始发局</th>

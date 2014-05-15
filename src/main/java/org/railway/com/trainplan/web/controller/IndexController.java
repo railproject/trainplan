@@ -127,9 +127,10 @@ public class IndexController {
         for(String line_id: line_ids) {
             Map<String, Object> l1 =runLineService.getRunLineSTN(line_id);
             PlanLineDTO pld = new PlanLineDTO();
+            runline.add(pld);
             pld.setTrainName(MapUtils.getString(l1, "name", ""));
             pld.setStartStn(MapUtils.getString(l1, "sourceNodeName", ""));
-            pld.setEndStn(MapUtils.getString(l1, "targetBureauName", ""));
+            pld.setEndStn(MapUtils.getString(l1, "targetNodeName", ""));
             List<PlanLineSTNDTO> trainStns = new ArrayList<PlanLineSTNDTO>();
             pld.setTrainStns(trainStns);
 
@@ -140,11 +141,13 @@ public class IndexController {
             lineStn.addAll(routingTable);
             lineStn.add(timeTable.get("targetItemDto"));
             for(Map<String, Object> tmp: lineStn) {
-                PlanLineSTNDTO planLineSTNDTO = new PlanLineSTNDTO(tmp, 1);
-                trainStns.add(planLineSTNDTO);
+                if(tmp != null) {
+                    PlanLineSTNDTO planLineSTNDTO = new PlanLineSTNDTO(tmp, 1);
+                    trainStns.add(planLineSTNDTO);
+                }
             }
         }
-        String runlineStr = objectMapper.writeValueAsString(runplan);
+        String runlineStr = objectMapper.writeValueAsString(runline);
         logger.debug("runline: " + runlineStr);
         modelAndView.addObject("runline", runlineStr);
 

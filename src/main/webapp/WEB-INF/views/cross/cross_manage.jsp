@@ -11,45 +11,40 @@ String basePath = request.getContextPath();
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>核查编制图定开行</title>
 <!-- Bootstrap core CSS -->
-<link href="assets/css/cross/custom-bootstrap.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
-<link href="assets/css/datepicker.css" rel="stylesheet">
-<link href="assets/easyui/themes/default/easyui.css"
+<link href="<%=basePath %>/assets/css/datepicker.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/easyui/themes/default/easyui.css"
 	rel="stylesheet">
-<link href="assets/easyui/themes/icon.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
 <link type="text/css" rel="stylesheet"
-	href="assets/css/font-awesome.min.css" />
-<link type="text/css" rel="stylesheet"
-	href="assets/css/datepicker.css">
-<!-- Custom styles for this template --> 
-<link href="assets/css/cross/cross.css" rel="stylesheet"> 
+	href="<%=basePath %>/assets/css/font-awesome.min.css" />
  
-<script src="assets/js/jquery.js"></script>
-<script src="assets/js/html5.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/respond.min.js"></script>
-<script src="assets/js/jquery.dataTables.js"></script>
-<script src="assets/easyui/jquery.easyui.min.js"></script>
-<link href="assets/easyui/themes/icon.css" rel="stylesheet">
-<link type="text/css" rel="stylesheet"
-	href="assets/css/font-awesome.min.css" />
-<link type="text/css" rel="stylesheet"
-	href="assets/css/datepicker.css">
-<!-- Custom styles for this template -->
-<link href="assets/css/style.css" rel="stylesheet">
-<script src="assets/easyui/jquery.easyui.min.js"></script>
-<script src="assets/js/knockout.js"></script>
-<script src="assets/js/jquery.jeditable.js"></script>
-<script src="assets/js/jquery.dataTables.editable.js"></script>
-<script type="text/javascript" src="assets/js/jquery.freezeheader.js"></script>
-<script type="text/javascript" src="assets/js/ajaxfileupload.js"></script> 
-<script type="text/javascript" src="assets/js/trainplan/cross/cross.js"></script>  
-<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
-<script src="<%=basePath %>/assets/js/trainplan/common.js"></script> 
+<!-- Custom styles for this template --> 
+<link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
+<link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
+
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/html5.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/respond.min.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/easyui/jquery.easyui.min.js"></script>
+
+<script type="text/javascript" src="<%=basePath %>/assets/js/knockout.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.jeditable.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.dataTables.editable.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/cross/cross.js"></script>  
+<script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+ 
+
  
 </head>
-<body class="Iframe_body" style="margin-left:50px;margin-right:50px;">
+<body class="Iframe_body"  >
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
@@ -65,21 +60,21 @@ String basePath = request.getContextPath();
 			        <div class="panel-heading"><i class="fa fa-table"></i>导入对数表</div>
 			        <div class="panel-body">
 			        <form class="form-horizontal" role="form">    
-					        <div class="row" >
-								<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 26px">
+				        <div class="row" style="width: 100%">
+								<label for="exampleInputEmail3" class="control-label pull-left">
 												方案:&nbsp;</label> 
-								<div class="pull-left">
-									<select style="width: 269px" id="input_cross_chart_id"
+								<div class="pull-left" style="width: 80%">
+									<select style="width: 90%" id="input_cross_chart_id"
 										class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
 									</select>
 								</div>  
-						  </div> 
-						   <div class="row" style="margin: 5px 0 5px 0;">
+						    </div> 
+						   <div class="row" style="margin: 5px 0 5px 0;width: 100%">
 								<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
-						        <div class="pull-left">
-						           <input class="form-control" id="cross_start_day" style="width:179px;" placeholder="" data-bind="value: searchModle().startDay">
+						        <div class="pull-left" style="width: 50%">
+						           <input class="form-control" id="cross_start_day" style="width:90%;" placeholder="" data-bind="value: searchModle().startDay">
 						        </div>
-						        <button class="btn btn-primary" type="button" style="margin-left: 10px;"
+						        <button class="btn btn-primary" type="button" style="margin-left: 20px;"
 								id="btn_cross_upload" data-bind="click: showUploadDlg">导入EXCEL</button>
 						     </div>
 					</form>
@@ -91,41 +86,40 @@ String basePath = request.getContextPath();
 			        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
 			        <div class="panel-body">
 						<form class="form-horizontal" role="form"> 
-								<div class="row">
+							<div class="row" style="margin-top: 5px;width: 100%">
 									<div class="form-group"
-										style="float: left; margin-left: 0px; margin-top: 0px;"> 
-										<div class="row">
+										style="float: left; margin-left: 0px; margin-top: 0px;width: 100%"> 
+										<div class="row"  style="width: 100%">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												车辆担当局:</label>
-											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width: 65px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' "></select>
+											<div class="pull-left" style="margin-left: 5px;width: 20%">
+												<select style="width:90%" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' "></select>
 											</div>
 											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 												始发局:</label>
-											<div class="pull-left" style="margin-left: 5px;">
-											<select style="width: 65px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
+											<div class="pull-left" style="margin-left: 5px;width: 20%">
+											<select style="width: 90%" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
 											</div> 
 										</div>    
-										<div class="row"  style="margin-top: 5px;">
+										<div class="row"  style="margin-top: 5px;width: 100%">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												铁路线类型:</label>
-											<div class="pull-left" style="margin-left: 5px;">
-											    <select  style="width: 60px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
+											<div class="pull-left" style="margin-left: 5px;width: 20%">
+											    <select  style="width:90%" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
 											</div>
 											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 33px;">
 												状态:</label>
-											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width: 65px" id="input_cross_sure_flag"
+											<div class="pull-left" style="margin-left: 5px;width: 20%">
+												<select style="width: 90%" id="input_cross_sure_flag"
 													class="form-control" data-bind="options: searchModle().sureFlags, value: searchModle().sureFlag, optionsText: 'text' , optionsCaption: ''">
 												</select>
 											</div>
 											
 											<div class="pull-right">
 												<a type="button" class="btn btn-success" data-toggle="modal"
-													data-target="#" id="btn_cross_search" style="margin-left: 15px;" data-bind="click: loadCrosses">查询</a>
+													data-target="#" id="btn_cross_search" style="margin-right: 5px;" data-bind="click: loadCrosses">查询</a>
 											</div>
-										</div>
-								 
+										</div> 
 										<hr style="margin-top: 8px;margin-bottom: 8px">
 										<div class="row"  style="margin-top: 5px;">
 										     
@@ -175,10 +169,11 @@ String basePath = request.getContextPath();
 													<td style="color: green;">已审核</td>
 												</tr> 
 											</tbody> 
-											<tr data-bind="visiable: totalCount() > pageSize">
+											<tr data-bind="visiable: totalCount() > 0">
 												<table>
 												  <tr>
-													<td >共<span data-bind="html: totalCount()"></span>条 当前<span data-bind="html: currentIndex+1"></span>到<span data-bind="html: crossRows().length"></span></td><td colspan="2" data-bind="click: loadNCrosses">下一页</td><td colspan="2" data-bind="click: loadPCrosses">上一页</td>
+												  <!-- 共<span data-bind="html: totalCount()"></span>条 当前<span data-bind="html: (crossRows().length-(crossRows().length%50 == 0 ? 50 : crossRows().length%50))"></span>到<span data-bind="html: crossRows().length"></span></td><td colspan="2" data-bind="click: loadNCrosses"> -->
+													<td>共<span data-bind="html: totalCount()"></span>条</td><td>当前<span data-bind="html: currentIndex()"></span>到<span data-bind="html: (currentIndex()%pageSize()==0 ? ((totalCount() == 0) ? 0 : currentIndex() + pageSize()) : currentIndex() + currentIndex()%pageSize())"></span></td><td data-bind="click: loadNCrosses"><span class="btn btn-success">下一页</span></td><td colspan="2" data-bind="click: loadPCrosses"><span class="btn btn-success">上一页</span></td>
 												  </tr>
 												</table>
 											</tr>
@@ -488,7 +483,7 @@ String basePath = request.getContextPath();
 					  </div>
 				   </section>
 				</div>
-				<div class="row" style="margin: 15px 0 10px 10px;">
+				<div class="row" style="margin: 15px 10px 10px 10px;">
 					<div class="pull-left" style="width: 100%;">
 					<section class="panel panel-default" >
 				         <div class="panel-heading"><i class="fa fa-table"></i>列车信息</div>
@@ -498,26 +493,26 @@ String basePath = request.getContextPath();
 									style="margin-left: 10px; margin-top: 5px;">
 									  <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_add">添加</a> <a type="button"
+										id="cross_train_add" data-bind="click: showCrossTrainDlg">添加</a> <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save"> 修改</a> <a type="button"
+										id="cross_train_save" data-bind="click: showCrossTrainDlg"> 修改</a> <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
 										id="cross_train_delete">删除</a>
 										 <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">时刻表</a>
+										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">时刻表</a>
 										 <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">详点</a>
+										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">详点</a>
 										 <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">交路图</a>
+										id="cross_train_delete" data-bind="click: showCrossMapDlg">交路图</a>
 								</div>
 								<table class="table table-bordered table-striped table-hover"
 									id="cross_trainInfo">
 									<thead>
 										<tr>
-											<th style="width: 3%">序号</th>
+											<th style="width: 5%">序号</th>
 											<th style="width: 8%">车次</th>
 											<th style="width: 8%">始发站</th>
 											<th style="width: 5%">始发局</th>
@@ -562,7 +557,20 @@ String basePath = request.getContextPath();
 				
 				</div>
 				</div>
-			</div> 
+			</div>  
+	 <!--交路图--> 
+	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
+		data-options="iconCls:'icon-save'"
+		style="width: 800px; height: 600px; padding: 10px">
+		 <iframe style="width: 800px; height: 600px;border: 0" src="assets/unit_cross_canvas/unit_cross_canvas.html"></iframe>
+	</div> 
+	
+	 <!--列车新增和修改--> 
+	<div id="cross_train_dlg" class="easyui-dialog" title="列车基本信息编辑"
+		data-options="iconCls:'icon-save'"
+		style="width: 400px; height: 500px; padding: 10px">
+		  
+	</div>  
     <!--导入弹窗--> 
 	<div id="file_upload_dlg" class="easyui-dialog" title="上传对数文件"
 		data-options="iconCls:'icon-save'"
@@ -584,7 +592,7 @@ String basePath = request.getContextPath();
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
 		style="width: 600px; height: 500px; padding: 10px">
-			<div id="cross_train_time_info" style="display: none">  
+			<div id="cross_train_time_info">  
 		          <div class="panel-body">
 				    <div class="table-responsive"> 
 						<table class="table table-bordered table-striped table-hover"

@@ -103,7 +103,7 @@ public class PlanTrainStnController {
 		try {
 			is = new FileInputStream(
 					"C:\\test.xls");
-			crossService.actionExcel(is, UUID.randomUUID().toString(), "20140513");
+			crossService.actionExcel(is, UUID.randomUUID().toString(), "20140513", "测试方案");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

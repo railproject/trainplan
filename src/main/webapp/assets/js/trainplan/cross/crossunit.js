@@ -18,6 +18,43 @@ var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔�
 
 var gloabBureaus = [];
 
+
+function PageModle(loadFun){
+	var self = this;
+	
+	self.currentIndex = ko.observable(0);
+	
+	self.pageSize = ko.observable(20); 
+	
+	self.totalCount = ko.observable(0);
+	
+	self.rows = ko.observableArray(); 
+	
+	self.loadPCrosses = function(){
+		var currentIndex = self.currentIndex();   
+		if(currentIndex == 0){
+			return;
+		}
+		self.currentIndex(currentIndex - self.pageSize());  
+		self.loadCrosseForPage();
+	};
+	self.loadNCrosses = function(){
+		var currentIndex = self.currentIndex();  
+		self.currentIndex(currentIndex + self.pageSize());
+		if(self.currentIndex() > self.totalCount()){
+			self.currentIndex(currentIndex);
+			return
+		}
+		self.loadCrosseForPage();
+	};
+	
+	self.loadCrosses = function(){
+		self.currentIndex(0);
+		self.loadCrosseForPage();
+	}; 
+ 
+}
+
 function CrossModel() {
 	var self = this;
 		//列车列表
@@ -89,6 +126,25 @@ function CrossModel() {
 		 };
 	};
 	
+	
+	self.showUploadDlg = function(){
+		$("#file_upload_dlg").dialog("open");
+	};
+	
+	self.showCrossMapDlg = function(){
+		//$("#cross_map_dlg").find("iframe").attr("src", "");
+		$("#cross_map_dlg").dialog("open");
+	};
+	
+	self.showCrossTrainDlg = function(){
+		$("#cross_train_dlg").dialog("open");
+	};
+	
+	self.showCrossTrainTimeDlg = function(){
+		//$("#cross_map_dlg").find("iframe").attr("src", "");
+		$("#cross_train_time_dlg").dialog("open");
+	};
+	
 	self.createUnitPlain = function(){ 
 		var unitCrossIds = "";
 		for(var i = 0; i < self.crossRows().length; i++){ 
@@ -104,7 +160,7 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossIds : unitCrossIds
+					unitCrossIds : unitCrossIds
 				})
 			}).done(function(result) {    
 				if(result.code == 0){
@@ -135,7 +191,8 @@ function CrossModel() {
                 secureuri:false,
                 fileElementId:'fileToUpload',
                 type : "POST",
-                dataType: 'json', 
+                dataType: 'json',  
+				contentType : "application/json",
                 success: function (data, status)
                 { 
                      alert(112312);
@@ -187,9 +244,9 @@ function CrossModel() {
 		"createPeopleOrg":"",  
 		"createTime":""}));
 	
-	self.currentIndex = 0;
+	self.currentIndex = ko.observable(0);
 	
-	self.pageSize = 50; 
+	self.pageSize = ko.observable(20); 
 	
 	self.totalCount = ko.observable(0);
 	//currentIndex 
@@ -211,6 +268,7 @@ function CrossModel() {
 						if (result.data !=null) { 
 							self.searchModle().loadChats(result.data); 
 						} 
+						  
 					} else {
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					} 
@@ -254,13 +312,29 @@ function CrossModel() {
 		
 	}; 
 	self.loadPCrosses = function(){
-		self.loadCrosses();
-	 
+		var currentIndex = self.currentIndex();   
+		if(currentIndex == 0){
+			return;
+		}
+		self.currentIndex(currentIndex - self.pageSize());  
+		self.loadCrosseForPage();
 	};
 	self.loadNCrosses = function(){
-		self.loadCrosses(1);
+		var currentIndex = self.currentIndex();  
+		self.currentIndex(currentIndex + self.pageSize());
+		if(self.currentIndex() > self.totalCount()){
+			self.currentIndex(currentIndex);
+			return
+		}
+		self.loadCrosseForPage();
 	};
-	self.loadCrosses = function(action) {  
+	
+	self.loadCrosses = function(){
+		self.currentIndex(0);
+		self.loadCrosseForPage();
+	};
+	
+	self.loadCrosseForPage = function() {   
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -299,6 +373,7 @@ function CrossModel() {
 							crossRow.visiableRow(false);
 						});
 					}else{ 
+						self.totalCount(result.data.totalRecord);
 						self.crossRows.remove(function(item) {
 							return true;
 						});  
@@ -310,7 +385,7 @@ function CrossModel() {
 								self.crossRows.push(new CrossRow(crossInfo));  
 							}); 
 						} 
-						 
+						self.totalCount(result.data.totalRecord);
 						 $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {

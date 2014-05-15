@@ -58,37 +58,37 @@
                             <form class="form-inline" role="form">
                                 <div class="input-group">
                                     <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
-                                    <button href="#" class="btn btn-default" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">校验</button>
-                                    <a id="compare" href="#" class="btn btn-default" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">图形对比</a>
+                                    <button href="#" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">校验</button>
+                                    <a id="compare" href="#" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">图形对比</a>
                                     <select id="bureau" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="options: bureauList, optionsText: function(item) {
                                         return item.name
                                     }, value: bureau">
                                     </select>
-                                    <button href="#" class="btn btn-default" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">生成运行线</button>
-                                    <button href="#" class="btn btn-default" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">客调审核</button>
-                                    <button href="#" class="btn btn-default disabled" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">值班主任审核</button>
+                                    <button href="#" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">生成运行线</button>
+                                    <button href="#" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">客调审核</button>
+                                    <button href="#" class="btn btn-primary disabled" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">值班主任审核</button>
                                 </div>
                             </form>
                         </div>
                         <%--<div class="col-xs-4 col-md-4 col-sm-4 col-lg-4">
                             <form class="form-inline" role="form">
                                 <div class="input-group">
-                                    <button href="#" class="btn btn-default margin-right-10" role="button">校验</button>
-                                    <a id="compare" href="#" class="btn btn-default margin-right-10" role="button">图形对比</a>
+                                    <button href="#" class="btn btn-primary margin-right-10" role="button">校验</button>
+                                    <a id="compare" href="#" class="btn btn-primary margin-right-10" role="button">图形对比</a>
                                     <select class="form-control buttonlines" data-bind="options: bureauList, optionsText: function(item) {
                                         return item.name
                                     }, value: function(item) {
                                         return item.code
                                     }">
                                     </select>
-                                    <button href="#" class="btn btn-default margin-right-10" role="button">生成运行线</button>
-                                    <button href="#" class="btn btn-default margin-right-10" role="button">客调审核</button>
-                                    <button href="#" class="btn btn-default margin-right-10 disabled" role="button">值班主任审核</button>
+                                    <button href="#" class="btn btn-primary margin-right-10" role="button">生成运行线</button>
+                                    <button href="#" class="btn btn-primary margin-right-10" role="button">客调审核</button>
+                                    <button href="#" class="btn btn-primary margin-right-10 disabled" role="button">值班主任审核</button>
                                 </div>
                             </form>
                         </div>--%>
                     </div>
-                    <div class="row">
+                    <div class="row paddingtop5">
                         <div class="panel panel-default marginbottom0">
                             <div class="panel-body paddingbottom0">
                                 <p>客运计划共709条，其中停运8条，热备52条，需下达709条。</p>
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row paddingtop10">
                         <div class="col-xs-6 col-md-6 col-lg-6">
                             <div class="panel panel-default">
                                 <div class="panel-heading paddingbottom0">
@@ -137,7 +137,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody data-bind="foreach: kyjhTable">
-                                                    <tr data-bind="attr: {train_id: id}">
+                                                    <tr>
                                                         <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="value: id"/></td>
                                                         <td class="text-center" data-bind="text: ($index() + 1)"></td>
                                                         <td class="text-center"><a href="#" data-bind="text: serial, click: $parent.update_kyjh_panel"></a></td>
@@ -196,7 +196,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody data-bind="foreach: yxxTable">
-                                                    <tr data-bind="attr: {line_id: id}">
+                                                    <tr>
                                                         <td class="text-center"><input class="checkbox-inline" name="line" type="checkbox" data-bind="value: id"/></td>
                                                         <td class="text-center" data-bind="text: ($index() + 1)"></td>
                                                         <td class="text-center"><a href="#" data-bind="text: serial, click: $parent.update_yxx_panel"></a></td>
