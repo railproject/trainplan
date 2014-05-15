@@ -297,7 +297,7 @@
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
-		) m  where num >=#{rownumstart} AND num &lt;#{rownumend} 
+		) m  where num >=#{rownumstart} AND num &lt;=#{rownumend} 
 		
 	</select>
 
@@ -330,7 +330,7 @@
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
-		) m  where num >=#{rownumstart} AND num &lt;#{rownumend} 
+		) m  where num >=#{rownumstart} AND num &lt;=#{rownumend} 
 		
 	</select>
 	

@@ -41,6 +41,11 @@ public class CrossController {
 		 return "cross/cross_manage";
      }
 	 
+	 @RequestMapping(value="/unit", method = RequestMethod.GET)
+     public String unit() {
+		 return "cross/cross_unit_manage";
+     }
+	 
 	 @Autowired
 	private CrossService crossService;
 	
@@ -91,27 +96,26 @@ public class CrossController {
 	public Result updateUnitCrossId(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
 		String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
+		logger.info("updateUnitCrossId----unitCrossIds=="+unitCrossIds);
 		try{
 			if(unitCrossIds != null){
 				String[] unitcrossArray = unitCrossIds.split(",");
 				for(String unitCrossId :unitcrossArray){
 					List<Map<String,String>> listMap = crossService.getTrainNbrFromUnitCrossId(unitCrossId);
 					if(listMap !=null && listMap.size() > 0){
-						StringBuffer trainNbrBf = new StringBuffer();
+						
 						//方案id
 						String baseChartId="";
 						int size = listMap.size();
+						List<String> trainNbrs = new ArrayList<String>();
 						for(int i = 0;i<size;i++){
 							String trainNbr = listMap.get(i).get("TRAIN_NBR");
 							baseChartId = listMap.get(i).get("BASE_CHART_ID");
+							trainNbrs.add(trainNbr);
 							
-							trainNbrBf.append(trainNbr);
-							if( i != size -1 ){
-								trainNbrBf.append(",");
-							}
 						}
 						//调用后台接口
-						remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrBf.toString());
+						remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrs);
 					}
 					
 				}
