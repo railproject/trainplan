@@ -257,16 +257,20 @@ function bindActions() {
         }
         var plans = "";
         var lines = "";
+        /*
         $("input[name='plan']:checked").each(function(index, ele) {
             plans += $(ele).val() + ",";
         });
         $($("input[name='line']:checked")).each(function(index, ele) {
             lines += $(ele).val() + ",";
         })
+        */
+        plans = $("input[name='plan']:checked").val();
+        lines = $($("input[name='line']:checked")).val();
         if(plans == "" && lines == "") {
             console.log("select some checkbox");
         } else {
-            model.open_compare("plans=" + plans + "&lines" + lines, {title: "图形对比", height: $(window).height(), width: 800});
+            model.open_compare("plans=" + plans + "&lines=" + lines, {title: "图形对比", height: $(window).height(), width: 700});
         }
     })
 }
