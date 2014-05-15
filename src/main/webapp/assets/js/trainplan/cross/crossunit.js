@@ -25,7 +25,38 @@ function CrossModel() {
 	//交路列表
 	self.crossRows = ko.observableArray(); 
 	
-	self.gloabBureaus = []; 
+	self.gloabBureaus = [];  
+	
+	self.crossAllcheckBox = ko.observable(0);  
+	 
+	
+	self.selectCrosses = function(){
+//		self.crossAllcheckBox(); 
+		$.each(self.crossRows(), function(i, crossRow){ 
+			if(self.crossAllcheckBox() == 1){
+				crossRow.selected(0);
+			}else{
+				crossRow.selected(1); 
+			} 
+		}); 
+	};
+	
+	self.selectCross = function(row){
+//		self.crossAllcheckBox();
+		console.log(row.selected());
+		if(row.selected() == 0){
+			self.crossAllcheckBox(1);
+			$.each(self.crossRows(), function(i, crossRow){ 
+				console.log("==="+ crossRow.selected());
+				if(crossRow.selected() != 1 && crossRow != row){
+					self.crossAllcheckBox(0);
+					return false;
+				}  
+			}); 
+		}else{
+			self.crossAllcheckBox(0);
+		} 
+	};
 	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
@@ -59,30 +90,33 @@ function CrossModel() {
 	};
 	
 	self.createUnitPlain = function(){ 
-		var crossIds = "";
+		var unitCrossIds = "";
 		for(var i = 0; i < self.crossRows().length; i++){ 
 			if(self.crossRows()[i].selected() == 1){ 
-				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += self.crossRows()[i].crossId;
+				unitCrossIds += (unitCrossIds == "" ? "" : ",");
+				unitCrossIds += self.crossRows()[i].crossId;
 			}  
 		}
 		 $.ajax({
-				url : "cross/updateUnitCrossId",
+				url : "../cross/updateUnitCrossId",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossIds : crossIds
-				}),
-				success : function(result) {    
-					if(result.code == 0){
-						showSuccessDialog("更新成功");
-					}else{
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-					}
+					crossIds : unitCrossIds
+				})
+			}).done(function(result) {    
+				if(result.code == 0){
+					showSuccessDialog("更新成功");
+				}else{
+					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 				}
-			}); 
+			}).fail(function() {
+				showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+	        }).always(function() {
+	            
+	        }); 
 	};
 	
 	
@@ -157,7 +191,7 @@ function CrossModel() {
 	
 	self.pageSize = 50; 
 	
-	self.cross_totalCount = 0;
+	self.totalCount = ko.observable(0);
 	//currentIndex 
 	
 	self.init = function(){  
@@ -219,6 +253,13 @@ function CrossModel() {
 		
 		
 	}; 
+	self.loadPCrosses = function(){
+		self.loadCrosses();
+	 
+	};
+	self.loadNCrosses = function(){
+		self.loadCrosses(1);
+	};
 	self.loadCrosses = function(action) {  
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
@@ -263,17 +304,15 @@ function CrossModel() {
 						});  
 					} 
 					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {   
-							if(result.data[0] != null){  
-								if(result.data[0] != null){  
-									$.each(result.data,function(n, crossInfo){
-										self.crossRows.push(new CrossRow(crossInfo)); 
-										
-									}); 
-								} 
-							}
-							 $("#cross_table_crossInfo").freezeHeader(); 
-						}  
+						   
+						if(result.data.data != null){  
+							$.each(result.data.data,function(n, crossInfo){
+								self.crossRows.push(new CrossRow(crossInfo));  
+							}); 
+						} 
+						 
+						 $("#cross_table_crossInfo").freezeHeader(); 
+						 
 					} else {
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					} 
@@ -388,6 +427,9 @@ function CrossRow(data) {
 	var self = this; 
 	
 	self.visiableRow =  ko.observable(true);  
+	
+	self.selected =  ko.observable(0);
+	
 	
 	console.log(data.unitCrossId);
 	

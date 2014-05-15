@@ -113,15 +113,10 @@ function CrossModel() {
                 dataType: 'json', 
                 success: function (data, status)
                 { 
-                     alert(112312);
-                },
-                error: function (data, status, e)
-                {
-                    alert(e);
-                },
-                handleError: function(data, status, e){
-                	
+                	showSuccessDialog("上传成功");
                 }
+            }).done(function(result){
+            	showSuccessDialog("上传成功");
             }); 
 	        return true;
 	} ;
@@ -170,7 +165,7 @@ function CrossModel() {
 	
 	self.pageSize = 50; 
 	
-	self.totalCount = ko.observable(60);
+	self.totalCount = ko.observable(0);
 	//currentIndex 
 	self.currdate =function(){
 		var d = new Date();

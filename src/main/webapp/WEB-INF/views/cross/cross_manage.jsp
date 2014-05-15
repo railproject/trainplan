@@ -178,7 +178,7 @@ String basePath = request.getContextPath();
 											<tr data-bind="visiable: totalCount() > pageSize">
 												<table>
 												  <tr>
-													<td >共<span data-bind="html: totalCount()"></span>条 当前<span data-bind="html: currentIndex+1"></span>到<span data-bind="html: crossRows().length + 1"></span></td><td colspan="2" data-bind="click: loadNCrosses">下一页</td><td colspan="2" data-bind="click: loadPCrosses">上一页</td>
+													<td >共<span data-bind="html: totalCount()"></span>条 当前<span data-bind="html: currentIndex+1"></span>到<span data-bind="html: crossRows().length"></span></td><td colspan="2" data-bind="click: loadNCrosses">下一页</td><td colspan="2" data-bind="click: loadPCrosses">上一页</td>
 												  </tr>
 												</table>
 											</tr>
