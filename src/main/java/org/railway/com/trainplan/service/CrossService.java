@@ -637,16 +637,16 @@ public class CrossService{
 		   for(int i=0;i < crossTrains.size();i++){
 			   try {
 				CrossTrainInfo crossTrain = completion.take().get();
+				//设置交路的开始日期和结束日期
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
+//					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
 					cross.setCrossStartDate(crossTrain.getAlertNateTime());
 				}
 				if(cross.getCrossName().endsWith(crossTrain.getTrainNbr())){ 
-					if(crossTrain.getAlertNateTime() == cross.getCrossStartDate()){ 
-						cross.setCrossEndDate(crossTrain.getAlertNateTime());
-					}else{
-						cross.setCrossEndDate(crossTrain.getAlertNateTime());
-					}
+					 
+					cross.setCrossEndDate(crossTrain.getAlertNateTime());
+					 
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
