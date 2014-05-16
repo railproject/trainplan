@@ -1,16 +1,35 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<%response.setStatus(200);%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<title>404 - 页面不存在</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="author">
+    <title>addRole</title>
+    <!-- Bootstrap core CSS -->
+    <link type="text/css" href="assets/css/custom-bootstrap.css" rel="stylesheet">
+    <!--font-awesome-->
+    <link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css"/>
+    <!-- Custom styles for this template -->
+    <link type="text/css" href="assets/css/style.css" rel="stylesheet">
+    <style type="text/css">
+        form p {
+            padding-top: 7px;
+        }
+    </style>
 </head>
+<body class="Iframe_body">
+<section class="error"><img src="assets/img/404.png" class="img-responsive">
+    <hr>
+    <hr>
+    <hr>
+    <h4>你请求的页面不存在</h4>
+    <h4>点击下面的按钮返回</h4>
 
-<body>
-	<h2>404 - 页面不存在.</h2>
-	<p><a href="<c:url value="/"/>">返回首页</a></p>
+    <p>
+        <button type="button" class="btn btn-success btn-lg">返回</button>
+    </p>
+</section>
 </body>
 </html>

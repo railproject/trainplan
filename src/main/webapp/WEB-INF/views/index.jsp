@@ -59,6 +59,8 @@
                 var src = location.hash.substring(1, location.hash.length);
                 $("#contentLayerFrame").attr("src",src);
             }
+
+            $("#kanban").get(0).click();
         });
     </script>
 </head>
@@ -90,29 +92,33 @@
     <!--nav-->
     <nav class="Navigation">
         <ul>
-            <li><a data-href="Console.html" class="menu_one active navHref"> <i class="fa fa-tachometer"></i>主控台</a></li>
-            <li><a data-href="severManagement.html" class="menu_one navHref"><i class="fa fa-align-center"></i>我的服务</a></li>
-            <li><a class="menu_one" style="cursor:default;"><i class="fa fa-signal"></i>我的应用<i class="fa fa-caret-down pull-right"></i> </a>
+            <li>
+                <a href="http://10.1.186.116:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor:default;"><i class="fa fa-list-ol"></i>计划看板 </a>
+            </li>
+            <li>
+                <a target="contentFrame" class="menu_one"><i class="fa fa-align-left"></i>计划分析<i class="fa fa-caret-down pull-right"></i></a>
                 <ul>
-                    <li><a class=" navHref" data-href="myEnvironment.html"><i class="fa fa-random"></i>我的环境</a></li>
-                    <li><a class=" navHref" data-href="applicationManagement.html"><i class="fa fa-folder-open"></i>应用管理</a></li>
+                    <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-list-alt"></i>局别始发汇总</a></li>
+                    <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-list-alt"></i>局别接入汇总</a></li>
+                    <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-external-link"></i>日计划查询</a></li>
                 </ul>
             </li>
-            <li><a data-href="myResource.html" class="menu_one navHref"> <i class="fa fa-tasks"></i>我的资源</a></li>
-            <li><a class="menu_one" style="cursor:default;"><i class="fa fa-bar-chart-o"></i>我的监控<i class="fa fa-caret-down pull-right"></i> </a>
+            <li><a target="contentFrame" class="menu_one"><i class="fa fa-road"></i>客运列车<i class="fa fa-caret-down pull-right"></i> </a>
                 <ul>
-                    <li><a data-href="resourceMonitoring.html" class=" navHref"><i class="fa fa-external-link"></i>资源监控</a></li>
-                    <li><a data-href="appMonitoring.html" class=" navHref"><i class="fa fa-desktop"></i>应用监控</a></li>
-                    <li><a data-href="alarmMonitoring.html" class=" navHref"><i class="fa fa-bell-o"></i>告警管理</a></li>
+                    <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-alt"></i>开行计划汇总</a></li>
+                    <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>核查编制图定开行</a></li>
+                    <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>批量上图</a></li>
+                    <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-external-link"></i>新图初始化</a></li>
                 </ul>
             </li>
-            <li><a class="menu_one" style="cursor:default;"><i class="fa fa-user" style="margin-right:11px;"></i>用户中心<i class="fa fa-caret-down pull-right"></i> </a>
-                <ul>
-                    <li><a data-href="agencyMatter.html" class=" navHref"><i class="fa fa-random"></i>待办事项</a></li>
-                    <li><a data-href="userManagement.html" class=" navHref"><i class="fa fa-user-md"></i>用户管理</a></li>
-                </ul>
-            </li>
+            <li><a href="${ctx}/default/transfer/planConstruction" class="menu_one" target="contentFrame"><i class="fa fa-truck"></i>货运列车 </a></li>
+            <li><a href="http://10.1.191.135:7003/sgdd" target="_blank" class="menu_one"><i class="fa fa-gavel"></i>施工维修 </a></li>
+            <li class="pull-right"><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="_blank" class="menu_one"><i class="fa fa-align-left"></i>技术资料 </a></li>
         </ul>
+
+        <!--      <a  href="form.html" class="menu_one"  target="contentFrame">FORM</a>
+          <a  href="error.html" class="menu_one"  target="contentFrame">ERROR </a>-->
+
     </nav>
 </div>
 <!--sidebar-->
@@ -120,7 +126,7 @@
     <!--content-menu-->
     <!--Iframe嵌入页面-->
     <div class="iframebox" style="width:100%; height:auto;" id="ContentBox">
-        <iframe id="contentLayerFrame" src="Console.html" frameborder=0 name="contentFrame" style="width:100%; height:auto; overflow-x:hidden;" > </iframe>
+        <iframe id="contentLayerFrame" src="" frameborder=0 name="contentFrame" style="width:100%; height:auto; overflow-x:hidden;" > </iframe>
     </div>
     <!--嵌入页面end-->
 </div>
