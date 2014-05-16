@@ -1,63 +1,73 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%--<%@ page import="org.apache.shiro.web.filter.authc.FormAuthenticationFilter"%>--%>
-<%--<%@ page import="org.apache.shiro.authc.LockedAccountException "%>--%>
-
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<html>
-<head>
-	<title>登录页</title>
-	<script src="${ctx}/static/jquery-validation/1.11.1/jquery.validate.min.js" type="text/javascript"></script>
-	<script src="${ctx}/static/jquery-validation/1.11.1/messages_bs_zh.js" type="text/javascript"></script>
-	<link href="${ctx}/static/jquery-validation/1.11.1/validate.css" type="text/css" rel="stylesheet" />
-</head>
 
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="${ctx}/assets/css/custom-bootstrap.css"/>
+    <link type="text/css" rel="stylesheet" href="${ctx}/assets/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${ctx}/assets/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="${ctx}/assets/css/login.css"/>
+    <script type="application/javascript" src="${ctx}/assets/js/jquery.js"></script>
+    <script type="application/javascript" src="${ctx}/assets/js/html5.js"></script>
+    <script type="application/javascript" src="${ctx}/assets/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="${ctx}/assets/js/respond.min.js"></script>
+    <script type="application/javascript" type="application/javascript" src="${ctx}/assets/js/trainplan/login.js"></script>
+    <title>login</title>
+</head>
 <body>
-	<h1>登录页</h1>
-	<form id="loginForm" action="${ctx}/login" method="post">
-		<%
-//			String error = (String) request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
-//			if(error != null){
-		%>
-				<div class="alert alert-error controls input-large">
-					<button class="close" data-dismiss="alert">×</button>
-		<%
-//				if(error.contains("DisabledAccountException")){
-//					out.print("用户已被屏蔽,请登录其他用户.");
-//				}
-//				else{
-//					out.print("登录失败，请重试.");
-//				}
-		%>		
-				</div>
-		<%
-//			}
-		%>
-		<div class="control-group">
-			<label for="username" class="control-label">名称:</label>
-			<div class="controls">
-				<input type="text" id="username" name="username" value="${username}" class="input-medium required"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label for="password" class="control-label">密码:</label>
-			<div class="controls">
-				<input type="password" id="password" name="password" class="input-medium required"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<div class="controls">
-				<label class="checkbox inline" for="rememberMe"> <input type="checkbox" id="rememberMe" name="rememberMe"/> 记住我</label>
-				<input id="submit_btn" class="btn" type="submit" value="登录"/>
-				<p class="help-block">(管理员：<b>admin/admin</b>, 普通用户：<b>user/user</b>)</p>
-			</div>
-		</div>
-	</form>
-	
-	<script>
-		$(document).ready(function() {
-			$("#loginForm").validate();
-		});
-	</script>
+<div class="login">
+    <div class="login_backgroud">
+        <div class="login_overlay">
+            <div class="login-logo"></div>
+            <div class="login_input" style="width: 500px">
+                <div class="form-group">
+                    <label for="inputUsername" class="col-sm-2 control-label">账号：</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputUsername" placeholder="用户名" style="width: 240px">
+                    </div>
+                </div>
+                <!--form-group-->
+                <div class="form-group paddingtop10">
+                    <label for="inputAccount" class="col-sm-2 control-label">岗位：</label>
+                    <div class="col-sm-10">
+                        <select id="inputAccount" class="form-control" style="width: 240px"></select>
+                    </div>
+                </div>
+                <!--form-group-->
+                <div class="form-group paddingtop10">
+                    <label for="inputPassword" class="col-sm-2 control-label">密码：</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="inputPassword" placeholder="密码" style="border-radius: 4px; width: 240px">
+                        </div>
+                    </div>
+                    <form class="form-horizontal" role="form" method="post" action="${ctx}/login" id="loginForm" name="loginForm">
+                        <div class="btn-group">
+                            <input type="hidden" name="username"/>
+                            <input type="hidden" name="password"/>
+                            <button class="btn btn-warning" type="submit" id="login" style="padding:6px 13px;">登&nbsp;录</button>
+                        </div>
+                    </form>
+                </div>
+                <!--输入框结束-->
+                <!--错误提示开始-->
+                <!--      <div class="alert alert-danger" style="margin-top:15px;width:200px;height:26px;line-height:26px;font-size:10px;padding-top:0px; ">您输入的用户名或密码有误！ </div>-->
+                <!--错误提示结束-->
+            </div>
+            <div class="aquila"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".login_backgroud").css("min-height", $(window).height() + "px");
+        $(window).resize(function () {
+            $(".login_backgroud").css("min-height", $(window).height() + "px");
+        });
+    });
+</script>
 </body>
 </html>

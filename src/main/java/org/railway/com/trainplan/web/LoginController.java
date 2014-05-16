@@ -5,7 +5,12 @@
  *******************************************************************************/
 package org.railway.com.trainplan.web;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.railway.com.trainplan.service.ShiroRealm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +27,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
+    private final static Log logger = LogFactory.getLog(LoginController.class);
+
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login() {
-		return "trainplan/login";
+		return "login";
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String fail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName, Model model) {
 		model.addAttribute(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM, userName);
-		return "trainplan/audit";
+        logger.info("Login:" + userName + " login failed!");
+		return "redirect:login";
 	}
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout() {
+        Subject currentUser = SecurityUtils.getSubject();
+        String result = "redirect:login";
+        currentUser.logout();
+        logger.info("Logout:" + ((ShiroRealm.ShiroUser)currentUser.getPrincipal()).getUsername() + " logout!");
+        return result;
+    }
+
 
 }

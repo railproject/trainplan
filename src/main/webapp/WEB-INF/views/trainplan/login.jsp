@@ -10,11 +10,11 @@
     <link type="text/css" rel="stylesheet" href="${ctx}/assets/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="${ctx}/assets/css/style.css"/>
     <link rel="stylesheet" type="text/css" href="${ctx}/assets/css/login.css"/>
-    <script src="${ctx}/assets/js/jquery.js"></script>
-    <script src="${ctx}/assets/js/html5.js"></script>
-    <script src="${ctx}/assets/js/bootstrap.min.js"></script>
-    <script src="${ctx}/assets/js/respond.min.js"></script>
-    <script type="application/javascript" src="${ctx}/assets/js/trainplan/login.js"></script>
+    <script type="application/javascript" src="${ctx}/assets/js/jquery.js"></script>
+    <script type="application/javascript" src="${ctx}/assets/js/html5.js"></script>
+    <script type="application/javascript" src="${ctx}/assets/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="${ctx}/assets/js/respond.min.js"></script>
+    <script type="application/javascript" type="application/javascript" src="${ctx}/assets/js/trainplan/login.js"></script>
     <title>login</title>
 </head>
 <body>
@@ -48,7 +48,7 @@
                         <div class="btn-group">
                             <input type="hidden" name="username"/>
                             <input type="hidden" name="password"/>
-                            <button class="btn btn-warning" type="submit" id="login" style="padding:6px 13px; height:30px;">登&nbsp;录</button>
+                            <button class="btn btn-warning" type="submit" id="login" style="padding:6px 13px;">登&nbsp;录</button>
                         </div>
                     </form>
                 </div>
@@ -58,7 +58,6 @@
                 <!--错误提示结束-->
             </div>
             <div class="aquila"></div>
-            <div class="login_footer">&nbsp; 版本：0.1.0</div>
         </div>
     </div>
 </div>

@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.service;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -20,6 +22,8 @@ import java.util.Objects;
  * Created by star on 5/15/14.
  */
 public class ShiroRealm extends AuthorizingRealm {
+
+    private final static Log logger = LogFactory.getLog(ShiroRealm.class);
 
     private UserDao userDao;
 
@@ -66,17 +70,20 @@ public class ShiroRealm extends AuthorizingRealm {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("username", logininfo[0]);
         params.put("accId", Integer.parseInt(logininfo[1]));
-        User user = userDao.getUserByUsernameAndAccId(params);
-        if (user != null) {
-            if (0 == user.getId() || "".equals(user.getUsername()) || "".equals(user.getName())) {
-                throw new DisabledAccountException();
-            }
+        try {
+            User user = userDao.getUserByUsernameAndAccId(params);
+            if (user != null) {
+                if (0 == user.getId() || "".equals(user.getUsername()) || "".equals(user.getName())) {
+                    throw new DisabledAccountException();
+                }
 
-            ShiroUser shiroUser = new ShiroUser(user.getUsername(), user.getName(), Integer.parseInt(logininfo[1]));
-            return new SimpleAuthenticationInfo(shiroUser, user.getPassword(), getName());
-        } else {
-            return null;
+                ShiroUser shiroUser = new ShiroUser(user.getUsername(), user.getName(), Integer.parseInt(logininfo[1]));
+                return new SimpleAuthenticationInfo(shiroUser, user.getPassword(), getName());
+            }
+        }catch(Exception e) {
+            logger.error(e);
         }
+        return null;
     }
 
     public static class ShiroUser implements Serializable {

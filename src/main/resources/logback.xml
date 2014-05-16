@@ -60,7 +60,7 @@
 
     <logger name="net.sf" level="INFO" />
 
-    <logger name="org.jboss" level="INFO" />
+    <logger name="org.apache.shiro" level="INFO" />
 
 	<!-- root -->
 	<root level="DEBUG">
