@@ -347,6 +347,14 @@ function CrossModel() {
 	
 	self.showCrossMapDlg = function(){
 		//$("#cross_map_dlg").find("iframe").attr("src", "");
+		var crossIds = "";
+		for(var i = 0; i < self.crossRows().length; i++){ 
+			if(self.crossRows()[i].selected() == 1){ 
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += self.crossRows()[i].crossId;
+			}  
+		} 
+		$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossIds=" + crossIds);
 		$("#cross_map_dlg").dialog("open");
 	};
 	
@@ -355,7 +363,7 @@ function CrossModel() {
 	};
 	
 	self.showCrossTrainTimeDlg = function(){
-		//$("#cross_map_dlg").find("iframe").attr("src", "");
+		
 		$("#cross_train_time_dlg").dialog("open");
 	};
 	
