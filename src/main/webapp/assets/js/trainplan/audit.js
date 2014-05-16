@@ -252,7 +252,7 @@ function bindActions() {
         }
     });
     $("#compare").click(function() {
-        if(($("input[name='plan']:checked").size() > 1) || ($("input[name='line']:checked").size() > 1)){
+        if(($("input[name='plan']:checked").size() != 1) || ($("input[name='line']:checked").size() > 1)){
             return false;
         }
         var plans = "";
@@ -265,10 +265,14 @@ function bindActions() {
             lines += $(ele).val() + ",";
         })
         */
-        plans = $("input[name='plan']:checked").val();
-        lines = $($("input[name='line']:checked")).val();
+        if($("input[name='plan']:checked").size() == 1) {
+            plans = $("input[name='plan']:checked").val();
+        }
+        if($($("input[name='line']:checked")).size() == 1) {
+            lines = $($("input[name='line']:checked")).val();
+        }
         if(plans == "" && lines == "") {
-            console.log("select some checkbox");
+
         } else {
             model.open_compare("plans=" + plans + "&lines=" + lines, {title: "图形对比", height: $(window).height(), width: 700});
         }
