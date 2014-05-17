@@ -370,7 +370,7 @@ public class CrossService{
 		}
 		System.err.println("tokenPsgDeptValuesMap==" + tokenPsgDeptValuesMap);
 		valuesMap.put("tokenPsgBureau", tokenPsgDeptValuesMap); 
-		valuesMap.put("tokenVehBureau", tokenPsgDeptValuesMap); 
+		valuesMap.put("tokenVehBureau", tokenPsgDeptValuesMap);  
 		
 		 
 		
@@ -411,47 +411,7 @@ public class CrossService{
 				}
 			} 
 			service.shutdown();
-			
-			//fortest
-			BeanInfo  beaninfo = Introspector.getBeanInfo(CrossInfo.class);
-			 
-			PropertyDescriptor[] pds = beaninfo.getPropertyDescriptors();
-			for(CrossInfo cross: alllist){
-				for(String key : pm.keySet()){
-					for(int i = 0; i < pds.length; i++){
-						PropertyDescriptor pd = pds[i];
-						String propertyName = pd.getName();  
-						if(key.equals(propertyName)){
-							//Method method = pd.getReadMethod();
-							//System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
-							break; 
-						}
-					}
-				}
-				System.out.println();
-			}
-			 
-			beaninfo = Introspector.getBeanInfo(CrossTrainInfo.class);
-//			 
-			pds = beaninfo.getPropertyDescriptors();
-			for(CrossTrainInfo cross: crossTrains){
-				for(String key : pm.keySet()){
-					for(int i = 0; i < pds.length; i++){
-						
-						PropertyDescriptor pd = pds[i];
-						Method method = pd.getReadMethod();
-						//System.out.print(pd.getName() + "=" + method.invoke(cross, null) + ",");
-//						String propertyName = pd.getName();  
-//						if(key.equals(propertyName)){
-//							Method method = pd.getReadMethod();
-//							System.out.print(propertyName + "=" + method.invoke(cross, null) + ",");
-//							break; 
-//						}
-					}
-				}
-				logger.debug("");
-			}
-			
+		 
 			////////////////////////
 			
 			if(alllist != null && alllist.size() > 0){
@@ -693,16 +653,16 @@ public class CrossService{
 		   for(int i=0;i < crossTrains.size();i++){
 			   try {
 				CrossTrainInfo crossTrain = completion.take().get();
+				//设置交路的开始日期和结束日期
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
+//					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
 					cross.setCrossStartDate(crossTrain.getAlertNateTime());
 				}
 				if(cross.getCrossName().endsWith(crossTrain.getTrainNbr())){ 
-					if(crossTrain.getAlertNateTime() == cross.getCrossStartDate()){ 
-						cross.setCrossEndDate(crossTrain.getAlertNateTime());
-					}else{
-						cross.setCrossEndDate(crossTrain.getAlertNateTime());
-					}
+					 
+					cross.setCrossEndDate(crossTrain.getAlertNateTime());
+					 
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -715,8 +675,7 @@ public class CrossService{
 				//e.printStackTrace();
 			}
 		   }
-		   service.shutdown();
-				 
+		  
 		   setDayGapForTrains(crossTrains); 
 			
 			
@@ -763,7 +722,7 @@ public class CrossService{
 		   for(int i=0; i < crossSpareTrains.size(); i++){
 			   completion.submit(new GetTrainInfoCompletionService(crossSpareTrains.get(i)));
 		   }
-		   for(int i=0;i < crossTrains.size();i++){
+		   for(int i=0;i < crossSpareTrains.size();i++){
 			   try {
 				completion.take().get();
 			} catch (InterruptedException e) {

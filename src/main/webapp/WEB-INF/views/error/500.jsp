@@ -1,21 +1,35 @@
-<%@ page contentType="text/html;charset=UTF-8" isErrorPage="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="org.slf4j.Logger,org.slf4j.LoggerFactory" %>
-<%	
-	//设置返回码200，避免浏览器自带的错误页面
-	response.setStatus(200);
-	//记录日志
-	Logger logger = LoggerFactory.getLogger("500.jsp");
-	logger.error(exception.getMessage(), exception);
-%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<title>500 - 系统内部错误</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="author">
+    <title>addRole</title>
+    <!-- Bootstrap core CSS -->
+    <link type="text/css" href="assets/css/custom-bootstrap.css" rel="stylesheet">
+    <!--font-awesome-->
+    <link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css"/>
+    <!-- Custom styles for this template -->
+    <link type="text/css" href="assets/css/style.css" rel="stylesheet">
+    <style type="text/css">
+        form p {
+            padding-top: 7px;
+        }
+    </style>
 </head>
+<body class="Iframe_body">
+<section class="error"><img src="assets/img/500.png" class="img-responsive">
+    <hr>
+    <hr>
+    <hr>
+    <h4>系统错误</h4>
+    <h4>点击下面的按钮返回</h4>
 
-<body>
-	<h2>500 - 系统发生内部错误.</h2>
+    <p>
+        <button type="button" class="btn btn-success btn-lg">返回</button>
+    </p>
+</section>
 </body>
 </html>

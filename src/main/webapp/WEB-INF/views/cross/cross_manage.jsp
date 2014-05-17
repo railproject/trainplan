@@ -5,7 +5,7 @@ String basePath = request.getContextPath();
 %>
 <!DOCTYPE HTML>
 <html lang="en">
-<head>
+<head> 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,8 +17,7 @@ String basePath = request.getContextPath();
 <link href="<%=basePath %>/assets/easyui/themes/default/easyui.css"
 	rel="stylesheet">
 <link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
-<link type="text/css" rel="stylesheet"
-	href="<%=basePath %>/assets/css/font-awesome.min.css" />
+<link type="text/css" rel="stylesheet" href="<%=basePath %>/assets/css/font-awesome.min.css" />
  
 <!-- Custom styles for this template --> 
 <link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
@@ -40,6 +39,9 @@ String basePath = request.getContextPath();
 <script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/zDrag.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/zDialog.js"></script>
+
  
 
  

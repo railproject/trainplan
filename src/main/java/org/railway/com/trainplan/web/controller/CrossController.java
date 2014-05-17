@@ -109,11 +109,11 @@ public class CrossController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/provideCrossChartData", method = RequestMethod.POST)
-	public ModelAndView  provideCrossChartData(@RequestBody Map<String,Object> reqMap) throws Exception{
+	@RequestMapping(value = "/provideCrossChartData", method = RequestMethod.GET)
+	public ModelAndView  provideCrossChartData(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		ModelAndView result = new ModelAndView("cross/unit_cross_canvas"); 
 		
-			String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
+			String crossIds = StringUtil.objToStr(request.getParameter("crossIds"));
 			//经由信息，由后面调用接口获取，用户提供画图的坐标
 			List<TrainlineTemplateSubDto> stationsInfo = new ArrayList<TrainlineTemplateSubDto>();
 			ObjectMapper objectMapper = new ObjectMapper();

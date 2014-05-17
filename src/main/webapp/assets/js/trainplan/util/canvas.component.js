@@ -61,6 +61,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	 * @param runDate 运行日期 yyyy-MM-dd
 	 */
 	this.getStnArcXIndex = function(runDate) {
+
 		for(var i=0, _len=_xDateArray.length; i <_len; i++) {
 			if (_xDateArray[i].runDate == runDate) {
 				return i;
@@ -80,10 +81,14 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		var _date = moment(time).format("YYYY-MM-DD");
 		var _hour = moment(time).format("HH");
 		var _minute = moment(time).format("mm");
+		
+
+		console.dir("time:"+time+"   _date:"+_date+"   _hour:"+_hour+"   _minute:"+_minute);
 
 		var _oneDayWidth = _stepX*24*60/_xScale;	//一天的x宽度
 		var _dayWidth = this.getStnArcXIndex(_date)*_oneDayWidth;	//x平移天数刻度
 		var _minuteWidth = (parseInt(_hour)*60 + parseInt(_minute))*_stepX/_xScale;
+//		console.dir("_oneDayWidth:"+_oneDayWidth+"   _dayWidth:"+_dayWidth+"  _minuteWidth:"+_minuteWidth);
 		var _x = _startX + _dayWidth + _minuteWidth;
 		return _x;
 	};
@@ -331,6 +336,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 			_y = this.getY(_obj.stnName);	//该车站Y标
 			_arrTimeX = this.getX(_obj.arrTime);//计算到达点x标
 			_dptTimeX = this.getX(_obj.dptTime);//计算出发点x标
+			
+			console.dir("_arrTimeX:"+_arrTimeX+"   _y:"+_y);
 
 			//绘制到达点
 			myCanvasDrawCircle(_context, {

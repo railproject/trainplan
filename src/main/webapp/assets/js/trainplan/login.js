@@ -3,6 +3,9 @@
  */
 $(function() {
     $("#inputUsername").blur(function() {
+        if($("#inputUsername").val().trim().length == 0) {
+            return false;
+        }
         $.ajax({
             url: "user/" + $("#inputUsername").val().trim() + "/account",
             method: "GET",
