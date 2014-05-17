@@ -352,7 +352,12 @@ public class RemoteService {
 			Map<String,Object> targetItemMap = (Map<String,Object>)scheduleMap.get("targetItemDto");
 			TrainlineTemplateSubDto targetItemDto = parsRouteItemDto(targetItemMap);
 			//终到站的运行天数即为整个列车的运行天数
-			dto.setRundays(targetItemDto.getTargetDay());
+			if(targetItemDto != null){
+				dto.setRundays(targetItemDto.getTargetDay()== null ?0:targetItemDto.getTargetDay());
+			}else{
+				dto.setRundays(0);
+			}
+			
 			myscheduleMap.put("targetItemDto", targetItemDto);
 			
 			//解析经由站信息
@@ -376,9 +381,10 @@ public class RemoteService {
 	 * @return
 	 */
 	private   TrainlineTemplateSubDto  parsRouteItemDto(Map<String,Object> routeItemMap){
-		TrainlineTemplateSubDto  dto = new TrainlineTemplateSubDto();
+		TrainlineTemplateSubDto  dto = null;
 		
         if(routeItemMap != null){
+        	dto = new TrainlineTemplateSubDto();
         	dto.setName(StringUtil.objToStr(routeItemMap.get("name")));
         	dto.setIndex((Integer)routeItemMap.get("index"));
         	//局码全称

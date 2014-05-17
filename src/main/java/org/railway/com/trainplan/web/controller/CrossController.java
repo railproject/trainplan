@@ -54,7 +54,7 @@ public class CrossController {
 	private static Log logger = LogFactory.getLog(CrossController.class.getName());
 	 @RequestMapping(method = RequestMethod.GET)
      public String content() {
-		 return "redirect:cross/cross_manage";
+		 return "cross/cross_manage";
      }
 	 
 	 @RequestMapping(value="/unit", method = RequestMethod.GET)
@@ -114,6 +114,7 @@ public class CrossController {
 		ModelAndView result = new ModelAndView("cross/unit_cross_canvas"); 
 		
 			String crossIds = StringUtil.objToStr(request.getParameter("crossIds"));
+			System.err.println("crossIds=="+ crossIds);
 			//经由信息，由后面调用接口获取，用户提供画图的坐标
 			List<TrainlineTemplateSubDto> stationsInfo = new ArrayList<TrainlineTemplateSubDto>();
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -121,6 +122,7 @@ public class CrossController {
 				String[] crossidArray = crossIds.split(",");
 				List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 				for(String crossid : crossidArray){
+					System.err.println("crossid=="+ crossid);
 					Map<String,Object> crossMap = new HashMap<String,Object>();
 					List<TrainInfoDto> trains = new ArrayList<TrainInfoDto>();
 					List<CrossRelationDto> jxgx = new ArrayList<CrossRelationDto>();
@@ -287,7 +289,8 @@ public class CrossController {
 	    	traintempDto.setStnName(targetItemDto.getName());
 	    	Integer sourceDay = targetItemDto.getSourceDay();
     		Integer targetDay = targetItemDto.getTargetDay();
-    		//System.err.println("runDate22==" + runDate);
+    		System.err.println("runDate22==" + runDate);
+    		System.err.println("sourceDay==" + sourceDay);
     		LocalDate targetDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(runDate);
     		traintempDto.setArrTime(targetDate.plusDays(sourceDay).toString("yyyy-MM-dd") + " "+targetItemDto.getSourceTime());
     		//终到站离站日期

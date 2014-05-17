@@ -308,18 +308,24 @@ public class CrossService{
 		baseCrossDto.setCrossName(crossInfoMap.get("CROSS_NAME"));
 		baseCrossDto.setCrossStartDate(crossInfoMap.get("CROSS_START_DATE"));
 		baseCrossDto.setCrossEndDate(crossInfoMap.get("CROSS_END_DATE"));
-		List<BaseCrossTrainDto> subList = baseCrossDto.getListBaseCrossTrain();
+		List<BaseCrossTrainDto> subList = new ArrayList<BaseCrossTrainDto>();
 		//查询trainNbr等信息 BASE_TRAIN_ID ,train_nbr,train_sort,day_gap
 		List<Map<String,Object>> trainInfoList = getTrainNbrWithBaseCrossId(baseCrossId);
 		if(trainInfoList != null && trainInfoList.size() > 0){
 			for(Map<String,Object> map :trainInfoList){
 				BaseCrossTrainDto dto = new BaseCrossTrainDto();
-				dto.setBaseTrainId(StringUtil.objToStr(map.get("BASE_TRAIN_ID")));
-				dto.setDayGap(((BigDecimal)map.get("DAY_GAP")).intValue());
-				dto.setTrainSort(((BigDecimal)map.get("TRAIN_SORT")).intValue());
-				dto.setTrainNbr(StringUtil.objToStr(map.get("TRAIN_NBR")));
-				subList.add(dto);
+				String trainId = StringUtil.objToStr(map.get("BASE_TRAIN_ID"));
+				if(!"".equals(trainId)&&trainId != null && !"null".equals(trainId)){
+					dto.setBaseTrainId(trainId);
+					dto.setDayGap(((BigDecimal)map.get("DAY_GAP")).intValue());
+					dto.setTrainSort(((BigDecimal)map.get("TRAIN_SORT")).intValue());
+					dto.setTrainNbr(StringUtil.objToStr(map.get("TRAIN_NBR")));	
+					subList.add(dto);
+				}
+				
+				
 			}
+			baseCrossDto.setListBaseCrossTrain(subList);
 		}
 		return baseCrossDto;
 	}
