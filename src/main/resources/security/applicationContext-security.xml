@@ -32,6 +32,8 @@
                 /audit/** = anon
                 /user/** = anon
                 /index = user
+                /cross/** = anon
+                /plan/** = anon
                 /** = authc
             </value>
         </property>

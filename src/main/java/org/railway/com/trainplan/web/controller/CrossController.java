@@ -54,7 +54,7 @@ public class CrossController {
 	private static Log logger = LogFactory.getLog(CrossController.class.getName());
 	 @RequestMapping(method = RequestMethod.GET)
      public String content() {
-		 return "cross/cross_manage";
+		 return "redirect:cross/cross_manage";
      }
 	 
 	 @RequestMapping(value="/unit", method = RequestMethod.GET)
