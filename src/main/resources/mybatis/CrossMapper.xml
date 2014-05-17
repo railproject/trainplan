@@ -280,7 +280,7 @@
 		</if>
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
-		</if>
+		</if> 
 	</select>
 	
 	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">

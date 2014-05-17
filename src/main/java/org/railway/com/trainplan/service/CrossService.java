@@ -379,7 +379,7 @@ public class CrossService{
 			for(int i = 0; i < alllist.size(); i++){
 				CrossInfo crossInfo = alllist.get(i);
 				crossInfo.setChartId(chartId);
-				crossInfo.setChartName(chartName);
+				crossInfo.setChartName(chartName); 
 				 if(StringUtils.isEmpty(crossInfo.getAlterNateDate())){
 					 crossInfo.setAlterNateDate(startDay);
 				 }
@@ -426,6 +426,25 @@ public class CrossService{
 			 
 		}
 	} 
+	
+	private void setEndDateForCross(LinkedList<CrossTrainInfo> crossTrains, CrossInfo cross){
+		 try{
+			 //设置交路的终到日期
+			 int dayGapForCross = 0;
+			 for(CrossTrainInfo crosstrain : crossTrains){
+				 dayGapForCross += crosstrain.getRunDay() + crosstrain.getDayGap();
+			 } 
+			 Date date = dateFormat.parse(cross.getCrossStartDate());   
+			 Calendar calendar = new GregorianCalendar();
+			 calendar.setTime(date);
+			 calendar.add(Calendar.DATE, dayGapForCross);
+			 
+			 cross.setCrossEndDate(dateFormat.format(calendar.getTime()));
+		 }catch(Exception e){
+			 
+		 }
+	} 
+	 
 	/**
 	 * 计算列车间隔时间
 	 * @param train1 需要设置间隔时间的列车
@@ -437,11 +456,10 @@ public class CrossService{
 			logger.debug(train1.getSourceTargetTime() + "-" + train1.getSourceTargetTime().substring(train1.getSourceTargetTime().indexOf(":") + 1));
 			Date sourceTime = format.parse("1977-01-01 " + train1.getSourceTargetTime().substring(train1.getSourceTargetTime().indexOf(":") + 1));
 			Date targetTime = train2 != null ?  format.parse("1977-01-01 " + train2.getTargetTime().substring(train2.getTargetTime().indexOf(":") + 1)) :  format.parse("1977-01-01 " + train1.getTargetTime().substring(train1.getTargetTime().indexOf(":") + 1));
+			
 			if(sourceTime.compareTo(targetTime) < 0){
-				logger.debug(train1.getSourceTargetTime() + "----------------------------------123123----------------------------------" + train2.getTargetTime());
 				train1.setDayGap(1);
 			}else{
-				logger.debug(train1.getSourceTargetTime() + "----------------------------------123123----------------------------------" + train2.getTargetTime());
 				train1.setDayGap(0);
 			}
 		} catch (Exception e) {
@@ -548,22 +566,45 @@ public class CrossService{
 								findFlag = true;
 								break;
 							}
-						} 
+						}
+						
+						
+						
 						if(findFlag){
-							//设置始发时间
-							train.setSourceTargetTime(sourceItemDto.getString("sourceTimeDto2"));
-							//设置终到时间
-							train.setTargetTime(targetItemDto == null ? null : targetItemDto.getString("targetTimeDto2"));
 							//设置列车在计划平台ID
 							train.setBaseTrainId(curTrain.getString("id"));
-							//设置始局
-							train.setStartBureau(commonService.getLjInfo(sourceItemDto.getString("bureauName")).getLjpym());
-							//设置始发站
-							train.setStartStn(sourceItemDto.getString("nodeName"));
-							//设置终到局
-							train.setEndBureau(commonService.getLjInfo(targetItemDto.getString("bureauName")).getLjpym());
-							//设置中档站
-							train.setEndStn(targetItemDto.getString("nodeName"));
+							if(sourceItemDto != null){
+								//设置始发时间
+								try {
+									train.setSourceTargetTime(sourceItemDto.getString("sourceTimeDto2"));
+									train.setStartBureau(commonService.getLjInfo(sourceItemDto.getString("bureauName")).getLjpym());
+									//设置始发站
+									train.setStartStn(sourceItemDto.getString("nodeName"));
+								} catch (Exception e) {
+									// TODO: handle exception
+								} 
+							}
+//							"{\"id\":\"09f5fcf2-b83b-4c5f-aae0-603134482d48\",\"name\":\"北京南高速场\"," +
+//							"\"pinyinCode\":null,\"description\":null," +
+//							"\"versionDto\":{\"major\":0,\"minor\":0,\"micro\":0,\"qualifier\":\"\"}," +
+//							"\"state\":\"SYNCHRONIZED\",\"index\":0,\"bureauId\":" +
+//							"\"1ceca80f-2860-47fe-a3f3-415b5fee9e20\",\"bureauName\":\"北京铁路局\"," +
+//							"\"nodeId\":\"fc4812cc-6659-4556-8f34-e933bf3a1b33\",\"nodeName\":\"北京南高速场\"," +
+//							"\"trackName\":\"10\",\"sourceTimeDto2\":\"0:8:0:0\"," +
+//							"\"targetTimeDto2\":\"0:6:0:0\",\"timeFormat\":\"yyyy-MM-dd HH:mm:ss\"," +
+//							"\"timeDto\":null," +
+//							"\"timeDto1\":{\"day\":0,\"hour\":8,\"minute\":0,\"second\":0}}},\"trainlineWorkDto\":null,\"routeDto\":{\"directionalRailwayLineSegmentSiteDtos\":[{\"id\":\"9898d998-a1fc-4525-86a0-511668b6a019\",\"name\":\"铁路线[京沪高速下行]-[北京南高速场-济南西]区段\",\"pinyinCode\":null,\"description\":null,\"versionDto\":{\"major\":0,\"minor\":0,\"micro\":0,\"qualifier\":\"\"},\"state\":\"SYNCHRONIZED\",\"index\":0,\"railwayLineId\":\"7354bd2d-cc29-4e2a-a73f-da21a274a9eb\",\"railwayLineName\":\"京沪高速\",\"directionalRailwayLineId\":\"06103c4d-28c2-47fb-9a28-7dccc1d24263\",\"directionalRailwayLineName\":\"京沪高速下行\",\"sourceSegmentId\":\"d97b6821-62b8-47a6-a963-1bf6258e6538\",\"sourceSegmentName\":\"北京南高速场\",\"targetSegmentId\":\"2d219a35-9ee4-4cd2-850e-722e6e39d16e\",\"targetSegmentName\":\"济南西\"}],\"directionalRailwayLineKilometerMarkSiteDtos\":[],\"lineSiteDtos\":[],\"nodeSiteDtos\":[]},\"schemeId\":\"0336fdb6-c008-45da-bff2-3ba405e65b29\",\"schemeName\":\"测试3-京沪高铁-30列\",\"vehicleCycleId\":null}
+//							targetItemDto.getJSONObject("timeDto1").getString("day")
+							
+							if(targetItemDto != null){
+								train.setRunDay(targetItemDto.getJSONObject("timeDto1").getInt("day"));
+								//设置终到时间
+								train.setTargetTime(targetItemDto.getString("targetTimeDto2"));
+								//设置终到局
+								train.setEndBureau(commonService.getLjInfo(targetItemDto.getString("bureauName")).getLjpym());
+								//设置中档站
+								train.setEndStn(targetItemDto.getString("nodeName"));
+							}
 						}
 					}
 					//间隔天数
@@ -593,12 +634,19 @@ public class CrossService{
 			String[] alertNateTrains = StringUtils.isEmpty(cross.getAlterNateTranNbr()) ? null : cross.getAlterNateTranNbr().split("-");
 			String[] alertNateDate = StringUtils.isEmpty(cross.getAlterNateDate()) ? null : cross.getAlterNateDate().split("-");
 			String[] spareFlag = StringUtils.isEmpty(cross.getSpareFlag())? null : cross.getSpareFlag().split("-");
+			String[] highlineFlag = StringUtils.isEmpty(cross.getHighlineFlag())? null : cross.getHighlineFlag().split("-");
+			String[] commonlineRule = StringUtils.isEmpty(cross.getCommonlineRule())? null : cross.getCommonlineRule().split("-");
+			String[] highlineRule = StringUtils.isEmpty(cross.getHighlineRule())? null : cross.getHighlineRule().split("-");
+			
+			String[] appointWeek = StringUtils.isEmpty(cross.getAppointWeek())? null : cross.getAppointWeek().split("-");
+			String[] appointDay = StringUtils.isEmpty(cross.getAppointDay())? null : cross.getAppointDay().split("-");
+			
 			String[] trains = crossName.split("-");
 			LinkedList<CrossTrainInfo> crossTrains = new LinkedList<CrossTrainInfo>();
 			CrossTrainInfo train = null;
 			for(int i = 0; i < trains.length; i++){
 				train = new CrossTrainInfo();
-				train.setTrainSort(i);
+				train.setTrainSort(i + 1);
 				train.setCrossId(cross.getCrossId());
 				train.setTrainNbr(trains[i]); 
 				try{
@@ -609,8 +657,7 @@ public class CrossService{
 					//
 					if(alertNateDate != null ){
 						if(alertNateDate.length == 1){
-							train.setAlertNateTime(alertNateDate[0]);
-							train.setAlertNateTime(alertNateDate[0]);
+							train.setAlertNateTime(alertNateDate[0]); 
 						}else{ 
 							train.setAlertNateTime(alertNateDate[i]);
 						}  
@@ -623,45 +670,86 @@ public class CrossService{
 							train.setSpareFlag(Integer.parseInt(spareFlag[i]));
 						}
 					}  
+					
+					if(highlineFlag != null ){
+						if(highlineFlag.length == 1){ 
+							train.setHighlineFlag(Integer.parseInt(highlineFlag[0]));
+						}else{ 
+							train.setHighlineFlag(Integer.parseInt(highlineFlag[i])); 
+						}  
+					}
+					
+					if(commonlineRule != null ){
+						if(commonlineRule.length == 1){ 
+							train.setCommonLineRule(Integer.parseInt(commonlineRule[0]));
+						}else{ 
+							train.setCommonLineRule(Integer.parseInt(commonlineRule[i])); 
+						}  
+					}
+					
+					if(highlineRule != null ){
+						if(highlineRule.length == 1){ 
+							train.setHighlineRule(Integer.parseInt(highlineRule[0]));
+						}else{ 
+							train.setHighlineRule(Integer.parseInt(highlineRule[i])); 
+						}  
+					}
+					
+					
+					if(appointDay != null ){
+						if(appointDay.length == 1){ 
+							train.setAppointDay(appointDay[0]);
+						}else{ 
+							train.setAppointDay(appointDay[i]); 
+						}  
+					} 
+					
+					if(appointWeek != null ){
+						if(appointWeek.length == 1){ 
+							train.setAppointWeek(appointWeek[0]);
+						}else{ 
+							train.setAppointWeek(highlineRule[i]); 
+						}  
+					}
+					
 				}catch(Exception e){
 					logger.error("创建列车信息出错:" , e);
 				}
 				crossTrains.add(train);
 			} 
+			//获取列车时刻表和其实和终到站
 		   ExecutorService service=Executors.newCachedThreadPool();
 		   CompletionService<CrossTrainInfo> completion=new ExecutorCompletionService<CrossTrainInfo>(service);
 		   
 		   for(int i=0; i < crossTrains.size(); i++){
 			   completion.submit(new GetTrainInfoCompletionService(crossTrains.get(i)));
-		   }
+		   } 
+		  
 		   for(int i=0;i < crossTrains.size();i++){
 			   try {
-				CrossTrainInfo crossTrain = completion.take().get();
-				//设置交路的开始日期和结束日期
-				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
-					cross.setStartBureau(crossTrain.getStartBureau());
-//					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
-					cross.setCrossStartDate(crossTrain.getAlertNateTime());
+					CrossTrainInfo crossTrain = completion.take().get();
+					//设置交路的开始日期和结束日期
+					if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
+						cross.setStartBureau(crossTrain.getStartBureau());
+	//					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
+						cross.setCrossStartDate(crossTrain.getAlertNateTime());
+					}   
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
 				}
-				if(cross.getCrossName().endsWith(crossTrain.getTrainNbr())){ 
-					 
-					cross.setCrossEndDate(crossTrain.getAlertNateTime());
-					 
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			}
 		   }
-		  
-		   setDayGapForTrains(crossTrains); 
-			
+		 //设置列车的间隔时间
+		 setDayGapForTrains(crossTrains);
+		 //设置列车的结束日期
+		 setEndDateForCross(crossTrains, cross); 
 			
 		LinkedList<CrossTrainInfo> crossSpareTrains = new LinkedList<CrossTrainInfo>(); 
 		if(crossSpareNames != null){
@@ -669,7 +757,7 @@ public class CrossService{
 				try{
 					train = new CrossTrainInfo();
 					train.setCrossId(cross.getCrossId());
-					train.setTrainSort(crossTrains.size() + i);
+					train.setTrainSort(i + 1);
 					train.setTrainNbr(crossSpareNames[i]); 
 					train.setSpareApplyFlage(1);  
 					//

@@ -19,57 +19,21 @@ var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔�
 var gloabBureaus = [];
 
 
-function PageModle(loadFun){
-	var self = this;
-	
-	self.currentIndex = ko.observable(0);
-	
-	self.pageSize = ko.observable(20); 
-	
-	self.totalCount = ko.observable(0);
-	
-	self.rows = ko.observableArray(); 
-	
-	self.loadPCrosses = function(){
-		var currentIndex = self.currentIndex();   
-		if(currentIndex == 0){
-			return;
-		}
-		self.currentIndex(currentIndex - self.pageSize());  
-		self.loadCrosseForPage();
-	};
-	self.loadNCrosses = function(){
-		var currentIndex = self.currentIndex();  
-		self.currentIndex(currentIndex + self.pageSize());
-		if(self.currentIndex() > self.totalCount()){
-			self.currentIndex(currentIndex);
-			return
-		}
-		self.loadCrosseForPage();
-	};
-	
-	self.loadCrosses = function(){
-		self.currentIndex(0);
-		self.loadCrosseForPage();
-	}; 
- 
-}
-
+//分页模块 
 function CrossModel() {
 	var self = this;
 		//列车列表
 	self.trains = ko.observableArray();
 	//交路列表
-	self.crossRows = ko.observableArray(); 
+	//self.crossRows = ko.observableArray(); 
 	
 	self.gloabBureaus = [];  
 	
-	self.crossAllcheckBox = ko.observable(0);  
-	 
+	self.crossAllcheckBox = ko.observable(0); 
 	
 	self.selectCrosses = function(){
 //		self.crossAllcheckBox(); 
-		$.each(self.crossRows(), function(i, crossRow){ 
+		$.each(self.crossRows.rows(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0);
 			}else{
@@ -83,7 +47,7 @@ function CrossModel() {
 		console.log(row.selected());
 		if(row.selected() == 0){
 			self.crossAllcheckBox(1);
-			$.each(self.crossRows(), function(i, crossRow){ 
+			$.each(self.crossRows.rows(), function(i, crossRow){ 
 				console.log("==="+ crossRow.selected());
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
@@ -94,8 +58,7 @@ function CrossModel() {
 			self.crossAllcheckBox(0);
 		} 
 	};
-	
-	//车辆担当局
+	 
 	self.searchModle = ko.observable(new searchModle());
 	
 	// cross基础信息中的下拉列表  
@@ -112,11 +75,11 @@ function CrossModel() {
 		 var filterTrainNbr = self.searchModle().filterTrainNbr();
 		 filterTrainNbr = filterTrainNbr || filterTrainNbr != "" ? filterTrainNbr.toUpperCase() : "all";
 		 if(filterTrainNbr == "all"){
-			 $.each(self.crossRows(),function(n, crossRow){
+			 $.each(self.crossRows.rows(),function(n, crossRow){
 				  crossRow.visiableRow(true);
 			  });
 		 }else{
-			 $.each(self.crossRows(),function(n, crossRow){
+			 $.each(self.crossRows.rows(),function(n, crossRow){
 				 if(crossRow.crossName().indexOf(filterTrainNbr) > -1){
 					 crossRow.visiableRow(true);
 				 }else{
@@ -146,11 +109,13 @@ function CrossModel() {
 	};
 	
 	self.createUnitPlain = function(){ 
-		var unitCrossIds = "";
-		for(var i = 0; i < self.crossRows().length; i++){ 
-			if(self.crossRows()[i].selected() == 1){ 
+		var unitCrossIds = ""; 
+		var crossRows = self.crossRows.rows();
+		for(var i = 0; i < crossRows.length; i++){ 
+			
+			if(crossRows[i].selected() == 1){ 
 				unitCrossIds += (unitCrossIds == "" ? "" : ",");
-				unitCrossIds += self.crossRows()[i].crossId;
+				unitCrossIds += crossRows[i].crossId;
 			}  
 		}
 		 $.ajax({
@@ -173,38 +138,7 @@ function CrossModel() {
 	        }).always(function() {
 	            
 	        }); 
-	};
-	
-	
-	self.uploadCrossFile = function(){ 
-	        //starting setting some animation when the ajax starts and completes
-	        $("#loading")
-	        .ajaxStart(function(){
-	            $(this).show();
-	        })
-	        .ajaxComplete(function(){
-	            $(this).hide();
-	        });  
-	        $.ajaxFileUpload
-	        ({
-                url:'cross/fileUpload?chartId=' + self.searchModle().chart().chartId + "&startDay="+ self.searchModle().startDay(),
-                secureuri:false,
-                fileElementId:'fileToUpload',
-                type : "POST",
-                dataType: 'json',  
-				contentType : "application/json",
-                success: function (data, status)
-                { 
-                     alert(112312);
-                },
-                error: function (data, status, e)
-                {
-                    alert(e);
-                }
-            }); 
-	        return true;
-	} ;
-	
+	}; 
 	 
 	//当前选中的交路对象
 	self.currentCross = ko.observable(new CrossRow({"unitCrossId":"1",
@@ -242,14 +176,7 @@ function CrossModel() {
 		"note":"", 
 		"createPeople":"", 
 		"createPeopleOrg":"",  
-		"createTime":""}));
-	
-	self.currentIndex = ko.observable(0);
-	
-	self.pageSize = ko.observable(20); 
-	
-	self.totalCount = ko.observable(0);
-	//currentIndex 
+		"createTime":""})); 
 	
 	self.init = function(){  
 		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
@@ -310,31 +237,13 @@ function CrossModel() {
 	    });
 		
 		
-	}; 
-	self.loadPCrosses = function(){
-		var currentIndex = self.currentIndex();   
-		if(currentIndex == 0){
-			return;
-		}
-		self.currentIndex(currentIndex - self.pageSize());  
-		self.loadCrosseForPage();
-	};
-	self.loadNCrosses = function(){
-		var currentIndex = self.currentIndex();  
-		self.currentIndex(currentIndex + self.pageSize());
-		if(self.currentIndex() > self.totalCount()){
-			self.currentIndex(currentIndex);
-			return
-		}
-		self.loadCrosseForPage();
-	};
+	};  
 	
 	self.loadCrosses = function(){
-		self.currentIndex(0);
-		self.loadCrosseForPage();
+		self.crossRows.loadRows();
 	};
 	
-	self.loadCrosseForPage = function() {   
+	self.loadCrosseForPage = function(startIndex, endIndex) {   
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -344,14 +253,8 @@ function CrossModel() {
 		var highlingFlag = self.searchModle().highlingFlag(); 
 		var sureFlag = self.searchModle().sureFlag(); 
 		var startBureauCode = self.searchModle().startBureau(); 
-		var chart = self.searchModle().chart();
-		
-		var currentIndex = 0; 
-		 // 如果是重新查询
-		 if(action == 1){
-			 currentIndex = self.crossRows().length;
-		 }
-		
+		var chart = self.searchModle().chart(); 
+		 
 		 $.ajax({
 				url : "../cross/getUnitCrossInfo",
 				cache : false,
@@ -362,30 +265,22 @@ function CrossModel() {
 					tokenVehBureau : bureauCode, 
 					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
 					sureFlag : sureFlag == "-1" ? null : sureFlag,  
-					startBureau : startBureauCode,
-					rownumstart : currentIndex,
+					startBureau : startBureauCode, 
 					chartId : chart == null ? null : chart.chartId,
-					rownumend : currentIndex + self.pageSize
+					rownumstart : startIndex, 
+					rownumend : endIndex 
 				}),
-				success : function(result) {    
-					if(action == 0){ 
-						$.each(self.crossRows(),function(n, crossRow){
-							crossRow.visiableRow(false);
-						});
-					}else{ 
-						self.totalCount(result.data.totalRecord);
-						self.crossRows.remove(function(item) {
-							return true;
-						});  
-					} 
+				success : function(result) {   
+					 
 					if (result != null && result != "undefind" && result.code == "0") {
-						   
+						var rows = [];   
 						if(result.data.data != null){  
 							$.each(result.data.data,function(n, crossInfo){
-								self.crossRows.push(new CrossRow(crossInfo));  
+								rows.push(new CrossRow(crossInfo)); 
 							}); 
-						} 
-						self.totalCount(result.data.totalRecord);
+						}  
+						self.crossRows.loadPageRows(result.data.totalRecord, rows);
+						
 						 $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
@@ -401,6 +296,9 @@ function CrossModel() {
 			}); 
 	};
 
+	
+	self.crossRows = new PageModle(20, self.loadCrosseForPage);
+	
 	self.saveCrossInfo = function() { 
 		alert(self.currentCross().tokenVehBureau())
 	};
