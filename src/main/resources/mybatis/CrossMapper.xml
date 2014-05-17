@@ -341,17 +341,14 @@
 
 
     <select id="getCrossNameWithBaseCrossId" parameterType="String" resultType="map">
-     select cross_name from base_cross where base_cross_id=#{baseCrossId}
+     select cross_name,cross_start_date,cross_end_date from base_cross where base_cross_id=#{baseCrossId}
     </select>
 
    <select id="getTrainNbrWithBaseCrossId" parameterType="String" resultType="map">
-   select  BASE_TRAIN_ID ,train_nbr,train_sort  from base_cross_train where base_cross_id=#{baseCrossId} order by train_sort
+   select  BASE_TRAIN_ID ,train_nbr,train_sort,day_gap  from base_cross_train where base_cross_id=#{baseCrossId} order by train_sort
    
    </select>
 
-  <select id="getCrossDateWithBaseCrossId" parameterType="String" resultType="map">
-  select cross_start_date,cross_end_date from base_cross where base_cross_id=#{baseCrossId}
-  </select>
  
  
 </mapper>

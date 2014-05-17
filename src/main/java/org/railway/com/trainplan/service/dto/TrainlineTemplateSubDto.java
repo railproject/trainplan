@@ -22,9 +22,8 @@ public class TrainlineTemplateSubDto {
 	private String stnBureau;
 	//局码中文描述
 	private String stnBureauFull;
-	//局码中文描述
-	//private String bureauName;
-	
+	//局码简称
+	private String bureauShortName;
 	private Integer index;
 	//股道
 	private String trackName;
@@ -35,7 +34,28 @@ public class TrainlineTemplateSubDto {
 	//运行天数
 	private Integer runDays;
 	
+	private Integer sourceDay;
+	private Integer targetDay;
 	
+	
+	public String getBureauShortName() {
+		return bureauShortName;
+	}
+	public void setBureauShortName(String bureauShortName) {
+		this.bureauShortName = bureauShortName;
+	}
+	public Integer getSourceDay() {
+		return sourceDay;
+	}
+	public void setSourceDay(Integer sourceDay) {
+		this.sourceDay = sourceDay;
+	}
+	public Integer getTargetDay() {
+		return targetDay;
+	}
+	public void setTargetDay(Integer targetDay) {
+		this.targetDay = targetDay;
+	}
 	public String getPlanTrainStnId() {
 		return planTrainStnId;
 	}
@@ -91,12 +111,7 @@ public class TrainlineTemplateSubDto {
 	public void setStnBureau(String stnBureau) {
 		this.stnBureau = stnBureau;
 	}
-	/*public String getBureauName() {
-		return bureauName;
-	}
-	public void setBureauName(String bureauName) {
-		this.bureauName = bureauName;
-	}*/
+	
 	public Integer getIndex() {
 		return index;
 	}

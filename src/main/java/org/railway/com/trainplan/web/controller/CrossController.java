@@ -4,7 +4,6 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +22,18 @@ import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.service.RemoteService;
+import org.railway.com.trainplan.service.dto.BaseCrossDto;
+import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
 import org.railway.com.trainplan.service.dto.PagingResult;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
+import org.railway.com.trainplan.web.dto.CrossRelationDto;
 import org.railway.com.trainplan.web.dto.PlanLineGrid;
 import org.railway.com.trainplan.web.dto.PlanLineGridX;
 import org.railway.com.trainplan.web.dto.PlanLineGridY;
+import org.railway.com.trainplan.web.dto.PlanLineSTNDTO;
 import org.railway.com.trainplan.web.dto.Result;
+import org.railway.com.trainplan.web.dto.TrainInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +44,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
  
@@ -112,68 +115,74 @@ public class CrossController {
 		
 			String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
 			//经由信息，由后面调用接口获取，用户提供画图的坐标
-			List<TrainlineTemplateSubDto> stationsInfo = null;
+			List<TrainlineTemplateSubDto> stationsInfo = new ArrayList<TrainlineTemplateSubDto>();
 			ObjectMapper objectMapper = new ObjectMapper();
 			if(crossIds !=null){
 				String[] crossidArray = crossIds.split(",");
 				List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 				for(String crossid : crossidArray){
 					Map<String,Object> crossMap = new HashMap<String,Object>();
-					//根据crossid查询crossName
-					String crossName = crossService.getCrossNameWithBaseCrossId(crossid);
-					crossMap.put("crossName",crossName);
-					//根据crossId查询base_train_id,train_sort等信息
-					List<Map<String, Object>> listBaseTrainId = crossService.getTrainNbrWithBaseCrossId(crossid);
-				    if(listBaseTrainId != null){
-				    	List<Map<String,Object>> trains = new ArrayList<Map<String,Object>>();
-				    	//循环base_cross_id，调用接口得到列车运行时刻表信息
-				    	for(Map<String,Object> map : listBaseTrainId){
-				    		Object baseTrainId = map.get("BASE_TRAIN_ID");
-				    		if(baseTrainId != null && !"".equals(baseTrainId)){
-				    			
-				    			Map<String,Object> trainMap = new HashMap<String,Object>();
-				    			
-				    			//调用后台接口
-				    			TrainlineTemplateDto trainLineDto = remoteService.getTrainLinesInfoWithId(baseTrainId.toString());
-				    		    if(trainLineDto != null){
-				    		    	//车次
-				    		    	trainMap.put("trainName", trainLineDto.getTrainNbr());
-				    		    	//始发站名
-				    		    	trainMap.put("startStn", trainLineDto.getStartStn());
-				    		    	trainMap.put("endStn", trainLineDto.getEndStn());
-				    		    	//始发时间
-				    		    	trainMap.put("startTime",trainLineDto.getStartTime() );
-				    		    	//终到时间
-				    		    	trainMap.put("endTime",trainLineDto.getEndTime());
-				    		    	List<Map<String,Object>> trainStnsList = new ArrayList<Map<String,Object>>();
-				    		    	//经由站信息
-				    		    	List<TrainlineTemplateSubDto> subDtoList = trainLineDto.getStationList();
-				    		    	stationsInfo = subDtoList;
-				    		    	if(subDtoList != null && subDtoList.size() > 0){
-				    		        	
-				    		        	for(TrainlineTemplateSubDto subDto :subDtoList ){
-				    		        		Map<String,Object> trainStnMap = new HashMap<String,Object>();
-				    		        		//站名
-				    		        		trainStnMap.put("stnName", subDto.getName());
-				    		        		//到站时间
-				    		        		trainStnMap.put("arrTime",subDto.getSourceTime() );
-				    		        		trainStnMap.put("dptTime",subDto.getTargetTime() );
-				    		        		trainStnsList.add(trainStnMap);
-				    		        	}
-				    		        }
-				    		        trainMap.put("trainStns", trainStnsList);
-				    		    
-				    		    }
-				    		    trains.add(trainMap);
-				    		}
-				    	}
-				    	
-				    	crossMap.put("trains", trains);
-				    	
-				    	//获取接续关系数组
-				    	List<Map<String,Object>>  jxgx = getJxgx(trains);
-				    	crossMap.put("jxgx", jxgx);
-				    }
+					List<TrainInfoDto> trains = new ArrayList<TrainInfoDto>();
+					List<CrossRelationDto> jxgx = new ArrayList<CrossRelationDto>();
+					//根据crossid查询crossName，trainNbr等信息对象
+					BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(crossid);
+					crossMap.put("crossName",baseCrossDto.getCrossName());
+					List<BaseCrossTrainDto> listBaseCrossTrain = baseCrossDto.getListBaseCrossTrain();
+					if(listBaseCrossTrain != null && listBaseCrossTrain.size() > 0 ){
+						
+						List<TrainlineTemplateDto> listTrainsInfo = new ArrayList<TrainlineTemplateDto>();
+						int trainCount = 0;
+						for(BaseCrossTrainDto dto : listBaseCrossTrain){
+							String baseTrainId = dto.getBaseTrainId();
+							logger.debug("baseTrainId===" + baseTrainId);
+							//调用后台接口获取列车时刻表信息对象
+							TrainlineTemplateDto trainLineDto = remoteService.getTrainLinesInfoWithId(baseTrainId);
+							listTrainsInfo.add(trainLineDto);
+							
+							//组装列车信息
+							TrainInfoDto tempdto = null;
+							//第一辆列车的开行日期是cross_start_date
+							if(trainCount == 0){
+								System.err.println("baseCrossDto.getCrossEndDate()==" + baseCrossDto.getCrossEndDate());
+								tempdto = provideTrainMap(trainLineDto,DateUtil.getFormateDay(baseCrossDto.getCrossEndDate()));
+								trains.add(tempdto);
+							}else{
+								//非第一辆车，始发日期是列车自己的始发日期,先找到第trainCount-1辆列车的终到日期，然后再往后推第trainCount辆车的dayGap天
+								String endDateI = trains.get(trainCount-1).getEndDate();
+								System.err.println("endDateI==" + endDateI);
+								LocalDate endDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(endDateI);
+								int dayGap = trainLineDto.getRundays();
+								String startDateII = endDate.plusDays(dayGap).toString("yyyy-MM-dd");
+								//解析
+								tempdto = provideTrainMap(trainLineDto,startDateII);
+								trains.add(tempdto);
+							}
+							trainCount++;
+						}
+						
+						//经由信息列表,取cross_name中第一辆车的经由站，为后面算纵坐标提供数据
+						if(listTrainsInfo != null && listTrainsInfo.size() > 0){
+							TrainlineTemplateDto dto = listTrainsInfo.get(0);
+							Map<String,Object> scheduleMap = dto.getScheduleMap();
+							TrainlineTemplateSubDto sourceItemDto = (TrainlineTemplateSubDto)scheduleMap.get("sourceItemDto");
+							TrainlineTemplateSubDto targetItemDto = (TrainlineTemplateSubDto)scheduleMap.get("targetItemDto");
+							List<TrainlineTemplateSubDto> routeItemDtos = (List<TrainlineTemplateSubDto>)scheduleMap.get("routeItemDtos");
+							stationsInfo.add(sourceItemDto);
+							for(TrainlineTemplateSubDto  routeDto : routeItemDtos){
+								stationsInfo.add(routeDto);
+							}
+							stationsInfo.add(targetItemDto);
+						}
+						
+					}
+					
+					//组装接续关系信息
+					jxgx =  getJxgx(trains);
+					
+					//将接续关系和列车时刻信息放入crossMap中
+					crossMap.put("jxgx", jxgx);
+					crossMap.put("trains", trains);
+	   
 				    dataList.add(crossMap);
 				    String myJlData = objectMapper.writeValueAsString(dataList);
 				  //图形数据
@@ -192,10 +201,10 @@ public class CrossController {
 					}
 					
 					//组装时间轴
-					Map<String,String> dateMap = crossService.getCrossDateWithBaseCrossId(crossid);
+					
 					//格式为yyyyMMdd,需要转成yyyy-dd-mm格式
-					String crossStartDate = dateMap.get("CROSS_START_DATE");
-					String crossEndDate = dateMap.get("CROSS_END_DATE");
+					String crossStartDate = baseCrossDto.getCrossStartDate();
+					String crossEndDate = baseCrossDto.getCrossEndDate();
 					
 					 LocalDate start = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(crossStartDate);
 				     LocalDate end = new LocalDate(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(crossEndDate));
@@ -219,33 +228,134 @@ public class CrossController {
 	}
 	
 	/**
+	 * 组装列车信息
+	 * @param TrainInfoDto 从接口返回来的列车信息对象
+	 * @param runDate  列车始发时间，格式yyyy-mm-dd
+	 * @return 组装后的列车信息，主要是将列车始发时间添加到经由站始发日期中
+	 */
+	private TrainInfoDto provideTrainMap(TrainlineTemplateDto trainDto,String runDate){
+		TrainInfoDto trainInfoDto = new TrainInfoDto();
+		//列车车次
+		String trainName = trainDto.getTrainNbr();
+		//始发站
+		String startStn = trainDto.getStartStn();
+		//终到站
+		String endStn = trainDto.getEndStn();
+		trainInfoDto.setTrainName(trainName);
+		trainInfoDto.setStartStn(startStn);
+		trainInfoDto.setEndStn(endStn);
+		trainInfoDto.setStartDate(runDate);
+	   
+	   
+	    Map<String,Object> scheduleMap = trainDto.getScheduleMap();
+	    //始发站信息
+	    TrainlineTemplateSubDto sourceItemDto = (TrainlineTemplateSubDto)scheduleMap.get("sourceItemDto");
+	    //终到站信息
+	    TrainlineTemplateSubDto targetItemDto = (TrainlineTemplateSubDto)scheduleMap.get("targetItemDto");
+	    //经由站信息
+	    List<TrainlineTemplateSubDto> routeItemDtos = (List<TrainlineTemplateSubDto>) scheduleMap.get("routeItemDtos");
+	    List<PlanLineSTNDTO> trainStns = new ArrayList<PlanLineSTNDTO>();
+	    if(sourceItemDto != null){
+	    	PlanLineSTNDTO traintempDto = new PlanLineSTNDTO();
+	    	traintempDto.setStnName(sourceItemDto.getName());
+	    	//起点站的日期是传入的runDay
+	    	traintempDto.setArrTime(runDate + " " + sourceItemDto.getSourceTime());
+	    	traintempDto.setDptTime(runDate + " " + sourceItemDto.getTargetTime());
+	    	trainStns.add(traintempDto);
+	    	//设置始发时刻
+	    	trainInfoDto.setStartTime(sourceItemDto.getSourceTime());
+	    	
+	    	
+	    }
+	    //经由站
+	    if(routeItemDtos != null && routeItemDtos.size() > 0){
+	    	for(TrainlineTemplateSubDto routeDto : routeItemDtos){
+	    		PlanLineSTNDTO traintempDto = new PlanLineSTNDTO();
+	    		traintempDto.setStnName(routeDto.getName());
+	    		Integer sourceDay = routeDto.getSourceDay();
+	    		Integer targetDay = routeDto.getTargetDay();
+	    		//System.err.println("runDate==" + runDate);
+	    		LocalDate sourceDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(runDate);
+	    		traintempDto.setArrTime(sourceDate.plusDays(sourceDay).toString("yyyy-MM-dd") + " "+routeDto.getSourceTime());
+	    		traintempDto.setDptTime(sourceDate.plusDays(targetDay).toString("yyyy-MM-dd") + " " +routeDto.getTargetTime());
+	    		trainStns.add(traintempDto);
+	    	}
+	    }
+	    //终到站
+	    if(targetItemDto != null){
+	    	PlanLineSTNDTO traintempDto = new PlanLineSTNDTO();
+	    	traintempDto.setStnName(targetItemDto.getName());
+	    	Integer sourceDay = targetItemDto.getSourceDay();
+    		Integer targetDay = targetItemDto.getTargetDay();
+    		//System.err.println("runDate22==" + runDate);
+    		LocalDate targetDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(runDate);
+    		traintempDto.setArrTime(targetDate.plusDays(sourceDay).toString("yyyy-MM-dd") + " "+targetItemDto.getSourceTime());
+    		//终到站离站日期
+    		String targetDateTemp = targetDate.plusDays(targetDay).toString("yyyy-MM-dd");
+    		traintempDto.setDptTime(targetDateTemp + " "+ targetItemDto.getTargetTime());
+    		//设置终到站日期到对象
+    		trainInfoDto.setEndDate(targetDateTemp);
+    		//设置终到时刻
+    		trainInfoDto.setEndTime(targetItemDto.getTargetTime());
+    		trainStns.add(traintempDto);
+	    }
+	    trainInfoDto.setTrainStns(trainStns);
+	   
+		return trainInfoDto;
+	}
+	
+	
+	
+	/**
 	 * 组装接续关系
 	 * @param trains
+	 * @param listCrossTrain 列车对应的信息列表，主要是通过车次找到对应的dayGap
 	 * @return
 	 */
-	private List<Map<String,Object>> getJxgx(List<Map<String,Object>> trains){
-		List<Map<String,Object>> returnList = new ArrayList<Map<String,Object>>();
+	private List<CrossRelationDto> getJxgx(List<TrainInfoDto> trains){
+		List<CrossRelationDto> returnList = new ArrayList<CrossRelationDto>();
 		if(trains != null && trains.size() > 0 ){
 			int size = trains.size();
 			for(int i = 0;i<size;i++){
-				//接续关系的map
-				Map<String,Object> jxgxMap = new HashMap<String,Object>();
+				//接续关系的对象
+				CrossRelationDto dto = new CrossRelationDto();
 				int temp = i+1;
 				if(temp<size){
-					Map<String,Object> mapCurrent = trains.get(i);
-					Map<String,Object> mapNext = trains.get(temp);
+					TrainInfoDto dtoCurrent = trains.get(i);
+					TrainInfoDto dtoNext = trains.get(temp);
+					
 					//取i的终点站信息
-					jxgxMap.put("fromStnName",mapCurrent.get("endStn"));
-					jxgxMap.put("fromTime", mapCurrent.get("endTime"));
+					dto.setFromStnName(dtoCurrent.getEndStn());
+					//取i的终点站日期和时刻进行组合
+					dto.setFromTime(dtoCurrent.getEndDate()+ " " + dtoCurrent.getEndTime());
+					
+					//设置i+1始发日期和时刻
+					dto.setToTime(dtoNext.getStartDate() + " "+dtoNext.getStartTime());
 					//取i+1的起点信息
-					jxgxMap.put("toStnName",mapNext.get("startStn"));
-					jxgxMap.put("toTime", mapNext.get("startTime"));
-					returnList.add(jxgxMap);
+					dto.setToStnName(dtoNext.getStartStn());
+					returnList.add(dto);
 				}
 				
 			}
 		}
 		return returnList;
+	}
+	
+	/**
+	 * 通过车次找对应的dayGap
+	 * @return
+	 */
+	private int getDayGap(List<BaseCrossTrainDto> listCrossTrain,String trainName){
+		    int dayGap = 0;
+		    if(listCrossTrain != null && listCrossTrain.size() >0 ){
+		    	for(BaseCrossTrainDto dto :listCrossTrain ){
+		    		if(trainName.equals(dto.getTrainNbr())){
+		    			dayGap = dto.getDayGap();
+		    			break;
+		    		}
+		    	}
+		    }
+		    return dayGap;
 	}
 	/**
 	 * 5.2.4	更新给定列车的基本图运行线车底交路id

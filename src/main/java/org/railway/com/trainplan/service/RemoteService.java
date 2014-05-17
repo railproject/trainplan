@@ -58,7 +58,7 @@ public class RemoteService {
 	/**
 	 * 根据列车id查询列车运行时刻表
 	 * @param baseTrainId 
-	 * @return 列车车次基本运行线的list集合
+	 * @return 列车车次基本运行线对象
 	 */
     public TrainlineTemplateDto  getTrainLinesInfoWithId(String baseTrainId)  throws Exception{
     	TrainlineTemplateDto dto  = null ;
@@ -72,96 +72,8 @@ public class RemoteService {
     			List<Map<String, Object>> dataList = (List<Map<String, Object>>) response
 						.get("data");
     			if (dataList != null && dataList.size() > 0){
-    				
-    				//通过base_train_id查询只有一条数据
-    				Map<String, Object> map = dataList.get(0);
-    					// 返回交易成功
-						dto = new TrainlineTemplateDto();
-						//列车id
-						dto.setBaseTrainId(StringUtil.objToStr(map.get("id")));
-						//车次
-						dto.setTrainNbr(StringUtil.objToStr(map.get("name")));
-						//始发局全称
-						dto.setStartBureauFull(StringUtil.objToStr(map.get("sourceBureauName")));
-						//终到局全称
-						dto.setEndBureauFull(StringUtil.objToStr(map.get("targetBureauName")));
-						//始发站名
-						dto.setStartStn(StringUtil.objToStr(map.get("sourceNodeName")));
-						//终到站名
-						dto.setEndStn(StringUtil.objToStr(map.get("targetNodeName")));
-						//始发时间，格式"2014-05-06 21:35:20"
-						String sourceTime = StringUtil.objToStr(map.get("sourceTime1"));
-						String targetTime = StringUtil.objToStr(map.get("targetTime1"));
-						String myRundate = sourceTime.substring(0,10);
-						String myTargetRundate = targetTime.substring(0,10);
-						dto.setStartTime(sourceTime);
-						dto.setEndTime(targetTime);
-						//取yyyy-mm-dd格式，用于计算后面每个站的日期
-						String myRunDate = sourceTime == null?"" :sourceTime.substring(0,10);
-											
-						Map<String, Object> scheduleMap = (Map<String, Object>) map
-								.get("scheduleDto");
-						if (scheduleMap != null && scheduleMap.size() > 0) {
-							List<TrainlineTemplateSubDto> subDtoList = dto
-									.getStationList();
-							// 始发站信息
-							Map<String, Object> sourceItemMap = (Map<String, Object>) scheduleMap
-									.get("sourceItemDto");
-							if (sourceItemMap != null
-									&& sourceItemMap.size() > 0) {
-								TrainlineTemplateSubDto subDto = setSubDtoValue(
-										sourceItemMap, Constants.STATION_BEGIN);
-								subDto.setSourceTime(setTime(myRundate,subDto.getSourceTime()));
-								subDto.setTargetTime(setTime(myTargetRundate,subDto.getTargetTime()));
-								subDtoList.add(subDto);
-								
-							}
-							
-							// 经由信息
-							List<Map<String, Object>> routeItemList = (List<Map<String, Object>>) scheduleMap
-									.get("routeItemDtos");
-							if (routeItemList != null
-									&& routeItemList.size() > 0) {
-								for (Map<String, Object> routeItemMap : routeItemList) {
-									TrainlineTemplateSubDto subDto = setSubDtoValue(
-											routeItemMap,
-											Constants.STATION_ROUTE);
-									
-									//单独设置运行时间
-									String sourceTimeSub = subDto.getSourceTime();
-									int daycountSouce = Integer.valueOf(sourceTimeSub.substring(0,1));
-									String trueRunDate = DateUtil.getDateByDay(myRunDate, -daycountSouce);
-									String sourcetime = trueRunDate+ " "+ StringUtil.handleTime(sourceTimeSub);
-									subDto.setSourceTime(sourcetime);
-									
-									String targetTimeSub = subDto.getTargetTime();
-									int daycountTarget = Integer.valueOf(targetTimeSub.substring(0,1));
-									trueRunDate = DateUtil.getDateByDay(myRunDate, -daycountTarget);
-									String targettime = trueRunDate+ " "+ StringUtil.handleTime(targetTimeSub);
-									subDto.setTargetTime(targettime);
-									
-									subDtoList.add(subDto);
-								}
-							}
-							
-							// 终到站信息
-							Map<String, Object> targetItemMap = (Map<String, Object>) scheduleMap
-									.get("targetItemDto");
-							if (targetItemMap != null
-									&& targetItemMap.size() > 0) {
-								TrainlineTemplateSubDto subDto = setSubDtoValue(
-										targetItemMap, Constants.STATION_END);
-								
-								subDto.setSourceTime(setTime(myRundate,subDto.getSourceTime()));
-								subDto.setTargetTime(setTime(myTargetRundate,subDto.getTargetTime()));
-								subDtoList.add(subDto);
-							}
-							
-							
-							// 设置始发站，经由站，终到站等信息
-							dto.setStationList(subDtoList);
-						}
-					
+    				Map<String,Object> dataMap = dataList.get(0);
+    				dto =  parsDataMap(dataMap);
     			}
     		}
     	}
@@ -399,6 +311,92 @@ public class RemoteService {
 				+ Constants.UPDATE_UNIT_CROSS_ID, request, Map.class);
 		logger.info("updateUnitCrossId---response==" + response);
 		return "";
+	}
+	
+	/**
+	 * 解析报文中data部分
+	 * @return
+	 */
+	private TrainlineTemplateDto parsDataMap(Map<String,Object> dataMap){
+		TrainlineTemplateDto dto = new TrainlineTemplateDto();
+		//StringUtil.objToStr(dataMap.get(""));
+		if(dataMap!=null){
+			dto.setPlanTrainId(StringUtil.objToStr(dataMap.get("id")));
+			//车次
+			dto.setTrainNbr(StringUtil.objToStr(dataMap.get("name")));
+			//始发局全称
+			dto.setStartBureauFull(StringUtil.objToStr(dataMap.get("sourceBureauName")));
+			//终到局全称
+			dto.setEndBureauFull(StringUtil.objToStr(dataMap.get("targetBureauName")));
+			//始发站名
+			dto.setStartStn(StringUtil.objToStr(dataMap.get("sourceNodeName")));
+			//终到站名
+			dto.setEndStn(StringUtil.objToStr(dataMap.get("targetNodeName")));
+			//始发时间
+			dto.setStartTime(StringUtil.objToStr(dataMap.get("sourceTime1")));
+			//终到时间
+			dto.setEndTime(StringUtil.objToStr(dataMap.get("targetTime1")));
+		}
+		
+		//解析经由信息
+		Map<String,Object> myscheduleMap = new HashMap<String,Object>();
+		Map<String,Object> scheduleMap = (Map<String,Object>)dataMap.get("scheduleDto");
+		if(scheduleMap != null){
+			//解析始发站
+			Map<String,Object>  sourceItemMap = (Map<String,Object>)scheduleMap.get("sourceItemDto");
+			TrainlineTemplateSubDto sourceItemDto = parsRouteItemDto(sourceItemMap);
+			//起始站对象
+			myscheduleMap.put("sourceItemDto", sourceItemDto);
+			
+			//解析终到站
+			Map<String,Object> targetItemMap = (Map<String,Object>)scheduleMap.get("targetItemDto");
+			TrainlineTemplateSubDto targetItemDto = parsRouteItemDto(targetItemMap);
+			//终到站的运行天数即为整个列车的运行天数
+			dto.setRundays(targetItemDto.getTargetDay());
+			myscheduleMap.put("targetItemDto", targetItemDto);
+			
+			//解析经由站信息
+			List<Map<String,Object>> routeItemList = (List<Map<String,Object>>)scheduleMap.get("routeItemDtos");
+		    List<TrainlineTemplateSubDto> myRouteItemList = new ArrayList<TrainlineTemplateSubDto>();
+			if(routeItemList != null && routeItemList.size() >0){
+		    	for(Map<String,Object> routeItemMap : routeItemList){
+		    		TrainlineTemplateSubDto routeItemDto = parsRouteItemDto(routeItemMap);
+		    		myRouteItemList.add(routeItemDto);
+		    	}
+		    }
+			myscheduleMap.put("routeItemDtos", myRouteItemList);
+			
+			dto.setScheduleMap(myscheduleMap);
+		}
+		return dto;
+	}
+	/**
+	 * 解析routeItemDto
+	 * @param routeItemMap
+	 * @return
+	 */
+	private   TrainlineTemplateSubDto  parsRouteItemDto(Map<String,Object> routeItemMap){
+		TrainlineTemplateSubDto  dto = new TrainlineTemplateSubDto();
+		
+        if(routeItemMap != null){
+        	dto.setName(StringUtil.objToStr(routeItemMap.get("name")));
+        	dto.setIndex((Integer)routeItemMap.get("index"));
+        	//局码全称
+        	dto.setStnBureauFull(StringUtil.objToStr(routeItemMap.get("bureauName")));
+        	//局码简称
+        	dto.setBureauShortName(StringUtil.objToStr(routeItemMap.get("bureauShortName")));
+        	dto.setTrackName(StringUtil.objToStr(routeItemMap.get("trackName")));
+        	//到达时间和离开时间，格式：0:21:37:20
+        	String sourceTimeDto2 = StringUtil.objToStr(routeItemMap.get("sourceTimeDto2"));
+        	String targetTimeDto2 =  StringUtil.objToStr(routeItemMap.get("targetTimeDto2"));
+        	dto.setSourceTime(sourceTimeDto2.substring(2));
+        	dto.setTargetTime(targetTimeDto2.substring(2));
+        	dto.setSourceDay(Integer.valueOf(sourceTimeDto2.substring(0,1)));
+        	dto.setTargetDay(Integer.valueOf(targetTimeDto2.substring(0,1)));
+        	
+        }
+		
+		return dto;
 	}
 	/**
 	 * 对站点设置基本信息
