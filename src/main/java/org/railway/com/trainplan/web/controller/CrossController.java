@@ -152,12 +152,15 @@ public class CrossController {
 								//非第一辆车，始发日期是列车自己的始发日期,先找到第trainCount-1辆列车的终到日期，然后再往后推第trainCount辆车的dayGap天
 								String endDateI = trains.get(trainCount-1).getEndDate();
 								System.err.println("endDateI==" + endDateI);
-								LocalDate endDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(endDateI);
-								int dayGap = trainLineDto.getRundays();
-								String startDateII = endDate.plusDays(dayGap).toString("yyyy-MM-dd");
-								//解析
-								tempdto = provideTrainMap(trainLineDto,startDateII);
-								trains.add(tempdto);
+								if(endDateI != null){
+									LocalDate endDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(endDateI);
+									int dayGap = trainLineDto.getRundays();
+									String startDateII = endDate.plusDays(dayGap).toString("yyyy-MM-dd");
+									//解析
+									tempdto = provideTrainMap(trainLineDto,startDateII);
+									trains.add(tempdto);
+								}
+								
 							}
 							trainCount++;
 						}
