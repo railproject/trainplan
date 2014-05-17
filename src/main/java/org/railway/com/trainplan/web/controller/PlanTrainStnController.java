@@ -1,7 +1,5 @@
 package org.railway.com.trainplan.web.controller;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +23,7 @@ import org.railway.com.trainplan.service.RemoteService;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
+import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -121,7 +120,8 @@ public class PlanTrainStnController {
 		
 		String baseTrainId = reqMap.get("baseTrainId").toString();
 		//测试根据车次查询车次信息
-		remoteService.getTrainLinesInfoWithId(baseTrainId);
+		TrainlineTemplateDto dto = remoteService.getTrainLinesInfoWithId(baseTrainId);
+		result.setData(dto);
 		return result;
 	}
 	

@@ -40,10 +40,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
+import org.railway.com.trainplan.service.dto.BaseCrossDto;
+import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -269,36 +272,21 @@ public class CrossService{
 	}
 	
 	/**
-	 * 根据baseCrossid查询crossName
+	 * 根据baseCrossid查询crossName等信息
+	 * crossStartDate,crossEndDate
 	 * @param baseCrossId
 	 * @return
 	 */
-	public String  getCrossNameWithBaseCrossId(String baseCrossId){
-		String crossName = "";
+	public Map<String,String> getCrossNameWithBaseCrossId(String baseCrossId){
+		Map<String,String> returnMap = null;
 		List<Map<String,String>> list =baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSSNAME_WITH_BASE_CROSSID, baseCrossId);
 	   if(list !=null && list.size() > 0){
 		   //只有一条数据
-		   Map<String,String> map = list.get(0);
-		   crossName = map.get("CROSS_NAME");
+		   returnMap = list.get(0);
 	   }
-	   return crossName;
+	   return returnMap;
 	}
 	
-	/**
-	 * 通过baseCrossId 查询cross_start_date和cross_end_date
-	 * @param baseCrossId
-	 * @return
-	 */
-	public Map<String,String> getCrossDateWithBaseCrossId(String baseCrossId){
-		List<Map<String,String>> list = baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSSDATE_WITH_BASE_CROSSID, baseCrossId);
-		 Map<String,String> map = null;
-		if(list !=null && list.size() > 0){
-			 //只有一条数据
-			 map = list.get(0);
-
-		 }
-		return map;
-	}
 	/**
 	 * 通过baseCorssId查询train_nbr,train_sort等信息
 	 * @param baseCrossId
@@ -306,6 +294,40 @@ public class CrossService{
 	 */
 	public List<Map<String,Object>> getTrainNbrWithBaseCrossId(String baseCrossId){
 		return baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID, baseCrossId);
+	}
+	
+	/**
+	 * 通过baseCrossId分别查询数据并组合
+	 * @param baseCrossId
+	 * @return
+	 */
+	public BaseCrossDto getBaseCrossDtoWithCrossId(String baseCrossId){
+		BaseCrossDto baseCrossDto = new BaseCrossDto();
+		Map<String,String> crossInfoMap = getCrossNameWithBaseCrossId(baseCrossId);
+		//cross_name,cross_start_date,cross_end_date
+		baseCrossDto.setCrossName(crossInfoMap.get("CROSS_NAME"));
+		baseCrossDto.setCrossStartDate(crossInfoMap.get("CROSS_START_DATE"));
+		baseCrossDto.setCrossEndDate(crossInfoMap.get("CROSS_END_DATE"));
+		List<BaseCrossTrainDto> subList = new ArrayList<BaseCrossTrainDto>();
+		//查询trainNbr等信息 BASE_TRAIN_ID ,train_nbr,train_sort,day_gap
+		List<Map<String,Object>> trainInfoList = getTrainNbrWithBaseCrossId(baseCrossId);
+		if(trainInfoList != null && trainInfoList.size() > 0){
+			for(Map<String,Object> map :trainInfoList){
+				BaseCrossTrainDto dto = new BaseCrossTrainDto();
+				String trainId = StringUtil.objToStr(map.get("BASE_TRAIN_ID"));
+				if(!"".equals(trainId)&&trainId != null && !"null".equals(trainId)){
+					dto.setBaseTrainId(trainId);
+					dto.setDayGap(((BigDecimal)map.get("DAY_GAP")).intValue());
+					dto.setTrainSort(((BigDecimal)map.get("TRAIN_SORT")).intValue());
+					dto.setTrainNbr(StringUtil.objToStr(map.get("TRAIN_NBR")));	
+					subList.add(dto);
+				}
+				
+				
+			}
+			baseCrossDto.setListBaseCrossTrain(subList);
+		}
+		return baseCrossDto;
 	}
 	
 	

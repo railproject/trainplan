@@ -63,8 +63,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	this.getStnArcXIndex = function(runDate) {
 
 		for(var i=0, _len=_xDateArray.length; i <_len; i++) {
-
-			console.dir("_xDateArray[i].runDate:"+_xDateArray[i].runDate+"   runDate:"+runDate);
 			if (_xDateArray[i].runDate == runDate) {
 				return i;
 			}
@@ -85,7 +83,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		var _minute = moment(time).format("mm");
 		
 
-		console.dir("time:"+time+"   _date:"+_date);
+		console.dir("time:"+time+"   _date:"+_date+"   _hour:"+_hour+"   _minute:"+_minute);
 
 		var _oneDayWidth = _stepX*24*60/_xScale;	//一天的x宽度
 		var _dayWidth = this.getStnArcXIndex(_date)*_oneDayWidth;	//x平移天数刻度

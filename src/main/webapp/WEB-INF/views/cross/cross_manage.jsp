@@ -2,6 +2,7 @@
     pageEncoding="utf-8"%>
 <% 
 String basePath = request.getContextPath();
+System.out.println(basePath);
 %>
 <!DOCTYPE HTML>
 <html lang="en">

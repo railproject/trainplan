@@ -13,6 +13,6 @@ public class Index {
 
     @RequestMapping(method = RequestMethod.GET)
     public String index() {
-        return "trainplan/index";
+        return "index";
     }
 }

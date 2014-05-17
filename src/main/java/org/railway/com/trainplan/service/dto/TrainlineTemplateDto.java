@@ -2,7 +2,7 @@ package org.railway.com.trainplan.service.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 /**
  * 基本图方案包含的基本图运行线对象
@@ -34,8 +34,19 @@ public class TrainlineTemplateDto {
 	private String endBureauFull;
 	//列车类型id
 	private String trainType;
+	//列车的整个运行天数，来自报文中终到站的day
+	private int rundays;
+	
+	private Map<String,Object> scheduleMap;
 	
 	
+	
+	public Map<String, Object> getScheduleMap() {
+		return scheduleMap;
+	}
+	public void setScheduleMap(Map<String, Object> scheduleMap) {
+		this.scheduleMap = scheduleMap;
+	}
 	public String getPlanTrainId() {
 		return planTrainId;
 	}
@@ -115,6 +126,12 @@ public class TrainlineTemplateDto {
 	}
 	public void setBaseTrainId(String baseTrainId) {
 		this.baseTrainId = baseTrainId;
+	}
+	public int getRundays() {
+		return rundays;
+	}
+	public void setRundays(int rundays) {
+		this.rundays = rundays;
 	}
 	
 	
