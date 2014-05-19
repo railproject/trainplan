@@ -25,6 +25,7 @@ public class CrossTrainInfo {
 	private String appointDay;//APPOINT_DAY
 	private String sourceTargetTime;
 	private String targetTime;
+	private int runDay;
 	/**以下字段是表unit_cross_train中用到  **/
 	//unit_cross_train表id
 	private String unitCrossTrainId;
@@ -32,6 +33,12 @@ public class CrossTrainInfo {
 	private String unitCrossId;
 	
 	
+	public int getRunDay() {
+		return runDay;
+	}
+	public void setRunDay(int runDay) {
+		this.runDay = runDay;
+	}
 	public String getSourceTargetTime() {
 		return sourceTargetTime;
 	}

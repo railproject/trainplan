@@ -13,7 +13,8 @@ $(function() {
 });
 
 var highlingFlags = [{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
-var sureFlags = [{"value": "0", "text": "已审核"},{"value": 1, "text": "未审核"}];
+var checkFlags = [{"value": "0", "text": "已"},{"value": 1, "text": "未"}];
+var unitCreateFlags = [{"value": "0", "text": "已"},{"value": 1, "text": "未"}];
 var highlingrules = [{"value": 1, "text": "平日"},{"value": 2, "text": "周末"},{"value": 3, "text": "高峰"}];
 var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔日"}];
  
@@ -25,9 +26,7 @@ function CrossModel() {
 	var self = this;
 		//列车列表
 	self.trains = ko.observableArray();
-	//交路列表
-	self.crossRows = ko.observableArray(); 
-	
+	//交路列表 
 	self.crossAllcheckBox = ko.observable(0);
 	
 	self.gloabBureaus = []; 
@@ -37,7 +36,7 @@ function CrossModel() {
 	
 	self.selectCrosses = function(){
 //		self.crossAllcheckBox(); 
-		$.each(self.crossRows(), function(i, crossRow){ 
+		$.each(self.crossRows.rows(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0);
 			}else{
@@ -51,7 +50,7 @@ function CrossModel() {
 		console.log(row.selected());
 		if(row.selected() == 0){
 			self.crossAllcheckBox(1);
-			$.each(self.crossRows(), function(i, crossRow){ 
+			$.each(self.crossRows.rows(), function(i, crossRow){ 
 				console.log("==="+ crossRow.selected());
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
@@ -77,11 +76,11 @@ function CrossModel() {
 		 var filterTrainNbr = self.searchModle().filterTrainNbr();
 		 filterTrainNbr = filterTrainNbr || filterTrainNbr != "" ? filterTrainNbr.toUpperCase() : "all";
 		 if(filterTrainNbr == "all"){
-			 $.each(self.crossRows(),function(n, crossRow){
+			 $.each(self.crossRows.rows(),function(n, crossRow){
 				  crossRow.visiableRow(true);
 			  });
 		 }else{
-			 $.each(self.crossRows(),function(n, crossRow){
+			 $.each(self.crossRows.rows(),function(n, crossRow){
 				 if(crossRow.crossName().indexOf(filterTrainNbr) > -1){
 					 crossRow.visiableRow(true);
 				 }else{
@@ -168,13 +167,8 @@ function CrossModel() {
 		"note":"", 
 		"createPeople":"", 
 		"createPeopleOrg":"",  
-		"createTime":""}));
-	
-	self.currentIndex = ko.observable(0);
-	
-	self.pageSize = ko.observable(20); 
-	
-	self.totalCount = ko.observable(0);
+		"createTime":""})); 
+	 
 	//currentIndex 
 	self.currdate =function(){
 		var d = new Date();
@@ -247,40 +241,22 @@ function CrossModel() {
 	    });
 		
 		
-	}; 
-	
-	self.loadPCrosses = function(){ 
-		var currentIndex = self.currentIndex();   
-		if(currentIndex == 0){
-			return;
-		}
-		self.currentIndex(currentIndex - self.pageSize());  
-		self.loadCrosseForPage();
-	};
-	self.loadNCrosses = function(){
-		var currentIndex = self.currentIndex();  
-		self.currentIndex(currentIndex + self.pageSize());
-		if(self.currentIndex() > self.totalCount()){
-			self.currentIndex(currentIndex);
-			return
-		}
-		self.loadCrosseForPage();
-	};
+	};  
 	
 	self.loadCrosses = function(){
-		self.currentIndex(0);
-		self.loadCrosseForPage();
+		self.crossRows.loadRows();
 	};
-	
-	self.loadCrosseForPage = function() {   
+	self.loadCrosseForPage = function(startIndex, endIndex) {   
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
 			rowLookup[row.crossName] = row;
 		});  */
 		var bureauCode = self.searchModle().bureau(); 
-		var highlingFlag = self.searchModle().highlingFlag(); 
-		var sureFlag = self.searchModle().sureFlag();
+		var highlingFlag = self.searchModle().highlingFlag() + "";
+		var trainNbr = self.searchModle().filterTrainNbr(); 
+		var checkFlag = self.searchModle().checkFlag();
+		var unitCreateFlag = self.searchModle().unitCreateFlag();
 		var startBureauCode = self.searchModle().startBureau();  
 		 
 		$.ajax({
@@ -292,29 +268,24 @@ function CrossModel() {
 				data :JSON.stringify({ 
 					tokenVehBureau : bureauCode, 
 					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
-					sureFlag : sureFlag == "-1" ? null : sureFlag,  
+					checkFlag : checkFlag == null ? null : checkFlag.value,
 					startBureau : startBureauCode,
-					rownumstart : self.currentIndex(), 
-					rownumend : self.currentIndex() + self.pageSize() 
+					unitCreateFalg :  unitCreateFlag == null ? null : unitCreateFlag.value,
+					trainNbr : trainNbr,
+					rownumstart : startIndex, 
+					rownumend : endIndex
 				}),
 				success : function(result) {    
-//					if(action == 1){ 
-//						$.each(self.crossRows(),function(n, crossRow){
-//							crossRow.visiableRow(false);
-//						});
-//					}else{ 
-						self.crossRows.remove(function(item) {
-							return true;
-						});  
-//					}
+ 
 					if (result != null && result != "undefind" && result.code == "0") {
-						 
+						var rows = [];
 						if(result.data.data != null){  
 							$.each(result.data.data,function(n, crossInfo){
-								self.crossRows.push(new CrossRow(crossInfo));  
-							});  
-							self.totalCount(result.data.totalRecord); 
+								rows.push(new CrossRow(crossInfo));  
+							});   
+							self.crossRows.loadPageRows(result.data.totalRecord, rows);
 						} 
+						
 						 $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
@@ -330,10 +301,12 @@ function CrossModel() {
 			}); 
 	};
 
+	self.crossRows = new PageModle(20, self.loadCrosseForPage);
+	
 	self.saveCrossInfo = function() { 
 		alert(self.currentCross().tokenVehBureau())
 	};
-	
+	 
 	self.showUploadDlg = function(){
 		$("#file_upload_dlg").dialog("open");
 //		var diag = new Dialog();
@@ -348,10 +321,10 @@ function CrossModel() {
 	self.showCrossMapDlg = function(){
 		//$("#cross_map_dlg").find("iframe").attr("src", "");
 		var crossIds = "";
-		for(var i = 0; i < self.crossRows().length; i++){ 
-			if(self.crossRows()[i].selected() == 1){ 
+		for(var i = 0; i < self.crossRows.rows().length; i++){ 
+			if(self.crossRows.rows()[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += self.crossRows()[i].crossId;
+				crossIds += self.crossRows.rows()[i].crossId;
 			}  
 		} 
 		$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossIds=" + crossIds);
@@ -369,10 +342,11 @@ function CrossModel() {
 	
 	self.createUnitCrossInfo = function(){ 
 		var crossIds = "";
-		for(var i = 0; i < self.crossRows().length; i++){ 
-			if(self.crossRows()[i].selected() == 1){ 
+		var crosses = self.crossRows.rows();
+		for(var i = 0; i < crosses.length; i++){ 
+			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += self.crossRows()[i].crossId;
+				crossIds += crosses[i].crossId;
 			}  
 		}
 		 $.ajax({
@@ -432,7 +406,20 @@ function CrossModel() {
 				}
 			}); 
 		
-	};   
+	};  
+	
+	self.filterCrosses = function(){
+		var filterCheckFlag = self.searchModle().filterCheckFlag();  
+		var filterUnitCreateFlag = self.searchModle().filterUnitCreateFlag(); 
+		$.each(self.crossRows.rows(),function(n, crossRow){
+			  if(crossRow.checkFlag() == filterCheckFlag || crossRow.unitCreateFlag() == filterUnitCreateFlag){
+				  crossRow.visiableRow(true);
+			  }else{
+				  crossRow.visiableRow(false);
+			  }
+				 
+		  }); 
+	}; 
 }
 
 function searchModle(){
@@ -443,11 +430,20 @@ function searchModle(){
 	self.charts = ko.observableArray();
 	 
 	self.highlingFlags = highlingFlags;
-	self.sureFlags = sureFlags;
+	
+	self.unitCreateFlags = unitCreateFlags; 
+	
+	self.filterCheckFlag = ko.observable(0);
+	
+	self.filterUnitCreateFlag = ko.observable(0);
+		
+	self.checkFlags = checkFlags;
 	
 	self.highlingFlag = ko.observable();
 	
-	self.sureFlag = ko.observable();
+	self.checkFlag = ko.observable(); 
+	 
+	self.unitCreateFlag = ko.observable(); 
 	
 	self.bureau = ko.observable();
 	 
@@ -514,7 +510,11 @@ function CrossRow(data) {
 		}else{
 			return data.crossName;
 		}
-	}); 
+	});  
+	
+	self.checkFlag = ko.observable(1);
+	
+	self.unitCreateFlag = ko.observable(1);
 	//方案ID
 	self.chartId = ko.observable(data.chartId);
 	self.chartName = ko.observable(data.chartName);
@@ -584,7 +584,9 @@ function TrainRow(data) {
 	});
 	self.dayGap = data.dayGap;//DAY_GAP
 	self.alertNateTrainNbr = data.alertNateTrainNbr;//ALTERNATE_TRAIN_NBR
-	self.alertNateTime = data.alertNateTime;//ALTERNATE_TIME
+	self.alertNateTime =  ko.computed(function(){
+		 return data.alertNateTime == null ? "": data.alertNateTime.substring(5).replace(/-/, "");
+	});//ALTERNATE_TIME
 	//self.spareFlag = data.spareFlag;//SPARE_FLAG
 	self.spareFlag = ko.computed(function(){ 
 		switch (data.spareFlag) {

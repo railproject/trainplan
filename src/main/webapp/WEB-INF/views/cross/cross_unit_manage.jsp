@@ -47,6 +47,8 @@ String basePath = request.getContextPath();
 <script type="text/javascript" src="../assets/js/trainplan/cross/crossunit.js"></script>  
 <script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
 <script src="<%=basePath %>/assets/js/trainplan/common.js"></script> 
+<script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
+
 </head> 
 <body class="Iframe_body">
 	
@@ -150,7 +152,7 @@ String basePath = request.getContextPath();
 													<th style="width: 15%" align="center">状态</th>
 												</tr>
 											</thead> 
-											 <tbody data-bind="foreach: crossRows">
+											 <tbody data-bind="foreach: crossRows.rows">
 												<tr data-bind=" visible: visiableRow" >
 												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
 													<td data-bind=" text: $index()+1 , click: $parent.showTrains"></td>
@@ -158,10 +160,10 @@ String basePath = request.getContextPath();
 													<td style="color: green;">已审核</td>
 												</tr> 
 											</tbody> 
-											<tr data-bind="visiable: totalCount() > pageSize">
+											<tr data-bind="visiable: crossRows.totalCount() > crossRows.pageSize()">
 												<table>
 												  <tr>
-													<td>共<span data-bind="html: totalCount()"></span>条</td><td>当前<span data-bind="html: currentIndex()"></span>到<span data-bind="html: (currentIndex()%pageSize()==0 ? ((totalCount() == 0) ? 0 : currentIndex() + pageSize()) : currentIndex() + currentIndex()%pageSize())"></span></td><td data-bind="click: loadNCrosses"><span class="btn btn-success">下一页</span></td><td colspan="2" data-bind="click: loadPCrosses"><span class="btn btn-success">上一页</span></td>
+													<td>共<span data-bind="html: crossRows.totalCount()"></span>条</td><td>当前<span data-bind="html: crossRows.currentIndex()"></span>到<span data-bind="html: crossRows.endIndex()"></span></td><td data-bind="click: crossRows.loadNext"><span class="btn btn-success">下一页</span></td><td colspan="2" data-bind="click: crossRows.loadPre"><span class="btn btn-success">上一页</span></td>
 												  </tr>
 												</table>
 											</tr>
