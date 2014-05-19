@@ -113,13 +113,19 @@ public class CrossController {
 	@RequestMapping(value = "/provideUnitCrossChartData", method = RequestMethod.GET)
 	public ModelAndView  provideUnitCrossChartData(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		 ModelAndView result = new ModelAndView("cross/unit_cross_canvas"); 
+		 ObjectMapper objectMapper = new ObjectMapper();
 		 String crossId = StringUtil.objToStr(request.getParameter("crossId"));
+		 PlanLineGrid grid = null;
+		 
 		 System.err.println("crossId=="+ crossId);
 		 BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(crossId);
 		 //通过crossId获取unitCross列表信息
 		 List<CrossInfo> listUnitCross = crossService.getUnitCrossInfosForCrossId(crossId);
 		 if(listUnitCross != null){
+			 List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
+				
 			 for(int i = 0;i<listUnitCross.size();i++){
+				 Map<String,Object> crossMap = new HashMap<String,Object>();
 				 CrossInfo crossInfo = listUnitCross.get(i);
 				 String unitCrossId = crossInfo.getUnitCrossId();
 				 System.err.println("unitCrossId=="+ unitCrossId);
@@ -128,14 +134,28 @@ public class CrossController {
 				 if(i == 0){
 					
 					 chartDateMap = provideOneCrossChartData(unitCrossId, baseCrossDto,true); 
+					 grid = (PlanLineGrid)chartDateMap.get("gridData");
 				 }else{
-					 
+					 chartDateMap = provideOneCrossChartData(unitCrossId, baseCrossDto,false); 
 				 }
-				 
+					crossMap.put("jxgx", chartDateMap.get("jxgx"));
+					crossMap.put("trains", chartDateMap.get("trains"));
+					crossMap.put("crossName", chartDateMap.get("crossName"));
+					dataList.add(crossMap);
 			 }
+			 String myJlData = objectMapper.writeValueAsString(dataList);
+			//图形数据
+			result.addObject("myJlData",myJlData);
+			logger.debug("myJlData==" + myJlData);
+			
+			//坐标
+			//坐标信息
+			String gridStr = objectMapper.writeValueAsString(grid);
+			logger.debug("gridStr==" + gridStr);
+			result.addObject("gridData",gridStr);
 		 }
 		
-		 ObjectMapper objectMapper = new ObjectMapper();
+		
 		 
 		 return result;
 	}
@@ -164,6 +184,7 @@ public class CrossController {
 					Map<String,Object> oneCrossMap = provideOneCrossChartData(crossId,baseCrossDto,true);
 					crossMap.put("jxgx", oneCrossMap.get("jxgx"));
 					crossMap.put("trains", oneCrossMap.get("trains"));
+					crossMap.put("crossName", oneCrossMap.get("crossName"));
 					dataList.add(crossMap);
 					String myJlData = objectMapper.writeValueAsString(dataList);
 					//图形数据
