@@ -258,6 +258,15 @@ public class CrossService{
 		List<CrossInfo>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO, reqMap);
 		return list;
 	}
+	
+	/**
+	 * 通过crossId在表unitCorss表中查询unitCross基本信息
+	 * @param crossId
+	 * @return
+	 */
+	public List<CrossInfo> getUnitCrossInfosForCrossId(String crossId){
+		return baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO_FOR_CROSSID, crossId);
+	}
 	/**
 	 * 查询 unitcross信息总条数
 	 */

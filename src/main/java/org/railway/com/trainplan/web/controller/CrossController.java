@@ -104,6 +104,41 @@ public class CrossController {
 	}
 	
 	
+	/**
+	 * 提供画交路图形的数据
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/provideUnitCrossChartData", method = RequestMethod.GET)
+	public ModelAndView  provideUnitCrossChartData(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		 ModelAndView result = new ModelAndView("cross/unit_cross_canvas"); 
+		 String crossId = StringUtil.objToStr(request.getParameter("crossId"));
+		 System.err.println("crossId=="+ crossId);
+		 BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(crossId);
+		 //通过crossId获取unitCross列表信息
+		 List<CrossInfo> listUnitCross = crossService.getUnitCrossInfosForCrossId(crossId);
+		 if(listUnitCross != null){
+			 for(int i = 0;i<listUnitCross.size();i++){
+				 CrossInfo crossInfo = listUnitCross.get(i);
+				 String unitCrossId = crossInfo.getUnitCrossId();
+				 System.err.println("unitCrossId=="+ unitCrossId);
+				 Map<String,Object> chartDateMap = null;
+				 //避免重复计算坐标
+				 if(i == 0){
+					
+					 chartDateMap = provideOneCrossChartData(unitCrossId, baseCrossDto,true); 
+				 }else{
+					 
+				 }
+				 
+			 }
+		 }
+		
+		 ObjectMapper objectMapper = new ObjectMapper();
+		 
+		 return result;
+	}
 	
 	/**
 	 * 提供画交路图形的数据
@@ -113,19 +148,20 @@ public class CrossController {
 	@ResponseBody
 	@RequestMapping(value = "/provideCrossChartData", method = RequestMethod.GET)
 	public ModelAndView  provideCrossChartData(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		ModelAndView result = new ModelAndView("cross/unit_cross_canvas"); 
+		    ModelAndView result = new ModelAndView("cross/unit_cross_canvas"); 
 		
-			String crossIds = StringUtil.objToStr(request.getParameter("crossIds"));
-			System.err.println("crossIds=="+ crossIds);
+			String crossId = StringUtil.objToStr(request.getParameter("crossId"));
+			System.err.println("crossId=="+ crossId);
 			//经由信息，由后面调用接口获取，用户提供画图的坐标
 			
 			ObjectMapper objectMapper = new ObjectMapper();
-			if(crossIds !=null){
-				String[] crossidArray = crossIds.split(",");
+			if(crossId !=null){
+				
 				List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
-				for(String crossid : crossidArray){
+				
+					BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(crossId);
 					Map<String,Object> crossMap = new HashMap<String,Object>();
-					Map<String,Object> oneCrossMap = provideOneCrossChartData(crossid);
+					Map<String,Object> oneCrossMap = provideOneCrossChartData(crossId,baseCrossDto,true);
 					crossMap.put("jxgx", oneCrossMap.get("jxgx"));
 					crossMap.put("trains", oneCrossMap.get("trains"));
 					dataList.add(crossMap);
@@ -140,8 +176,6 @@ public class CrossController {
 					logger.debug("gridStr==" + gridStr);
 					result.addObject("gridData",gridStr);
 		
-				}
-				
 			}
 		
 		System.err.println("result===" + result);
@@ -228,9 +262,10 @@ public class CrossController {
 	
 	/**
 	 * 提供一个交路信息的画图数据
+	 * @param boolean isProvideGrid 是否组装坐标
 	 * @return
 	 */
-	private Map<String,Object> provideOneCrossChartData(String baseCrossId) throws Exception {
+	private Map<String,Object> provideOneCrossChartData(String baseCrossId,BaseCrossDto baseCrossDto,boolean isProvideGrid) throws Exception {
 		//Map<String,Object> crossChartMap = new HashMap<String,Object>();
 		//经由信息，由后面调用接口获取，用户提供画图的坐标
 		List<TrainlineTemplateSubDto> stationsInfo = new ArrayList<TrainlineTemplateSubDto>();
@@ -240,7 +275,7 @@ public class CrossController {
 		List<TrainInfoDto> trains = new ArrayList<TrainInfoDto>();
 		List<CrossRelationDto> jxgx = new ArrayList<CrossRelationDto>();
 		//根据crossid查询crossName，trainNbr等信息对象
-		BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(baseCrossId);
+		//BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(baseCrossId);
 		System.err.println("CrossStartDate==" + baseCrossDto.getCrossStartDate());
 		crossMap.put("crossName",baseCrossDto.getCrossName());
 		List<BaseCrossTrainDto> listBaseCrossTrain = baseCrossDto.getListBaseCrossTrain();
@@ -302,39 +337,49 @@ public class CrossController {
 		crossMap.put("jxgx", jxgx);
 		crossMap.put("trains", trains);
 
-		//组装坐标
-		 // Grid
-        List<PlanLineGridY> planLineGridYList = new ArrayList<PlanLineGridY>();
-		if(stationsInfo != null){
-		  
-			for(TrainlineTemplateSubDto subDto : stationsInfo){
-			
-				planLineGridYList.add(new PlanLineGridY(subDto.getName()));
-			}
-				
+		if(isProvideGrid){
+			//组装坐标
+			 PlanLineGrid grid = getPlanLineGrid(stationsInfo,baseCrossDto.getCrossStartDate(), baseCrossDto.getCrossEndDate());
+			 crossMap.put("gridData", grid);
 		}
 		
-		//组装时间轴
-		
-		//格式为yyyyMMdd,需要转成yyyy-dd-mm格式
-		String crossStartDate = baseCrossDto.getCrossStartDate();
-		String crossEndDate = baseCrossDto.getCrossEndDate();
-		
-		 LocalDate start = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(crossStartDate);
-	     LocalDate end = new LocalDate(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(crossEndDate));
-	        List<PlanLineGridX> gridXList = new ArrayList<PlanLineGridX>();
-	        while(!start.isAfter(end)) {
-	            gridXList.add(new PlanLineGridX(start.toString("yyyy-MM-dd")));
-	            start = start.plusDays(1);
-	        }
-	        
-		 PlanLineGrid grid = new PlanLineGrid(gridXList, planLineGridYList);
-		 crossMap.put("gridData", grid);
 	
 		return crossMap;
 		
 	}
 	
+	/**
+	 * 组装坐标轴数据
+	 * @param stationsInfo 经由站信息对象
+	 * @param crossStartDate 交路开始日期，格式yyyyMMdd
+	 * @param crossEndDate 交路终到日期，格式yyyyMMdd
+	 * @return 坐标轴对象
+	 */
+	private PlanLineGrid getPlanLineGrid(List<TrainlineTemplateSubDto> stationsInfo,String crossStartDate,String crossEndDate){
+		//纵坐标
+		 List<PlanLineGridY> planLineGridYList = new ArrayList<PlanLineGridY>();
+		 //横坐标
+		 List<PlanLineGridX> gridXList = new ArrayList<PlanLineGridX>(); 
+		 /****组装纵坐标****/
+		 if(stationsInfo != null){
+			  
+				for(TrainlineTemplateSubDto subDto : stationsInfo){
+				
+					planLineGridYList.add(new PlanLineGridY(subDto.getName()));
+				}
+					
+			}
+		 
+		/*****组装横坐标  *****/
+		 LocalDate start = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(crossStartDate);
+	     LocalDate end = new LocalDate(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(crossEndDate));
+	     while(!start.isAfter(end)) {
+	            gridXList.add(new PlanLineGridX(start.toString("yyyy-MM-dd")));
+	            start = start.plusDays(1);
+	        }
+	     
+		 return new PlanLineGrid(gridXList, planLineGridYList);
+	}
 	/**
 	 * 组装接续关系
 	 * @param trains

@@ -119,5 +119,6 @@ public class Constants {
     public static final String CROSSDAO_GET_TRAINNBR_FROM_UNIT_CROSS = "crossDao.getTrainNbrFromUnitCross";
     public static final String CROSSDAO_GET_CROSSNAME_WITH_BASE_CROSSID = "crossDao.getCrossNameWithBaseCrossId";
     public static final String CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID = "crossDao.getTrainNbrWithBaseCrossId";
-    
+    //通过corssid在表unit_cross中查询unitcrossInfo信息
+    public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_CROSSID = "crossDao. getUnitCrossInfoForCrossId";
 }

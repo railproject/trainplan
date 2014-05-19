@@ -10,10 +10,16 @@ public class SubCrossInfo {
 	private String startBureau;
 	private String highlineFlag;
 	private String marshallingName;
-	
+	private Integer groupSerialNbr;
 	
 	
 
+	public Integer getGroupSerialNbr() {
+		return groupSerialNbr;
+	}
+	public void setGroupSerialNbr(Integer groupSerialNbr) {
+		this.groupSerialNbr = groupSerialNbr;
+	}
 	public String getMarshallingName() {
 		return marshallingName;
 	}

@@ -76,7 +76,55 @@
       from base_cross where BASE_CROSS_ID=#{crossId}
    </select>
 
-
+  <select id="getUnitCrossInfoForCrossId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
+  select 
+        UNIT_CROSS_ID as unitCrossId,
+        MARSHALLING_NAME as marshallingName, 
+		GROUP_SERIAL_NBR as groupSerialNbr,
+        BASE_CHART_ID as chartId,
+        BASE_CHART_NAME as chartName,
+        CROSS_START_DATE as crossStartDate,
+        CROSS_END_DATE as crossEndDate,
+        
+        CROSS_NAME as crossName,
+        CROSS_SPARE_NAME as crossSpareName,
+        ALTERNATE_DATE as alterNateDate,
+        ALTERNATE_TRAIN_NBR as alterNateTranNbr,
+        
+        SPARE_FLAG as spareFlag ,
+        CUT_OLD as  cutOld,
+        GROUP_TOTAL_NBR as groupTotalNbr ,
+        PAIR_NBR as pairNbr , 
+        
+        HIGHLINE_FLAG as  highlineFlag,
+        HIGHLINE_RULE as  highlineRule,
+        COMMONLINE_RULE as  commonlineRule,
+        APPOINT_WEEK as appointWeek ,
+        
+        APPOINT_DAY  as  appointDay,
+        CROSS_SECTION  as crossSection ,
+        THROUGH_LINE  as  throughline,
+        START_BUREAU  as startBureau ,
+        
+		TOKEN_VEH_BUREAU  as tokenVehBureau ,
+		TOKEN_VEH_DEPT  as  tokenVehDept,
+		TOKEN_VEH_DEPOT  as tokenVehDepot ,
+		TOKEN_PSG_BUREAU  as tokenPsgBureau ,
+		
+		TOKEN_PSG_DEPT  as tokenPsgDept ,	
+		LOCO_TYPE  as locoType ,
+		CRH_TYPE  as crhType ,
+		ELEC_SUPPLY  as elecSupply ,
+		
+		DEJ_COLLECT  as dejCollect ,
+		AIR_CONDITION  as airCondition ,
+		NOTE  as  note,
+		CREAT_PEOPLE  as createPeople ,
+		CREAT_PEOPLE_ORG  as createPeopleOrg ,
+		CREAT_TIME  as  createTime
+        from unit_cross where base_cross_id=#{crossId} order by GROUP_SERIAL_NBR
+  
+  </select>
    <select id="getUnitCrossInfoForUnitCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
       select 
         UNIT_CROSS_ID as unitCrossId,
@@ -285,7 +333,6 @@
 	
 	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select m.*  from  (select 
-	   ROWNUM as num,
 		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from BASE_CROSS
 		where 1=1 
 		<if test="tokenVehBureau != null">
@@ -298,7 +345,7 @@
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
 		
-		) m  where num >=#{rownumstart} AND num &lt;=#{rownumend}  order by crossName
+		 order by crossName ) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
 		
 	</select>
 
@@ -319,8 +366,7 @@
   
    <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select m.*  from  (select 
-	   ROWNUM as num,
-		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as marshallingName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag from UNIT_CROSS
+		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as marshallingName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag,GROUP_SERIAL_NBR as groupSerialNbr from UNIT_CROSS
 		where 1=1 
 		<if test="tokenVehBureau != null">
 			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
@@ -331,7 +377,7 @@
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
-		) m  where num >=#{rownumstart} AND num &lt;=#{rownumend} 
+		order by groupSerialNbr) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
 		
 	</select>
 	
