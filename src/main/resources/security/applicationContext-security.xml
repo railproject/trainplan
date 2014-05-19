@@ -34,6 +34,8 @@
                 /index = user
                 /cross/** = anon
                 /plan/** = anon
+                /message/** = anon
+                /dwr/** = anon
                 /** = authc
             </value>
         </property>
