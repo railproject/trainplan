@@ -1,5 +1,11 @@
 
 $(function(){
+	canvasData.grid = gridData;
+	canvasData.runplan = trainRunLineCanvasData;//客运计划线
+	canvasData.runline = jl_error_trainRunLineCanvasData;//运行线
+	
+	
+	
 	console.dir(canvasData);
 	var canvas = document.getElementById("trainplan_canvas");
 	var context = canvas.getContext('2d');

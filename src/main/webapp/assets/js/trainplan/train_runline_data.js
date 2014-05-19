@@ -17,7 +17,7 @@ for(var i=0;i<2;i++) {
  */
 var gridData = {
 			days:dateArray,//[{runDate:"20140510",runDateText:"2014-05-10"},{runDate:"20140511",runDateText:"2014-05-11"}]
-			crossStns:[{stnName:"成都"},{stnName:"遂宁"},{stnName:"南充"},{stnName:"蓬安"},{stnName:"营山"},{stnName:"土溪"},{stnName:"达州"},{stnName:"安康"},{stnName:"华山"},{stnName:"北京西"}]
+			crossStns:[{stnName:"成都"},{stnName:"遂宁"},{stnName:"南充"},{stnName:"蓬安",isCurrentBureau:1},{stnName:"营山",isCurrentBureau:1},{stnName:"土溪",isCurrentBureau:1},{stnName:"达州"},{stnName:"安康"},{stnName:"华山"},{stnName:"北京西"}]
 };
 
 

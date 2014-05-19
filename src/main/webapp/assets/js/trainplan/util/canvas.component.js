@@ -83,7 +83,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		var _minute = moment(time).format("mm");
 		
 
-		console.dir("time:"+time+"   _date:"+_date+"   _hour:"+_hour+"   _minute:"+_minute);
+//		console.dir("time:"+time+"   _date:"+_date+"   _hour:"+_hour+"   _minute:"+_minute);
 
 		var _oneDayWidth = _stepX*24*60/_xScale;	//一天的x宽度
 		var _dayWidth = this.getStnArcXIndex(_date)*_oneDayWidth;	//x平移天数刻度
@@ -116,6 +116,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		var _fillTextStartX = _startX - 20;	//站台名称开始点X
 		var _xDashedLineEnd = _endX+20; 	//每站虚线（横向）x终点    +20是为了造成延伸效果
 		var _y = 0;
+		var _color = color;
 		for(var i=0, _len = _stnArray.length;i<_len;i++) {
 			var _obj = _stnArray[i];
 			_y = _startY+i*_stepY+_stnOffsetY;//
@@ -125,9 +126,17 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 				fromX : _fillTextStartX,
 				fromY : _y+5
 			});
+			
+//			console.log("~~~~isCurrentBureau:"+_obj.isCurrentBureau);
+			if (_obj.isCurrentBureau && _obj.isCurrentBureau == 1) {
+				_color = "#c101db";
+			} else {
+				_color = color;
+			}
 
+//			console.log("stnName:"+_obj.stnName+"~~~~_color:"+_color);
 			_context.lineWidth = 1;
-			_context.strokeStyle = color;//"green";
+			_context.strokeStyle = _color;//"green";
 			_context.dashedLineTo(_startX-10, _y, _xDashedLineEnd, _y, 10);//横虚线     10:虚线间隔10px
 		}
 	};
@@ -337,7 +346,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 			_arrTimeX = this.getX(_obj.arrTime);//计算到达点x标
 			_dptTimeX = this.getX(_obj.dptTime);//计算出发点x标
 			
-			console.dir("_arrTimeX:"+_arrTimeX+"   _y:"+_y);
+//			console.dir("_arrTimeX:"+_arrTimeX+"   _y:"+_y);
 
 			//绘制到达点
 			myCanvasDrawCircle(_context, {
