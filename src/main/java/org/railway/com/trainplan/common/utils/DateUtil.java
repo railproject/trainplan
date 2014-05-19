@@ -10,6 +10,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+
 
 public class DateUtil {
 	public static final Long DATE_DAY_LONG = 1l;
@@ -205,6 +210,17 @@ public class DateUtil {
 	}
 	
 	/**
+	 * 计算两个日期之间相隔的天数
+	 * @param startDate格式为yyyy-MM-dd
+	 * @param endDate格式为yyyy-MM-dd
+	 * @return
+	 */
+	public static int getDaysBetween(String startDate,String endDate){
+		DateTime start = new DateTime(startDate);
+		DateTime end = new DateTime(endDate);
+		return Days.daysBetween(start, end).getDays();
+	}
+	/**
 	 * 将yyyyMMdd格式时间转为yyyy-MM-dd格式
 	 * @param day 格式为yyyyMMdd
 	 * @return 格式为yyyy-MM-dd
@@ -222,9 +238,12 @@ public class DateUtil {
 	public static void main(String[] args) {
 		//System.out.println(getDuration(1310067170,1390267170));
 		//System.out.println(System.currentTimeMillis()/1000);
-		 System.err.println(calcBetweenTwoTimes("2014-05-01 23:58:00","2014-05-01 23:58:00"));
+		// System.err.println(calcBetweenTwoTimes("2014-05-01 23:58:00","2014-05-01 23:58:00"));
 		//System.out.println(DateUtil.format(DateUtil.parse("20140501"), "yyyy-MM-dd"));
-		
+		//DateTime dt = new DateTime();
+		//System.err.println( getDaysBetween("2014-02-27","2014-02-27"));
+		LocalDate sourceDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate("20140519");
+		System.err.println("" + sourceDate.toString("yyyy-MM-dd") );
 	}
 	
 	

@@ -37,6 +37,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
@@ -114,7 +116,7 @@ public class CrossService{
 	}
 	
 	/**
-	 * 
+	 * 准备表unit_cross_train中的数据
 	 * @param crossTrainInfoList 通过crossid对表base_cross_train查询结果
 	 * @param crossInfoList 通过crossid对表base_cross查询并对groupTotalNbr进行分组的结果
 	 * @return 需要插入到表unit_cross_train表中的数据
@@ -155,18 +157,64 @@ public class CrossService{
 		System.err.println("crossStartDate11==" + crossStartDate);
 		System.err.println("crossEndDate11==" + crossEndDate);
 		String crossName = crossInfo.getCrossName();
+		//一个交路跨越的天数
+		int crossDay = DateUtil.getDaysBetween(DateUtil.getFormateDay(crossEndDate), DateUtil.getFormateDay(crossStartDate));
+		//高线标记
+		int highlineFlag = 0;
+		//高线开行规律
+		int highlineRule = 0;
+		//普线开行规律,普线开行规律（1:每日;2:隔日）
+		int commonlineRule = 1;
+		
+		if(!StringUtil.strIsNull(crossInfo.getHighlineFlag())){
+			highlineFlag = Integer.valueOf(crossInfo.getHighlineFlag());
+		}
+		if(!StringUtil.strIsNull(crossInfo.getHighlineRule())){
+			highlineRule = Integer.valueOf(crossInfo.getHighlineRule());
+		}
+		if(!StringUtil.strIsNull(crossInfo.getCommonlineRule())){
+			commonlineRule = Integer.valueOf(crossInfo.getCommonlineRule());
+		}
+		
+		
 		if(groupTotalNbr >0 ){
 			for(int i = 1;i<=groupTotalNbr;i++){
 				CrossInfo tempInfo = new CrossInfo();
 				BeanUtils.copyProperties(tempInfo, crossInfo);
-				String crossStartDateTemp = DateUtil.getDateByDay(DateUtil.getFormateDay(crossStartDate), -i);
-				String crossEndDateTemp = DateUtil.getDateByDay(DateUtil.getFormateDay(crossEndDate), -i);
-				
-				System.err.println("crossStartDateTemp==" + crossStartDateTemp);
-				System.err.println("crossEndDateTemp==" + crossEndDateTemp);
-				
-				tempInfo.setCrossStartDate(crossStartDateTemp.replaceAll("-", ""));
-				tempInfo.setCrossEndDate(crossEndDateTemp.replace("-", ""));
+				//如果是第一组交路单元，那么交路单元的开始日期为交路的开始日期
+				if(i == 1){
+					tempInfo.setCrossStartDate(crossStartDate);
+					tempInfo.setCrossEndDate(crossEndDate);
+				}else{
+					/**计算下一个交路单元的开始日期，在上一个交路单元的终到日期的基础上再加上间隔天数**/
+					//上一个交路单元的终到日期,格式为yyyyMMdd
+					String preCrossEndDate = list.get(i-1).getCrossEndDate();
+					String nextCrossStartDate = "";
+					String nextCrossEndDate = "";
+					//高线标记（1:高线；0:普线；2:混合）
+					if(highlineFlag == 0 || highlineFlag == 2){
+						nextCrossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -commonlineRule);
+						
+					}else {
+						//高线开行规律（1:平日;2:周末;3:高峰）
+						if(highlineRule == 1){
+							nextCrossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -highlineRule);	
+						
+						}else if(highlineRule == 2 || highlineRule ==3 ){
+							//TODO 暂时不处理
+						}
+						
+					}
+					LocalDate sourceDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(nextCrossStartDate);
+					nextCrossStartDate = sourceDate.toString("yyyyMMdd");
+					
+					tempInfo.setCrossStartDate(nextCrossStartDate);
+					//计算终到日期
+					nextCrossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(nextCrossStartDate), -crossDay);
+					sourceDate =  DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(nextCrossEndDate);
+					tempInfo.setCrossEndDate( sourceDate.toString("yyyyMMdd"));
+					
+				}	
 				tempInfo.setUnitCrossId(UUID.randomUUID().toString());
 				tempInfo.setMarshallingName(crossName+"-"+i);
 				//组数序号

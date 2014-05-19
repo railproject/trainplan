@@ -24,7 +24,7 @@
 	     COMMONLINE_RULE AS commonLineRule,
 	     APPOINT_WEEK AS appointWeek,
 	     APPOINT_DAY AS appointDay
-	     from base_cross_train where BASE_CROSS_ID=#{crossId}    
+	     from base_cross_train where BASE_CROSS_ID=#{crossId}    order by spareApplyFlage,trainSort
    </select>
    
    
@@ -297,7 +297,8 @@
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
-		) m  where num >#{rownumstart} AND num &lt;=#{rownumend} 
+		
+		) m  where num >=#{rownumstart} AND num &lt;=#{rownumend}  order by crossName
 		
 	</select>
 
@@ -330,7 +331,7 @@
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
-		) m  where num >#{rownumstart} AND num &lt;=#{rownumend} 
+		) m  where num >=#{rownumstart} AND num &lt;=#{rownumend} 
 		
 	</select>
 	
