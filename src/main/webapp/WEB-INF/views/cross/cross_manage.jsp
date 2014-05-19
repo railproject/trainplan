@@ -43,7 +43,7 @@ System.out.println(basePath);
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/zDrag.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/zDialog.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
-
+<!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
  <style type="text/css">
 .pagination > li > a, .pagination > li > span {
 	position: relative;
@@ -162,7 +162,7 @@ System.out.println(basePath);
 										</div>
 										<div class="pull-left" style="margin-left: 20px">
 											<input type="checkbox" class="pull-left" class="form-control"
-												value="1" data-bind="change: showCrossMapDlg"
+												value="1" data-bind=" event:{change: showCrossMapDlg}, checked: searchModle().showCrossMap"
 												style="width: 20px; margin-left: 5px; margin-top: 5px"
 												class="form-control">
 										</div>
@@ -177,7 +177,7 @@ System.out.println(basePath);
 											<a type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_sure" >审核</a>
 											<a type="button" class="btn btn-success" data-toggle="modal"
-												data-target="#" id="btn_cross_delete" style="margin-left: 2px;">删除</a>
+												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="click: deleteCrosses">删除</a>
 											<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;"
 												data-target="#" id="btn_cross_createCrossUnit" data-bind="click: createUnitCrossInfo">生成基本交路单元</a>
 											
@@ -194,10 +194,10 @@ System.out.println(basePath);
 												</tr>
 											</thead>
 											<tbody data-bind="foreach: crossRows.rows">
-												<tr data-bind=" visible: visiableRow" >
+												<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'red':''}" >
 												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
 													<td data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
-													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains"></td>
+													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
 													<td data-bind="style:{color:checkFlag == 1 ? green : ''},  text: checkFlag == 1 ? '已' : '未' "></td>
 													<td data-bind="style:{color:unitCreateFlag == 1 ? green : ''}, text: unitCreateFlag == 1 ? '已' : '未' "></td>
 												</tr> 
@@ -271,12 +271,14 @@ System.out.println(basePath);
 										<label for="exampleInputEmail3"
 											class="control-label pull-left"> 车底交路名:&nbsp;</label>
 										<div class="pull-left" style="margin-left: 26px;">
-											<input type="text" class="form-control" style="width: 520px;" data-bind="value: crossName"
+											<input type="text" class="form-control" style="width: 470px;" data-bind="value: crossName"
 												id="plan_construction_input_trainNbr">
 										</div> 
+										<label for="exampleInputEmail5" class="control-label pull-left" style="margin-left:40px">
+											线路线型:</label> 
 										<div class="pull-left">
 											<input type="radio" class="pull-left" class="form-control" 
-												style="width: 20px; margin-left: 38px; margin-top: 5px"
+												style="width: 20px; margin-left: 5px; margin-top: 5px"
 												class="form-control" data-bind="checked: highlineFlag" value="0">
 										</div>
 										<label for="exampleInputEmail5" class="control-label pull-left">
@@ -300,22 +302,9 @@ System.out.println(basePath);
 								    <label for="exampleInputEmail3"
 											class="control-label pull-left"> 备用套跑交路名:&nbsp;</label>
 									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 520px;" data-bind="value: crossSpareName">
+										<input type="text" class="form-control" style="width: 470px;" data-bind="value: crossSpareName">
 									</div> 
-									
-								</div>
-								<div class="row" style="margin: 5px 0 0px 0;"> 
-									<label for="exampleInputEmail3"
-										class="control-label pull-left"> 组数:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 40px;" data-bind="value: groupTotalNbr">
-									</div> 
-									<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对数:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 40px;" data-bind="value: pairNbr">
-									</div> 
-									
-									<label for="exampleInputEmail5" style="margin-left: 43px;" class="control-label pull-left">
+									<label for="exampleInputEmail5" style="margin-left: 40px;" class="control-label pull-left">
 										开行状态:</label>
 											
 									<div class="pull-left">
@@ -343,11 +332,24 @@ System.out.println(basePath);
 									</div>
 									<label for="exampleInputEmail5" class="control-label pull-left">
 										停运</label> 
+								</div>
+								<div class="row" style="margin: 5px 0 0px 0;"> 
+									<label for="exampleInputEmail3"
+										class="control-label pull-left"> 组数:&nbsp;</label>
+									<div class="pull-left">
+										<input type="text" class="form-control" style="width: 40px;" data-bind="value: groupTotalNbr">
+									</div> 
+									<label for="exampleInputEmail2" style="margin-left: 23px;" class="control-label pull-left">对数:&nbsp;</label>
+									<div class="pull-left">
+										<input type="text" class="form-control" style="width: 40px;" data-bind="value: pairNbr">
+									</div> 
+									
+									
 										
 									<div class="pull-left">
 										<input type="checkBox" class="pull-left" class="form-control"
 											value="1" data-bind="checked: cutOld"
-											style="width: 20px; margin-left: 53px; margin-top: 5px"
+											style="width: 20px; margin-left: 23px; margin-top: 5px"
 											class="form-control">
 									</div>
 									<label for="exampleInputEmail5" class="control-label pull-left">
@@ -446,6 +448,11 @@ System.out.println(basePath);
 								</div>
 								<div class="row" style="margin: 5px 0 0px 0;"> 
 									<label for="exampleInputEmail3"
+										class="control-label pull-left" > 运行区段:&nbsp;</label>
+									<div class="pull-left">
+										<input type="text" class="form-control" style="width: 200px;" data-bind="value: crossSection">
+									</div>
+									<label for="exampleInputEmail3" style=" margin-left: 20px;" 
 											class="control-label pull-left"> 机车类型:&nbsp;</label>
 									<div class="pull-left">
 										<input type="text" class="form-control" style="width: 50px;" data-bind="value: locoType">
@@ -479,18 +486,6 @@ System.out.println(basePath);
 									</div>
 									<label for="exampleInputEmail5" class="control-label pull-left">
 										空调</label> 
-										
-									<label for="exampleInputEmail3"
-										class="control-label pull-left" style=" margin-left: 25px;" > 运行区段:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 110px;" data-bind="value: crossSection">
-									</div>
-									
-									<label for="exampleInputEmail3"
-										class="control-label pull-left" style=" margin-left: 19px;" > 经由线:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 110px;" data-bind="value: throughline">
-									</div> 
 								
 								<!-- <div class="pull-left">
 									<input type="checkBox" class="pull-left" class="form-control"
@@ -507,10 +502,15 @@ System.out.println(basePath);
 								</div> -->
 							</div>
 							<div class="row" style="margin: 5px 0 0px 0;">
-								<label for="exampleInputEmail3"  
+							    <label for="exampleInputEmail3"
+										class="control-label pull-left" > 经由线:&nbsp;</label>
+									<div class="pull-left">
+										<input type="text" class="form-control" style="width: 214px;" data-bind="value: throughline">
+									</div> 
+								<label for="exampleInputEmail3"   style=" margin-left: 19px;" 
 											class="control-label pull-left"> 备注:&nbsp;</label>
 									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 585px;" data-bind="value: note">
+										<input type="text" class="form-control" style="width: 400px;" data-bind="value: note">
 									</div> 
 									  <a type="button" style="margin-left: 15px"
 										class="btn btn-success" data-toggle="modal" data-target="#"
@@ -570,9 +570,9 @@ System.out.println(basePath);
 										<tr>
 											<td style="width: 5px" data-bind="text: trainSort"></td>
 											<td style="width: 60px" data-bind="text: trainNbr"></td>
-											<td style="width: 100px" data-bind="text: startStn"></td>
+											<td style="width: 100px" data-bind="text: startStn, attr:{title: startStn}"></td>
 											<td style="width: 50px" data-bind="text: startBureau"></td>
-											<td style="width: 100px" data-bind="text: endStn"></td>
+											<td style="width: 100px" data-bind="text: endStn, attr:{title: endStn}"></td>
 											<td style="width: 50px" data-bind="text: endBureau"></td>
 											<td style="width: 50px" data-bind="text: highlineFlag"></td>
 											<td style="width: 50px" data-bind="text: dayGap"></td>
@@ -656,33 +656,21 @@ System.out.println(basePath);
 			</div>
 	   </div>
 
-</body>
-<script type="text/html" id="tablefooter-short-template"> 
-  <table style="width:100%">
-    <tr style="width:100%">
-     <td style="width:60%">
-  		<span class="pagination pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: (currentIndex() + 1)"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
+</body>  
+ <script type="text/html" id="tablefooter-short-template"> 
+  <table style="width:100%;height:20px;">
+    <tr style="width:100%;height:20px;">
+     <td style="width:60%;height:20px;">
+  		<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
   	 </td>
-     <td style="width:40%"> 
-	
-		<a  style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;" style="padding:0px 5px;" data-bind="text:'<<', click: loadPre"></a>
-	    <input type="text"  style="padding:0;width:30px;height: 20px;"/>
-		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px" data-bind="text:'>>', click: loadNext"  style="padding:0px 5px;"></a>
+     <td style="width:40%;height:20px;padding:0px;pading-bottom:-14">   
+		<a  style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: loadPre"></a>
+	    <input type="text"  style="margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
+		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: loadNext"  style="padding:0px 5px;"></a>
        </ul> 
+	 
      </td >
   </tr>
 </table> 
-</script> 
-<script type="text/html" id="tablefooter-short-template">  
-	<span class="pagination pull-left">共<span data-bind="html: totalCount()"></span>条</td><td>当前<span data-bind="html: (currentIndex() + 1)"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span>
-	<ul data-bind="foreach: new Array(pageCount())" class="pagination pull-right" style="margin: 0px; display: block;">
-	  <!-- ko if: $index() == 0 -->
-		<li data-bind="attr:{class: 'disabled'}"><a data-bind="text:'<<', click: $parent.loadNext"></a></li>
-	  <!-- /ko -->  
-	  <li data-bind="attr:{class: $index() == 0 ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
-	  <!-- ko if: $index() == $parent.pageCount() - 1 -->
-		<li style="cursor:pointer"><a data-bind="text:'>>', click: $parent.loadPre"></a></li>
-	  <!-- /ko -->
-   </ul> 
 </script> 
 </html>

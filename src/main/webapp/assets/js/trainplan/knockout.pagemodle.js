@@ -1,24 +1,41 @@
+/*
+ <script type="text/html" id="tablefooter-short-template"> 
+  <table style="width:100%;height:20px;">
+    <tr style="width:100%;height:20px;">
+     <td style="width:60%;height:20px;">
+  		<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
+  	 </td>
+     <td style="width:40%;height:20px;padding:0px;pading-bottom:-14">   
+		<a  style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: loadPre"></a>
+	    <input type="text"  style="margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
+		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: loadNext"  style="padding:0px 5px;"></a>
+       </ul> 
+	 
+     </td >
+  </tr>
+</table> 
+</script> 
+<script type="text/html" id="tablefooter-short-template">  
+	<span class="pagination pull-left">共<span data-bind="html: totalCount()"></span>条</td><td>当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span>
+	<ul data-bind="foreach: new Array(pageCount())" class="pagination pull-right" style="margin: 0px; display: block;">
+	  <!-- ko if: $index() == 0 -->
+		<li data-bind="attr:{class: $parent.currentPage() == 0 ? 'disabled' : ''}"><a data-bind="text:'<<', click: $parent.loadPre"></a></li>
+	  <!-- /ko -->  
+	  <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
+	  <!-- ko if: $index() == $parent.pageCount() - 1 -->
+		<li data-bind="attr:{class: $parent.currentPage() == $parent.pageCount()-1 ? 'disabled' : ''}" style="cursor:pointer"><a data-bind="text:'>>', click: $parent.loadNext"></a></li>
+	  <!-- /ko -->
+   </ul> 
+</script> */
+
 function PageModle(pageSize, fun){
 	var self = this; 
-	
-//	<ul id="page_footer_ul" class="pagination pull-right" style="margin: 0px; display: block;">
-//	<li class="disabled"><a>?</a></li>
-//	<li class="active"><a>1
-//	<span class="sr-only"></span></a></li>
-//	<li><a style="cursor:pointer" onclick="switchToPage(2)">2</a></li>
-//	<li><a style="cursor:pointer" onclick="switchToPage(3)">3</a></li>
-//	<li><a style="cursor:pointer" onclick="switchToPage(4)">4</a></li>
-//	<li><a style="cursor:pointer" onclick="switchToPage(5)">5</a></li>
-//	<li><a style="cursor:pointer" onclick="switchToPage(5)">?</a></li>
-//	</ul>
 	 
 	self.loadFunc = fun;
 	
 	self.currentIndex = ko.observable(0);
 	
-	self.pageSize = ko.observable(pageSize); 
-	
-	self.currentPage = ko.observable(0);
+	self.pageSize = ko.observable(pageSize);  
 	
 	self.totalCount = ko.observable(0);
 	
@@ -47,11 +64,11 @@ function PageModle(pageSize, fun){
 //		self.clear();
 //		self.currentIndex(currentIndex - self.pageSize());  
 //		self.loadFunc(self.currentIndex(), self.getPageEndIndex()); 
-		self.loadPage(self.currentPage() - 1);
+		self.loadPage(parseInt(self.currentPage()) - 1);
 		
-	};
+	}; 
 	self.loadNext = function(){ 
-		self.loadPage(self.currentPage() + 1);
+		self.loadPage(parseInt(self.currentPage()) + 1);
 	};
 	
 	self.clear = function(){
@@ -83,8 +100,15 @@ function PageModle(pageSize, fun){
 			return;
 		}   
 		self.clear();
+		console.log(pageIndex)
 		self.currentPage(pageIndex);
 		self.currentIndex(pageIndex * self.pageSize());
 		self.loadFunc(self.currentIndex() + 1, self.currentIndex() + self.pageSize());  
-	};  
+	}; 
+	self.pageNbrChange = function(page, event){ 
+	    var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == 13){ 
+	    	self.loadPage(parseInt(event.target.value) - 1);
+	    } 
+	};
 }

@@ -25,4 +25,5 @@
     -->
     <import resource="security/applicationContext-security.xml" />
     <import resource="config/applicationContext-properties.xml" />
+     <import resource="rabbitmq/rabbit-sender-context.xml" />
 </beans>
