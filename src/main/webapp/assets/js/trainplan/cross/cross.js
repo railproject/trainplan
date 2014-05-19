@@ -1,10 +1,4 @@
-$(function() {
-	$("#file_upload_dlg").dialog("close"); 
-	$("#cross_train_time_dlg").dialog("close");
-	$("#cross_map_dlg").dialog("close"); 
-	$("#cross_train_dlg").dialog("close");
-	$("#cross_train_time_dlg").dialog("close");
-	
+$(function() { 
 	
 	var cross = new CrossModel();
 	ko.applyBindings(cross); 
@@ -48,7 +42,7 @@ function CrossModel() {
 	self.setCurrentCross = function(cross){
 		self.currentCross(cross);
 		if(self.searchModle().showCrossMap() == 1){
-			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossIds=" + cross.crossId);
+			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
 		}
 	};
 	
@@ -191,8 +185,18 @@ function CrossModel() {
 		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
 		//self.searchModle().loadBureau(self.gloabBureaus); 
 		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
-		 
+		$("#cross_map_dlg").dialog({
+		    onClose:function(){
+		    		self.searchModle().showCrossMap(0);
+		       }
+		   });
+		$("#file_upload_dlg").dialog("close"); 
+		$("#cross_train_time_dlg").dialog("close");
+		$("#cross_map_dlg").dialog("close"); 
+		$("#cross_train_dlg").dialog("close");
+		$("#cross_train_time_dlg").dialog("close"); 
 		$("#cross_start_day").datepicker();
+		
 		self.searchModle().startDay(self.currdate()); 
 		
 		//获取当期系统日期 
@@ -326,9 +330,13 @@ function CrossModel() {
 	};
 	
 	self.showCrossMapDlg = function(){ 
+		console.log(self.currentCross().corssId)
+		if(self.currentCross().corssId == ''){
+			return;
+		}
 		var crossId = self.currentCross().crossId; 
 		if(self.searchModle().showCrossMap() == 0){
-			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossIds=" + crossId);
+			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
 			$("#cross_map_dlg").dialog("open");
 		};
 	};  
