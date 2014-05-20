@@ -128,6 +128,7 @@
    <select id="getUnitCrossInfoForUnitCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
       select 
         UNIT_CROSS_ID as unitCrossId,
+        BASE_CROSS_ID as crossId,
         MARSHALLING_NAME as marshallingName, 
 		GROUP_SERIAL_NBR as groupSerialNbr,
         BASE_CHART_ID as chartId,
@@ -172,7 +173,7 @@
 		CREAT_PEOPLE_ORG  as createPeopleOrg ,
 		CREAT_TIME  as  createTime
   
-      from unit_cross where UNIT_CROSS_ID=#{unitCrossId}
+      from unit_cross where UNIT_CROSS_ID=#{unitCrossId} 
    </select>
   
     <select id="getUnitCrossTrainInfoForUnitCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
@@ -196,7 +197,7 @@
 	     COMMONLINE_RULE AS commonLineRule,
 	     APPOINT_WEEK AS appointWeek,
 	     APPOINT_DAY AS appointDay
-	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId}    
+	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId} and BASE_TRAIN_ID is not null order by TRAIN_SORT
    </select>
    
   
@@ -344,6 +345,18 @@
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
+	    <if test="checkFlag == 0 ">
+		AND check_time is null
+		</if>
+		 <if test="checkFlag == 1 ">
+		AND check_time is not null
+		</if>
+	   <if test="unitCreateFlag == 0 ">
+		AND CREAT_TIME is null
+		</if>
+		 <if test="unitCreateFlag == 1 ">
+		AND CREAT_TIME is not null
+		</if>
 		
 		 order by crossName ) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
 		
@@ -396,6 +409,15 @@
    
    </select>
 
+ <update id="updateCrossCheckTime" parameterType="map">
+		 update base_cross set check_time = sysdate where base_cross_id in (${baseCrossIds})
+
+	</update>
  
  
+   <update id="updateCrossCreateTime" parameterType="map">
+		 update base_cross set creat_time = sysdate where base_cross_id in (${baseCrossIds})
+
+  </update>
+	
 </mapper>

@@ -42,7 +42,8 @@ public class Constants {
 	//列车类型：客运
 	public static final String ZUOYE_DENGJI_KEYUN = "客运";
 	
-	
+	public static final String TYPE_CROSS = "cross";
+	public static final String TYPE_UNIT_CROSS="unitcross";
 	/******mapper.xml文件中的id常量*****/
 	//获取路局信息
 	public static final String LJZDDAO_GET_LJ_INFO = "ljzdDao.getLjInfo";
@@ -120,5 +121,9 @@ public class Constants {
     public static final String CROSSDAO_GET_CROSSNAME_WITH_BASE_CROSSID = "crossDao.getCrossNameWithBaseCrossId";
     public static final String CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID = "crossDao.getTrainNbrWithBaseCrossId";
     //通过corssid在表unit_cross中查询unitcrossInfo信息
-    public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_CROSSID = "crossDao. getUnitCrossInfoForCrossId";
+    public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_CROSSID = "crossDao.getUnitCrossInfoForCrossId";
+    //更新base_cross的check_time   
+    public static final String CROSSDAO_UPDATE_CROSS_CHECKTIME = "crossDao.updateCrossCheckTime";
+    //更新base_cross的creat_time  
+    public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossCreateTime";
 }

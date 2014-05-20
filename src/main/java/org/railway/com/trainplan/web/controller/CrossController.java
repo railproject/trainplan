@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
+import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
@@ -103,7 +104,24 @@ public class CrossController {
 		return result;
 	}
 	
-	
+	/**
+	 * 审核交路信息
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkCorssInfo", method = RequestMethod.GET)
+	public Result checkCorssInfo(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		 Result result = new Result();
+		 String crossIds = StringUtil.objToStr(request.getParameter("crossIds"));
+		 if(crossIds != null){
+			String[] crossIdsArray = crossIds.split(",");
+			int count = crossService.updateCorssCheckTime(crossIdsArray);
+			System.err.println("update--count==" + count);
+		 }
+		 return result;
+	}
 	/**
 	 * 提供画交路图形的数据
 	 * @param reqMap
@@ -117,8 +135,8 @@ public class CrossController {
 		 String crossId = StringUtil.objToStr(request.getParameter("crossId"));
 		 PlanLineGrid grid = null;
 		 
-		 System.err.println("crossId=="+ crossId);
-		 BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(crossId);
+		 System.err.println("crossId---unit=="+ crossId);
+		
 		 //通过crossId获取unitCross列表信息
 		 List<CrossInfo> listUnitCross = crossService.getUnitCrossInfosForCrossId(crossId);
 		 if(listUnitCross != null){
@@ -128,15 +146,16 @@ public class CrossController {
 				 Map<String,Object> crossMap = new HashMap<String,Object>();
 				 CrossInfo crossInfo = listUnitCross.get(i);
 				 String unitCrossId = crossInfo.getUnitCrossId();
+				 BaseCrossDto baseCrossDto = crossService.getUnitCrossDtoWithUnitCrossId(unitCrossId);
 				 System.err.println("unitCrossId=="+ unitCrossId);
 				 Map<String,Object> chartDateMap = null;
 				 //避免重复计算坐标
 				 if(i == 0){
 					
-					 chartDateMap = provideOneCrossChartData(unitCrossId, baseCrossDto,true); 
+					 chartDateMap = provideOneCrossChartData(baseCrossDto,true,Constants.TYPE_UNIT_CROSS); 
 					 grid = (PlanLineGrid)chartDateMap.get("gridData");
 				 }else{
-					 chartDateMap = provideOneCrossChartData(unitCrossId, baseCrossDto,false); 
+					 chartDateMap = provideOneCrossChartData(baseCrossDto,false,Constants.TYPE_UNIT_CROSS); 
 				 }
 					crossMap.put("jxgx", chartDateMap.get("jxgx"));
 					crossMap.put("trains", chartDateMap.get("trains"));
@@ -181,7 +200,7 @@ public class CrossController {
 				
 					BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(crossId);
 					Map<String,Object> crossMap = new HashMap<String,Object>();
-					Map<String,Object> oneCrossMap = provideOneCrossChartData(crossId,baseCrossDto,true);
+					Map<String,Object> oneCrossMap = provideOneCrossChartData(baseCrossDto,true,Constants.TYPE_CROSS);
 					crossMap.put("jxgx", oneCrossMap.get("jxgx"));
 					crossMap.put("trains", oneCrossMap.get("trains"));
 					crossMap.put("crossName", oneCrossMap.get("crossName"));
@@ -284,14 +303,14 @@ public class CrossController {
 	/**
 	 * 提供一个交路信息的画图数据
 	 * @param boolean isProvideGrid 是否组装坐标
+	 * @param type cross:交路  unitcross：交路单元
 	 * @return
 	 */
-	private Map<String,Object> provideOneCrossChartData(String baseCrossId,BaseCrossDto baseCrossDto,boolean isProvideGrid) throws Exception {
+	private Map<String,Object> provideOneCrossChartData(BaseCrossDto baseCrossDto,boolean isProvideGrid,String type) throws Exception {
 		//Map<String,Object> crossChartMap = new HashMap<String,Object>();
 		//经由信息，由后面调用接口获取，用户提供画图的坐标
 		List<TrainlineTemplateSubDto> stationsInfo = new ArrayList<TrainlineTemplateSubDto>();
 	
-		System.err.println("crossid=="+ baseCrossId);
 		Map<String,Object> crossMap = new HashMap<String,Object>();
 		List<TrainInfoDto> trains = new ArrayList<TrainInfoDto>();
 		List<CrossRelationDto> jxgx = new ArrayList<CrossRelationDto>();
@@ -299,6 +318,7 @@ public class CrossController {
 		//BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(baseCrossId);
 		System.err.println("CrossStartDate==" + baseCrossDto.getCrossStartDate());
 		crossMap.put("crossName",baseCrossDto.getCrossName());
+		
 		List<BaseCrossTrainDto> listBaseCrossTrain = baseCrossDto.getListBaseCrossTrain();
 		if(listBaseCrossTrain != null && listBaseCrossTrain.size() > 0 ){
 			
@@ -320,6 +340,7 @@ public class CrossController {
 					trains.add(tempdto);
 				}else{
 					//非第一辆车，始发日期是列车自己的始发日期,先找到第trainCount-1辆列车的终到日期，然后再往后推第trainCount辆车的dayGap天
+					
 					String endDateI = trains.get(trainCount-1).getEndDate();
 					System.err.println("endDateI==" + endDateI);
 					if(endDateI != null){
@@ -328,8 +349,9 @@ public class CrossController {
 						String startDateII = endDate.plusDays(dayGap).toString("yyyy-MM-dd");
 						//解析
 						tempdto = provideTrainMap(trainLineDto,startDateII);
-						trains.add(tempdto);
-					}
+						
+					 }
+					  trains.add(tempdto);
 					
 				}
 				trainCount++;
@@ -358,10 +380,23 @@ public class CrossController {
 		crossMap.put("jxgx", jxgx);
 		crossMap.put("trains", trains);
 
-		if(isProvideGrid){
+		if(isProvideGrid && type.equals(Constants.TYPE_CROSS)){
 			//组装坐标
 			 PlanLineGrid grid = getPlanLineGrid(stationsInfo,baseCrossDto.getCrossStartDate(), baseCrossDto.getCrossEndDate());
 			 crossMap.put("gridData", grid);
+		}else if(isProvideGrid && type.equals(Constants.TYPE_UNIT_CROSS)){
+			String baseCrossId = baseCrossDto.getBaseCrossId();
+			List<CrossInfo> crossInfoList = crossService.getUnitCrossInfosForCrossId(baseCrossId);
+			String crossStartDate = "";
+			String crossEndDate = "";
+			if(crossInfoList != null && crossInfoList.size() > 0){
+				//取第一个交路单元的开始日期
+				crossStartDate = crossInfoList.get(0).getCrossStartDate();
+				//取最后一个交路单元的终到日期
+				crossEndDate = 	crossInfoList.get(crossInfoList.size() - 1).getCrossEndDate();
+				 PlanLineGrid grid = getPlanLineGrid(stationsInfo,crossStartDate,crossEndDate);
+				 crossMap.put("gridData", grid);
+			}
 		}
 		
 	
@@ -385,8 +420,10 @@ public class CrossController {
 		 if(stationsInfo != null){
 			  
 				for(TrainlineTemplateSubDto subDto : stationsInfo){
-				
-					planLineGridYList.add(new PlanLineGridY(subDto.getName()));
+				    if(subDto != null){
+				    	planLineGridYList.add(new PlanLineGridY(subDto.getName()));
+				    }
+					
 				}
 					
 			}
@@ -424,9 +461,9 @@ public class CrossController {
 					//取i的终点站日期和时刻进行组合
 					dto.setFromTime(dtoCurrent.getEndDate()+ " " + dtoCurrent.getEndTime());
 					
-					//设置i+1始发日期和时刻
+					//设置i-1始发日期和时刻
 					dto.setToTime(dtoNext.getStartDate() + " "+dtoNext.getStartTime());
-					//取i+1的起点信息
+					//取i-1的起点信息
 					dto.setToStnName(dtoNext.getStartStn());
 					returnList.add(dto);
 				}
@@ -528,8 +565,9 @@ public class CrossController {
 	@RequestMapping(value = "/getCrossInfo", method = RequestMethod.POST)
 	public Result getCrossInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
-
 		List<CrossInfo> list = null;
+		Object checkFlag = reqMap.get("checkFlag");
+		System.err.println("checkFlag==" + checkFlag);
 	    try{
 	    	list = crossService.getCrossInfo(reqMap);
 	    	PagingResult page = new PagingResult(crossService.getCrossInfoCount(reqMap),list);
@@ -625,8 +663,11 @@ public class CrossController {
 					//根据crossid生成交路单元
 					crossService.completeUnitCrossInfo(crossid);
 				}
+				//生成交路单元完成后，更改表base_cross中的creat_time字段的值
+				crossService.updateCrossCreateTime(crossIds);
 			}
 		}catch(Exception e){
+			e.printStackTrace();
 			logger.error("completeUnitCrossInfo error==" + e.getMessage());
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	

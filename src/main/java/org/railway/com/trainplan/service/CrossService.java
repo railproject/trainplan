@@ -86,6 +86,53 @@ public class CrossService{
 	}
 
 	/**
+	 * 更新base_cross中的creat_time字段的值
+	 * @param crossIds
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateCrossCreateTime(String[] crossIds) throws Exception {
+		
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIds.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIds[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("baseCrossIds", bf.toString());
+		
+		System.err.println("bf.toString()==" +  bf.toString());
+		
+		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_CROSS_CREATETIME, reqMap);
+	}
+	/**
+	 * 更新base_cross中的check_time字段的值
+	 * @param crossIds
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateCorssCheckTime(String[] crossIds) throws Exception{
+		//组装字符串
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIds.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIds[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("baseCrossIds", bf.toString());
+		
+		System.err.println("bf.toString()==" +  bf.toString());
+		
+		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_CROSS_CHECKTIME, reqMap);
+		
+	}
+	/**
 	 * 根据unitCrossid查询trainNbr,以逗号分隔组成一个字符串
 	 * @param unitCrossId
 	 * @return 以逗号分隔的trainNbr的字符串
@@ -178,16 +225,17 @@ public class CrossService{
 		
 		
 		if(groupTotalNbr >0 ){
-			for(int i = 1;i<=groupTotalNbr;i++){
+			for(int i = 0;i<groupTotalNbr;i++){
 				CrossInfo tempInfo = new CrossInfo();
 				BeanUtils.copyProperties(tempInfo, crossInfo);
 				//如果是第一组交路单元，那么交路单元的开始日期为交路的开始日期
-				if(i == 1){
+				if(i == 0){
 					tempInfo.setCrossStartDate(crossStartDate);
 					tempInfo.setCrossEndDate(crossEndDate);
 				}else{
 					/**计算下一个交路单元的开始日期，在上一个交路单元的终到日期的基础上再加上间隔天数**/
 					//上一个交路单元的终到日期,格式为yyyyMMdd
+					System.err.println("list.get(i-1)" +list.get(i-1));
 					String preCrossEndDate = list.get(i-1).getCrossEndDate();
 					String nextCrossStartDate = "";
 					String nextCrossEndDate = "";
@@ -205,20 +253,25 @@ public class CrossService{
 						}
 						
 					}
-					LocalDate sourceDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(nextCrossStartDate);
-					nextCrossStartDate = sourceDate.toString("yyyyMMdd");
+					if(!"".equals(nextCrossStartDate)){
+						LocalDate sourceDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(nextCrossStartDate);
+						nextCrossStartDate = sourceDate.toString("yyyyMMdd");
+						
+						tempInfo.setCrossStartDate(nextCrossStartDate);
+						//计算终到日期
+						nextCrossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(nextCrossStartDate), -crossDay);
+						sourceDate =  DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(nextCrossEndDate);
+						tempInfo.setCrossEndDate( sourceDate.toString("yyyyMMdd"));	
+					}
 					
-					tempInfo.setCrossStartDate(nextCrossStartDate);
-					//计算终到日期
-					nextCrossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(nextCrossStartDate), -crossDay);
-					sourceDate =  DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(nextCrossEndDate);
-					tempInfo.setCrossEndDate( sourceDate.toString("yyyyMMdd"));
 					
 				}	
 				tempInfo.setUnitCrossId(UUID.randomUUID().toString());
-				tempInfo.setMarshallingName(crossName+"-"+i);
+				//编组号,i是从0开始，所以要+1
+				int teamNum = i+1;
+				tempInfo.setMarshallingName(crossName+"-"+teamNum);
 				//组数序号
-				tempInfo.setGroupSerialNbr(i);
+				tempInfo.setGroupSerialNbr(teamNum);
 				list.add(tempInfo);
 			}
 		}
@@ -353,6 +406,42 @@ public class CrossService{
 		return baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID, baseCrossId);
 	}
 	
+	/**
+	 *  通过unitCorssId分别查询数据并组合
+	 * @param unitCorssId
+	 * @return
+	 */
+	public BaseCrossDto  getUnitCrossDtoWithUnitCrossId(String unitCorssId){
+		BaseCrossDto baseCrossDto = new BaseCrossDto();
+		
+		CrossInfo crossInfo = getUnitCrossInfoForUnitCrossid(unitCorssId);
+		System.err.println("getUnitCrossDtoWithUnitCrossId---crossid==" + crossInfo.getCrossId());
+		baseCrossDto.setBaseCrossId(crossInfo.getCrossId());
+		baseCrossDto.setCrossName(crossInfo.getMarshallingName());
+		baseCrossDto.setCrossStartDate(crossInfo.getCrossStartDate());
+		baseCrossDto.setCrossEndDate(crossInfo.getCrossEndDate());
+		List<BaseCrossTrainDto> subList = new ArrayList<BaseCrossTrainDto>();
+		/**
+		 * unitCrossTrain信息以train_sort升序排列
+		 */
+		List<CrossTrainInfo> trainInfoList = getUnitCrossTrainInfoForUnitCrossid(unitCorssId);
+		if(trainInfoList != null && trainInfoList.size() > 0){
+			System.err.println("trainInfoList.size()==" + trainInfoList.size());
+			for(CrossTrainInfo trainInfo :trainInfoList){
+				BaseCrossTrainDto dto = new BaseCrossTrainDto();
+				String trainId = trainInfo.getBaseTrainId();
+				if(!"".equals(trainId)&&trainId != null && !"null".equals(trainId)){
+					dto.setBaseTrainId(trainId);
+					dto.setDayGap(trainInfo.getDayGap());
+					dto.setTrainSort(trainInfo.getTrainSort());
+					dto.setTrainNbr(trainInfo.getTrainNbr());
+					subList.add(dto);
+				}
+			}
+			baseCrossDto.setListBaseCrossTrain(subList);
+		}
+		return baseCrossDto;
+	}
 	/**
 	 * 通过baseCrossId分别查询数据并组合
 	 * @param baseCrossId

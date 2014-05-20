@@ -8,6 +8,7 @@ public class BaseCrossDto {
 	private String crossName;
 	private String crossStartDate;
 	private String crossEndDate;
+	private String baseCrossId;
 	private List<BaseCrossTrainDto> listBaseCrossTrain = new ArrayList<BaseCrossTrainDto>();
 	public String getCrossName() {
 		return crossName;
@@ -32,6 +33,12 @@ public class BaseCrossDto {
 	}
 	public void setListBaseCrossTrain(List<BaseCrossTrainDto> listBaseCrossTrain) {
 		this.listBaseCrossTrain = listBaseCrossTrain;
+	}
+	public String getBaseCrossId() {
+		return baseCrossId;
+	}
+	public void setBaseCrossId(String baseCrossId) {
+		this.baseCrossId = baseCrossId;
 	}
 	
 	
