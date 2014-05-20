@@ -156,9 +156,9 @@ String basePath = request.getContextPath();
 <script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
 <script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script>
 <script src="<%=basePath %>/assets/oldAssets/lib/knockout/knockout.js"></script>
+<script src="<%=basePath%>/dwr/util.js" type="text/javascript"></script>
+<script src="<%=basePath%>/dwr/engine.js" type="text/javascript"></script>
 <script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/lib/sockjs/sockjs.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/lib/stomp/lib/stomp.min.js"></script>
 <script src="<%=basePath %>/assets/oldAssets/js/highcharts.js"></script>
 <script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
