@@ -16,8 +16,16 @@ function getRandomColor() {
  * @param y2
  */
 function myCanvasDrawFullLineY(context,lineWidth, color, x1, y1, y2) {
-	myCanvasDrawLine(context,lineWidth, color, x1, y1, x1, y2);
+	context.beginPath();
+	context.strokeStyle = color;//"#eee";
+	context.lineWidth = lineWidth;
+	context.moveTo(x1, y1);
+	context.lineTo(x1, y2);
+	context.stroke();//绘画
+	context.closePath();//关闭path
 }
+
+
 
 /**
  * 画线
@@ -30,14 +38,9 @@ function myCanvasDrawFullLineY(context,lineWidth, color, x1, y1, y2) {
  * @param toY
  */
 function myCanvasDrawLine(context,lineWidth, color, fromX, fromY, toX, toY) {
-	context.beginPath();
-	
-	context.strokeStyle = color;//"#eee";
 	context.lineWidth = lineWidth;
 	context.moveTo(fromX, fromY);
 	context.lineTo(toX, toY);
-	context.stroke();//绘画
-	context.closePath();//关闭path
 }
 
 
@@ -59,25 +62,6 @@ function myCanvasDrawDashLineY(context,lineWidth, color, fromX, fromY, toX, toY,
 }
 
 
-/**
- * 画圆
- * @param context
- * @param circle {x:10,y:20,radius:20,strokeStyle:"rgba(0,0,0,0.5)",fillStyle:"rgba(80,190,240,0.6)"}
- */
-function myCanvasDrawCircle(context, circle) {
-	context.beginPath();
-	context.save();
-	context.strokeStyle = circle.color;
-	context.fillStyle = circle.fillStyle;
-	context.arc(circle.x,circle.y,circle.radius,0,Math.PI*2,false);
-	
-
-	context.stroke();
-	context.fill();
-	context.restore();
-	context.closePath();
-};
-
 
 
 function windowToCanvas(canvas, x, y) {
@@ -91,8 +75,6 @@ function windowToCanvas(canvas, x, y) {
 
 
 function myCanvasFillTextWithColor(context, colorParam, textObj) {
-	context.beginPath();
-	context.strokeStyle = colorParam;
 	context.fillStyle = colorParam;
 	// 设置字体
 	context.font = "Bold 14px Arial";

@@ -1,5 +1,15 @@
 
 /**
+ * 用于保存列车线元素，以便重新绘图
+ */
+var lineList = [];	//列车线对象封装类
+/**
+ * 用于保存交路数据元素，以便重新绘图
+ */
+var jlList = [];
+
+
+/**
  * @param context 画布对象
  * @param startX x起始位置
  * @param startY y起始位置
@@ -11,6 +21,7 @@
  */
 var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	//function(context,startX,startY,stepX,stepY,xScale,xDateArray, stnArray)
+	var _self = this;
 	var _context = context;
 	var _xDateArray = xDateArray;
 	var _stnArray = stnArray;
@@ -23,6 +34,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	var _drawYMoreFlag = false;	//默认false	每一天x长度范围内是否绘制更多竖线 true/false
 	var _endX = 1000;	//x轴 日期范围最大刻度值
 	var _endY = 1000;	//y轴 结束刻度
+	
 	
 	
 	//================ 初始化赋值 ================
@@ -61,7 +73,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	 * @param runDate 运行日期 yyyy-MM-dd
 	 */
 	this.getStnArcXIndex = function(runDate) {
-
 		for(var i=0, _len=_xDateArray.length; i <_len; i++) {
 			if (_xDateArray[i].runDate == runDate) {
 				return i;
@@ -81,14 +92,10 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		var _date = moment(time).format("YYYY-MM-DD");
 		var _hour = moment(time).format("HH");
 		var _minute = moment(time).format("mm");
-		
-
-//		console.dir("time:"+time+"   _date:"+_date+"   _hour:"+_hour+"   _minute:"+_minute);
 
 		var _oneDayWidth = _stepX*24*60/_xScale;	//一天的x宽度
 		var _dayWidth = this.getStnArcXIndex(_date)*_oneDayWidth;	//x平移天数刻度
 		var _minuteWidth = (parseInt(_hour)*60 + parseInt(_minute))*_stepX/_xScale;
-//		console.dir("_oneDayWidth:"+_oneDayWidth+"   _dayWidth:"+_dayWidth+"  _minuteWidth:"+_minuteWidth);
 		var _x = _startX + _dayWidth + _minuteWidth;
 		return _x;
 	};
@@ -116,7 +123,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		var _fillTextStartX = _startX - 20;	//站台名称开始点X
 		var _xDashedLineEnd = _endX+20; 	//每站虚线（横向）x终点    +20是为了造成延伸效果
 		var _y = 0;
-		var _color = color;
 		for(var i=0, _len = _stnArray.length;i<_len;i++) {
 			var _obj = _stnArray[i];
 			_y = _startY+i*_stepY+_stnOffsetY;//
@@ -126,17 +132,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 				fromX : _fillTextStartX,
 				fromY : _y+5
 			});
-			
-//			console.log("~~~~isCurrentBureau:"+_obj.isCurrentBureau);
-			if (_obj.isCurrentBureau && _obj.isCurrentBureau == 1) {
-				_color = "#c101db";
-			} else {
-				_color = color;
-			}
 
-//			console.log("stnName:"+_obj.stnName+"~~~~_color:"+_color);
 			_context.lineWidth = 1;
-			_context.strokeStyle = _color;//"green";
+			_context.strokeStyle = color;//"green";
 			_context.dashedLineTo(_startX-10, _y, _xDashedLineEnd, _y, 10);//横虚线     10:虚线间隔10px
 		}
 	};
@@ -289,6 +287,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	
 	
 	
+	
+	
+	
 	/**
 	 * 绘制列车线
 	 * public
@@ -312,82 +313,173 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 					  ]
 		          }
 	 */
-	this.drawTrainRunLine = function(flag, colorParam, paramObj) {
-		var _y = 0;					//到达站和出发站的y坐标
-		var _dayWidth = 0;			//x平移天数刻度
-		var _parentDeptStn = {};	//上一站出发点x y坐标
+	this.drawTrainRunLine = function(flagParam, colorParam, paramObj) {
+		var line_self = this;
+		this.flag = flagParam;	//是否绘制起止标记
+		this.color = colorParam;//初始颜色
+		this.obj = paramObj;	//单个车次及其经由信息
+		this.isCurrent = false;
+		this.lineWidth = 2;
+		this.firstX = 0;
+		this.firstY = 0;
 		
-		var _arrMinuteArray = [];	//到达点小时+分钟
-		var _arrMinuteWidth = 0;	//到达点x平移分钟刻度
-		var _arrTimeX = 0;			//到达点x标
 
-		var _dptMinuteArray = [];	//出发点小时+分钟
-		var _dptMinuteWidth = 0;	//出发点x平移分钟刻度
-		var _dptTimeX = 0;			//出发点x标
-
-		var _oneDayWidth = _stepX*24*60/_xScale;	//一天的x宽度
-		var _len = paramObj.trainStns.length;
-		
-		//绘制起止标记
-		if (flag && _len > 0) {
-			if(paramObj.startStn == paramObj.trainStns[0].stnName) {//列车经由第一站==始发站   则绘制开始标记
-				this.drawTrainStartArrows(colorParam, paramObj.trainStns[0]);
+		this.showTrainName = function(ctx,color) {
+			myCanvasFillTextWithColor(ctx, color, {
+				text : this.obj.trainName,
+				fromX : this.firstX,
+				fromY : this.firstY
+			});
+		};
+		this.isPointInStroke = function(ctx, x, y) {
+			ctx.save();
+	    	ctx.beginPath();
+			
+			var _y = 0;					//到达站和出发站的y坐标
+			var _arrTimeX = 0;//计算到达点x标
+			var _dptTimeX = 0;//计算出发点x标
+			var _len = this.obj.trainStns.length;
+	    	
+			//绘制起止标记
+			if (this.flag && _len > 0) {
+				if(this.obj.startStn == this.obj.trainStns[0].stnName) {//列车经由第一站==始发站   则绘制开始标记
+					_self.drawTrainStartArrows(colorParam, this.obj.trainStns[0]);
+				}
+				
+				if(this.obj.endStn == this.obj.trainStns[_len-1].stnName) {//列车经由最后一站==终到站   则绘制终到标记
+					_self.drawTrainEndArrows(colorParam, this.obj.trainStns[_len-1]);
+				}
 			}
 			
-			if(paramObj.endStn == paramObj.trainStns[_len-1].stnName) {//列车经由最后一站==终到站   则绘制终到标记
-				this.drawTrainEndArrows(colorParam, paramObj.trainStns[_len-1]);
+	
+			//绘制列车运行线
+			for(var i=0; i<_len;i++) {
+				var _obj = this.obj.trainStns[i];
+				_y = _self.getY(_obj.stnName);	//该车站Y标
+				_arrTimeX = _self.getX(_obj.arrTime);//计算到达点x标
+				_dptTimeX = _self.getX(_obj.dptTime);//计算出发点x标
+	
+				//绘制到达点
+				ctx.moveTo(_arrTimeX, _y);
+				ctx.arc(_arrTimeX,_y, 2, 0, Math.PI*2, false);
+				//绘制出发点
+				ctx.moveTo(_dptTimeX, _y);
+				ctx.arc(_dptTimeX, _y, 2, 0, Math.PI*2, false);
+	
+				if (i == 0) {
+					//绘制列车名称
+					this.firstX = _dptTimeX;
+					this.firstY = _y-15;
+					line_self.showTrainName(_context, colorParam);
+				} else {
+					//连接上一站出发点到本站到达点
+					myCanvasDrawLine(_context, this.lineWidth, colorParam, _parentDeptStn.x, _parentDeptStn.y, _arrTimeX, _y);
+				}
+				
+				//连接本站到达点和出发点
+				myCanvasDrawLine(_context, this.lineWidth, colorParam, _arrTimeX, _y, _dptTimeX, _y);
+	
+				//保存上一站出发点x y坐标
+				_parentDeptStn = {x:_dptTimeX, y: _y};
 			}
-		}
-		
-		//绘制列车运行线
-		for(var i=0; i<_len;i++) {
-			var _obj = paramObj.trainStns[i];
-			_y = this.getY(_obj.stnName);	//该车站Y标
-			_arrTimeX = this.getX(_obj.arrTime);//计算到达点x标
-			_dptTimeX = this.getX(_obj.dptTime);//计算出发点x标
 			
-//			console.dir("_arrTimeX:"+_arrTimeX+"   _y:"+_y);
-
-			//绘制到达点
-			myCanvasDrawCircle(_context, {
-				x:_arrTimeX,
-				y:_y,
-				radius:2,//半径
-				color: colorParam,
-				fillStyle:colorParam
-			});
-			
-			//绘制出发点
-			myCanvasDrawCircle(_context, {
-				x:_dptTimeX,
-				y:_y,
-				radius:2,	//半径
-				color:colorParam,
-				fillStyle:colorParam
-			});
-
-			if (i == 0) {
-//				console.log("~~~Circle x1:"+_arrTimeX +"    y1:"+_y + "  x2:"+_dptTimeX +"    y2:"+_y);
-				
-				
-				//绘制列车名称
-				myCanvasFillTextWithColor(_context, colorParam, {
-					text : paramObj.trainName,
-					fromX : _dptTimeX,
-					fromY : _y-15
-				});
+			if(x && y && (ctx.isPointInStroke(x, y)||ctx.isPointInPath(x, y))) {
+				return true;
 			} else {
-				//连接上一站出发点到本站到达点
-				myCanvasDrawLine(_context, 2, colorParam, _parentDeptStn.x, _parentDeptStn.y, _arrTimeX, _y);
+				return false;
+			}
+		};
+	    this.drawLine = function(ctx, x, y, booleanShowTrainDetail) {
+	    	ctx.save();
+	    	ctx.beginPath();
+			
+			var _y = 0;					//到达站和出发站的y坐标
+			var _arrTimeX = 0;//计算到达点x标
+			var _dptTimeX = 0;//计算出发点x标
+			var _len = this.obj.trainStns.length;
+	    	
+			//绘制起止标记
+			if (this.flag && _len > 0) {
+				if(this.obj.startStn == this.obj.trainStns[0].stnName) {//列车经由第一站==始发站   则绘制开始标记
+					_self.drawTrainStartArrows(colorParam, this.obj.trainStns[0]);
+				}
+				
+				if(this.obj.endStn == this.obj.trainStns[_len-1].stnName) {//列车经由最后一站==终到站   则绘制终到标记
+					_self.drawTrainEndArrows(colorParam, this.obj.trainStns[_len-1]);
+				}
 			}
 			
-			//连接本站到达点和出发点
-			myCanvasDrawLine(_context, 2, colorParam, _arrTimeX, _y, _dptTimeX, _y);
+	
+			//绘制列车运行线
+			for(var i=0; i<_len;i++) {
+				var _obj = this.obj.trainStns[i];
+				_y = _self.getY(_obj.stnName);	//该车站Y标
+				_arrTimeX = _self.getX(_obj.arrTime);//计算到达点x标
+				_dptTimeX = _self.getX(_obj.dptTime);//计算出发点x标
+	
+				//绘制到达点
+				ctx.moveTo(_arrTimeX, _y);
+				ctx.arc(_arrTimeX,_y, 2, 0, Math.PI*2, false);
+				//绘制出发点
+				ctx.moveTo(_dptTimeX, _y);
+				ctx.arc(_dptTimeX, _y, 2, 0, Math.PI*2, false);
+	
+				if (i == 0) {
+					//绘制列车名称
+					this.firstX = _dptTimeX;
+					this.firstY = _y-15;
+					line_self.showTrainName(_context, colorParam);
+				} else {
+					//连接上一站出发点到本站到达点
+					myCanvasDrawLine(_context, this.lineWidth, colorParam, _parentDeptStn.x, _parentDeptStn.y, _arrTimeX, _y);
+				}
+				
+				//连接本站到达点和出发点
+				myCanvasDrawLine(_context, this.lineWidth, colorParam, _arrTimeX, _y, _dptTimeX, _y);
+	
+				//保存上一站出发点x y坐标
+				_parentDeptStn = {x:_dptTimeX, y: _y};
+			}
 
-			//保存上一站出发点x y坐标
-			_parentDeptStn = {x:_dptTimeX, y: _y};
-		}
+	        
+			if(x && y && (ctx.isPointInStroke(x, y)||ctx.isPointInPath(x, y))) {
+				var currentColor = "#ff0000";
+				if ("#ff0000"==colorParam) {
+					currentColor = getRandomColor();//当前线条底色为红色时，鼠标选中颜色则重新随机产生
+				}
+				
+                ctx.strokeStyle = currentColor;
+                ctx.fillStyle = currentColor;
+                this.isCurrent = true;
+                line_self.showTrainName(_context, currentColor);
+                
+                //查看选中线 列车运行时刻信息
+                if (booleanShowTrainDetail) {
+                	runTimeModel.loadData(this.obj);
+                }
+            } else {
+            	this.isCurrent = false;
+                line_self.showTrainName(_context, colorParam);
+                ctx.strokeStyle = colorParam;
+                ctx.fillStyle = colorParam;
+            }
+			
+			
+			ctx.closePath();
+			ctx.stroke();//绘画
+			ctx.fill();
+
+	    }
+
 	};
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 绘制开始标记  开始使用dptTime
@@ -444,7 +536,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 			myCanvasDrawLine(_context, 2, colorParam, fromX, fromY+offsetY+10, fromX+5, fromY+offsetY);//三角形右斜线
 		}
 		
-		
+
+        _context.stroke();//绘画
 	};
 	
 	
@@ -465,7 +558,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 			return "down";//down
 		}
 		return "";
-	}
+	};
 	
 	
 	/**
@@ -486,6 +579,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 		var toY = 0;
 		var offsetY = 0;	//Y偏移量 用于绘制交路接续方向  down:10px、up:-10px
 		for (var i=0, _len = jxgxArray.length; i<_len; i++) {
+			_context.save();
+	    	_context.beginPath();
+			
 			var jxgxObj = jxgxArray[i];
 			var directionY = this.getDirectionY(jxgxObj.fromStnName);
 			if ("up" == directionY) {
@@ -504,6 +600,10 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 			myCanvasDrawLine(_context, 2, colorParam, fromX, fromY, fromX, fromY+offsetY);//接续左竖线
 			myCanvasDrawLine(_context, 2, colorParam, fromX, fromY+offsetY, toX, fromY+offsetY);//接续横线
 			myCanvasDrawLine(_context, 2, colorParam, toX, fromY+offsetY, toX, fromY);//接续右竖线
+			
+
+			_context.strokeStyle = colorParam;
+			_context.stroke();//绘画
 		}
 	};
 	
@@ -551,6 +651,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 	this.drawJlStartAndEnd = function(_color, jlTrains) {
 		var _len = jlTrains.length;	//交路包含列车数
 		if (jlTrains.length > 0) {
+			_context.save();
+	    	_context.beginPath();
+	    	
 			if(jlTrains[0].trainStns.length>0 && jlTrains[0].startStn == jlTrains[0].trainStns[0].stnName) {//交路第一个列车经由第一站==始发站   则绘制开始标记
 				this.drawTrainStartArrows(_color, jlTrains[0].trainStns[0]);
 			}
@@ -559,14 +662,15 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 			if(_lenTrainStnLast>0 && jlTrains[_len-1].endStn == jlTrains[_len-1].trainStns[_lenTrainStnLast-1].stnName) {//交路最后一个车次经由最后一站==终到站   则绘制终到标记
 				this.drawTrainEndArrows(_color, jlTrains[_len-1].trainStns[_lenTrainStnLast-1]);
 			}
+
+			_context.strokeStyle = _color;
+			_context.stroke();//绘画
 		}
 		
 	};
 	
 	
-
-
-	
 };
+
 
 
