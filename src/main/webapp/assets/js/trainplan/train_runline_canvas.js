@@ -49,7 +49,7 @@ $(function(){
 	 */
 	this.drawPlanLines = function() {
 		for(var i=0, _len=canvasData.runplan.length;i<_len;i++) {
-			myCanvasComponent.drawTrainRunLine(true, "#8236ac", canvasData.runplan[i]);
+			new myCanvasComponent.drawTrainRunLine(true, "#8236ac", canvasData.runplan[i]).drawLine(context);
 		}
 		
 	};
@@ -59,7 +59,7 @@ $(function(){
 	 */
 	this.drawRunLines = function() {
 		for(var i=0, _len=canvasData.runline.length;i<_len;i++) {
-			myCanvasComponent.drawTrainRunLine(true, "#72b5d2", canvasData.runline[i]);
+			new myCanvasComponent.drawTrainRunLine(true, "#72b5d2", canvasData.runline[i]).drawLine(context);
 		}
 		
 	};

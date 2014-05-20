@@ -16,7 +16,7 @@ var MyCanvas = function(){
 			
 			//2.1 绘制交路列车运行线
 			for (var j=0; j<_lenJlTrain; j++) {
-				myCanvasComponent.drawTrainRunLine(false, _color, _obj.trains[j]);
+				new myCanvasComponent.drawTrainRunLine(false, _color, _obj.trains[j]).drawLine(contextParam);
 			}
 			
 			//2.2 绘制交路接续关系
@@ -29,11 +29,6 @@ var MyCanvas = function(){
 			
 			
 		}
-		
-		
-		//绘制单个列车
-//		console.log(getRandomColor());
-//		myCanvasComponent.drawTrainRunLine(true,getRandomColor(), myTrainData.data);
 		
 	};
 	
@@ -50,12 +45,6 @@ $(function(){
 
 	_MyCanvas = new MyCanvas();
 	_MyCanvas.drawGraph(canvas.getContext('2d'));
-	
-//	var buf = [];
-//	for(var i = 0; i < 100; i++){  buf.push(i.toString());}
-//	var all = buf.join("");
-//	console.dir(all);
-	
 	
 	
 });
