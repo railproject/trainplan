@@ -56,10 +56,10 @@ var PlanViewPage = function(){
 		_plan_view_table_1.find("tr:gt(0)").remove();//清除计划列表所有数据
 		
 		// 获取页面传值
-		_param_schemeId = $("#schemeVal_hidden");
-		var schemeText = $("#schemeText_hidden");
-		_param_days = $("#days_hidden");
-		_param_startDate = $("#startDate_hidden");
+		_param_schemeId = $("#schemeVal_hidden").val();
+		var schemeText = $("#schemeText_hidden").val();
+		_param_days = $("#days_hidden").val();
+		_param_startDate = $("#startDate_hidden").val();
 		
 		
 		_self.renderJlmxHightChart();
@@ -74,6 +74,12 @@ var PlanViewPage = function(){
 	//调用执行开行计划
 	_self.importTrainPlan = function() {
 		commonJsScreenLock();//锁屏
+		
+		console.dir(JSON.stringify({
+				startDate : _param_startDate,
+				dayCount:_param_days,
+				schemeId:_param_schemeId
+			}));
 		
 		$.ajax({
 			url : basePath+"/plan/importTrainPlan",
