@@ -21,6 +21,7 @@ import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
+import org.railway.com.trainplan.service.message.SendMsgService;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,10 +41,11 @@ public class PlanTrainStnService {
     
     @Autowired
     private RemoteService remoteService;
-    
-    
+    @Autowired
+    private QuoteService quoteService;
     @Autowired
     private BaseDao baseDao;
+    
     /**
 	 * 更新数据表plan_train中字段daylyplan_flag的值
 	 * @param base_train_id
@@ -138,7 +140,7 @@ public class PlanTrainStnService {
 			 String startDate,  String dayCount) throws Exception {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		//调用后台接口之前推送一条消息到页面
-		//quoteService.sendQuotes("", 0, 0, "plan.getInfo.begin");
+		quoteService.sendQuotes("", 0, 0, "plan.getInfo.begin");
 		
 		
 		// 调用后台接口，获取数据
@@ -148,7 +150,7 @@ public class PlanTrainStnService {
 		System.err.println("importTrainPlan--list.size==" + list.size());
 		
 		// 循环dayCount次
-		TrainPlanThread  thread = new TrainPlanThread(list,startDate,dayCount,this);
+		TrainPlanThread  thread = new TrainPlanThread(list,startDate,dayCount,this,quoteService);
 		//启动thread
 		thread.start();
 		

@@ -11,9 +11,16 @@ public class SubCrossInfo {
 	private String highlineFlag;
 	private String marshallingName;
 	private Integer groupSerialNbr;
-	
-	
-
+	private String unitCreateFlag;
+	private String checkFlag;
+	private String createTime;
+   
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
 	public Integer getGroupSerialNbr() {
 		return groupSerialNbr;
 	}
@@ -67,6 +74,18 @@ public class SubCrossInfo {
 	}
 	public void setHighlineFlag(String highlineFlag) {
 		this.highlineFlag = highlineFlag;
+	}
+	public String getUnitCreateFlag() {
+		return unitCreateFlag;
+	}
+	public void setUnitCreateFlag(String unitCreateFlag) {
+		this.unitCreateFlag = unitCreateFlag;
+	}
+	public String getCheckFlag() {
+		return checkFlag;
+	}
+	public void setCheckFlag(String checkFlag) {
+		this.checkFlag = checkFlag;
 	}
 	
 	
