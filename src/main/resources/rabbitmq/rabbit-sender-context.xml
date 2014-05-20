@@ -29,12 +29,16 @@
     
     <!-- 定义当前消息监听类 -->
     <bean id="eventListener" class="org.railway.com.trainplan.service.MessageHandler" />  
+    <bean id="freightTransportListener" class="org.railway.com.trainplan.service.FreightTransportMessageHandler" /> 
     
     <!--绑定监听类到指定的队列上-->
     
      <rabbit:listener-container id="replyListenerContainer" connection-factory="connectionFactory">
         <rabbit:listener ref="eventListener" queues="web-reply-Queue" />
-    </rabbit:listener-container>  
+    </rabbit:listener-container> 
+      <rabbit:listener-container id="freightTransportContainer" connection-factory="connectionFactory">
+        <rabbit:listener ref="freightTransportListener" queues="freightTransport-reply-Queue" />
+    </rabbit:listener-container> 
  
     <!-- create a bean which can send message to TUTORIAL_EXCHANGE for the Java program to call -->
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"  exchange="CREC-EVENT-EXCHANGE"/>
