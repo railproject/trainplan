@@ -1,4 +1,49 @@
 /**
+ * 监听xx日计划待处理事件
+ * @param message
+ */
+function importPlanBegin(message) {
+	 console.log('~~~~~~~~~~~ 收到计划全部开始事件:'+JSON.parse(message.body));
+	$("#plan_view_label_planCurrentStatus").text("正在拼命加载数据，请耐心等待......");//界面顶端显示
+}
+
+
+/**
+ * 监听xx日计划每天开始事件
+ * @param message
+ */
+function importPlanDayBegin(message) {
+	commonJsScreenUnLock();//屏幕解锁
+	
+	var obj = JSON.parse(message.body);
+	 console.log('~~~~~~~~~~~ 收到每天计划开始事件:'+JSON.parse(message.body));
+	_PlanViewPage.startPlanDay(obj);
+}
+
+
+
+/**
+ * 监听xx日计划结束事件
+ * @param message
+ */
+function importPlanDayEnd(message) {
+	var obj = JSON.parse(message.body);
+	 console.log('~~~~~~~~~~~ 收到每天计划结束事件:'+JSON.parse(message.body));
+	_PlanViewPage.finishPlanDay(obj);
+}
+
+/**
+ * 监听xx计划全部结束事件
+ * @param message
+ */
+function importPlanEnd(message) {
+	 console.log('~~~~~~~~~~~ 收到计划全部结束消息:'+JSON.parse(message.body));
+	_PlanViewPage.finishPlan();
+}
+
+
+
+/**
  * 计划信息展示页面
  * 
  * @author denglj 1.接收计划设置参数并转发后台 2.显示计划信息
@@ -6,67 +51,6 @@
 var PlanViewPage = function(){
 
 	var _self = this;
-	
-	
-	/**
-	 * socket连接
-	 */
-	_self.connect = function() {
-	     stompClient.connect({}, function(frame) {
-
-	    	 //监听xx日计划待处理事件
-			 stompClient.subscribe("/railwayplan/import.plan.getInfo.begin", function(message) {
-				 $("#plan_view_label_planCurrentStatus").text("正在拼命加载数据，请耐心等待......");//界面顶端显示
-			 });
-			 
-	    	 //监听xx日计划详细处理过程事件
-			 stompClient.subscribe("/railwayplan/import.plan.day.detail", function(message) {
-//				 var obj = JSON.parse(message.body);
-			 });
-			 
-			 //监听xx日计划每天开始事件
-			 stompClient.subscribe("/railwayplan/import.plan.day.begin", function(message) {
-//				 console.log('~~~~~~~~~~~ 收到每天开始消息:'+JSON.parse(message.body));
-				 commonJsScreenUnLock();//屏幕解锁
-				
-				 var obj = JSON.parse(message.body);
-				 _self.startPlanDay(obj);
-			     
-			 });
-			 
-			 //监听xx日计划结束事件
-			 stompClient.subscribe("/railwayplan/import.plan.day.end", function(message) {
-//				 console.log('~~~~~~~~~~~ 收到每天结束消息:'+JSON.parse(message.body));
-				 var obj = JSON.parse(message.body);
-				 _self.finishPlanDay(obj);
-//				 $("#"+obj.rundate+"JlSum").text(obj.crosscount);
-//				 $("#"+obj.rundate+"TrainSum").text(obj.traincount);
-//				 $("#"+obj.rundate+"DisplayStatus").text("完成");
-//				 $("#"+obj.rundate+"Status").attr("class", "label label-danger");
-			     
-			 });
-			 
-			 //监听xx计划全部结束事件
-			 stompClient.subscribe("/railwayplan/import.plan.end", function(message) {
-//				 console.log('~~~~~~~~~~~ 收到计划全部结束消息:'+JSON.parse(message.body));
-				 _self.finishPlan();
-//				 $("#plan_view_label_planCurrentStatus").text(_param_days+"天开行计划已全部完成");//界面顶端显示
-			     
-			 });
-			 
-			 
-			//2.调用执行开行计划
-			 _self.importTrainPlan();
-	    }, function(error) {
-//	    	console.log("STOMP protocol error " + error);
-	    });
-	};
-	_self.logout = function() {
-		stompClient.disconnect();
-		window.location.href = "../logout.html";
-	};
-
-	
 	
 	this.initPage = function() {
 		_plan_view_table_1.find("tr:gt(0)").remove();//清除计划列表所有数据
@@ -80,8 +64,8 @@ var PlanViewPage = function(){
 		
 		_self.renderJlmxHightChart();
 		
-		//初始化socket连接
-		_self.connect();
+		//调用执行开行计划
+		_self.importTrainPlan();
 		
 		
 	};
@@ -438,6 +422,9 @@ var socket = null;
 var stompClient = null;
 var basePath = null;
 $(function(){
+	dwr.engine.setActiveReverseAjax(true);//js中开启dwr推功能
+	dwr.engine.setNotifyServerOnPageUnload( true);//设置在页面关闭时，通知服务器销毁session
+	
 	basePath = $("#basePath_hidden").val();
 	_PlanViewPage = new PlanViewPage();
 //	_plan_view_div_palnDayDetail.hide(); //隐藏车次详情div
@@ -456,9 +443,6 @@ $(function(){
 	});
 	
 	
-	//创建websocket连接
-	socket = new SockJS(basePath+'/portfolio');
-    stompClient = Stomp.over(socket);
 	_PlanViewPage.initPage();
 
 	

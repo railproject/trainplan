@@ -566,8 +566,6 @@ public class CrossController {
 	public Result getCrossInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
 		List<CrossInfo> list = null;
-		Object checkFlag = reqMap.get("checkFlag");
-		System.err.println("checkFlag==" + checkFlag);
 	    try{
 	    	list = crossService.getCrossInfo(reqMap);
 	    	PagingResult page = new PagingResult(crossService.getCrossInfoCount(reqMap),list);
