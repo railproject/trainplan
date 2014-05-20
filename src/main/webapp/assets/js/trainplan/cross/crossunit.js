@@ -48,7 +48,7 @@ function CrossModel() {
 	self.setCurrentCross = function(cross){
 		self.currentCross(cross);
 		if(self.searchModle().showCrossMap() == 1){
-			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
+			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideCrossChartData?crossId=" + cross.crossId);
 		}
 	};
 	
@@ -150,13 +150,10 @@ function CrossModel() {
 		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
 		//self.searchModle().loadBureau(self.gloabBureaus); 
 		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
-		 
-		$("#cross_start_day").datepicker();
-		self.searchModle().startDay(self.currdate()); 
-		
+		  
 		//获取当期系统日期 
 		 $.ajax({
-				url : "plan/getSchemeList",
+				url : "../plan/getSchemeList",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -180,7 +177,7 @@ function CrossModel() {
 		    });
 		
 	    $.ajax({
-			url : "plan/getFullStationInfo",
+			url : "../plan/getFullStationInfo",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -226,7 +223,7 @@ function CrossModel() {
 		var startBureauCode = self.searchModle().startBureau();  
 		 
 		$.ajax({
-				url : "cross/getCrossInfo",
+				url : "../cross/getUnitCrossInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -236,7 +233,7 @@ function CrossModel() {
 					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
 					checkFlag : checkFlag == null ? null : checkFlag.value,
 					startBureau : startBureauCode,
-					unitCreateFalg :  unitCreateFlag == null ? null : unitCreateFlag.value,
+					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
 					trainNbr : trainNbr,
 					rownumstart : startIndex, 
 					rownumend : endIndex
@@ -250,8 +247,7 @@ function CrossModel() {
 								rows.push(new CrossRow(crossInfo));  
 							});   
 							self.crossRows.loadPageRows(result.data.totalRecord, rows);
-						} 
-						
+						}  
 						 $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
@@ -290,7 +286,7 @@ function CrossModel() {
 		}
 		var crossId = self.currentCross().crossId; 
 		if(self.searchModle().showCrossMap() == 0){
-			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
+			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideCrossChartData?crossId=" + crossId);
 			$("#cross_map_dlg").dialog("open");
 		};
 	};  
@@ -347,7 +343,7 @@ function CrossModel() {
 			}
 		} 
 		 $.ajax({
-				url : "cross/completeUnitCrossInfo",
+				url : "../cross/updateUnitCrossId",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -357,7 +353,7 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){
-						showSuccessDialog("生成交路单元成功");
+						showSuccessDialog("更新成功");
 					}else{
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					}
@@ -370,7 +366,7 @@ function CrossModel() {
 			return true;
 		});   
 		 $.ajax({
-				url : "cross/getCrossTrainInfo",
+				url : "cross/getUnitCrossTrainInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -381,9 +377,9 @@ function CrossModel() {
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {  
-							self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
+							self.setCurrentCross(new CrossRow(result.data[0].unitCrossInfo));
 //							self.currentCross(new CrossRow(result.data[0].crossInfo));
-							if(result.data[0].crossTrainInfo != null){
+							if(result.data[0].unitCrossTrainInfo != null){
 								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
 									var row = new TrainRow(crossInfo);
 									self.trains.push(row); 
@@ -476,16 +472,7 @@ function BureausRow(data) {
 	self.shortName = data.ljjc;   
 	self.code = data.ljpym;   
 	//方案ID 
-}
-
-function CrossRow(data) {
-	var self = this; 
-	self.id = data.chartId;
-	self.chartName = data.crossName; 
-	//方案ID 
-}
-
- 
+} 
 
 function CrossRow(data) {
 	var self = this; 
@@ -496,11 +483,11 @@ function CrossRow(data) {
 	
 	self.crossId = data.crossId; 
 	
+	self.unitCrossId = data.unitCrossId;
+	
 	self.shortNameFlag =  ko.observable(true);
 	
-	self.crossName = ko.observable(data.crossName); 
-	
-	
+	self.crossName = ko.observable(data.crossName);  
 	
 	self.shortName = ko.computed(function(){
 		trainNbrs = data.crossName.split('-');

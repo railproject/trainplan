@@ -6,11 +6,11 @@ $(function() {
 	cross.init();   
 });
 
-var highlingFlags = [{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
-var checkFlags = [{"value": "0", "text": "已"},{"value": 1, "text": "未"}];
-var unitCreateFlags = [{"value": "0", "text": "已"},{"value": 1, "text": "未"}];
-var highlingrules = [{"value": 1, "text": "平日"},{"value": 2, "text": "周末"},{"value": 3, "text": "高峰"}];
-var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔日"}];
+var highlingFlags = [{"value": "0", "text": "普线"},{"value": "1", "text": "高线"},{"value": "2", "text": "混合"}];
+var checkFlags = [{"value": "1", "text": "已"},{"value": "0", "text": "未"}];
+var unitCreateFlags = [{"value": "1", "text": "已"},{"value": "0", "text": "未"}];
+var highlingrules = [{"value": "1", "text": "平日"},{"value": "2", "text": "周末"},{"value": "3", "text": "高峰"}];
+var commonlinerules = [{"value": "1", "text": "每日"},{"value": "2", "text": "隔日"}];
  
 
 
@@ -281,7 +281,7 @@ function CrossModel() {
 					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
 					checkFlag : checkFlag == null ? null : checkFlag.value,
 					startBureau : startBureauCode,
-					unitCreateFalg :  unitCreateFlag == null ? null : unitCreateFlag.value,
+					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
 					trainNbr : trainNbr,
 					rownumstart : startIndex, 
 					rownumend : endIndex
@@ -381,7 +381,7 @@ function CrossModel() {
 //				}
 //			}
 //		}); 
-	}
+	};
 	
 	self.createUnitCrossInfo = function(){ 
 		var crossIds = "";
@@ -409,6 +409,40 @@ function CrossModel() {
 					}
 				}
 			}); 
+	};
+	
+	self.checkCrossInfo = function(){
+		var crossIds = "";
+		var delCrosses = [];
+		var crosses = self.crossRows.rows();
+		for(var i = 0; i < crosses.length; i++){ 
+			if(crosses[i].selected() == 1 && crosses[i].checkFlag()){ 
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += crosses[i].crossId;
+				delCrosses.push(crosses[i]);
+			}
+		} 
+		 $.ajax({
+				url : "cross/checkCorssInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					crossIds : crossIds
+				}),
+				success : function(result) {     
+					if(result.code == 0){
+						$.each(delCrosses, function(i, n){ 
+							n.checkFlag("1");
+						});
+						showSuccessDialog("审核成功");
+					}else{
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					}
+				}
+			}); 
+		
 	};
 	
 	self.showTrains = function(row) {  
@@ -544,9 +578,7 @@ function CrossRow(data) {
 	
 	self.shortNameFlag =  ko.observable(true);
 	
-	self.crossName = ko.observable(data.crossName); 
-	
-	
+	self.crossName = ko.observable(data.crossName);  
 	
 	self.shortName = ko.computed(function(){
 		trainNbrs = data.crossName.split('-');
@@ -557,9 +589,9 @@ function CrossRow(data) {
 		}
 	});  
 	
-	self.checkFlag = ko.observable(1);
+	self.checkFlag = ko.observable(data.checkFlag);
 	
-	self.unitCreateFlag = ko.observable(1);
+	self.unitCreateFlag = ko.observable(data.checkFlag);
 	//方案ID
 	self.chartId = ko.observable(data.chartId);
 	self.chartName = ko.observable(data.chartName);

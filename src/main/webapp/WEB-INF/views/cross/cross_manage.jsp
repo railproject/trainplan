@@ -28,20 +28,15 @@ System.out.println(basePath);
 <script type="text/javascript" src="<%=basePath %>/assets/js/html5.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/respond.min.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/easyui/jquery.easyui.min.js"></script>
 
 <script type="text/javascript" src="<%=basePath %>/assets/js/knockout.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.jeditable.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.dataTables.editable.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/cross/cross.js"></script>  
 <script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/zDrag.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/zDialog.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
  <style type="text/css">
@@ -64,11 +59,12 @@ System.out.println(basePath);
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">对数表维护</a></li>
 	</ol> 
-        
+   	<div id="plan_view_div_palnDayDetail" class="panel panel-default">
+	 <div class="row" style="margin: 10px 10px 10px 10px;"> 
+	
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 28%;">
-		<!--分栏框开始-->
-		<div id="plan_view_div_palnDayDetail" class="panel panel-default">
+		<!--分栏框开始--> 
 			<div class="row" style="margin: 10px 10px 10px 10px;">
 			    <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>导入对数表</div>
@@ -82,7 +78,7 @@ System.out.println(basePath);
 										class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
 									</select>
 								</div>  
-						    </div> 
+						   </div> 
 						   <div class="row" style="margin: 5px 0 5px 0;">
 								<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
 						        <div class="pull-left">
@@ -90,7 +86,7 @@ System.out.println(basePath);
 						        </div>
 						        <button class="btn btn-primary" type="button" style="margin-left: 18px;"
 								id="btn_cross_upload" data-bind="click: showUploadDlg">导入EXCEL</button>
-						     </div>
+						   </div>
 					</form>
 			        </div>
 			   </section> 
@@ -198,8 +194,8 @@ System.out.println(basePath);
 												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
 													<td data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
 													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
-													<td data-bind="style:{color:checkFlag == 1 ? green : ''},  text: checkFlag == 1 ? '已' : '未' "></td>
-													<td data-bind="style:{color:unitCreateFlag == 1 ? green : ''}, text: unitCreateFlag == 1 ? '已' : '未' "></td>
+													<td data-bind="style:{color:checkFlag == '1' ? green : ''},  text: checkFlag == '1' ? '已' : '未' "></td>
+													<td data-bind="style:{color:unitCreateFlag == '1' ? green : ''}, text: unitCreateFlag == '1' ? '已' : '未' "></td>
 												</tr> 
 											</tbody>  					 
 										</table>
@@ -209,11 +205,9 @@ System.out.println(basePath);
 						</form>
 					 </div>
 			   </section>
-			</div>
-		</div>
+			</div> 
 	</div>
-	<div class="pull-right" style="width: 70%;">
-		<div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
+	<div class="pull-right" style="width: 72%;"> 
 			<div class="row" style="margin: 10px 10px 10px 10px;">
 			   <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>交路信息</div>
@@ -599,7 +593,7 @@ System.out.println(basePath);
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 600px; padding: 10px">
-		 <iframe style="width: 800px; height: 600px;border: 0" src="assets/unit_cross_canvas/unit_cross_canvas.html"></iframe>
+		 <iframe style="width: 800px; height: 600px;border: 0" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 
@@ -624,6 +618,7 @@ System.out.println(basePath);
 				<!-- <input type="submit"  value="上传" data-bind=/> -->
 			</div>
 		</form>
+	</div>  
 	</div> 
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"

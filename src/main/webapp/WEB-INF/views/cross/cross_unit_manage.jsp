@@ -28,20 +28,15 @@ System.out.println(basePath);
 <script type="text/javascript" src="<%=basePath %>/assets/js/html5.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/respond.min.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/easyui/jquery.easyui.min.js"></script>
 
 <script type="text/javascript" src="<%=basePath %>/assets/js/knockout.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.jeditable.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.dataTables.editable.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/cross/cross.js"></script>  
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/cross/crossunit.js"></script>  
 <script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/zDrag.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/zDialog.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
  <style type="text/css">
@@ -69,7 +64,7 @@ System.out.println(basePath);
 	<div class="pull-left" style="width: 28%;">
 		<!--分栏框开始-->
 		<div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
-			<div class="row" style="margin: 5px 10px 10px 10px;">
+			<div class="row" style="margin: 10px 10px 10px 10px;">
 			    <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
 			        <div class="panel-body">
@@ -573,7 +568,7 @@ System.out.println(basePath);
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 600px; padding: 10px">
-		 <iframe style="width: 800px; height: 600px;border: 0" src="assets/unit_cross_canvas/unit_cross_canvas.html"></iframe>
+		 <iframe style="width: 800px; height: 600px;border: 0" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 
@@ -581,24 +576,7 @@ System.out.println(basePath);
 		data-options="iconCls:'icon-save'"
 		style="width: 400px; height: 500px; padding: 10px">
 		  
-	</div>  
-    <!--导入弹窗--> 
-	<div id="file_upload_dlg" class="easyui-dialog" title="上传对数文件"
-		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 200px; padding: 10px">
-		<img id="loading" src="assets/images/loading.gif" style="display:none;">
-		<form id="file_upload_id" name="file_upload_name" action="cross/fileUpload"
-			method="post" enctype="multipart/form-data"> 
-			<div>
-				<input id="fileToUpload" type="file" size="45" name="fileToUpload"  name="fileName" />
-			</div>
-			<div>
-			     <a type="button"
-					class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: uploadCrossFile">上传</a>
-				<!-- <input type="submit"  value="上传" data-bind=/> -->
-			</div>
-		</form>
-	</div> 
+	</div>   
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
