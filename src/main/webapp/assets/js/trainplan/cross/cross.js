@@ -591,7 +591,7 @@ function CrossRow(data) {
 	
 	self.checkFlag = ko.observable(data.checkFlag);
 	
-	self.unitCreateFlag = ko.observable(data.checkFlag);
+	self.unitCreateFlag = ko.observable(data.unitCreateFlag);
 	//方案ID
 	self.chartId = ko.observable(data.chartId);
 	self.chartName = ko.observable(data.chartName);

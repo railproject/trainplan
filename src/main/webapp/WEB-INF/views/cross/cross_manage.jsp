@@ -194,8 +194,8 @@ System.out.println(basePath);
 												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
 													<td data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
 													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
-													<td data-bind="style:{color:checkFlag == '1' ? green : ''},  text: checkFlag == '1' ? '已' : '未' "></td>
-													<td data-bind="style:{color:unitCreateFlag == '1' ? green : ''}, text: unitCreateFlag == '1' ? '已' : '未' "></td>
+													<td data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
+													<td data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
 												</tr> 
 											</tbody>  					 
 										</table>
