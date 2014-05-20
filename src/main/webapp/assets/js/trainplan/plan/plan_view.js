@@ -3,7 +3,8 @@
  * @param message
  */
 function importPlanBegin(message) {
-	 console.log('~~~~~~~~~~~ 收到计划全部开始事件:'+JSON.parse(message.body));
+	 console.dir(message);
+//	 console.log('~~~~~~~~~~~ 收到计划全部开始事件:'+JSON.parse(message));
 	$("#plan_view_label_planCurrentStatus").text("正在拼命加载数据，请耐心等待......");//界面顶端显示
 }
 
@@ -15,8 +16,8 @@ function importPlanBegin(message) {
 function importPlanDayBegin(message) {
 	commonJsScreenUnLock();//屏幕解锁
 	
-	var obj = JSON.parse(message.body);
-	 console.log('~~~~~~~~~~~ 收到每天计划开始事件:'+JSON.parse(message.body));
+	var obj = JSON.parse(message);
+	 console.log('~~~~~~~~~~~ 收到每天计划开始事件:'+JSON.parse(message));
 	_PlanViewPage.startPlanDay(obj);
 }
 
@@ -27,8 +28,8 @@ function importPlanDayBegin(message) {
  * @param message
  */
 function importPlanDayEnd(message) {
-	var obj = JSON.parse(message.body);
-	 console.log('~~~~~~~~~~~ 收到每天计划结束事件:'+JSON.parse(message.body));
+	var obj = JSON.parse(message);
+	 console.log('~~~~~~~~~~~ 收到每天计划结束事件:'+JSON.parse(message));
 	_PlanViewPage.finishPlanDay(obj);
 }
 
@@ -37,7 +38,7 @@ function importPlanDayEnd(message) {
  * @param message
  */
 function importPlanEnd(message) {
-	 console.log('~~~~~~~~~~~ 收到计划全部结束消息:'+JSON.parse(message.body));
+	 console.log('~~~~~~~~~~~ 收到计划全部结束消息:'+JSON.parse(message));
 	_PlanViewPage.finishPlan();
 }
 

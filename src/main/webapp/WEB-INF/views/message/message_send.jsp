@@ -18,6 +18,7 @@ dwr.engine.setActiveReverseAjax(true);//js中开启dwr推功能
 dwr.engine.setNotifyServerOnPageUnload(true);//设置在页面关闭时，通知服务器销毁session
 $(function(){
 	$("#a").click(function(){
+
 		PushMsg.sendMessage("这是一个测试消息","<%=basePath%>/message/receive", "showMessage");
 	});
 });
