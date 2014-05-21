@@ -1,14 +1,10 @@
 package org.railway.com.trainplan.service;
 
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -367,7 +363,6 @@ public class CrossService{
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("unitCrossId", unitCrossId);
 		return (CrossInfo)baseDao.selectOneBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO_FOR_UNIT_CROSSID, paramMap);
-	    
 	}
 	
 	/**
