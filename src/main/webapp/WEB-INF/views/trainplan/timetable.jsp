@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    String ctx = request.getContextPath();
-%>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -13,23 +11,23 @@
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="0"/>
     <title>时刻表</title>
-    <link type="text/css" href="<%=ctx%>/assets/css/custom-bootstrap.css" rel="stylesheet"/>
-    <link type="text/css" href="<%=ctx%>/assets/css/font-awesome.min.css" rel="stylesheet"/>
-    <link type="text/css" href="<%=ctx%>/assets/css/style.css" rel="stylesheet"/>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/jquery.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/html5.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/fuelUX.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/jquery-ui-1.9.2.custom.min.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/datepicker.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/jquery.knob.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/jquery.gritter.min.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/jquery.sparkline.min.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/jquery.freezeheader.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/purl.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/knockout.js"></script>
-    <script type="text/javascript" src="<%=ctx%>/assets/js/trainplan/timetable.js"></script>
+    <link type="text/css" href="${ctx}/assets/css/custom-bootstrap.css" rel="stylesheet"/>
+    <link type="text/css" href="${ctx}/assets/css/font-awesome.min.css" rel="stylesheet"/>
+    <link type="text/css" href="${ctx}/assets/css/style.css" rel="stylesheet"/>
+    <script type="text/javascript" src="${ctx}/assets/js/jquery.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/html5.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/fuelUX.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/datepicker.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/jquery.knob.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/jquery.gritter.min.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/jquery.sparkline.min.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/jquery.freezeheader.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/purl.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/knockout.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/trainplan/timetable.js"></script>
     <style>
         #hdtimetable table tr th{
             border-color:#dfe4ee;

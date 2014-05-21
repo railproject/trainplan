@@ -1,10 +1,7 @@
 package org.railway.com.trainplan.web.dto;
 
 import org.apache.commons.collections.MapUtils;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -25,6 +22,10 @@ public class RunPlanDTO {
     // 终到站
     private String endSTN = "";
 
+    private String startTime = "";
+
+    private String endTime = "";
+
     //  开行日期 MM-dd
     private String runDate = "";
 
@@ -35,38 +36,45 @@ public class RunPlanDTO {
     private String tele = "";
 
     // 上图标记 0: yes, 1: no
-    private int flag;
+    private String dailyLineFlag;
 
     // 上图时间 MM-dd hh:mm
-    private String generateDateTime = "";
+    private String dailyLineTime = "";
+
+    // 来源类型
+    private String sourceType = "";
+
+    // 备用及停运标记
+    private String spareFlag = "";
+
+    // 线路类型
+    private String highLineFlag = "";
+
+    // 一级审核状态
+    private int checkLev1;
+
+    // 二级审核状态
+    private int checkLev2;
+
+    // 生成运行线id
+    private String dailyLineId;
 
     public RunPlanDTO(Map<String, Object> map) {
-        this.id = MapUtils.getIntValue(map, "PLAN_TRAIN_ID", 0);
-        this.serial = MapUtils.getString(map, "TRAIN_NBR", "");
-        this.startSTN = MapUtils.getString(map, "START_STN", "");
-        if("null".equalsIgnoreCase(this.startSTN)) {
-            this.startSTN = "";
-        }
+        this.id = MapUtils.getIntValue(map, "PLAN_TRAIN_ID");
+        this.serial = MapUtils.getString(map, "TRAIN_NBR");
+        this.startSTN = MapUtils.getString(map, "START_STN");
         this.endSTN = MapUtils.getString(map, "END_STN", "");
-        if("null".equalsIgnoreCase(this.endSTN)) {
-            this.endSTN = "";
-        }
-        String dbRunDate = MapUtils.getString(map, "RUN_DATE");
-        if(dbRunDate != null) {
-            LocalDate runDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(dbRunDate);
-            this.runDate = runDate.toString("MM-dd");
-        } else {
-            this.runDate = "";
-        }
-        this.flag = MapUtils.getIntValue(map, "DAILYPLAN_FLAG", 1);
-        java.sql.Date dbDate = (java.sql.Date)map.get("DAILYPLAN_TIME");
-        if(dbDate != null) {
-            Date date = new Date(dbDate.getTime());
-            LocalDate localDate = new LocalDate(date);
-            this.generateDateTime = localDate.toString("MM-dd hh:mm");
-        } else {
-            this.generateDateTime = "";
-        }
+        this.runDate = MapUtils.getString(map, "RUN_DATE");
+        this.dailyLineFlag = MapUtils.getString(map, "DAILYPLAN_FLAG");
+        this.dailyLineTime = MapUtils.getString(map, "DAILYPLAN_TIME");
+        this.startTime = MapUtils.getString(map, "START_TIME");
+        this.endTime = MapUtils.getString(map, "END_TIME");
+        this.sourceType = MapUtils.getString(map, "CREAT_TYPE");
+        this.spareFlag = MapUtils.getString(map, "SPARE_FLAG");
+        this.highLineFlag = MapUtils.getString(map, "HIGHLINE_FLAG");
+        this.checkLev1 = MapUtils.getIntValue(map, "CHECK_TYPE_LEV1");
+        this.checkLev2 = MapUtils.getIntValue(map, "CHECK_TYPE_LEV2");
+        this.dailyLineId = MapUtils.getString(map, "DAILYPLAN_ID");
     }
 
     public int getId() {
@@ -109,22 +117,6 @@ public class RunPlanDTO {
         this.runDate = runDate;
     }
 
-    public int getFlag() {
-        return flag;
-    }
-
-    public void setFlag(int flag) {
-        this.flag = flag;
-    }
-
-    public String getGenerateDateTime() {
-        return generateDateTime;
-    }
-
-    public void setGenerateDateTime(String generateDateTime) {
-        this.generateDateTime = generateDateTime;
-    }
-
     public String getCommand() {
         return command;
     }
@@ -139,5 +131,86 @@ public class RunPlanDTO {
 
     public void setTele(String tele) {
         this.tele = tele;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getDailyLineFlag() {
+        return dailyLineFlag;
+    }
+
+    public void setDailyLineFlag(String dailyLineFlag) {
+        this.dailyLineFlag = dailyLineFlag;
+    }
+
+    public String getDailyLineTime() {
+        return dailyLineTime;
+    }
+
+    public void setDailyLineTime(String dailyLineTime) {
+        this.dailyLineTime = dailyLineTime;
+    }
+
+    public String getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(String sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public String getSpareFlag() {
+        return spareFlag;
+    }
+
+    public void setSpareFlag(String spareFlag) {
+        this.spareFlag = spareFlag;
+    }
+
+    public String getHighLineFlag() {
+        return highLineFlag;
+    }
+
+    public void setHighLineFlag(String highLineFlag) {
+        this.highLineFlag = highLineFlag;
+    }
+
+    public int getCheckLev1() {
+
+        return checkLev1;
+    }
+
+    public void setCheckLev1(int checkLev1) {
+        this.checkLev1 = checkLev1;
+    }
+
+    public int getCheckLev2() {
+        return checkLev2;
+    }
+
+    public void setCheckLev2(int checkLev2) {
+        this.checkLev2 = checkLev2;
+    }
+
+    public String getDailyLineId() {
+        return dailyLineId;
+    }
+
+    public void setDailyLineId(String dailyLineId) {
+        this.dailyLineId = dailyLineId;
     }
 }
