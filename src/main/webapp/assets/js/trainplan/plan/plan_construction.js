@@ -416,9 +416,7 @@ var _plan_review_table_trainLine = $("#plan_review_table_trainLine");
 var _plan_review_table_trainInfo = $("#plan_review_table_trainInfo");
 var socket = null;
 var stompClient = null;
-var basePath = null;
 $(function(){
-	basePath = $("#basePath_hidden").val();
 	_PlanConstructionPage = new PlanConstructionPage();  
 	
 	//车次详情div 车次查询按钮增加事件

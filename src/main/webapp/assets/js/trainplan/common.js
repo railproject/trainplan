@@ -218,9 +218,9 @@ $(function(){
 		new 消息提示相关
 	 */
 	//增加消息框按钮div
-	$("body").append("<a href='' class='btn btn-success' id='common_div_success_message'></a>");
-	$("body").append("<a href='' class='btn btn-warning' id='common_div_warning_message'></a>");
-	$("body").append("<a href='' class='btn btn-danger' id='common_div_error_message'></a>");
+	$("body").append("<a href='' class='btn btn-success' style='display:none;' id='common_div_success_message'></a>");
+	$("body").append("<a href='' class='btn btn-warning' style='display:none;' id='common_div_warning_message'></a>");
+	$("body").append("<a href='' class='btn btn-danger' style='display:none;' id='common_div_error_message'></a>");
 	jQuery('#common_div_success_message').hide();
 	jQuery('#common_div_warning_message').hide();
 	jQuery('#common_div_error_message').hide();

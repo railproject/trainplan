@@ -11,12 +11,8 @@ Object grid =  request.getAttribute("gridData");
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>交路单元</title>
-    <link type="text/css" href="<%=basePath %>/assets/css/custom-bootstrap.css" rel="stylesheet"/>
-    <link type="text/css" href="<%=basePath %>/assets/css/font-awesome.min.css" rel="stylesheet"/>
-    <link type="text/css" href="<%=basePath %>/assets/css/minified/jquery-ui.min.css" rel="stylesheet"/>
-    <link type="text/css" href="<%=basePath %>/assets/css/style.css" rel="stylesheet"/>
+<jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 </head>
 <body>
 <!--分栏框开始-->
@@ -51,13 +47,9 @@ canvasData.jlData = <%=jlData%>;//交路数据
 
 
 
-<script src="<%=basePath %>/assets/js/jquery.js"></script>
-<script src="<%=basePath %>/assets/js/html5.js"></script>
-<script src="<%=basePath %>/assets/js/moment.min.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
-<!-- <script src="<%=basePath %>/assets/js/trainplan/cross/unit_cross_canvas_data.js"></script> -->
 <script src="<%=basePath %>/assets/js/trainplan/cross/unit_cross_canvas.js"></script>
 
 </body>
