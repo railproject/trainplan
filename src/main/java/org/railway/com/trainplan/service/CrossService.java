@@ -1,6 +1,5 @@
 package org.railway.com.trainplan.service;
 
-<<<<<<< HEAD
 import java.beans.IntrospectionException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,11 +25,9 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-=======
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
->>>>>>> 7dcade55941a1f96527c15e8c3aa781075700ffd
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
