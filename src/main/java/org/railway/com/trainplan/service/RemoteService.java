@@ -11,6 +11,7 @@ import org.railway.com.trainplan.service.dto.PlanBureauTsDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -29,6 +30,8 @@ import org.apache.log4j.Logger;
 @Monitored
 public class RemoteService {
 	private static final Logger logger = Logger.getLogger(RemoteService.class);
+	@Value("#{restConfig['SERVICE_URL']}")
+    private String restUrl;
 	/**
 	 * 查询方案信息
 	 */
@@ -36,7 +39,7 @@ public class RemoteService {
 
 		List<SchemeDto> list = new ArrayList<SchemeDto>();
 		Map response = null;
-		response = RestClientUtils.post(Constants.SERVICE_URL
+		response = RestClientUtils.post(restUrl
 				+ Constants.GET_SCHEME_LIST, new HashMap(), Map.class);
 		logger.info("getSchemeLis--response= " + response);
 		if (response != null && response.size() > 0) {
@@ -62,7 +65,7 @@ public class RemoteService {
 	 */
     public TrainlineTemplateDto  getTrainLinesInfoWithId(String baseTrainId)  throws Exception{
     	TrainlineTemplateDto dto  = null ;
-    	Map response = RestClientUtils.get(Constants.SERVICE_URL
+    	Map response = RestClientUtils.get(restUrl
 				+ Constants.GET_TRAIN_LINES_INFO_WITH_ID + baseTrainId,Map.class);
     	System.err.println("response==" + response);
     	//解析返回报文
@@ -80,17 +83,7 @@ public class RemoteService {
     	return dto;
     }
     
-    /**
-     * 
-     * @param destTime
-     * @param orig
-     * @return
-     */
-    private String  setTime(String destTime,String orig){
-		int daycount = Integer.valueOf(orig.substring(0,1));
-		String time =  StringUtil.handleTime(orig);
-		return DateUtil.getDateByDay(destTime, -daycount) + " " +time;
-    }
+   
 	/**
 	 * 根据方案id查询基本运行线
 	 * 
@@ -109,7 +102,7 @@ public class RemoteService {
 		//fortest
 		Long starttime = System.currentTimeMillis();
 		// 访问后台接口
-		Map response = RestClientUtils.post(Constants.SERVICE_URL
+		Map response = RestClientUtils.post(restUrl
 				+ Constants.GET_TRAINLINE_TEMPLATES, request, Map.class);
 		System.err.println("访问接口所有时间：" + (System.currentTimeMillis() - starttime)/1000);
 		//System.err.println("response==" +response );
@@ -236,7 +229,7 @@ public class RemoteService {
 		request.put("targetTime", targetTime);
 		System.err.println("getTrainLinesWithDay---request==" + request);
 		//调用后台的接口
-		Map response = RestClientUtils.post(Constants.SERVICE_URL
+		Map response = RestClientUtils.post(restUrl
 				+ Constants.GET_TRAINLINS, request, Map.class);
 		System.err.println("getTrainLinesWithDay---response==" + response);
 		//解析后台报文
@@ -307,7 +300,7 @@ public class RemoteService {
 		request.put("trainlines", trainNbrs);
 		logger.info("updateUnitCrossId---request==" + request);
 		//调用后台的接口
-		Map response = RestClientUtils.post(Constants.SERVICE_URL
+		Map response = RestClientUtils.post(restUrl
 				+ Constants.UPDATE_UNIT_CROSS_ID, request, Map.class);
 		logger.info("updateUnitCrossId---response==" + response);
 		return "";

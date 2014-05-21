@@ -108,6 +108,103 @@ public class CrossService{
 		
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_CROSS_CREATETIME, reqMap);
 	}
+	
+	/**
+	 * 根据crossIds删除表unit_cross_train表中数据
+	 * @param crossIds
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteUnitCrossInfoTrainForCorssIds(String[] crossIds) throws Exception {
+		//组装字符串
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIds.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIds[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("baseCrossIds", bf.toString());
+		
+		System.err.println("bf.toString()==" +  bf.toString());
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNIT_CROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap);
+	}
+	
+	/**
+	 * 根据crossIds删除表unit_cross表中数据
+	 * @param crossIds
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteUnitCrossInfoForCorssIds(String[] crossIds) throws Exception {
+		//组装字符串
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIds.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIds[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("baseCrossIds", bf.toString());
+		
+		System.err.println("bf.toString()==" +  bf.toString());
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNIT_CROSS_INFO_FOR_CROSSIDS, reqMap);
+	}
+	
+	/**
+	 * 根据crossIds删除表base_cross_train表中数据
+	 * @param crossIds
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteCrossInfoTrainForCorssIds(String[] crossIds) throws Exception {
+		//组装字符串
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIds.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIds[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("baseCrossIds", bf.toString());
+		
+		System.err.println("bf.toString()==" +  bf.toString());
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap);
+	}
+	
+	
+	/**
+	 * 根据crossIds删除表base_cross表中数据
+	 * @param crossIds
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteCrossInfoForCorssIds(String[] crossIds) throws Exception {
+		//组装字符串
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIds.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIds[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("baseCrossIds", bf.toString());
+		
+		System.err.println("bf.toString()==" +  bf.toString());
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSS_INFO_FOR_CROSSIDS, reqMap);
+	}
 	/**
 	 * 更新base_cross中的check_time字段的值
 	 * @param crossIds

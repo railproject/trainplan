@@ -14,7 +14,15 @@ public class SubCrossInfo {
 	private String unitCreateFlag;
 	private String checkFlag;
 	private String createTime;
+	private String chartId;
+	
    
+	public String getChartId() {
+		return chartId;
+	}
+	public void setChartId(String chartId) {
+		this.chartId = chartId;
+	}
 	public String getCreateTime() {
 		return createTime;
 	}

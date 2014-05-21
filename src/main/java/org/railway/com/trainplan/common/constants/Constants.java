@@ -20,8 +20,8 @@ public class Constants {
 	//TODO:后台服务地址，以后要改为配置文件
 	//后台接口地址
 	//TODO 从配置文件中获取不到值
-	@Value("#{restConfig['SERVICE_URL']}")//公共的测试地址：10.1.191.135:7003  金磊的：10.1.132.149:7001
-	public static  String SERVICE_URL = "http://10.1.191.135:7003";//PropertiesConfiguration.getStringValue("SERVICE_URL");
+	
+	
 	//获取方案列表
 	public static final String GET_SCHEME_LIST = "/rail/template/TemplateSchemes";
 	//基本图方案包含的基本图运行线
@@ -126,4 +126,13 @@ public class Constants {
     public static final String CROSSDAO_UPDATE_CROSS_CHECKTIME = "crossDao.updateCrossCheckTime";
     //更新base_cross的creat_time  
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossUnitCreateTime";
+    //根据crossids批量删除base_cross表中数据
+    public static final String CROSSDAO_DELETE_CROSS_INFO_FOR_CROSSIDS = "crossDao.deleteCrossInfoForCrossIds";
+    //根据crossIds批量删除base_cross_train表中数据
+    public static final String CROSSDAO_DELETE_CROSS_INFO_TRAIN_FOR_CROSSIDS = "crossDao.deleteCrossInfoTrainForCrossIds";
+    
+  //根据crossids批量删除unit_cross表中数据
+    public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoForCrossIds";
+    //根据crossIds批量删除unit_cross_train表中数据
+    public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_TRAIN_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoTrainForCrossIds";
 }
