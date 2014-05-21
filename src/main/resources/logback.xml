@@ -61,6 +61,8 @@
     <logger name="net.sf" level="INFO" />
 
     <logger name="org.apache.shiro" level="INFO" />
+    
+    <logger name="org.springframework.amqp" level="ERROR" />
 
 	<!-- root -->
 	<root level="DEBUG">

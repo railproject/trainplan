@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>华云Paas系统</title>
+    <title>铁路实施计划平台</title>
     <link href="${ctx}/assets/css/custom-bootstrap.css" rel="stylesheet">
     <!--font-awesome-->
     <link  type="text/css" rel="stylesheet" href="${ctx}/assets/css/font-awesome.min.css"/>
@@ -109,6 +109,12 @@
                     <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>核查编制图定开行</a></li>
                     <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>批量上图</a></li>
                     <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-external-link"></i>新图初始化</a></li>
+                    
+                    
+                    <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-list-alt"></i>对数表维护</a></li>
+                    <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-eye"></i>基本交路单元维护</a></li>
+                    <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>日计划审核</a></li>
+                    <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-external-link"></i>基本图查询</a></li>
                 </ul>
             </li>
             <li><a href="${ctx}/default/transfer/planConstruction" class="menu_one" target="contentFrame"><i class="fa fa-truck"></i>货运列车 </a></li>

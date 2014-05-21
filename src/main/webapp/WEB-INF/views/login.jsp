@@ -15,7 +15,7 @@
     <script type="application/javascript" src="${ctx}/assets/js/bootstrap.min.js"></script>
     <script type="application/javascript" src="${ctx}/assets/js/respond.min.js"></script>
     <script type="application/javascript" type="application/javascript" src="${ctx}/assets/js/trainplan/login.js"></script>
-    <title>login</title>
+    <title>铁路实施计划平台</title>
 </head>
 <body>
 <div class="login">

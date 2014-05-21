@@ -340,9 +340,7 @@ var _plan_review_input_trainNbr = $("#plan_review_input_trainNbr");
 
 
 
-var basePath = null;
 $(function(){
-	basePath = $("#basePath_hidden").val();
 	_PlanReViewPage = new PlanReViewPage();
 
 	//车次详情div 车次查询按钮增加事件

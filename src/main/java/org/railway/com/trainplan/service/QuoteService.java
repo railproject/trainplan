@@ -82,7 +82,8 @@ public class QuoteService  {
 			//this.messagingTemplate.convertAndSend("/railwayplan/import.plan.end", DateUtil.getStringTimestamp(System.currentTimeMillis()));
 		}else if("plan.getInfo.begin".equals(messageType)){
 			//调用后台接口之前
-			this.sendMsgService.sendMessage(DateUtil.getStringTimestamp(System.currentTimeMillis()), pageUrl, "importPlanBegin");
+//			this.sendMsgService.sendMessage(DateUtil.getStringTimestamp(System.currentTimeMillis()), pageUrl, "importPlanBegin");
+			this.sendMsgService.sendMessage(message, pageUrl, "importPlanBegin");
 			//this.messagingTemplate.convertAndSend("/railwayplan/import.plan.getInfo.begin", DateUtil.getStringTimestamp(System.currentTimeMillis()));
 			System.err.println("message444==" + message);
 		}

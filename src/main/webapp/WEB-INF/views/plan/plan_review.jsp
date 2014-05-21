@@ -6,18 +6,23 @@ String basePath = request.getContextPath();
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Cache-Control" content="no-store"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+
 <title>核查编制图定开行</title>
-<!-- Bootstrap core CSS -->
-<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
-<!--font-awesome-->
-<link href="<%=basePath %>/assets/oldAssets/css/datepicker.css" rel="stylesheet">
-<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
-<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/datepicker.css">
-<!-- Custom styles for this template -->
-<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/custom-bootstrap.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/font-awesome.min.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/datepicker.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/style.css"/>
+
+
+
+
 <script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
 <script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
 <script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
@@ -27,7 +32,6 @@ String basePath = request.getContextPath();
 
 </head>
 <body class="Iframe_body">
-<input id="basePath_hidden" type="hidden" value="<%=basePath %>">
 <!--以上为必须要的-->
 
 <ol class="breadcrumb">
@@ -207,6 +211,8 @@ String basePath = request.getContextPath();
 
 
 
+<!-- common.security.js 提供1.禁止直接访问非index页面功能 2.js获取项目路径 -->
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.security.js"></script>
 <script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/pagination.js" type="text/javascript"></script>
 <script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
