@@ -85,22 +85,12 @@ public class CrossController {
 			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay, chartName);
 			  	}  
  
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IntrospectionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+				result.setCode("401");
+				result.setMessage("删除失败");
+			}  
 		return result;
 	}
 	

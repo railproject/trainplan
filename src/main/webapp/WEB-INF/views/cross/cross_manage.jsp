@@ -34,8 +34,8 @@ System.out.println(basePath);
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/cross/cross.js"></script>  
-<script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
+<script type="text/javascript" src="<%=basePath %>/assets/js/datepicker.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.gritter.min.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
@@ -190,12 +190,12 @@ System.out.println(basePath);
 												</tr>
 											</thead>
 											<tbody data-bind="foreach: crossRows.rows">
-												<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'red':''}" >
+												<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}" >
 												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
 													<td data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
 													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
-													<td data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
-													<td data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
+													<td align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
+													<td align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
 												</tr> 
 											</tbody>  					 
 										</table>
@@ -544,7 +544,7 @@ System.out.println(basePath);
 									<thead>
 										<tr>
 											<th style="width: 5%">序号</th>
-											<th style="width: 8%">车次</th>
+											<th style="width: 9%">车次</th>
 											<th style="width: 8%">发站</th>
 											<th style="width: 5%">发局</th>
 											<th style="width: 8%">终站</th>
@@ -553,7 +553,7 @@ System.out.println(basePath);
 											<th style="width: 5%">间隔(天)</th>
 											<th style="width: 5%">开行状态</th>
 											<th style="width: 5%">交替车次</th>
-											<th style="width: 11%">交替时间</th>
+											<th style="width: 10%">交替时间</th>
 											<th style="width: 5%">备用套跑</th>
 											<th style="width: 5%">高线规律</th>
 											<th style="width: 5%">普线规律</th>
@@ -561,9 +561,9 @@ System.out.println(basePath);
 										</tr>
 									</thead> 
 									<tbody data-bind="foreach: trains" >
-										<tr>
+										<tr  data-bind="click: $parent.setCurrentTrain, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
 											<td style="width: 5px" data-bind="text: trainSort"></td>
-											<td style="width: 60px" data-bind="text: trainNbr"></td>
+											<td style="width: 60px" data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
 											<td style="width: 100px" data-bind="text: startStn, attr:{title: startStn}"></td>
 											<td style="width: 50px" data-bind="text: startBureau"></td>
 											<td style="width: 100px" data-bind="text: endStn, attr:{title: endStn}"></td>
@@ -613,7 +613,7 @@ System.out.println(basePath);
 				<input id="fileToUpload" type="file" size="45" name="fileToUpload"  name="fileName" />
 			</div>
 			<div>
-			     <a type="button"
+			     <a type="button" id="btn_fileToUpload"
 					class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: uploadCrossFile">上传</a>
 				<!-- <input type="submit"  value="上传" data-bind=/> -->
 			</div>
@@ -636,7 +636,7 @@ System.out.println(basePath);
 										<th style="width: 60px">站名</th>
 										<th data-options="field:'index',width:80"
 											style="width: 60px">发点</th>
-										<th data-options="field:'index',width:80"
+										<th data-options="field:'index',width:80"  
 											style="width: 60px">到点</th>
 										<th data-options="field:'index',width:80"
 											style="width: 60px">股道</th>
@@ -659,9 +659,9 @@ System.out.println(basePath);
   		<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
   	 </td>
      <td style="width:40%;height:20px;padding:0px;pading-bottom:-14">   
-		<a  style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: loadPre"></a>
-	    <input type="text"  style="margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
-		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: loadNext"  style="padding:0px 5px;"></a>
+		<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
+	    <input type="text"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
+		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
        </ul> 
 	 
      </td >

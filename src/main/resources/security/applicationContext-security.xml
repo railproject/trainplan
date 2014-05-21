@@ -36,6 +36,7 @@
                 /plan/** = anon
                 /message/** = anon
                 /dwr/** = anon
+                /jbtcx/** = anon
                 /** = authc
             </value>
         </property>

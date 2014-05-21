@@ -25,6 +25,8 @@ function CrossModel() {
 	
 	self.gloabBureaus = [];  
 	
+	self.currentTrain = ko.observable();
+	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
 	
@@ -37,6 +39,11 @@ function CrossModel() {
 				crossRow.selected(1); 
 			} 
 		}); 
+	};
+	
+	self.setCurrentTrain = function(train){
+		console.log(train)
+		self.currentTrain(train); 
 	};
 	
 	self.setCurrentCross = function(cross){
@@ -105,6 +112,7 @@ function CrossModel() {
 		    	return;
 		    }
 		    $("#loading").show();
+		    $("#btn_fileToUpload").attr("disabled", "disabled");
 	        $.ajaxFileUpload
 	        ({
                 url:'cross/fileUpload',
@@ -118,13 +126,15 @@ function CrossModel() {
                 	chartName:chart.name
                 },
                 success: function (data, status)
-                { 
+                {  
                 	showSuccessDialog("上传成功");
                 	$("#loading").hide();
+                	$("#btn_fileToUpload").removeAttr("disabled");
                 },
                 error: function(result){
                 	showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
                 	$("#loading").hide();
+                	$("#btn_fileToUpload").removeAttr("disabled");
                 }
             });  
 	        return true;
@@ -190,6 +200,8 @@ function CrossModel() {
 		    		self.searchModle().showCrossMap(0);
 		       }
 		   });
+		
+		
 		$("#file_upload_dlg").dialog("close"); 
 		$("#cross_train_time_dlg").dialog("close");
 		$("#cross_map_dlg").dialog("close"); 
@@ -198,7 +210,8 @@ function CrossModel() {
 		$("#cross_start_day").datepicker();
 		
 		self.searchModle().startDay(self.currdate()); 
-		
+		commonJsScreenLock();
+		var initFlag = 0;
 		//获取当期系统日期 
 		 $.ajax({
 				url : "plan/getSchemeList",
@@ -220,10 +233,14 @@ function CrossModel() {
 					showErrorDialog("接口调用失败");
 				},
 				complete : function(){
-					commonJsScreenUnLock();
+					initFlag++;
+					if(initFlag == 2){
+						commonJsScreenUnLock();
+					}
+					
 				}
-		    });
-		
+		    }); 
+		 
 	    $.ajax({
 			url : "plan/getFullStationInfo",
 			cache : false,
@@ -247,7 +264,10 @@ function CrossModel() {
 				showErrorDialog("接口调用失败");
 			},
 			complete : function(){
-				commonJsScreenUnLock();
+				initFlag++;
+				if(initFlag == 2){
+					commonJsScreenUnLock();
+				}
 			}
 	    });
 		
@@ -257,7 +277,8 @@ function CrossModel() {
 	self.loadCrosses = function(){
 		self.crossRows.loadRows();
 	};
-	self.loadCrosseForPage = function(startIndex, endIndex) {   
+	self.loadCrosseForPage = function(startIndex, endIndex) {  
+		commonJsScreenLock();
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -268,7 +289,13 @@ function CrossModel() {
 		var trainNbr = self.searchModle().filterTrainNbr(); 
 		var checkFlag = self.searchModle().checkFlag();
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
+		var chart = self.searchModle().chart();
 		var startBureauCode = self.searchModle().startBureau();  
+		
+		if(chart == null){
+			showErrorDialog("请选择方案!");
+			//return;
+		}
 		 
 		$.ajax({
 				url : "cross/getCrossInfo",
@@ -282,6 +309,7 @@ function CrossModel() {
 					checkFlag : checkFlag == null ? null : checkFlag.value,
 					startBureau : startBureauCode,
 					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
+							chartId : chart == null ? null: chart.chartId,
 					trainNbr : trainNbr,
 					rownumstart : startIndex, 
 					rownumend : endIndex
@@ -312,13 +340,14 @@ function CrossModel() {
 			}); 
 	};
 
-	self.crossRows = new PageModle(20, self.loadCrosseForPage);
+	self.crossRows = new PageModle(50, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() { 
-		alert(self.currentCross().tokenVehBureau())
+		alert(self.currentCross().tokenVehBureau());
 	};
 	 
 	self.showUploadDlg = function(){
+		
 		$("#file_upload_dlg").dialog("open");
 //		var diag = new Dialog();
 //		diag.Title = "上传对数文件";
@@ -330,14 +359,15 @@ function CrossModel() {
 	};
 	
 	self.showCrossMapDlg = function(){ 
-		console.log(self.currentCross().corssId)
-		if(self.currentCross().corssId == ''){
+		console.log(self.currentCross().crossId);
+		if(!self.currentCross().crossId || self.currentCross().crossId == ''){
 			return;
 		}
 		var crossId = self.currentCross().crossId; 
 		if(self.searchModle().showCrossMap() == 0){
+			
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
-			$("#cross_map_dlg").dialog("open");
+			$('#cross_map_dlg').dialog({ title: self.currentCross().crossName(), autoOpen: true, height:600,width: 800, modal: false, draggable: false, resizable:true })
 		};
 	};  
 	
@@ -351,6 +381,8 @@ function CrossModel() {
 	};
 	
 	self.deleteCrosses = function(){
+		
+		showConfirmDiv("提示", " 确定要执行删除操作?");
 		var crossIds = "";
 		var crosses = self.crossRows.rows(); 
 		var delCrosses = [];
@@ -384,12 +416,15 @@ function CrossModel() {
 	};
 	
 	self.createUnitCrossInfo = function(){ 
+		commonJsScreenLock();
 		var crossIds = "";
+		var delCrosses = [];
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].crossId;
+				delCrosses.push( crosses[i]);
 			}
 		} 
 		 $.ajax({
@@ -403,15 +438,25 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){
+						$.each(delCrosses, function(i, n){ 
+							n.unitCreateFlag("1");
+						});
 						showSuccessDialog("生成交路单元成功");
 					}else{
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					}
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
 				}
 			}); 
 	};
 	
 	self.checkCrossInfo = function(){
+		commonJsScreenLock();
 		var crossIds = "";
 		var delCrosses = [];
 		var crosses = self.crossRows.rows();
@@ -440,12 +485,19 @@ function CrossModel() {
 					}else{
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					}
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
 				}
 			}); 
 		
 	};
 	
 	self.showTrains = function(row) {  
+		commonJsScreenLock();
 		self.trains.remove(function(item) {
 			return true;
 		});   
@@ -583,7 +635,7 @@ function CrossRow(data) {
 	self.shortName = ko.computed(function(){
 		trainNbrs = data.crossName.split('-');
 		if(trainNbrs.length > 2){
-			return trainNbrs[0] + '...' + trainNbrs[trainNbrs.length-1];
+			return trainNbrs[0] + '-......-' + trainNbrs[trainNbrs.length-1];
 		}else{
 			return data.crossName;
 		}
@@ -743,7 +795,4 @@ function TrainRow(data) {
 function openLogin() {
 	$("#file_upload_dlg").dialog("open");
 }
-
-$(window.document).scroll(function () {
-	    var scrolltop = $(document).scrollTop(); 
-});
+ 
