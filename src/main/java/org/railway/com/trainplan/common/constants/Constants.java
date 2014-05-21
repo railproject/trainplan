@@ -125,5 +125,5 @@ public class Constants {
     //更新base_cross的check_time   
     public static final String CROSSDAO_UPDATE_CROSS_CHECKTIME = "crossDao.updateCrossCheckTime";
     //更新base_cross的creat_time  
-    public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossCreateTime";
+    public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossUnitCreateTime";
 }

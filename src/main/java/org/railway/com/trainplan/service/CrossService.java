@@ -82,12 +82,12 @@ public class CrossService{
 	}
 
 	/**
-	 * 更新base_cross中的creat_time字段的值
+	 * 更新base_cross中的creat_unit_time字段的值
 	 * @param crossIds
 	 * @return
 	 * @throws Exception
 	 */
-	public int updateCrossCreateTime(String[] crossIds) throws Exception {
+	public int updateCrossUnitCreateTime(String[] crossIds) throws Exception {
 		
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
@@ -147,15 +147,25 @@ public class CrossService{
 		//
 		CrossInfo crossInfo = getCrossInfoForCrossid(baseCrossId);
 		List<CrossTrainInfo> listCrossTrainInfo = getCrossTrainInfoForCrossid(baseCrossId);
+		if(listCrossTrainInfo != null && listCrossTrainInfo.size() > 0){
+			//取第一辆列车的始发站
+			crossInfo.setStartStn(listCrossTrainInfo.get(0).getStartStn());
+		}
 		System.err.println("listCrossTrainInfo.size==" + listCrossTrainInfo.size());
 		List<CrossInfo> list = prepareUnitCrossInfo(crossInfo);
 		System.err.println("list.size==" + list.size());
-		List<CrossTrainInfo> listCrossTrain = prepareUnitCrossTrainInfo(listCrossTrainInfo,list);
-		System.err.println("listCrossTrain.size===" + listCrossTrain.size());
-		int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_INFO, list);
-		System.err.println("count=====" + count);
-		int trainCount = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_TRAIN_INFO, listCrossTrain);
-		System.err.println("trainCount=====" + trainCount);
+		if(list !=null && list.size() > 0){
+			List<CrossTrainInfo> listCrossTrain = prepareUnitCrossTrainInfo(listCrossTrainInfo,list);
+			System.err.println("listCrossTrain.size===" + listCrossTrain.size());
+			int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_INFO, list);
+			System.err.println("count=====" + count);
+			if(listCrossTrain !=null && listCrossTrain.size() > 0){
+				int trainCount = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_TRAIN_INFO, listCrossTrain);
+				System.err.println("trainCount=====" + trainCount);		
+			}
+			
+		}
+		
 	}
 	
 	/**
@@ -194,12 +204,19 @@ public class CrossService{
 		List<CrossInfo> list = new ArrayList<CrossInfo>();
 		//组数（需几组车底担当）
 		int groupTotalNbr = crossInfo.getGroupTotalNbr();
+		String crossId = crossInfo.getCrossId();
+		//通过crossId查询cross_train信息
+		 List<CrossTrainInfo> crossTrainList = getCrossTrainInfoForCrossid(crossId);
 		//交路开始日期,格式yyyyMMdd
 		String crossStartDate = crossInfo.getCrossStartDate();
 		String crossEndDate = crossInfo.getCrossEndDate();
 		System.err.println("crossStartDate11==" + crossStartDate);
 		System.err.println("crossEndDate11==" + crossEndDate);
-		String crossName = crossInfo.getCrossName();
+		
+		//第一辆车的始发站
+		String startStn = crossInfo.getStartStn();
+		//获取第一辆车的车次
+		String trainNbr = "";
 		//一个交路跨越的天数
 		int crossDay = DateUtil.getDaysBetween(DateUtil.getFormateDay(crossEndDate), DateUtil.getFormateDay(crossStartDate));
 		//高线标记
@@ -209,7 +226,7 @@ public class CrossService{
 		//普线开行规律,普线开行规律（1:每日;2:隔日）
 		int commonlineRule = 1;
 		
-		if(!StringUtil.strIsNull(crossInfo.getHighlineFlag())){
+		/*if(!StringUtil.strIsNull(crossInfo.getHighlineFlag())){
 			highlineFlag = Integer.valueOf(crossInfo.getHighlineFlag());
 		}
 		if(!StringUtil.strIsNull(crossInfo.getHighlineRule())){
@@ -217,13 +234,20 @@ public class CrossService{
 		}
 		if(!StringUtil.strIsNull(crossInfo.getCommonlineRule())){
 			commonlineRule = Integer.valueOf(crossInfo.getCommonlineRule());
-		}
+		}*/
 		
 		
 		if(groupTotalNbr >0 ){
 			for(int i = 0;i<groupTotalNbr;i++){
 				CrossInfo tempInfo = new CrossInfo();
 				BeanUtils.copyProperties(tempInfo, crossInfo);
+				if(crossTrainList != null && crossTrainList.size()-1>=i ){
+					CrossTrainInfo trainInfo = crossTrainList.get(i);
+					highlineFlag = trainInfo.getHighlineFlag();
+					highlineRule = trainInfo.getHighlineRule();
+					commonlineRule = trainInfo.getCommonLineRule();
+					trainNbr = trainInfo.getTrainNbr();
+				}
 				//如果是第一组交路单元，那么交路单元的开始日期为交路的开始日期
 				if(i == 0){
 					tempInfo.setCrossStartDate(crossStartDate);
@@ -263,9 +287,15 @@ public class CrossService{
 					
 				}	
 				tempInfo.setUnitCrossId(UUID.randomUUID().toString());
-				//编组号,i是从0开始，所以要+1
+				//编组名，规则：第一辆车的始发站的第一个字 + "开" + "-" +第一辆车的车次+组数
 				int teamNum = i+1;
-				tempInfo.setMarshallingName(crossName+"-"+teamNum);
+				if( startStn != null && !"".equals(startStn) ){
+					tempInfo.setMarshallingName(startStn.substring(0,1)+"开"+"-"+trainNbr+"-" +teamNum);
+				}else{
+					//TODO
+					tempInfo.setMarshallingName(trainNbr+"-" +teamNum);
+				}
+				
 				//组数序号
 				tempInfo.setGroupSerialNbr(teamNum);
 				list.add(tempInfo);
@@ -559,7 +589,18 @@ public class CrossService{
 			} 
 			service.shutdown();
 		 
-			////////////////////////
+			///fortest
+			if(alllist != null && alllist.size() > 0){
+				for(int i = 0;i<alllist.size();i++){
+					CrossInfo crossinfo = alllist.get(i);
+					System.err.println("chartId==" + crossinfo.getChartId());
+					System.err.println("chartName==" + crossinfo.getChartName());
+					System.err.println("***********************");
+					
+				}
+			}
+			
+			///////////
 			
 			if(alllist != null && alllist.size() > 0){
 				//保存交路信息

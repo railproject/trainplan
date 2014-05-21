@@ -7,7 +7,11 @@ import org.directwebremoting.Browser;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ScriptSessionFilter;
+import org.railway.com.trainplan.service.dto.Quote;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class SendMsgService {
@@ -20,11 +24,10 @@ public class SendMsgService {
 	 * @param jsFuncName 页面js方法名称
 	 */
 	public void sendMessage(final String message, final String pageUrl, final String jsFuncName) {
-		logger.debug("~~~~向页面page："+pageUrl +"  推送消息内容："+message);
+		System.err.println("~~~~向页面page："+pageUrl +"  推送消息内容："+message +" jsFuncName:"+jsFuncName);
 		
 		Browser.withAllSessionsFiltered(new ScriptSessionFilter() {
 			public boolean match(ScriptSession session) {
-				System.err.println("pageUrl:"+pageUrl+"   ~~~~~~session.getPage()=="+session.getPage());
 				if ((pageUrl).equals(session.getPage())) {
 					return true;
 				} else {
@@ -36,6 +39,7 @@ public class SendMsgService {
 
 			public void run() {
 				script.appendCall(jsFuncName, message);
+				System.err.println("!!!! script: "+script);
 				Collection<ScriptSession> sessions = Browser
 						.getTargetSessions();
 				for (ScriptSession scriptSession : sessions) {

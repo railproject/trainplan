@@ -3,7 +3,12 @@
  * @param message
  */
 function importPlanBegin(message) {
-	 console.log('~~~~~~~~~~~ 收到计划全部开始事件:'+JSON.parse(message.body));
+	 var obj = JSON.parse(message);
+	 console.dir(obj);
+	 console.log('~~~~~~~~~~~ 收到计划全部开始事件:'+obj.rundate);
+	 console.log('~~~~~~~~~~~ 收到计划全部开始事件:'+obj.traincount);
+	 console.log('~~~~~~~~~~~ 收到计划全部开始事件:'+obj.dayindex);
+//	 console.log('~~~~~~~~~~~ 收到计划全部开始事件:'+JSON.parse(message));
 	$("#plan_view_label_planCurrentStatus").text("正在拼命加载数据，请耐心等待......");//界面顶端显示
 }
 
@@ -15,8 +20,8 @@ function importPlanBegin(message) {
 function importPlanDayBegin(message) {
 	commonJsScreenUnLock();//屏幕解锁
 	
-	var obj = JSON.parse(message.body);
-	 console.log('~~~~~~~~~~~ 收到每天计划开始事件:'+JSON.parse(message.body));
+	var obj = JSON.parse(message);
+	 console.log('~~~~~~~~~~~ 收到每天计划开始事件:'+JSON.parse(message));
 	_PlanViewPage.startPlanDay(obj);
 }
 
@@ -27,8 +32,8 @@ function importPlanDayBegin(message) {
  * @param message
  */
 function importPlanDayEnd(message) {
-	var obj = JSON.parse(message.body);
-	 console.log('~~~~~~~~~~~ 收到每天计划结束事件:'+JSON.parse(message.body));
+	var obj = JSON.parse(message);
+	 console.log('~~~~~~~~~~~ 收到每天计划结束事件:'+JSON.parse(message));
 	_PlanViewPage.finishPlanDay(obj);
 }
 
@@ -37,7 +42,7 @@ function importPlanDayEnd(message) {
  * @param message
  */
 function importPlanEnd(message) {
-	 console.log('~~~~~~~~~~~ 收到计划全部结束消息:'+JSON.parse(message.body));
+	 console.log('~~~~~~~~~~~ 收到计划全部结束消息:'+JSON.parse(message));
 	_PlanViewPage.finishPlan();
 }
 
@@ -56,10 +61,10 @@ var PlanViewPage = function(){
 		_plan_view_table_1.find("tr:gt(0)").remove();//清除计划列表所有数据
 		
 		// 获取页面传值
-		_param_schemeId = $("#schemeVal_hidden");
-		var schemeText = $("#schemeText_hidden");
-		_param_days = $("#days_hidden");
-		_param_startDate = $("#startDate_hidden");
+		_param_schemeId = $("#schemeVal_hidden").val();
+		var schemeText = $("#schemeText_hidden").val();
+		_param_days = $("#days_hidden").val();
+		_param_startDate = $("#startDate_hidden").val();
 		
 		
 		_self.renderJlmxHightChart();
@@ -74,6 +79,12 @@ var PlanViewPage = function(){
 	//调用执行开行计划
 	_self.importTrainPlan = function() {
 		commonJsScreenLock();//锁屏
+		
+		console.dir(JSON.stringify({
+				startDate : _param_startDate,
+				dayCount:_param_days,
+				schemeId:_param_schemeId
+			}));
 		
 		$.ajax({
 			url : basePath+"/plan/importTrainPlan",

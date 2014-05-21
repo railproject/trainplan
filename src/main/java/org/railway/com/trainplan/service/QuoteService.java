@@ -65,23 +65,27 @@ public class QuoteService  {
 			//推一个开始的消息
 			this.sendMsgService.sendMessage(message, pageUrl, "importPlanDayBegin");
 			//this.messagingTemplate.convertAndSend("/railwayplan/import.plan.day.begin", quote);
-			
+			System.err.println("message111==" + message);
 		}else if("plan.day.end".equals(messageType)){
 			//处理一天的数据结束
 			 
 			quote.setRefreshtime(DateUtil.getStringTimestamp(System.currentTimeMillis()));
 			message = objectMapper.writeValueAsString(quote);
+			System.err.println("message222==" + message);
 			this.sendMsgService.sendMessage(message, pageUrl, "importPlanDayEnd");
 			//this.messagingTemplate.convertAndSend("/railwayplan/import.plan.day.end", quote);
 		}else if("plan.end".equals(messageType)){
 			
 			//全部处理完成
 			this.sendMsgService.sendMessage(message, pageUrl, "importPlanEnd");
+			System.err.println("message333==" + message);
 			//this.messagingTemplate.convertAndSend("/railwayplan/import.plan.end", DateUtil.getStringTimestamp(System.currentTimeMillis()));
 		}else if("plan.getInfo.begin".equals(messageType)){
 			//调用后台接口之前
-			this.sendMsgService.sendMessage(DateUtil.getStringTimestamp(System.currentTimeMillis()), pageUrl, "importPlanBegin");
+//			this.sendMsgService.sendMessage(DateUtil.getStringTimestamp(System.currentTimeMillis()), pageUrl, "importPlanBegin");
+			this.sendMsgService.sendMessage(message, pageUrl, "importPlanBegin");
 			//this.messagingTemplate.convertAndSend("/railwayplan/import.plan.getInfo.begin", DateUtil.getStringTimestamp(System.currentTimeMillis()));
+			System.err.println("message444==" + message);
 		}
 	}
 	
