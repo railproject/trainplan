@@ -413,9 +413,7 @@ var _plan_runline_batch_select_lj = $("#plan_runline_batch_select_lj");
 var _myProgressModal =  $("#myProgressModal");
 var socket = null;
 var stompClient = null;
-var basePath = null;
 $(function(){
-	basePath = $("#basePath_hidden").val();
 	_PlanConstructionPage = new PlanConstructionPage();  
 	
 	//车次详情div 车次查询按钮增加事件

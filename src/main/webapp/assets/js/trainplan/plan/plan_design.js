@@ -57,9 +57,7 @@ var _input_plan_design_startDate = $("#input_plan_design_startDate");//计划开
 var _input_plan_design_scheme = $("#input_plan_design_scheme");//方案
 var _input_plan_design_days = $("#input_plan_design_days");//天数
 
-var basePath = null;
 $(function(){
-	basePath = $("#basePath_hidden").val();
 	_planDesignPage = new PlanDesignPage();
 	var currdays = _planDesignPage.currdate();
 	

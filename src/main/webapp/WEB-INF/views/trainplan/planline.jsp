@@ -17,10 +17,7 @@ System.err.println("runline="+runline);
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>运行线对比</title>
-    <link type="text/css" href="<%=basePath %>/assets/css/custom-bootstrap.css" rel="stylesheet"/>
-    <link type="text/css" href="<%=basePath %>/assets/css/font-awesome.min.css" rel="stylesheet"/>
-    <link type="text/css" href="<%=basePath %>/assets/css/minified/jquery-ui.min.css" rel="stylesheet"/>
-    <link type="text/css" href="<%=basePath %>/assets/css/style.css" rel="stylesheet"/>
+<jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 </head>
 <body>
 <!--分栏框开始-->
@@ -68,13 +65,9 @@ canvasData.runline = <%=runline%>;//运行线
 
 
 
-<script src="<%=basePath %>/assets/js/jquery.js"></script>
-<script src="<%=basePath %>/assets/js/html5.js"></script>
-<script src="<%=basePath %>/assets/js/moment.min.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/train_runline_data.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/train_runline_canvas.js"></script>
 
 </body>

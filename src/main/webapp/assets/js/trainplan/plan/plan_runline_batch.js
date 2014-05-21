@@ -286,9 +286,7 @@ var _plan_runline_batch_table_ljtjxx_head = $("#plan_runline_batch_table_ljtjxx_
 var _plan_runline_batch_table_ljtjxx_body = $("#plan_runline_batch_table_ljtjxx_body");//统计信息表体
 var _plan_runline_batch_input_days = $("#plan_runline_batch_input_days");//天数输入框
 
-var basePath = null;
 $(function(){
-	basePath = $("#basePath_hidden").val();
 	_PlanRunLineBatchPage = new PlanRunLineBatchPage();
 
 	//车次详情div 车次查询按钮增加事件

@@ -1,38 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+
+
 <% 
 String basePath = request.getContextPath();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta http-equiv="Cache-Control" content="no-store"/>
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
-
 <title>核查编制图定开行</title>
-<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/custom-bootstrap.css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/font-awesome.min.css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/datepicker.css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/style.css"/>
-
-
-
-
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
-
+<jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 
 </head>
 <body class="Iframe_body">
 <!--以上为必须要的-->
+
 
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
@@ -120,11 +102,13 @@ String basePath = request.getContextPath();
       <div class="panel-body">
       	<div class="row" style="margin:-5px 0 10px 0;">
 	      <form class="form-horizontal" role="form">
-	        <button class="btn btn-primary" type="button" id="plan_review_btnQuery2">查询</button>
 	        <div class="pull-left">
 	          <div class="form-group" style="float:left;margin-left:0px;margin-bottom:0;">
 	            <div class="pull-left">
 	              <input type="text" class="form-control" style="width:180px;" placeholder="输入车次查询" id="plan_review_input_trainNbr">
+	            </div>
+	            <div class="pull-left">
+	              <button class="btn btn-primary" type="button" id="plan_review_btnQuery2">查询</button>
 	            </div>
 	          </div>
 	        </div>
@@ -211,12 +195,7 @@ String basePath = request.getContextPath();
 
 
 
-<!-- common.security.js 提供1.禁止直接访问非index页面功能 2.js获取项目路径 -->
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.security.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/pagination.js" type="text/javascript"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/plan/plan_review.js"></script>
 </body>
 </html>
