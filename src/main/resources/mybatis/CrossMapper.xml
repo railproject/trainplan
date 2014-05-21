@@ -337,17 +337,17 @@
 		AND check_time is not null
 		</if>
 	   <if test="unitCreateFlag == 0 ">
-		AND CREAT_TIME is null
+		AND CREAT_UNIT_TIME is null
 		</if>
 		 <if test="unitCreateFlag == 1 ">
-		AND CREAT_TIME is not null
+		AND CREAT_UNIT_TIME is not null
 		</if>
 	</select>
 	
 	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
-	  select m.*  from  (select 
+	    select * from (select ROWNUM AS num, m.*  from  (select 
 		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag,creat_time as createTime,
-	    case when creat_time is not null  then '1' else '0' end as unitCreateFlag,
+	    case when CREAT_UNIT_TIME is not null  then '1' else '0' end as unitCreateFlag,
         case when check_time is not null  then '1' else '0' end as checkFlag
 		 from BASE_CROSS
 		where 1=1 
@@ -367,13 +367,13 @@
 		AND check_time is not null
 		</if>
 	   <if test="unitCreateFlag == 0 ">
-		AND CREAT_TIME is null
+		AND CREAT_UNIT_TIME is null
 		</if>
 		 <if test="unitCreateFlag == 1 ">
-		AND CREAT_TIME is not null
+		AND CREAT_UNIT_TIME is not null
 		</if>
 		
-		 order by crossName ) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
+		 order by crossName ) m  ) where num >=#{rownumstart} AND num &lt;=#{rownumend} 
 		
 	</select>
 
@@ -393,7 +393,7 @@
   
   
    <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
-	  select m.*  from  (select 
+	  select * from (select ROWNUM AS num,m.*  from  (select 
 		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as marshallingName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag,GROUP_SERIAL_NBR as groupSerialNbr from UNIT_CROSS
 		where 1=1 
 		<if test="tokenVehBureau != null">
@@ -405,7 +405,7 @@
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
-		order by groupSerialNbr) m  where ROWNUM >=#{rownumstart} AND ROWNUM &lt;=#{rownumend} 
+		order by groupSerialNbr) m )  where num >=#{rownumstart} AND num &lt;=#{rownumend} 
 		
 	</select>
 	
@@ -430,8 +430,8 @@
 	</update>
  
  
-   <update id="updateCrossCreateTime" parameterType="map">
-		 update base_cross set creat_time = sysdate where base_cross_id in (${baseCrossIds})
+   <update id="updateCrossUnitCreateTime" parameterType="map">
+		 update base_cross set creat_unit_time = sysdate where base_cross_id in (${baseCrossIds})
 
   </update>
 	

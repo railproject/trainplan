@@ -111,10 +111,10 @@ public class CrossController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/checkCorssInfo", method = RequestMethod.GET)
-	public Result checkCorssInfo(HttpServletRequest request, HttpServletResponse response) throws Exception{
+	@RequestMapping(value = "/checkCorssInfo", method = RequestMethod.POST)
+	public Result checkCorssInfo(@RequestBody Map<String,Object> reqMap) throws Exception{
 		 Result result = new Result();
-		 String crossIds = StringUtil.objToStr(request.getParameter("crossIds"));
+		 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
 		 if(crossIds != null){
 			String[] crossIdsArray = crossIds.split(",");
 			int count = crossService.updateCorssCheckTime(crossIdsArray);
@@ -662,7 +662,7 @@ public class CrossController {
 					crossService.completeUnitCrossInfo(crossid);
 				}
 				//生成交路单元完成后，更改表base_cross中的creat_time字段的值
-				crossService.updateCrossCreateTime(crossIds);
+				crossService.updateCrossUnitCreateTime(crossIds);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
