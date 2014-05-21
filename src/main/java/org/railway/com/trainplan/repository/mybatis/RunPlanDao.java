@@ -8,11 +8,17 @@ import java.util.Map;
  */
 @MyBatisRepository
 public interface RunPlanDao {
-    List<Map<String, Object>> findRunPlan(Map<String ,Object> map);
+    List<Map<String, Object>> findRunPlan(Map<String, Object> map);
 
     List<Map<String, Object>> findRunPlanStnByTrain(String train_id);
 
     List<Map<String, Object>> findRunPlanByTrainIds(String train_ids);
 
     List<Map<String, Object>> findPlanLineSTNs(String train_ids);
+
+    List<Map<String, Object>> findRunPlanById(String id);
+
+    List<Map<String, Object>> checkTrainInfo(Map<String, Object> map);
+
+    List<Map<String, Object>> findPlanTimeTableByPlanId(String planId);
 }

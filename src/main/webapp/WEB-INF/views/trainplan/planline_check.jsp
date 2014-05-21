@@ -29,7 +29,7 @@
     <script type="text/javascript" src="${ctx}/assets/js/purl.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/knockout.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/moment.min.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/trainplan/audit.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/trainplan/planline_check.js"></script>
     <style>
         #hdleft_table table tr th{
             border-color:#dfe4ee;
@@ -57,17 +57,15 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-12 col-md-12 col-lg-12">
-                            <form class="form-inline" role="form">
+                            <form class="form-inline" role="form" data-bind="with: paramModel">
                                 <div class="input-group">
                                     <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
-                                    <button href="#" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">校验</button>
-                                    <select id="bureau" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="options: bureauList, optionsText: function(item) {
-                                        return item.name
-                                    }, value: bureau">
+                                    <button type="button" id="checkBtn" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px">校验</button>
+                                    <select id="bureau" class="form-control" style="width: 120px; margin-right: 10px; border-radius: 4px"
+                                            data-bind="options: bureauList, optionsCaption: '请选择路局', optionsText: 'name', optionsValue: 'code'">
                                     </select>
-                                    <button href="#" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">生成运行线</button>
-                                    <button href="#" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">客调审核</button>
-                                    <button href="#" class="btn btn-primary disabled" style="width: 100px; margin-right: 10px; border-radius: 4px" role="button">值班主任审核</button>
+                                    <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px">客调审核</button>
+                                    <button type="button" class="btn btn-primary disabled" style="width: 100px; margin-right: 10px; border-radius: 4px">值班主任审核</button>
                                 </div>
                             </form>
                         </div>
@@ -84,17 +82,19 @@
                     <div class="row">
                         <div class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
                             <div class="table-responsive">
-                                <table id="left_table" class="table table-bordered table-striped table-hover tableradius">
+                                <table id="plan_table" class="table table-bordered table-striped table-hover tableradius" data-bind="with: tableModel">
                                     <thead>
                                     <tr>
                                         <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox"/></th>
                                         <th rowspan="2" class="text-center">序号</th>
                                         <th rowspan="2" class="text-center">车次</th>
                                         <th rowspan="2" class="text-center">来源</th>
+                                        <th rowspan="2" class="text-center">是否高线</th>
                                         <th rowspan="2" class="text-center">始发站</th>
                                         <th rowspan="2" class="text-center">始发时间</th>
                                         <th rowspan="2" class="text-center">终到站</th>
                                         <th rowspan="2" class="text-center">终到时间</th>
+                                        <th rowspan="2" class="text-center">是否上图</th>
                                         <th colspan="3" class="text-center">校验项</th>
 
                                     </tr>
@@ -104,19 +104,21 @@
                                         <th class="text-center">经由</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody data-bind="foreach: planList">
                                     <tr>
-                                        <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox"/></td>
-                                        <td class="text-center"></td>
-                                        <td class="text-center"><a href="#"></a></td>
-                                        <td class="text-center"></td>
-                                        <td class="text-center"></td>
-                                        <td class="text-center"></td>
-                                        <td class="text-center"></td>
-                                        <td class="text-center"></td>
-                                        <td class="text-center"></td>
-                                        <td class="text-center"></td>
-                                        <td class="text-center"></td>
+                                        <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="value: id"/></td>
+                                        <td class="text-center" data-bind="text: $index() + 1"></td>
+                                        <td class="text-center"><a href="#" data-bind="text: name"></a></td>
+                                        <td class="text-center" data-bind="text: sourceType"></td>
+                                        <td class="text-center" data-bind="text: highLineFlag"></td>
+                                        <td class="text-center" data-bind="text: startStn"></td>
+                                        <td class="text-center" data-bind="text: startTime"></td>
+                                        <td class="text-center" data-bind="text: endStn"></td>
+                                        <td class="text-center" data-bind="text: endTime"></td>
+                                        <td class="text-center" data-bind="text: dailyLineFlag"></td>
+                                        <td class="text-center" data-bind="html: trainInfo"></td>
+                                        <td class="text-center" data-bind="html: timeTable"></td>
+                                        <td class="text-center" data-bind="html: routing"></td>
                                     </tr>
                                     </tbody>
                                 </table>
