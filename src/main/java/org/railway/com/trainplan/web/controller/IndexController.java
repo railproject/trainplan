@@ -37,7 +37,7 @@ public class IndexController {
 
     @RequestMapping(value = "audit", method = RequestMethod.GET)
     public String audit() {
-        return "trainplan/audit";
+        return "trainplan/planline_check";
     }
 
     @RequestMapping(value = "audit/plan/timetable/{bureau}/{train_id}", method = RequestMethod.GET)

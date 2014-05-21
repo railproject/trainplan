@@ -4,8 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
+import org.railway.com.trainplan.service.PlanLineService;
 import org.railway.com.trainplan.service.RunLineService;
 import org.railway.com.trainplan.service.RunPlanService;
+import org.railway.com.trainplan.web.dto.PlanLineCheckResultDto;
 import org.railway.com.trainplan.web.dto.RunLineDTO;
 import org.railway.com.trainplan.web.dto.RunPlanDTO;
 import org.railway.com.trainplan.web.dto.RunPlanSTNDTO;
@@ -34,9 +36,12 @@ public class AuditController {
     @Autowired
     private RunLineService runLineService;
 
+    @Autowired
+    private PlanLineService planLineService;
+
     @RequestMapping(value = "plan/runplan/{date}/{bureau}/{type}", method = RequestMethod.GET)
     public List<RunPlanDTO> getRunPlan(@PathVariable String date, @PathVariable String bureau, @PathVariable int type) {
-        logger.debug(String.format("-X GET plan/runplan/{}/{}/{}", date, bureau, type));
+        logger.debug(String.format("-X GET plan/runplan/{}/{}/{}", new Object[]{date, bureau, type}));
         List<RunPlanDTO> result = new ArrayList<RunPlanDTO>();
         List<Map<String, Object>> list =  runPlanService.findRunPlan(date, bureau, type);
         for(Map<String, Object> map: list) {
@@ -67,6 +72,17 @@ public class AuditController {
             runLineDTO.setRunDate(ld.toString("MM-dd"));
             result.add(runLineDTO);
         }
+        return result;
+    }
+
+    @RequestMapping(value = "plan/{planId}/line/{lineId}/check", method = RequestMethod.GET)
+    public PlanLineCheckResultDto checkPlanLine(@PathVariable String planId, @PathVariable String lineId) {
+        PlanLineCheckResultDto result = new PlanLineCheckResultDto();
+        // 检查列车信息
+        result.setIsTrainInfoMatch(planLineService.checkTrainInfo(planId, lineId));
+        // 检查时刻表
+        result.setIsTimeTableMatch(planLineService.checkTimeTable(planId, lineId));
+        // 检查经由
         return result;
     }
 }

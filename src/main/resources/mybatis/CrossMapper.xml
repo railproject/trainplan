@@ -346,11 +346,15 @@
 	
 	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	    select * from (select ROWNUM AS num, m.*  from  (select 
+	    BASE_CHART_ID as chartId,
 		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag,creat_time as createTime,
 	    case when CREAT_UNIT_TIME is not null  then '1' else '0' end as unitCreateFlag,
         case when check_time is not null  then '1' else '0' end as checkFlag
 		 from BASE_CROSS
 		where 1=1 
+		<if test="chartId != null">
+			AND BASE_CHART_ID= #{chartId}
+		</if>
 		<if test="tokenVehBureau != null">
 			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
 		</if>
@@ -435,4 +439,26 @@
 
   </update>
 	
+  <delete id="deleteCrossInfoForCrossIds" parameterType="map">
+      delete from base_cross where BASE_CROSS_ID in (${baseCrossIds})
+  </delete>
+  
+  <delete id="deleteCrossInfoTrainForCrossIds" parameterType="map">
+     delete from base_cross_train where BASE_CROSS_ID in (${baseCrossIds})
+  </delete>
+  
+   <delete id="deleteUnitCrossInfoTrainForCrossIds" parameterType="map">
+    delete from unit_cross_train where unit_cross_id in (select  unit_cross_id from unit_cross where base_cross_id in (${baseCrossIds}))
+
+  </delete>
+  
+   <delete id="deleteUnitCrossInfoForCrossIds" parameterType="map">
+       delete from unit_cross where base_cross_id in (${baseCrossIds})
+  </delete>
+  
+ 
+
+  
+  
+  
 </mapper>

@@ -351,4 +351,7 @@
 	  	 	<version>3.0.rc2</version>
 	  	</dependency>
 	</dependencies>
+    <build>
+        <finalName>${project.name}</finalName>
+    </build>
 </project>

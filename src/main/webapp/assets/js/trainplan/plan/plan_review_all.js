@@ -151,9 +151,7 @@ var _plan_review_all_btnQuery_ljtjxx = $("#plan_review_all_btnQuery_ljtjxx");
 var _plan_review_all_table_tjxx = $("#plan_review_all_table_tjxx");
 
 
-var basePath = null;
 $(function(){
-	basePath = $("#basePath_hidden").val();
 	_PlanReViewAllPage = new PlanReViewAllPage();
 	_PlanReViewAllPage.initPage();
 	

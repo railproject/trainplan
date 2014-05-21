@@ -21,7 +21,7 @@ function importPlanDayBegin(message) {
 	commonJsScreenUnLock();//屏幕解锁
 	
 	var obj = JSON.parse(message);
-	 console.log('~~~~~~~~~~~ 收到每天计划开始事件:'+JSON.parse(message));
+	 console.log('~~~~~~~~~~~ 收到每天计划开始事件:'+obj);
 	_PlanViewPage.startPlanDay(obj);
 }
 
@@ -33,7 +33,7 @@ function importPlanDayBegin(message) {
  */
 function importPlanDayEnd(message) {
 	var obj = JSON.parse(message);
-	 console.log('~~~~~~~~~~~ 收到每天计划结束事件:'+JSON.parse(message));
+	 console.log('~~~~~~~~~~~ 收到每天计划结束事件:'+obj);
 	_PlanViewPage.finishPlanDay(obj);
 }
 
@@ -429,14 +429,11 @@ var _hightChart_jlmx_jldata = [];	//交路data
 var _hightChart_jlmx_lcdata = [];	//列车data
 
 
-var socket = null;
-var stompClient = null;
-var basePath = null;
 $(function(){
+	//dwr初始值设定
 	dwr.engine.setActiveReverseAjax(true);//js中开启dwr推功能
 	dwr.engine.setNotifyServerOnPageUnload( true);//设置在页面关闭时，通知服务器销毁session
 	
-	basePath = $("#basePath_hidden").val();
 	_PlanViewPage = new PlanViewPage();
 //	_plan_view_div_palnDayDetail.hide(); //隐藏车次详情div
 	_plan_view_label_planErrorRecord.text("0");// 错误数总计0条

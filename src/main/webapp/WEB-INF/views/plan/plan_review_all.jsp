@@ -6,23 +6,8 @@ String basePath = request.getContextPath();
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>开行计划汇总</title>
-<!-- Bootstrap core CSS -->
-<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
-<!--font-awesome-->
-<link href="<%=basePath %>/assets/oldAssets/css/datepicker.css" rel="stylesheet">
-<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
-<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/datepicker.css">
-<!-- Custom styles for this template -->
-<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
+<jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 <script type="text/javascript">
 $(function () {
 	jQuery('#growl-success').click(function(){
@@ -63,10 +48,8 @@ $(function () {
 
 </script>
 
-<!--<script src="<%=basePath %>/assets/oldAssets/js/exporting.js"></script>-->
 </head>
 <body class="Iframe_body">
-<input id="basePath_hidden" type="hidden" value="<%=basePath %>">
 <!--以上为必须要的-->
 
 <ol class="breadcrumb">
@@ -83,12 +66,14 @@ $(function () {
         <div class="panel-body">
 		    <div class="row" style="margin:-5px 0 10px 0;">
 		      <form class="form-horizontal" role="form">
-		        <button class="btn btn-primary" type="button" id="plan_review_all_btnQuery_ljtjxx">查询</button>
 		        <div class="pull-left">
 		          <div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
 		            <label for="exampleInputEmail2" class="control-label pull-left"> 日期:&nbsp;</label>
 		            <div class="pull-left">
 		              <input type="text" class="form-control" style="width:110px;" placeholder="" id="plan_review_all_selectdate">
+		            </div>
+		            <div class="pull-left">
+		            	<button class="btn btn-primary" type="button" id="plan_review_all_btnQuery_ljtjxx">查询</button>
 		            </div>
 		          </div>
 		        </div>
@@ -141,9 +126,6 @@ $(function () {
 
 
 
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/plan/plan_review_all.js"></script>
 </body>
 </html>

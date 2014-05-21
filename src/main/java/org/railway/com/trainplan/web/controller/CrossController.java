@@ -105,6 +105,60 @@ public class CrossController {
 	}
 	
 	/**
+	 * 删除base_cross表和表base_cross_train中数据
+	 * @param reqMap
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deleteUnitCorssInfo", method = RequestMethod.POST)
+	public Result deleteUnitCorssInfo(@RequestBody Map<String,Object> reqMap){
+		 Result result = new Result();
+		 try{
+			 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
+			 if(crossIds != null){
+				String[] crossIdsArray = crossIds.split(",");
+				//先删除cross_train表中数据
+				int countTrain = crossService.deleteUnitCrossInfoTrainForCorssIds(crossIdsArray);
+				//删除unit_cross表中数据
+				int count = crossService.deleteUnitCrossInfoForCorssIds(crossIdsArray);
+			 }  
+		 }catch(Exception e){
+			 logger.error("deleteUnitCorssInfo error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	 
+		 }
+		 return result;
+	}
+	
+	/**
+	 * 删除base_cross表和表base_cross_train中数据
+	 * @param reqMap
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deleteCorssInfo", method = RequestMethod.POST)
+	public Result deleteCorssInfo(@RequestBody Map<String,Object> reqMap){
+		 Result result = new Result();
+		 try{
+			 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
+			 if(crossIds != null){
+				String[] crossIdsArray = crossIds.split(",");
+				//先删除base_cross_train表中数据
+				int countTrain = crossService.deleteCrossInfoTrainForCorssIds(crossIdsArray);
+				//删除base_cross表中数据
+				int count = crossService.deleteCrossInfoForCorssIds(crossIdsArray);
+			 }  
+		 }catch(Exception e){
+			 logger.error("deleteCorssInfo error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	 
+		 }
+		 return result;
+	}
+	
+	/**
 	 * 审核交路信息
 	 * @param request
 	 * @param response
@@ -112,14 +166,21 @@ public class CrossController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/checkCorssInfo", method = RequestMethod.POST)
-	public Result checkCorssInfo(@RequestBody Map<String,Object> reqMap) throws Exception{
+	public Result checkCorssInfo(@RequestBody Map<String,Object> reqMap) {
 		 Result result = new Result();
-		 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
-		 if(crossIds != null){
-			String[] crossIdsArray = crossIds.split(",");
-			int count = crossService.updateCorssCheckTime(crossIdsArray);
-			System.err.println("update--count==" + count);
+		 try{
+			 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
+			 if(crossIds != null){
+				String[] crossIdsArray = crossIds.split(",");
+				int count = crossService.updateCorssCheckTime(crossIdsArray);
+				System.err.println("update--count==" + count);
+			 } 
+		 }catch(Exception e){
+			 logger.error("checkCorssInfo error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
 		 }
+		
 		 return result;
 	}
 	/**

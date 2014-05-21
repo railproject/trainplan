@@ -6,26 +6,15 @@ String basePath = request.getContextPath();
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>新图初始化</title>
-<!-- Bootstrap core CSS -->
-<link href="<%=basePath %>/assets/oldAssets/css/custom-bootstrap.css" rel="stylesheet">
-<!--font-awesome-->
-<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/font-awesome.min.css"/>
-<link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/oldAssets/css/datepicker.css">
-<!-- Custom styles for this template -->
-<link href="<%=basePath %>/assets/oldAssets/css/style.css" rel="stylesheet">
-<link href="<%=basePath %>/assets/oldAssets/easyui/themes/default/easyui.css" rel="stylesheet">
+<jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 </head>
 <body class="Iframe_body">
-<input id="basePath_hidden" type="hidden" value="<%=basePath %>">
 
 <!--以上为必须要的-->
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
-  <li><a href="plan_design.html">新图初始化</a></li>
+  <li>>新图初始化</li>
 </ol>
 <!--分栏框开始-->
 <div class="panel panel-default">
@@ -95,17 +84,6 @@ String basePath = request.getContextPath();
 
 <!--分栏框结束--> 
 
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.js"></script> 
-<script src="<%=basePath %>/assets/oldAssets/js/html5.js"></script> 
-<script src="<%=basePath %>/assets/oldAssets/js/bootstrap.min.js"></script> 
-<script src="<%=basePath %>/assets/oldAssets/js/respond.min.js"></script> 
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.dataTables.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/easyui/jquery.easyui.min.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/highcharts.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
-<script src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/util.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/plan/plan_design.js"></script>
 </body>
 </html>
