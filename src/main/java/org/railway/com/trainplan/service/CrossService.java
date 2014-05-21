@@ -1,5 +1,6 @@
 package org.railway.com.trainplan.service;
 
+<<<<<<< HEAD
 import java.beans.IntrospectionException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,9 +26,13 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+=======
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+>>>>>>> 7dcade55941a1f96527c15e8c3aa781075700ffd
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -48,9 +53,16 @@ import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import java.beans.IntrospectionException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.*;
  
 @Service
 public class CrossService{
@@ -483,7 +495,7 @@ public class CrossService{
 	
 	/**
 	 * 通过UNITcrossid查询UNITcrossinfo信息
-	 * @param crossId
+	 * @param unitCrossId
 	 * @return
 	 */
 	public CrossInfo getUnitCrossInfoForUnitCrossid(String unitCrossId){
@@ -494,7 +506,7 @@ public class CrossService{
 	
 	/**
 	 * 通过crossid查询crosstrainInfo信息
-	 * @param crossId
+	 * @param unitCrossId
 	 * @return
 	 */
 	public List<CrossTrainInfo> getUnitCrossTrainInfoForUnitCrossid(String unitCrossId){

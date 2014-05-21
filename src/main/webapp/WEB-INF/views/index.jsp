@@ -115,6 +115,7 @@
                     <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-eye"></i>基本交路单元维护</a></li>
                     <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>日计划审核</a></li>
                     <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-external-link"></i>基本图查询</a></li>
+                    <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>次日计划审核</a></li>
                 </ul>
             </li>
             <li><a href="${ctx}/default/transfer/planConstruction" class="menu_one" target="contentFrame"><i class="fa fa-truck"></i>货运列车 </a></li>
