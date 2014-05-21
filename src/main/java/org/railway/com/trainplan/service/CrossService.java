@@ -1,37 +1,10 @@
 package org.railway.com.trainplan.service;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -52,9 +25,16 @@ import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import java.beans.IntrospectionException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.*;
  
 @Service
 public class CrossService{
@@ -487,7 +467,7 @@ public class CrossService{
 	
 	/**
 	 * 通过UNITcrossid查询UNITcrossinfo信息
-	 * @param crossId
+	 * @param unitCrossId
 	 * @return
 	 */
 	public CrossInfo getUnitCrossInfoForUnitCrossid(String unitCrossId){
@@ -499,7 +479,7 @@ public class CrossService{
 	
 	/**
 	 * 通过crossid查询crosstrainInfo信息
-	 * @param crossId
+	 * @param unitCrossId
 	 * @return
 	 */
 	public List<CrossTrainInfo> getUnitCrossTrainInfoForUnitCrossid(String unitCrossId){
