@@ -4,43 +4,10 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Cache-Control" content="no-store"/>
-    <meta http-equiv="Pragma" content="no-cache"/>
-    <meta http-equiv="Expires" content="0"/>
     <title>审核次日客车运行线</title>
-    <link type="text/css" href="${ctx}/assets/css/custom-bootstrap.css" rel="stylesheet"/>
-    <link type="text/css" href="${ctx}/assets/css/font-awesome.min.css" rel="stylesheet"/>
-    <link type="text/css" href="${ctx}/assets/css/minified/jquery-ui.min.css" rel="stylesheet"/>
-    <link type="text/css" href="${ctx}/assets/css/style.css" rel="stylesheet"/>
-    <script type="text/javascript" src="${ctx}/assets/js/jquery.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/html5.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/fuelUX.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/jquery.knob.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/jquery.gritter.min.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/jquery.sparkline.min.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/jquery.freezeheader.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/minified/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/datepicker.js"></script>
+    <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
     <script type="text/javascript" src="${ctx}/assets/js/purl.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/knockout.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/moment.min.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/planline_check.js"></script>
-    <style>
-        #hdleft_table table tr th{
-            border-color:#dfe4ee;
-            text-align:center;
-        }
-        .buttonlines {
-            width: 100px;
-            border-radius: 4px;
-            margin-right: 10px
-        }
-    </style>
 </head>
 <body class="Iframe-body">
 <ol class="breadcrumb">
