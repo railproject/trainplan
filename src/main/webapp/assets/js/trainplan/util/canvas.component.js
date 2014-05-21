@@ -133,8 +133,14 @@ var MyCanvasComponent = function(context, xDateArray, stnArray) {
 				fromY : _y+5
 			});
 
+			if (_obj.isCurrentBureau && _obj.isCurrentBureau == 1) {
+				_color = "#c101db";
+			} else {
+				_color = color;
+			}
+			
 			_context.lineWidth = 1;
-			_context.strokeStyle = color;//"green";
+			_context.strokeStyle = _color;//"green";
 			_context.dashedLineTo(_startX-10, _y, _xDashedLineEnd, _y, 10);//横虚线     10:虚线间隔10px
 		}
 	};
