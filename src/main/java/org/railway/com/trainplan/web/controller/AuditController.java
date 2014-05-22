@@ -39,6 +39,7 @@ public class AuditController {
         for(Map<String, Object> map: list) {
             result.add(new RunPlanDTO(map));
         }
+        logger.debug("getRunPlan end::::");
         return result;
     }
 
