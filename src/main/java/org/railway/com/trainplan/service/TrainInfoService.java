@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.service;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import org.javasimon.aop.Monitored;
@@ -17,7 +19,25 @@ public class TrainInfoService {
 	@Autowired
 	private BaseDao baseDao;
 	  
-	  public java.util.List<PlanTrain> getTrainTimes(Map<String, Object> params){
+	 
+	  /**
+	   * 根据方案id等信息查询列车信息列表
+	   */
+	  public List<PlanTrain> getTrainTimes(Map<String, Object> params){
 		 return baseDao.selectListBySql(Constants.TRAININFO_GETTRAININFO, params);
+	  }
+	  
+	  /**
+	   * 根据方案id等信息查询列车总数
+	   */
+	  public int getTrainInfoCount(Map<String,Object> params){
+		  List<Map<String,Object>> countList = baseDao.selectListBySql(Constants.TRAININFO_GETTRAININFO_COUNT, params);
+		  int count= 0;
+		  if(countList != null && countList.size() > 0){
+			  //只有一条数据
+			  Map<String,Object> map = countList.get(0);
+			  count = (( BigDecimal)map.get("COUNT")).intValue();
+		  }
+		  return count;
 	  }
 }

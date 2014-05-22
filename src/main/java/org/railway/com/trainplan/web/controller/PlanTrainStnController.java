@@ -20,10 +20,10 @@ import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.service.PlanTrainCheckService;
 import org.railway.com.trainplan.service.PlanTrainStnService;
 import org.railway.com.trainplan.service.RemoteService;
+import org.railway.com.trainplan.service.TrainInfoService;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
-import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,8 @@ public class PlanTrainStnController {
 	@Autowired
 	private CrossService crossService;
 	
-	
+	@Autowired
+	private TrainInfoService trainInfoService;
 	//fortest
 	@Autowired
 	private BaseDao baseDao;
@@ -127,8 +128,14 @@ public class PlanTrainStnController {
 		//result.setData(dto);
 		
 		//test
-		List<PlanTrainDto> list = planTrainStnService.getTrainShortInfo("20140502", "", 50);
-		result.setData(list);
+		//List<PlanTrainDto> list = planTrainStnService.getTrainShortInfo("20140502", "", 50);
+		//result.setData(list);
+		
+		
+		//test
+		int count = trainInfoService.getTrainInfoCount(reqMap);
+		System.err.println("count==" + count);
+		result.setData(trainInfoService.getTrainTimes(reqMap));
 		return result;
 	}
 	
