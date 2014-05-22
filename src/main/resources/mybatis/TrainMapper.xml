@@ -9,12 +9,12 @@
 	<select id="getTrainInfoTotalCount" parameterType="map" resultType="map">
 	  select count(*) as count from jhpt_rjh.m_trainlinetemp t where 1=1  AND t.scheme_id = #{chartId}
 	 	<if test="trainNbr != null">
-			AND t.name= #{trainNbr}
+			AND t.name like '%' || #{trainNbr} || '%'
 		</if>
-		<if test="startBureau != null">
+		<if test="startBureauShortName != null">
 		   AND t.source_bureau_shortname = #{startBureauShortName}
 		</if> 
-		<if test="startBureau != null">
+		<if test="endBureauShortName != null">
 		   AND t.target_bureau_shortname = #{endBureauShortName}
 		</if>
 	</select>
@@ -52,6 +52,8 @@
 		    select id as planTrainId,name as trainNbr,
         source_node_name as startStn, 
         target_node_name as endStn,
+        route_bureau_shortnames as routingBureauShortName,
+        relative_target_time_day as relativeTargetTimeDay,
         source_bureau_shortname as startBureau, 
         target_bureau_shortname as endBureau,
         source_bureau_name as startBureauFull,
@@ -60,12 +62,12 @@
         target_time as endTimeStr
         from jhpt_rjh.m_trainlinetemp t where 1=1  AND t.scheme_id = #{chartId}
     	<if test="trainNbr != null">
-			AND t.name= #{trainNbr}
+			AND t.name like '%' || #{trainNbr} || '%'
 		</if>
-		<if test="startBureau != null">
+		<if test="startBureauShortName != null">
 		   AND t.source_bureau_shortname = #{startBureauShortName}
 		</if> 
-		<if test="startBureau != null">
+		<if test="endBureauShortName != null">
 		   AND t.target_bureau_shortname = #{endBureauShortName}
 		</if>
 		   order by trainNbr
