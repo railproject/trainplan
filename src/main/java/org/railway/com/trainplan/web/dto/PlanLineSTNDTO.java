@@ -31,6 +31,7 @@ public class PlanLineSTNDto {
 
     private boolean owner;
 
+    public PlanLineSTNDto(){}
     public PlanLineSTNDto(Map<String, Object> map) {
         this.index = MapUtils.getIntValue(map, "STN_INDEX");
         this.stnName = MapUtils.getString(map, "STN_NAME");
