@@ -230,7 +230,7 @@ $(function(){
 			title: '失败消息通知!',
 			text: _common_div_error_message_text,
 			class_name: 'growl-danger',
-			image: '../../assets/img/screen.png',
+			image: basePath+'/assets/img/screen.png',
 			sticky: false,
 			time: ''
 		});
@@ -241,7 +241,7 @@ $(function(){
 			title: '警告消息通知!',
 			text: _common_div_warning_message_text,
 			class_name: 'growl-warning',
-			image: '../../assets/img/screen.png',
+			image: basePath+'/assets/img/screen.png',
 			sticky: false,
 			time: ''
 		});
@@ -252,7 +252,7 @@ $(function(){
 			title: '成功消息通知!',
 			text: _common_div_success_message_text,
 			class_name: 'growl-success',
-			image: '../../assets/img/screen.png',
+			image: basePath+'/assets/img/screen.png',
 			sticky: false,
 			time: ''
 		});
