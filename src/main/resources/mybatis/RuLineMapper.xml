@@ -25,4 +25,10 @@
         )
     </select>
 
+    <select id="findLineInfoByLineId" parameterType="string" resultType="map">
+        SELECT TL.NAME AS TRAIN_NAME, TL.SOURCE_BUREAU_NAME AS START_BUREAU, TL.TARGET_BUREAU_NAME AS END_BUREAU, TL.SOURCE_NODE_NAME AS START_STN,
+        TL.TARGET_NODE_NAME AS END_STN, TO_CHAR(TL.SOURCE_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, TO_CHAR(TL.TARGET_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME
+        FROM JHPT_RJH.M_TRAINLINE TL WHERE TL.ID = #{lineId}
+    </select>
+
 </mapper> 

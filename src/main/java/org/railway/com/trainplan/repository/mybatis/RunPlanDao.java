@@ -8,17 +8,31 @@ import java.util.Map;
  */
 @MyBatisRepository
 public interface RunPlanDao {
+    /**
+     * 查询审核表格数据
+     * @param map
+     * @return
+     */
     List<Map<String, Object>> findRunPlan(Map<String, Object> map);
 
-    List<Map<String, Object>> findRunPlanStnByTrain(String train_id);
-
-    List<Map<String, Object>> findRunPlanByTrainIds(String train_ids);
-
-    List<Map<String, Object>> findPlanLineSTNs(String train_ids);
-
-    List<Map<String, Object>> findRunPlanById(String id);
-
+    /**
+     * 校验列车信息
+     * @param map
+     * @return
+     */
     List<Map<String, Object>> checkTrainInfo(Map<String, Object> map);
 
+    /**
+     * 查询客运计划时刻表数据
+     * @param planId
+     * @return
+     */
     List<Map<String, Object>> findPlanTimeTableByPlanId(String planId);
+
+    /**
+     * 查询客运计划主体信息
+     * @param planId
+     * @return
+     */
+    Map<String, Object> findPlanInfoByPlanId(String planId);
 }

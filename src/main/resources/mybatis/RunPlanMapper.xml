@@ -4,6 +4,7 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="org.railway.com.trainplan.repository.mybatis.RunPlanDao">
 
+    <!-- 根据日期和所属局查询客运计划列表 -->
 	<select id="findRunPlan" parameterType="map" resultType="map">
         SELECT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, PT.START_STN AS START_STN, PT.END_STN AS END_STN, PT.RUN_DATE AS RUN_DATE,
         TO_CHAR(PT.START_TIME, 'mm-dd hh24:mi') AS START_TIME, TO_CHAR(PT.END_TIME, 'mm-dd hh24:mi') AS END_TIME,
@@ -17,25 +18,7 @@
         WHERE PT.START_BUREAU = '${bureau}' AND PT.RUN_DATE = '${date}' ORDER BY PT.TRAIN_NBR
 	</select>
 
-    <select id="findRunPlanStnByTrain" parameterType="string" resultType="map">
-        SELECT T.PLAN_TRAIN_STN_ID AS PLAN_TRAIN_STN_ID, T.STN_NAME AS STN_NAME,
-        T.ARR_TIME AS ARR_TIME, T.DPT_TIME AS DPT_TIME, T.TRACK_NAME AS TRACK_NAME,
-        T.PSG_FLG AS PSG_FLG, T.STN_BUREAU AS STN_BUREAU
-        FROM PLAN_TRAIN_STN T WHERE T.PLAN_TRAIN_ID = #{train_id} ORDER BY T.STN_SORT
-    </select>
-
-    <select id="findRunPlanByTrainIds" parameterType="string" resultType="map">
-        SELECT PT.TRAIN_NBR AS TRAIN_NBR, PT.START_STN AS START_STN, PT.END_STN AS END_STN, T.PLAN_TRAIN_STN_ID AS PLAN_TRAIN_STN_ID, T.STN_NAME AS STN_NAME,
-        T.ARR_TIME AS ARR_TIME, T.DPT_TIME AS DPT_TIME, T.TRACK_NAME AS TRACK_NAME, PT.RUN_DATE AS RUN_DATE,
-        T.PSG_FLG AS PSG_FLG, T.STN_BUREAU AS STN_BUREAU, T.RUN_DAYS AS RUN_DAYS
-        FROM PLAN_TRAIN PT INNER JOIN PLAN_TRAIN_STN T ON PT.PLAN_TRAIN_ID = T.PLAN_TRAIN_ID
-        WHERE T.PLAN_TRAIN_ID in (#{train_ids}) ORDER BY PT.TRAIN_NBR, T.STN_SORT
-    </select>
-
-    <select id="findPlanLineSTNs" parameterType="string" resultType="map">
-        SELECT PTS.STN_NAME AS STN_NAME FROM PLAN_TRAIN_STN PTS WHERE PTS.PLAN_TRAIN_ID = #{train_ids} ORDER BY PTS.STN_SORT
-    </select>
-
+    <!-- 校验列车主体信息： 客运计划vs日计划 -->
     <select id="checkTrainInfo" parameterType="string" resultType="map">
         SELECT CASE WHEN PT.TRAIN_NBR = TL.NAME THEN 1 ELSE 0 END AS TRAIN_NAME,
         CASE WHEN PT.START_BUREAU_FULL = TL.SOURCE_BUREAU_NAME THEN 1 ELSE 0 END AS START_BUREAU,
@@ -48,6 +31,7 @@
         WHERE PT.PLAN_TRAIN_ID = '${planId}' AND TL.ID = '${lineId}'
     </select>
 
+    <!-- 根据计划id查询计划时刻表 -->
     <select id="findPlanTimeTableByPlanId" parameterType="string" resultType="map">
         SELECT PTS.STN_SORT AS STN_INDEX, PTS.STN_NAME AS STN_NAME, PTS.STN_BUREAU_FULL AS BUREAU,
         PTS.TRACK_NAME AS TRACK_NAME, TO_CHAR(PTS.ARR_TIME, 'yyyy-mm-dd hh24:mi') AS ARR_TIME,
@@ -55,5 +39,12 @@
         FROM PLAN_TRAIN_STN PTS
         WHERE PTS.PLAN_TRAIN_ID = #{planId}
         ORDER BY PTS.STN_SORT
+    </select>
+
+    <!-- 根据计划id查询计划主体信息 -->
+    <select id="findPlanInfoByPlanId" parameterType="string" resultType="map">
+        SELECT PT.TRAIN_NBR AS TRAIN_NAME, PT.START_BUREAU_FULL AS START_BUREAU, PT.END_BUREAU_FULL AS END_BUREAU, PT.START_STN AS START_STN,
+        PT.END_STN AS END_STN, TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME
+        FROM PLAN_TRAIN PT WHERE PT.PLAN_TRAIN_ID = #{planId}
     </select>
 </mapper> 

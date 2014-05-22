@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.service;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.repository.mybatis.RunPlanDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +20,27 @@ import java.util.Map;
 @Monitored
 public class RunPlanService {
 
+    private static final Log logger = LogFactory.getLog(RunPlanService.class);
+
     @Autowired
-    private RunPlanDao runPlanDAO;
+    private RunPlanDao runPlanDao;
 
     public List<Map<String, Object>> findRunPlan(String date, String bureau, int type) {
+        logger.debug("findRunPlan::::");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("date", date);
         map.put("bureau", bureau);
 //        map.put("type", type);
-        return runPlanDAO.findRunPlan(map);
+        return runPlanDao.findRunPlan(map);
     }
 
-    public List<Map<String, Object>> findRunPlanStn(String train_id) {
-        return runPlanDAO.findRunPlanStnByTrain(train_id);
+    public List<Map<String, Object>> findPlanTimeTableByPlanId(String planId) {
+        logger.debug("findPlanTimeTableByPlanId::::");
+        return runPlanDao.findPlanTimeTableByPlanId(planId);
     }
 
-    public List<Map<String, Object>> findRunPlans(String train_ids) {
-        return runPlanDAO.findRunPlanByTrainIds(train_ids);
-    }
-
-    public List<Map<String, Object>> findPlanLineSTNs(String train_ids) {
-        return runPlanDAO.findPlanLineSTNs(train_ids);
+    public Map<String, Object> findPlanInfoByPlanId(String planId) {
+        logger.debug("findPlanInfoByPlanId::::");
+        return runPlanDao.findPlanInfoByPlanId(planId);
     }
 }
