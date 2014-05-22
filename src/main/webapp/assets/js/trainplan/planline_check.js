@@ -84,12 +84,13 @@ function TableModel() {
 
 
     self.autoCheck = function() {
+        $("#checkBtn").prop( "disabled", true )
         ko.utils.arrayForEach(self.planList(), function(plan) {
-//            if(plan.dailyLineFlag() != "已上图" || !plan.dailyLineId()) {
-//                plan.isTrainInfoMatch(-1);
-//                plan.isTimeTableMatch(-1);
-//                plan.isRoutingMatch(-1);
-//            } else {
+            if(plan.dailyLineFlag() != "已上图" || !plan.dailyLineId()) {
+                plan.isTrainInfoMatch(-1);
+                plan.isTimeTableMatch(-1);
+                plan.isRoutingMatch(-1);
+            } else {
                 $.ajax({
                     url: "audit/plan/" + plan.id() + "/line/" + plan.dailyLineId() + "/check",
                     method: "GET",
@@ -103,7 +104,7 @@ function TableModel() {
                 }).always(function() {
 
                 })
-//            }
+            }
         });
     }
 }
@@ -132,54 +133,146 @@ function Plan(dto) {
     self.isRoutingMatch = ko.observable(0);
 
     // computed
-    self.trainInfo = ko.computed(function() {
-        var html = "<button type=\"button\" class=\"btn btn-default\" style=\"padding: 0px 5px 0px 5px\">未知</button>";
+    self.isTrainInfoMatchClass = ko.computed(function() {
+        var className = "btn-default";
         switch(self.isTrainInfoMatch()) {
             case 0:
-                html = "<button type=\"button\" class=\"btn btn-warning\" style=\"padding: 0px 5px 0px 5px\">未校验</button>";
+                className = "btn-warning";
                 break;
             case 1:
-                html = "<button type=\"button\" class=\"btn btn-success\" style=\"padding: 0px 5px 0px 5px\">匹配</button>";
+                className = "btn-success";
                 break;
             case -1:
-                html = "<button type=\"button\" class=\"btn btn-danger\" style=\"padding: 0px 5px 0px 5px\">不匹配</button>";
+                className = "btn-danger";
                 break;
             default:
         }
-        return html;
+        return className;
     });
 
-    self.timeTable = ko.computed(function() {
-        var html = "<button type=\"button\" class=\"btn btn-default\" style=\"padding: 0px 5px 0px 5px\">未知</button>";
+    self.isTrainInfoMatchText = ko.computed(function() {
+        var txt = "未知";
+        switch(self.isTrainInfoMatch()) {
+            case 0:
+                txt = "未校验";
+                break;
+            case 1:
+                txt = "匹配";
+                break;
+            case -1:
+                txt = "不匹配";
+                break;
+            default:
+        }
+        return txt;
+    });
+
+    self.isTimeTableMatchClass = ko.computed(function() {
+        var className = "btn-default";
         switch(self.isTimeTableMatch()) {
             case 0:
-                html = "<button type=\"button\" class=\"btn btn-warning\" style=\"padding: 0px 5px 0px 5px\">未校验</button>";
+                className = "btn-warning";
                 break;
             case 1:
-                html = "<button type=\"button\" class=\"btn btn-success\" style=\"padding: 0px 5px 0px 5px\">匹配</button>";
+                className = "btn-success";
                 break;
             case -1:
-                html = "<button type=\"button\" class=\"btn btn-danger\" style=\"padding: 0px 5px 0px 5px\">不匹配</button>";
+                className = "btn-danger";
                 break;
             default:
         }
-        return html;
+        return className;
     });
 
-    self.routing = ko.computed(function() {
-        var html = "<button type=\"button\" class=\"btn btn-default\" style=\"padding: 0px 5px 0px 5px\">未知</button>";
-        switch(self.isRoutingMatch()) {
+    self.isTimeTableMatchText = ko.computed(function() {
+        var txt = "未知";
+        switch(self.isTimeTableMatch()) {
             case 0:
-                html = "<button type=\"button\" class=\"btn btn-warning\" style=\"padding: 0px 5px 0px 5px\">未校验</button>";
+                txt = "未校验";
                 break;
             case 1:
-                html = "<button type=\"button\" class=\"btn btn-success\" style=\"padding: 0px 5px 0px 5px\">匹配</button>";
+                txt = "匹配";
                 break;
             case -1:
-                html = "<button type=\"button\" class=\"btn btn-danger\" style=\"padding: 0px 5px 0px 5px\">不匹配</button>";
+                txt = "不匹配";
                 break;
             default:
         }
-        return html;
+        return txt;
     });
+
+    self.isRoutingMatchClass = ko.computed(function() {
+        var className = "btn-default";
+        switch(self.isRoutingMatch()) {
+            case 0:
+                className = "btn-warning";
+                break;
+            case 1:
+                className = "btn-success";
+                break;
+            case -1:
+                className = "btn-danger";
+                break;
+            default:
+        }
+        return className;
+    });
+
+    self.isRoutingMatchText = ko.computed(function() {
+        var txt = "未知";
+        switch(self.isRoutingMatch()) {
+            case 0:
+                txt = "未校验";
+                break;
+            case 1:
+                txt = "匹配";
+                break;
+            case -1:
+                txt = "不匹配";
+                break;
+            default:
+        }
+        return txt;
+    });
+
+    self._default = {
+        autoOpen: false,
+        height: $(window).height()/2,
+        width: 800,
+        title: "",
+        position: [($(window).width() - 800), 0],
+        maxWidth: 870,
+        maxHeight: $(window).height(),
+        model: true
+    };
+
+    self._getDialog = function(page, options) {
+        var _default = {
+            autoOpen: options.autoOpen || self._default.autoOpen,
+            height: options.height || self._default.height,
+            width: options.width || self._default.width,
+            title: options.title || self._default.title,
+            position: options.position || self._default.position,
+            maxWidth: self._default.maxWidth,
+            maxHeight: self._default.maxHeight,
+            closeText: "关闭",
+            model: true,
+            close: options.close || null
+        };
+        var $dialog = $('<div class="dialog" style="overflow: hidden"></div>')
+            .html('<iframe src="' + page + '" width="100%" height="100%" marginWidth=0 frameSpacing=0 marginHeight=0 scrolling=auto frameborder="0px"></iframe>')
+            .dialog(_default);
+        return $dialog;
+    };
+
+    // actions
+    self.showInfoComparePanel = function() {
+        var url = "audit/compare/traininfo/plan/" + self.id() + "/line/" + self.dailyLineId();
+        self._getDialog(url, {title: "客运计划列车信息 vs 日计划列车信息", width: 850}).dialog("open");
+    }
+
+    self.showTimeTableComparePanel = function() {
+        var url = "audit/compare/timetable/" + $("#bureau option:selected").val() + "/plan/" + self.id() + "/line/" + self.dailyLineId();
+        self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 850}).dialog("open");
+    }
 }

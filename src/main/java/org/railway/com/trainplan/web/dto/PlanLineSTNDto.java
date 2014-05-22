@@ -45,8 +45,14 @@ public class PlanLineSTNDto {
         this.stnName = MapUtils.getString(map, "STN_NAME");
         this.bureau = MapUtils.getString(map, "BUREAU");
         this.trackName = MapUtils.getString(map, "TRACK_NAME");
-        this.arrTime = MapUtils.getString(map, "ARR_TIME");
-        this.dptTime = MapUtils.getString(map, "DPT_TIME");
+        this.arrTime = MapUtils.getString(map, "ARR_TIME", "");
+        if(this.arrTime.length() > 0) {
+            this.arrTime = this.arrTime.substring(5, 16);
+        }
+        this.dptTime = MapUtils.getString(map, "DPT_TIME", "");
+        if(this.dptTime.length() > 0) {
+            this.dptTime = this.dptTime.substring(5, 16);
+        }
         this.owner = MapUtils.getString(map, "STN_BUREAU", "").equals(bureau);
     }
 
