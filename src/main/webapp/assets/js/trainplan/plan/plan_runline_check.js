@@ -64,7 +64,7 @@ function ApplicationModel() {
 	
 	self.init = function(){   
 		 $.ajax({
-				url : "plan/getSchemeList",
+				url : "jbtcx/querySchemes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -120,7 +120,8 @@ function ApplicationModel() {
 	};
 	self.loadTrainsForPage = function(startIndex, endIndex) {  
 		var trainNbr = self.searchModle().trainNbr();  
-		var startBureauCode = self.searchModle().startBureau();  
+		var startBureauShortName = self.searchModle().startBureau().shortName;  
+		var endBureauShortName = self.searchModle().endBureau().shortName;  
 		
 		var chart = self.searchModle().chart(); 
 		  
@@ -131,7 +132,8 @@ function ApplicationModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					startBureau : startBureauCode, 
+					startBureauShortName : startBureauShortName, 
+					endBureauShortName : endBureauShortName,
 					trainNbr : trainNbr,
 					chartId : chart.chartId
 				}),

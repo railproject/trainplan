@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="trainInfoDao"> 
+   <select id="getTrainInfo" parameterType="map" resultType="org.railway.com.trainplan.entity.PlanTrain">
+        select id as planTrainId,name as trainNbr,source_node_name as startStn, source_bureau_shortname as startBureauShortName, target_bureau_shortname as endBreauShortName,source_time,target_node_name,target_time from jhpt_rjh.m_trainlinetemp t where 1=1
+        <if test="chartId != null">
+        	AND t.scheme_id = #{chartId}
+		</if> 
+    	<if test="trainNbr != null">
+			AND t.name= #{trainNbr}
+		</if>
+		<if test="startBureau != null">
+		   AND source_bureau_shortname = #{startBureauShortName}
+		</if> 
+		<if test="startBureau != null">
+		   AND target_bureau_shortname = #{endBureauShortName}
+		</if>
+		   order by trainNbr
+   </select> 
+</mapper>
