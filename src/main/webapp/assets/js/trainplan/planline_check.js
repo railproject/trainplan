@@ -20,30 +20,68 @@ function ApplicationModel() {
 
     self.paramModel = ko.observable(new ParamModel(tableModel));
 
+    self.allBtn = ko.observable(false);
 
+
+    self.selectAllLev1 = function() {
+        ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
+            if(self.allBtn()) {
+                if(plan.needLev1()) {
+                    plan.isSelected(true);
+                }
+            } else {
+                plan.isSelected(false);
+            }
+        })
+        return true;
+    }
+
+    self.selectAllLev2 = function() {
+        ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
+            if(self.allBtn()) {
+                if(plan.needLev2()) {
+                    plan.isSelected(true);
+                }
+            } else {
+                plan.isSelected(false);
+            }
+        })
+        return true;
+    }
+
+    // 一级审核
+    self.checkLev1 = function() {
+        var data = new Array();
+        ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
+            if(plan.isSelected()) {
+                var paramObj = new Object();
+                paramObj.planId = plan.id();
+                paramObj.lineId = plan.dailyLineId();
+                data.push(paramObj);
+            }
+        })
+        $.ajax({
+            url: "audit/plan/checklev1",
+            method: "POST",
+            dataType: "json",
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(list) {
+            self.bureauList.removeAll();
+            for( var i = 0; i < list.length; i++) {
+                self.bureauList.push(list[i]);
+            }
+        }).fail(function() {
+
+        }).always(function() {
+        })
+
+    }
 }
 
 // ########### 页面参数模型 ###############
 function ParamModel(tableModel) {
     var self = this;
-
-    self.bureauList = ko.observableArray();
-
-    self.bureau = ko.observable();
-
-    $.ajax({
-        url: "base/bureau/all",
-        method: "GET",
-        contentType: "application/json; charset=UTF-8"
-    }).done(function(list) {
-        self.bureauList.removeAll();
-        for( var i = 0; i < list.length; i++) {
-            self.bureauList.push(list[i]);
-        }
-    }).fail(function() {
-
-    }).always(function() {
-    })
 
     $("#date_selector").datepicker({format: "yyyy-mm-dd"}).on('changeDate', function (ev) {
         tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
@@ -121,11 +159,14 @@ function Plan(dto) {
     self.endTime = ko.observable(dto.endTime);
     self.sourceType = ko.observable(dto.sourceType);
     self.dailyLineFlag = ko.observable(dto.dailyLineFlag);
-    self.dailyLineTime = ko.observable(dto.dailyLineTime);//data-toggle="tooltip" data-placement="top" title="" data-original-title="Tooltip on top"
+    self.dailyLineTime = ko.observable(dto.dailyLineTime);
     self.checkLev1 = ko.observable(dto.checkLev1);
     self.checkLev2 = ko.observable(dto.checkLev2);
     self.highLineFlag = ko.observable(dto.highLineFlag);
     self.dailyLineId = ko.observable(dto.dailyLineId);
+    self.lev1Checked = ko.observable(dto.lev1Checked);
+    self.lev2Checked = ko.observable(dto.lev2Checked);
+    self.isSelected = ko.observable(false);
 
     // 校验项 0：未校验，1：匹配，-1：不匹配
     self.isTrainInfoMatch = ko.observable(0);
@@ -233,6 +274,14 @@ function Plan(dto) {
             default:
         }
         return txt;
+    });
+
+    self.needLev1 = ko.computed(function() {
+        return self.lev1Checked() == 0;
+    });
+
+    self.needLev2 = ko.computed(function() {
+        return self.lev2Checked() == 0;
     });
 
     self._default = {

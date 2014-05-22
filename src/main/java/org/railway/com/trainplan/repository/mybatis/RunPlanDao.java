@@ -35,4 +35,6 @@ public interface RunPlanDao {
      * @return
      */
     Map<String, Object> findPlanInfoByPlanId(String planId);
+
+    List<Map<String, Object>> checkLev1(List<Map<String, Object>> list);
 }

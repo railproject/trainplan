@@ -2,15 +2,14 @@ package org.railway.com.trainplan.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.service.PlanLineService;
 import org.railway.com.trainplan.service.RunPlanService;
+import org.railway.com.trainplan.service.ShiroRealm;
 import org.railway.com.trainplan.web.dto.PlanLineCheckResultDto;
 import org.railway.com.trainplan.web.dto.RunPlanDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +30,12 @@ public class AuditController {
     @Autowired
     private PlanLineService planLineService;
 
-    @RequestMapping(value = "plan/runplan/{date}/{bureau}/{type}", method = RequestMethod.GET)
-    public List<RunPlanDTO> getRunPlan(@PathVariable String date, @PathVariable String bureau, @PathVariable int type) {
-        logger.debug(String.format("-X GET plan/runplan/{}/{}/{}", new Object[]{date, bureau, type}));
+    @RequestMapping(value = "plan/runplan/{date}/{type}", method = RequestMethod.GET)
+    public List<RunPlanDTO> getRunPlan(@PathVariable String date, @PathVariable int type) {
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        logger.debug(String.format("-X GET plan/runplan/", new Object[]{date, type}));
         List<RunPlanDTO> result = new ArrayList<RunPlanDTO>();
-        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, bureau, type);
+        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureau(), type);
         for(Map<String, Object> map: list) {
             result.add(new RunPlanDTO(map));
         }
@@ -53,5 +53,14 @@ public class AuditController {
         result.setIsTimeTableMatch(planLineService.checkTimeTable(planId, lineId));
         // 检查经由
         return result;
+    }
+
+
+    @RequestMapping(value = "plan/checklev1", method = RequestMethod.POST)
+    public String checkLev1(@RequestBody List<Map<String, Object>> data) {
+        logger.debug("data::::" + data);
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+
+        return "OK";
     }
 }
