@@ -16,9 +16,13 @@
 <script type="text/html" id="tablefooter-short-template">  
 	<span class="pagination pull-left">共<span data-bind="html: totalCount()"></span>条</td><td>当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span>
 	<ul data-bind="foreach: new Array(pageCount())" class="pagination pull-right" style="margin: 0px; display: block;">
+     
 	  <!-- ko if: $index() == 0 -->
 		<li data-bind="attr:{class: $parent.currentPage() == 0 ? 'disabled' : ''}"><a data-bind="text:'<<', click: $parent.loadPre"></a></li>
-	  <!-- /ko -->  
+	  <!-- /ko --> 
+	   <!-- ko if: $parent.pageCount() > 9 && $index() - 3 > 1 && $index() - 3 < 1--> 
+			obj.append('<li><a>......</a></li>'); 
+	  <!-- /ko -->    
 	  <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
 	  <!-- ko if: $index() == $parent.pageCount() - 1 -->
 		<li data-bind="attr:{class: $parent.currentPage() == $parent.pageCount()-1 ? 'disabled' : ''}" style="cursor:pointer"><a data-bind="text:'>>', click: $parent.loadNext"></a></li>
@@ -26,10 +30,13 @@
    </ul> 
 </script> */
 
-function PageModle(pageSize, fun){
+function PageModle(pageSize, fun, jg){
+	
 	var self = this; 
 	 
 	self.loadFunc = fun;
+	
+	self.jg = ko.observable(jg);
 	
 	self.currentIndex = ko.observable(0);
 	

@@ -13,6 +13,7 @@ import org.railway.com.trainplan.service.JBTCXService;
 import org.railway.com.trainplan.service.SchemeService;
 import org.railway.com.trainplan.service.TrainInfoService;
 import org.railway.com.trainplan.service.TrainTimeService;
+import org.railway.com.trainplan.service.dto.PagingResult;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -81,8 +82,8 @@ public class JBTCXController {
 //			//路局全称
 //			String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
 			//调用后台接口
-			List<PlanTrain> trains = trainInfoService.getTrainTimes(reqMap); 
-			result.setData(trains);
+			PagingResult page = new PagingResult(trainInfoService.getTrainInfoCount(reqMap), trainInfoService.getTrainsForPage(reqMap));
+			result.setData(page);
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
