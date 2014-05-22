@@ -23,7 +23,7 @@ public class TrainInfoService {
 	  /**
 	   * 根据方案id等信息查询列车信息列表
 	   */
-	  public List<PlanTrain> getTrainTimes(Map<String, Object> params){
+	  public List<PlanTrain> getTrains(Map<String, Object> params){
 		 return baseDao.selectListBySql(Constants.TRAININFO_GETTRAININFO, params);
 	  }
 	  

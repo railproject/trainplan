@@ -158,6 +158,18 @@ public class PlanTrainStnService {
 		return returnMap;
 	}
 
+	
+	/**
+	 * 根据方案id查询列车并根据列车id查询列车时刻表
+	 * @param schemeId 方案id
+	 * @param runDate格式 yyyy-mm-dd
+	 * @return
+	 */
+	public List<TrainlineTemplateDto>  getTrainsWithSchemeId(String schemeId,String runDate){
+		   List<TrainlineTemplateDto> trainsList = new ArrayList<TrainlineTemplateDto>();
+		   
+		   return trainsList;
+	}
 	/**
 	 * 将后台接口返回数据存入本地PLAN_TRAIN和PLAN_TRAIN_STN库中
 	 * @param list

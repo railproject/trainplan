@@ -14,6 +14,7 @@ import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.Ljzd;
+import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.CrossService;
@@ -21,6 +22,7 @@ import org.railway.com.trainplan.service.PlanTrainCheckService;
 import org.railway.com.trainplan.service.PlanTrainStnService;
 import org.railway.com.trainplan.service.RemoteService;
 import org.railway.com.trainplan.service.TrainInfoService;
+import org.railway.com.trainplan.service.TrainTimeService;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
@@ -60,6 +62,9 @@ public class PlanTrainStnController {
 	
 	@Autowired
 	private TrainInfoService trainInfoService;
+	
+	@Autowired
+	private TrainTimeService trainTimeService;
 	//fortest
 	@Autowired
 	private BaseDao baseDao;
@@ -133,9 +138,15 @@ public class PlanTrainStnController {
 		
 		
 		//test
-		int count = trainInfoService.getTrainInfoCount(reqMap);
+		/*int count = trainInfoService.getTrainInfoCount(reqMap);
 		System.err.println("count==" + count);
-		result.setData(trainInfoService.getTrainTimes(reqMap));
+		result.setData(trainInfoService.getTrains(reqMap));*/
+		
+		
+		//test
+		String trainId = StringUtil.objToStr(reqMap.get("trainId"));
+		List<TrainTimeInfo> list = trainTimeService.getTrainTimes(trainId);
+		result.setData(list);
 		return result;
 	}
 	
