@@ -1,15 +1,18 @@
 package org.railway.com.trainplan.web.controller;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
-import org.railway.com.trainplan.common.utils.DateUtil;
-import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.PlanTrain;
+import org.railway.com.trainplan.entity.SchemeInfo;
+import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.service.JBTCXService;
+import org.railway.com.trainplan.service.SchemeService;
+import org.railway.com.trainplan.service.TrainInfoService;
+import org.railway.com.trainplan.service.TrainTimeService;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,10 +32,39 @@ public class JBTCXController {
 	@Autowired
 	private JBTCXService jbtcxService;
 	
+	@Autowired
+	private SchemeService schemeService;
+	
+	@Autowired
+	private TrainTimeService trainTimeService;
+	
+	@Autowired
+	private TrainInfoService trainInfoService;
+	
 	 @RequestMapping(method = RequestMethod.GET)
      public String content() {
 		 return "plan/plan_runline_check";
      }
+	 
+		@ResponseBody
+		@RequestMapping(value = "/querySchemes", method = RequestMethod.POST)
+		public Result querySchemes(@RequestBody Map<String,Object> reqMap){
+			Result result = new Result();
+			try{
+				System.err.println("queryConstructionDetail~~reqMap="+reqMap);
+				  
+//				//路局全称
+//				String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
+				//调用后台接口
+				List<SchemeInfo> schemeInfos = schemeService.getSchemes();
+				result.setData(schemeInfos);
+			}catch(Exception e){
+				logger.error(e.getMessage(), e);
+				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+			}
+			return result;
+		} 
 	 
 	/**
 	 * 统计路局运行车次信息
@@ -49,10 +81,28 @@ public class JBTCXController {
 //			//路局全称
 //			String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
 			//调用后台接口
-			String string = jbtcxService.getTrans(reqMap);
-			Map map = new HashedMap();
-			map.put("result", string);
-			result.setData(map);
+			List<PlanTrain> trains = trainInfoService.getTrainTimes(reqMap); 
+			result.setData(trains);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		return result;
+	} 
+	
+	@ResponseBody
+	@RequestMapping(value = "/queryTrainTimes", method = RequestMethod.POST)
+	public Result queryTrainTimes(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			System.err.println("queryTrainTimes~~reqMap="+reqMap);
+			  
+//			//路局全称
+//			String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
+			//调用后台接口
+			List<TrainTimeInfo> times = trainTimeService.getTrainTimes(reqMap.get("trainId").toString());
+			result.setData(times);
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
