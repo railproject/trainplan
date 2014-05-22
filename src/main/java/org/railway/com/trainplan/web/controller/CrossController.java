@@ -1,16 +1,6 @@
 package org.railway.com.trainplan.web.controller;
 
-import java.beans.IntrospectionException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -23,18 +13,8 @@ import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.service.RemoteService;
-import org.railway.com.trainplan.service.dto.BaseCrossDto;
-import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
-import org.railway.com.trainplan.service.dto.PagingResult;
-import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
-import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
-import org.railway.com.trainplan.web.dto.CrossRelationDto;
-import org.railway.com.trainplan.web.dto.PlanLineGrid;
-import org.railway.com.trainplan.web.dto.PlanLineGridX;
-import org.railway.com.trainplan.web.dto.PlanLineGridY;
-import org.railway.com.trainplan.web.dto.PlanLineSTNDTO;
-import org.railway.com.trainplan.web.dto.Result;
-import org.railway.com.trainplan.web.dto.TrainInfoDto;
+import org.railway.com.trainplan.service.dto.*;
+import org.railway.com.trainplan.web.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +25,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
  
 
@@ -85,22 +73,12 @@ public class CrossController {
 			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay, chartName);
 			  	}  
  
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IntrospectionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+				result.setCode("401");
+				result.setMessage("上传失败");
+			}  
 		return result;
 	}
 	
@@ -160,8 +138,6 @@ public class CrossController {
 	
 	/**
 	 * 审核交路信息
-	 * @param request
-	 * @param response
 	 * @return
 	 */
 	@ResponseBody
@@ -185,7 +161,6 @@ public class CrossController {
 	}
 	/**
 	 * 提供画交路图形的数据
-	 * @param reqMap
 	 * @return
 	 */
 	@ResponseBody
@@ -242,7 +217,6 @@ public class CrossController {
 	
 	/**
 	 * 提供画交路图形的数据
-	 * @param reqMap
 	 * @return
 	 */
 	@ResponseBody
@@ -285,7 +259,7 @@ public class CrossController {
 	
 	/**
 	 * 组装列车信息
-	 * @param TrainInfoDto 从接口返回来的列车信息对象
+	 * @param trainDto 从接口返回来的列车信息对象
 	 * @param runDate  列车始发时间，格式yyyy-mm-dd
 	 * @return 组装后的列车信息，主要是将列车始发时间添加到经由站始发日期中
 	 */
@@ -363,7 +337,7 @@ public class CrossController {
 	
 	/**
 	 * 提供一个交路信息的画图数据
-	 * @param boolean isProvideGrid 是否组装坐标
+	 * @param isProvideGrid 是否组装坐标
 	 * @param type cross:交路  unitcross：交路单元
 	 * @return
 	 */
@@ -502,7 +476,6 @@ public class CrossController {
 	/**
 	 * 组装接续关系
 	 * @param trains
-	 * @param listCrossTrain 列车对应的信息列表，主要是通过车次找到对应的dayGap
 	 * @return
 	 */
 	private List<CrossRelationDto> getJxgx(List<TrainInfoDto> trains){

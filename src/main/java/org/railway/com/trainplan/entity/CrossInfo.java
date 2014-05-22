@@ -19,7 +19,6 @@ public class CrossInfo {
 	
 	private String crossIdForExcel;
 	
-    private String startStn;
 	private String highlineRule;
 	private String commonlineRule;
 	private int cutOld;
@@ -57,6 +56,9 @@ public class CrossInfo {
 	private String createTime ;
 	private String chartId;
 	private String chartName;
+	
+	
+	private String startStn;
 	/****以下字段unit_cross表用到  ****/
 	//unit_cross表主键
 	private String unitCrossId;
@@ -71,7 +73,12 @@ public class CrossInfo {
 	public void setCrossIdForExcel(String crossIdForExcel) {
 		
 	}
-	 
+	public String getStartStn() {
+		return startStn;
+	}
+	public void setStartStn(String startStn) {
+		this.startStn = startStn;
+	} 
 	public String getCrossId() {
 		return crossId;
 	}
@@ -324,14 +331,6 @@ public class CrossInfo {
 	public static void main(String args[]){
 		System.err.println(new Date());
 		
-	}
-	public String getStartStn() {
-		return startStn;
-	}
-	public void setStartStn(String startStn) {
-		this.startStn = startStn;
-	}
-	
-	
+	} 
 
 }

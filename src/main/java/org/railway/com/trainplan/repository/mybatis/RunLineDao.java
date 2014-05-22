@@ -9,7 +9,17 @@ import java.util.Map;
 @MyBatisRepository
 public interface RunLineDao {
 
-    List<Map<String, Object>> findRunLineById(String id);
-
+    /**
+     * 查询运行线时刻表信息
+     * @param lineId
+     * @return
+     */
     List<Map<String, Object>> findLineTimeTableByLineId(String lineId);
+
+    /**
+     * 查询日计划主体信息
+     * @param lineId
+     * @return
+     */
+    Map<String, Object> findLineInfoByLineId(String lineId);
 }

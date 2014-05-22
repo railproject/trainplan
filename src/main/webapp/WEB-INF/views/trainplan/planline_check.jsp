@@ -4,12 +4,6 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Cache-Control" content="no-store"/>
-    <meta http-equiv="Pragma" content="no-cache"/>
-    <meta http-equiv="Expires" content="0"/>
     <title>审核次日客车运行线</title>
     <link type="text/css" href="${ctx}/assets/css/custom-bootstrap.css" rel="stylesheet"/>
     <link type="text/css" href="${ctx}/assets/css/font-awesome.min.css" rel="stylesheet"/>
@@ -30,17 +24,6 @@
     <script type="text/javascript" src="${ctx}/assets/js/knockout.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/moment.min.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/planline_check.js"></script>
-    <style>
-        #hdleft_table table tr th{
-            border-color:#dfe4ee;
-            text-align:center;
-        }
-        .buttonlines {
-            width: 100px;
-            border-radius: 4px;
-            margin-right: 10px
-        }
-    </style>
 </head>
 <body class="Iframe-body">
 <ol class="breadcrumb">
@@ -116,9 +99,15 @@
                                         <td class="text-center" data-bind="text: endStn"></td>
                                         <td class="text-center" data-bind="text: endTime"></td>
                                         <td class="text-center" data-bind="text: dailyLineFlag"></td>
-                                        <td class="text-center" data-bind="html: trainInfo"></td>
-                                        <td class="text-center" data-bind="html: timeTable"></td>
-                                        <td class="text-center" data-bind="html: routing"></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTrainInfoMatchClass, text: isTrainInfoMatchText, click: showInfoComparePanel"></button>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTimeTableMatchClass, text: isTimeTableMatchText, click: showTimeTableComparePanel"></button>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isRoutingMatchClass, text: isRoutingMatchText"></button>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>

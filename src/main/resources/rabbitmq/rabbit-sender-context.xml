@@ -11,7 +11,7 @@
             http://www.springframework.org/schema/rabbit
                 http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd"> 
  
-	 <rabbit:connection-factory id="connectionFactory" host="localhost" virtual-host="crec" username="crec" password="crec2014" />
+	 <rabbit:connection-factory id="connectionFactory" host="10.1.186.114" virtual-host="crec" username="crec" password="crec2014" />
  
     <rabbit:admin connection-factory="connectionFactory" />
     <!-- 定义队列 -->
