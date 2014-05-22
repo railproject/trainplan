@@ -25,6 +25,7 @@ import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.web.dto.Result;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -45,7 +46,7 @@ public class PlanTrainStnController {
 	//private QuoteService quoteService;
 
 	//@Autowired
-	//private AmqpTemplate amqpTemplate;
+	private AmqpTemplate amqpTemplate;
 	
 	@Autowired
 	private PlanTrainCheckService planTrainCheckService;
@@ -56,6 +57,8 @@ public class PlanTrainStnController {
 	
 	@Autowired
 	private CrossService crossService;
+	
+	
 	//fortest
 	@Autowired
 	private BaseDao baseDao;
@@ -118,10 +121,14 @@ public class PlanTrainStnController {
 			e.printStackTrace();
 		}*/
 		
-		String baseTrainId = reqMap.get("baseTrainId").toString();
+		/*String baseTrainId = reqMap.get("baseTrainId").toString();
 		//测试根据车次查询车次信息
-		TrainlineTemplateDto dto = remoteService.getTrainLinesInfoWithId(baseTrainId);
-		result.setData(dto);
+		TrainlineTemplateDto dto = remoteService.getTrainLinesInfoWithId(baseTrainId);*/
+		//result.setData(dto);
+		
+		//test
+		List<PlanTrainDto> list = planTrainStnService.getTrainShortInfo("20140502", "", 50);
+		result.setData(list);
 		return result;
 	}
 	
@@ -168,7 +175,7 @@ public class PlanTrainStnController {
 			String jsonStr = combinationMessage(listDto);
 			System.err.println("jsonStr====" + jsonStr);
 			//向rabbit发送消息
-			//amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
 		}
 		}catch(Exception e){
 			logger.error("batchHandleTrainLines error==" + e.getMessage());
@@ -197,7 +204,7 @@ public class PlanTrainStnController {
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(runDate,startBureauFull);
 			String jsonStr = combinationMessage(listDto);
 			//向rabbit发送消息
-			//amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
 			
 	    }catch(Exception e){
 	    	logger.error("handleTrainLines error==" + e.getMessage());

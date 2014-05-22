@@ -47,15 +47,15 @@ public class PlanTrainStnService {
     private BaseDao baseDao;
     
     /**
-	 * 更新数据表plan_train中字段daylyplan_flag的值
+	 * 更新数据表plan_train中字段daylyplan_flag,的值
 	 * @param base_train_id
 	 * @return
 	 * @throws Exception
 	 */
    
-    public Result updatePlanTrainDaylyPlanFlag(String base_train_id) throws Exception {
+    public Result updatePlanTrainDaylyPlanFlag(Map<String,Object> reqMap) throws Exception {
     	Result result = new Result();
-    	 baseDao.updateBySql(Constants.TRAINPLANDAO_UPDATE_PLANFLAG, base_train_id);
+    	 baseDao.updateBySql(Constants.TRAINPLANDAO_UPDATE_PLANFLAG, reqMap);
     	return result;
     }
     /**
@@ -119,7 +119,7 @@ public class PlanTrainStnService {
 		if (listMap != null && listMap.size() > 0) {
 			for (Map<String, Object> map : listMap) {
 				PlanTrainDto dto = new PlanTrainDto();
-				dto.setPlanTrainId((BigDecimal) (map.get("PLAN_TRAIN_ID")));
+				dto.setPlanTrainId(StringUtil.objToStr(map.get("PLAN_TRAIN_ID")));
 				dto.setEndStn(StringUtil.objToStr(map.get("END_STN")));
 				dto.setRunDate(StringUtil.objToStr(map.get("RUN_DATE")));
 				dto.setStartStn(StringUtil.objToStr(map.get("START_STN")));
@@ -144,7 +144,7 @@ public class PlanTrainStnService {
 		
 		
 		// 调用后台接口，获取数据
-		final List<TrainlineTemplateDto> list = remoteService.getTrainLineInfoFromSchemeId(
+		 List<TrainlineTemplateDto> list = remoteService.getTrainLineInfoFromSchemeId(
 				schemeId, startDate);
 		
 		System.err.println("importTrainPlan--list.size==" + list.size());
