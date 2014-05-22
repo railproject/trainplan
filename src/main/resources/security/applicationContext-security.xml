@@ -25,18 +25,7 @@
         <property name="successUrl" value="/index" />
         <property name="filterChainDefinitions">
             <value>
-                /login = authc
-                /logout = logout
-                /assets/** = anon
-                /audit = user
-                /audit/** = anon
-                /user/** = anon
-                /index = user
-                /cross/** = anon
-                /plan/** = anon
-                /message/** = anon
-                /dwr/** = anon
-                /** = authc
+             
             </value>
         </property>
     </bean>
