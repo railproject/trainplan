@@ -45,7 +45,16 @@ public class PlanTrain implements Serializable{
 
 	private String startBureauFull;//始发局全称
 	private String jylj;//经由路局  如：“京,济,上”
+	//列车种类：货运，客运
+	private String operation;
 	
+	
+	public String getOperation() {
+		return operation;
+	}
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
 	//@Id
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	//@Column(name = "PLAN_TRAIN_ID", unique = true, nullable = false)

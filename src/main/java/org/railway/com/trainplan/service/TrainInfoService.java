@@ -21,12 +21,17 @@ public class TrainInfoService {
 	  
 	 
 	  /**
+	   * 根据方案id等信息查询列车信息列表(分页)
+	   */
+	  public List<PlanTrain> getTrainsForPage(Map<String, Object> params){
+		 return baseDao.selectListBySql(Constants.TRAININFO_GETTRAININFO_PAGE, params);
+	  }
+	  /**
 	   * 根据方案id等信息查询列车信息列表
 	   */
 	  public List<PlanTrain> getTrains(Map<String, Object> params){
 		 return baseDao.selectListBySql(Constants.TRAININFO_GETTRAININFO, params);
 	  }
-	  
 	  /**
 	   * 根据方案id等信息查询列车总数
 	   */
