@@ -1,19 +1,20 @@
 package org.railway.com.trainplan.entity;
 
 public class TrainTimeInfo {
-	 private int index;
+	 private int childIndex;
 	 private String stnName;
 	 private String bureauShortName;
 	 private String trackName;
 	 private String arrTime;
 	 private String dptTime;
-	 private int runDay; 
+	 private int runDays; 
 	
-	public int getIndex() {
-		return index;
+	 
+	public int getChildIndex() {
+		return childIndex;
 	}
-	public void setIndex(int index) {
-		this.index = index;
+	public void setChildIndex(int childIndex) {
+		this.childIndex = childIndex;
 	}
 	public String getStnName() {
 		return stnName;
@@ -45,12 +46,13 @@ public class TrainTimeInfo {
 	public void setDptTime(String dptTime) {
 		this.dptTime = dptTime;
 	}
-	public int getRunDay() {
-		return runDay;
+	public int getRunDays() {
+		return runDays;
 	}
-	public void setRunDay(int runDay) {
-		this.runDay = runDay;
+	public void setRunDays(int runDays) {
+		this.runDays = runDays;
 	}
+ 
 
 
 }
