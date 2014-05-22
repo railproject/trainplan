@@ -194,6 +194,7 @@ public class PlanTrainStnService {
 				   //获取列车时刻表信息
 				   List<TrainTimeInfo> subList = trainTimeService.getTrainTimes(trainId);
 				   if(subList != null && subList.size() > 0){
+					   List<TrainlineTemplateSubDto> stationList = new ArrayList<TrainlineTemplateSubDto>();
 					   for(TrainTimeInfo subDto :subList ){
 						   
 					   }

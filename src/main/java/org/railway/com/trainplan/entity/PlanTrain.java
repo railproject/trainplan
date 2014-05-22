@@ -37,7 +37,17 @@ public class PlanTrain implements Serializable{
 	private String startBureau;//始发局局码
 	private String startBureauShortName;
 	private String routingBureauShortName;
-	private String relativeTargetTimeDay;
+	private int relativeTargetTimeDay;
+	private String endBureau;//终到局局码
+	private String endBureauFull;//终到局全称
+	private String startTimeStr;
+	private String endTimeStr;
+
+	private String startBureauFull;//始发局全称
+	private String jylj;//经由路局  如：“京,济,上”
+	//列车种类：货运，客运
+	private String operation;
+	
 	
 	
 	public String getRoutingBureauShortName() {
@@ -46,10 +56,10 @@ public class PlanTrain implements Serializable{
 	public void setRoutingBureauShortName(String routingBureauShortName) {
 		this.routingBureauShortName = routingBureauShortName;
 	}
-	public String getRelativeTargetTimeDay() {
+	public int getRelativeTargetTimeDay() {
 		return relativeTargetTimeDay;
 	}
-	public void setRelativeTargetTimeDay(String relativeTargetTimeDay) {
+	public void setRelativeTargetTimeDay(int relativeTargetTimeDay) {
 		this.relativeTargetTimeDay = relativeTargetTimeDay;
 	}
 	private String endBreauShortName;
@@ -65,19 +75,6 @@ public class PlanTrain implements Serializable{
 	public void setEndBreauShortName(String endBreauShortName) {
 		this.endBreauShortName = endBreauShortName;
 	}
-	private String endBureau;//终到局局码
-	private String endBureauFull;//终到局全称
-	
-	
-
-	private String startTimeStr;
-	private String endTimeStr;
-
-	private String startBureauFull;//始发局全称
-	private String jylj;//经由路局  如：“京,济,上”
-	//列车种类：货运，客运
-	private String operation;
-	
 	
 	public String getOperation() {
 		return operation;
