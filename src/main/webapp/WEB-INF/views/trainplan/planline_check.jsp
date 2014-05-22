@@ -7,6 +7,7 @@
     <title>审核次日客车运行线</title>
     <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
     <script type="text/javascript" src="${ctx}/assets/js/purl.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/jquery.freezeheader.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/planline_check.js"></script>
 </head>
 <body class="Iframe-body">
