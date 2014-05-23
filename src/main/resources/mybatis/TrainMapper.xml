@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="trainInfoDao"> 
+
+
+
+	<select id="getTrainInfoTotalCount" parameterType="map" resultType="map">
+	  select count(*) as count from jhpt_rjh.m_trainlinetemp t where 1=1  AND t.scheme_id = #{chartId}
+	 	<if test="trainNbr != null">
+			AND t.name like '%' || #{trainNbr} || '%'
+		</if>
+		<if test="startBureauShortName != null">
+		   AND t.source_bureau_shortname = #{startBureauShortName}
+		</if> 
+		<if test="endBureauShortName != null">
+		   AND t.target_bureau_shortname = #{endBureauShortName}
+		</if>
+	</select>
+	
+	<select id="getTrainInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.PlanTrain">
+	    select id as planTrainId,
+	    name as trainNbr,
+        source_node_name as startStn, 
+        target_node_name as endStn,
+        source_bureau_shortname as startBureauShortName, 
+        target_bureau_shortname as endBureau,
+        route_bureau_shortnames as routingBureauShortName,
+        relative_target_time_day as relativeTargetTimeDay,
+        source_bureau_name as startBureauFull,
+        target_bureau_name as endBureauFull,
+        to_char(source_time,'hh24:mi:ss') as startTimeStr,
+        to_char(target_time,'hh24:mi:ss')  as endTimeStr,
+        operation as operation
+        from jhpt_rjh.m_trainlinetemp t where 1=1  AND t.scheme_id = #{chartId}
+    	<if test="trainNbr != null">
+			AND t.name= #{trainNbr}
+		</if>
+		<if test="operation != null">
+			AND t.operation= #{operation}
+		</if>
+		<if test="startBureau != null">
+		   AND t.source_bureau_shortname = #{startBureauShortName}
+		</if> 
+		<if test="startBureau != null">
+		   AND t.target_bureau_shortname = #{endBureauShortName}
+		</if>
+		   order by trainNbr
+	</select>
+	
+	<select id="getTrainInfoForPage"  parameterType="map" resultType="org.railway.com.trainplan.entity.PlanTrain">
+	    select * from (select ROWNUM AS num, m.*  from  
+	    ( 
+		select id as planTrainId,
+		name as trainNbr,
+        source_node_name as startStn, 
+        target_node_name as endStn,
+        source_bureau_shortname as startBureau, 
+        target_bureau_shortname as endBureau,
+        route_bureau_shortnames as routingBureauShortName,
+        relative_target_time_day as relativeTargetTimeDay,
+        source_bureau_name as startBureauFull,
+        target_bureau_name as endBureauFull,
+        to_char(source_time,'hh24:mi:ss') as startTimeStr,
+        to_char(target_time,'hh24:mi:ss')  as endTimeStr,
+        operation as operation
+        from jhpt_rjh.m_trainlinetemp t where 1=1  AND t.scheme_id = #{chartId}
+    	<if test="trainNbr != null">
+			AND t.name like '%' || #{trainNbr} || '%'
+		</if>
+		<if test="startBureauShortName != null">
+		   AND t.source_bureau_shortname = #{startBureauShortName}
+		</if> 
+		<if test="endBureauShortName != null">
+		   AND t.target_bureau_shortname = #{endBureauShortName}
+		</if>
+		   order by trainNbr
+		 ) m  ) where num >=#{rownumstart} AND num &lt;=#{rownumend} 
+		
+	</select>
+	
+
+</mapper>

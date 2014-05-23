@@ -7,8 +7,7 @@ $(function() {
 });  
 
 function SelectCheckModle(){
-	var self = this;
-	var selectRows = [];
+	var self = this; 
 	
 	self.crossAllcheckBox = ko.observable(0);
 	
@@ -63,8 +62,11 @@ function ApplicationModel() {
 	};
 	
 	self.init = function(){   
+		
+		
+		
 		 $.ajax({
-				url : "plan/getSchemeList",
+				url : "jbtcx/querySchemes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -116,13 +118,20 @@ function ApplicationModel() {
 	};  
 	
 	self.loadTrains = function(){
-		self.loadTrainsForPage();
+		self.trainRows.loadRows();
 	};
 	self.loadTrainsForPage = function(startIndex, endIndex) {  
 		var trainNbr = self.searchModle().trainNbr();  
-		var startBureauCode = self.searchModle().startBureau();  
-		
+		var startBureauShortName = self.searchModle().startBureau();  
+		var endBureauShortName = self.searchModle().endBureau();   
 		var chart = self.searchModle().chart(); 
+		
+		console.log(startBureauShortName)
+		console.log(endBureauShortName)
+		console.log(trainNbr)
+		console.log(chart)
+		console.log(startIndex)
+		console.log(endIndex)
 		  
 		$.ajax({
 				url : "jbtcx/queryTrains",
@@ -131,57 +140,43 @@ function ApplicationModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					startBureau : startBureauCode, 
+					startBureauShortName : startBureauShortName, 
+					endBureauShortName : endBureauShortName,
 					trainNbr : trainNbr,
-					chartId : chart.chartId
+					chartId : chart.chartId,
+					rownumstart : startIndex,
+					rownumend : endIndex
 				}),
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") { 
-							if (result.data !=null) {  
-								console.log(result.data)
-								$.each(result.data,function(n,constructionObj){  
-									var result = $.parseJSON(constructionObj);
-									if(result.code == "-1"){
-										showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-										commonJsScreenUnLock();
-										return;
-									}
-									var temp = result.data[0];
-									
-									$.each(result.data, function(n, temp){
-										var train = new TrainRow(temp) ;
-										
-										var skarr = []; 
-										if(temp.scheduleDto.sourceItemDto != null){
-											skarr.push(temp.scheduleDto.sourceItemDto); 
-										}   
-										
-										if(temp.scheduleDto.routeItemDtos != null && temp.scheduleDto.routeItemDtos.length > 0){
-											$.each(temp.scheduleDto.routeItemDtos,function(i, a){ 
-												skarr.push(a);
-											});
-										} 
-										if(temp.scheduleDto.targetItemDto != null){
-											skarr.push(temp.scheduleDto.targetItemDto);
-										} 
-										
-										skarr.sort(function(a, b){  
-											return a.index - b.index;
-										}); 
-										
-										train.loadTimes(skarr);
-										
-										self.trains.push(train); 
-										
-									});
-									
-									if(temp == null){ 
-										showErrorDialog("没有查到该列车，请核对后重新输入查询");  
-										commonJsScreenUnLock();
-										return;
-									}
-									
-								});
+				success : function(result) {  
+					console.log(result) 
+					if (result != null && result != "undefind" && result.code == "0") {  
+							if (result.data !=null) {   
+								var rows = [];
+								$.each(result.data.data,function(n, crossInfo){
+									rows.push(new TrainRow(crossInfo));  
+								}); 
+								 $("#plan_runline_table_trainInfo").freezeHeader();  
+								self.trainRows.loadPageRows(result.data.totalRecord, rows);
+//										var skarr = []; 
+//										if(temp.scheduleDto.sourceItemDto != null){
+//											skarr.push(temp.scheduleDto.sourceItemDto); 
+//										}   
+//										
+//										if(temp.scheduleDto.routeItemDtos != null && temp.scheduleDto.routeItemDtos.length > 0){
+//											$.each(temp.scheduleDto.routeItemDtos,function(i, a){ 
+//												skarr.push(a);
+//											});
+//										} 
+//										if(temp.scheduleDto.targetItemDto != null){
+//											skarr.push(temp.scheduleDto.targetItemDto);
+//										} 
+//										
+//										skarr.sort(function(a, b){  
+//											return a.index - b.index;
+//										}); 
+//										
+//										train.loadTimes(skarr); 
+							 
 							}
 						 
 						 
@@ -197,15 +192,57 @@ function ApplicationModel() {
 				}
 			}); 
 	}; 
+	
+	self.trainRows = new PageModle(50, self.loadTrainsForPage);
 	 
 	self.showTrainTimes = function(row) {
-		console.log(row.times());
+		console.log(row);
+		self.currentTrain(row);
 		self.trainLines.remove(function(item){
 			return true;
 		});
-		$.each(row.times(), function(i, n){
-			self.trainLines.push(n);
-		}); 
+		if(row.times().length > 0){ 
+			$.each(row.times(), function(i, n){
+				self.trainLines.push(n);
+				if(i == row.times().length - 1){
+					$("#plan_runline_table_trainLine").freezeHeader(); 
+				}
+			}) ;
+			 
+		}else{
+			$.ajax({
+				url : "jbtcx/queryTrainTimes",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({   
+					trainId : row.id
+				}),
+				success : function(result) {  
+					console.log(result) 
+					if (result != null && result != "undefind" && result.code == "0") {  
+						row.loadTimes(result.data);  
+						$.each(row.times(), function(i, n){
+							self.trainLines.push(n);
+							if(i == row.times().length - 1){
+								console.log("------------")
+								$("#plan_runline_table_trainLine").freezeHeader(); 
+							}
+						});
+					} else {
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					};
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+		}
+		
 	};  
 }
 
@@ -237,7 +274,7 @@ function searchModle(){
 	
 	self.loadChats = function(charts){   
 		for ( var i = 0; i < charts.length; i++) {   
-			self.charts.push({"chartId": charts[i].schemeId, "name": charts[i].schemeName});  
+			self.charts.push({"chartId": charts[i].schemetId, "name": charts[i].schemeName});  
 		} 
 	}; 
 	
@@ -252,33 +289,27 @@ function BureausRow(data) {
 function filterValue(value){
 	return value == null || value == "null" ? "--" : value;
 }
-function TrainTimeRow(data) {
-	console.log(data);
-	var self = this;
-	self.id = data.id;
-	self.index = data.index + 1;
-	self.stnName = filterValue(data.name);
+function TrainTimeRow(data) { 
+	var self = this; 
+	self.index = data.childIndex + 1;
+	self.stnName = filterValue(data.stnName);
 	self.bureauShortName = filterValue(data.bureauShortName);
-	self.sourceTime = data.sourceTimeDto2 != null ? data.sourceTimeDto2.split(':').slice(1, 3).join(":") : '--';
-	self.targetTime = data.targetTimeDto2 != null ? data.targetTimeDto2.split(':').slice(1, 3).join(":") : '--';
+	self.sourceTime = filterValue(data.arrTime);
+	self.targetTime = filterValue(data.dptTime);
 	self.stepStr = GetDateDiff(data); 
 	self.trackName = filterValue(data.trackName);  
+	self.runDays = data.runDays;
 	 
 }; 
 function GetDateDiff(data)
 { 
-	if(data.sourceTimeDto2 == null || data.targetTimeDto2 == null){
-		return '';
-	}
-	var startTime = new Date();
-	var endTime = new Date();
-	
-	startTime.setDate(data.sourceTimeDto2.split(":")[0]);
-	startTime.setHours(data.sourceTimeDto2.split(":")[1], data.sourceTimeDto2.split(":")[2], data.sourceTimeDto2.split(":")[3], 0);
-	
-	endTime.setDate(data.targetTimeDto2.split(":")[0]);
-	endTime.setHours(data.targetTimeDto2.split(":")[1], data.targetTimeDto2.split(":")[2], data.targetTimeDto2.split(":")[3], 0);
-	 
+	if(data.childIndex == 0)
+		return "";
+	else if(data.dptTime == '-'){
+		return "";
+	} 
+	var startTime = new Date("1977-7-7 " + data.arrTime);
+	var endTime = new Date("1977-7-7 " + data.dptTime);  
 	var result = "";
 	
 	var date3=endTime.getTime()-startTime.getTime(); //时间差的毫秒数 
@@ -304,32 +335,29 @@ function GetDateDiff(data)
 	
 	result += seconds > 0 ? seconds + "秒" : "";  
 	 
-	return result == "" ? "不停靠" : result; 
+	return result == "" ? "" : result; 
 };
 function TrainRow(data) {   
 	var self = this;  
 	console.log(data)
-	self.id = data.id;
-	self.name = data.name; 
+	self.id = data.planTrainId;
+	self.name = data.trainNbr; 
 	self.times = ko.observableArray();  
 	self.selected  = ko.observable();  
-	self.startBureau = ''; 
-	self.startStn = ''; 
-	self.sourceTime = '';
-	self.endStn = '';
-	self.targetTime = '';
+	self.startBureau = data.startBureau; 
+	self.startStn =  data.startStn; 
+	self.sourceTime = filterValue(data.startTimeStr); 
+	self.endStn = data.endStn; 
+	self.endBureau = data.endBureau; 
+	self.routingBureau = data.routingBureauShortName; 
+	self.runDays = data.relativeTargetTimeDay;  
+	 
+	self.targetTime =  filterValue(data.endTimeStr); 
 	
 	self.loadTimes = function(times){
-		$.each(times, function(i, n){
-			if(i == 0){
-				self.startBureau = n.bureauName;
-				self.startStn = n.name;
-				self.sourceTime =  n.sourceTimeDto2== null ? '--': n.sourceTimeDto2.split(':').slice(1, 3).join(":");
-			}else if(i == times.length - 1){
-				self.endStn = n.name;
-				self.targetTime = n.sourceTimeDto2== null ? '--': n.sourceTimeDto2.split(':').slice(1, 3).join(":");
-			}
+		$.each(times, function(i, n){ 
 			self.times.push(new TrainTimeRow(n));
 		});
-	};
+	}; 
+	
 } ; 

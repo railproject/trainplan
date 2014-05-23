@@ -15,10 +15,13 @@
 		where base_train_id=#{base_train_id}
 	</update>
 
-	<update id="updatePlanTrainDaylyPlanFlag">
+	<update id="updatePlanTrainDaylyPlanFlag" parameterType="map">
 		update plan_train set
-		DAILYPLAN_FLAG=0
-		where base_train_id=#{base_train_id}
+		DAILYPLAN_FLAG=0,
+		DAILYPLAN_TIME=sysdate,
+		DAILYPLAN_TIMES=DAILYPLAN_TIMES+1,
+		DAILYPLAN_ID=#{daylyPlanId}
+		where base_train_id=#{baseTrainId}
 
 	</update>
 
@@ -33,11 +36,13 @@
 	<select id="getTrainShortInfo" parameterType="map" resultType="map">
 		select m.* from (select
 		PLAN_TRAIN_ID,RUN_DATE,TRAIN_NBR,START_STN,END_STN FROM PLAN_TRAIN
-		WHERE RUN_DATE= #{runDate} order by TRAIN_NBR )m where ROWNUM
-		&lt;=$rownum$
+		WHERE RUN_DATE= #{runDate}
 		<if test="trainNbr != null">
 			AND TRAIN_NBR= #{trainNbr}
 		</if>
+		 order by TRAIN_NBR )m where ROWNUM
+		&lt;=${rownum}
+		
 
 	</select>
 

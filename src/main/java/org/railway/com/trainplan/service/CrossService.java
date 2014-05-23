@@ -670,8 +670,8 @@ public class CrossService{
 				alllist.addAll(list);  
 			}
 			
-			ExecutorService service=Executors.newFixedThreadPool(10);
-			CompletionService<List<CrossTrainInfo>> completion=new ExecutorCompletionService<List<CrossTrainInfo>>(service);
+			ExecutorService service = Executors.newFixedThreadPool(10);
+			CompletionService<List<CrossTrainInfo>> completion = new ExecutorCompletionService<List<CrossTrainInfo>>(service);
 			 
 			ArrayList<CrossTrainInfo> crossTrains = new ArrayList<CrossTrainInfo>();
 			
@@ -1028,8 +1028,8 @@ public class CrossService{
 				crossTrains.add(train);
 			} 
 			//获取列车时刻表和其实和终到站
-		   ExecutorService service=Executors.newCachedThreadPool();
-		   CompletionService<CrossTrainInfo> completion=new ExecutorCompletionService<CrossTrainInfo>(service);
+		   ExecutorService service = Executors.newCachedThreadPool();
+		   CompletionService<CrossTrainInfo> completion = new ExecutorCompletionService<CrossTrainInfo>(service);
 		   
 		   for(int i=0; i < crossTrains.size(); i++){
 			   completion.submit(new GetTrainInfoCompletionService(crossTrains.get(i)));

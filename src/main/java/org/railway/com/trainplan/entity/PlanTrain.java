@@ -35,17 +35,53 @@ public class PlanTrain implements Serializable{
 	private String baseTrainId;
 	
 	private String startBureau;//始发局局码
+	private String startBureauShortName;
+	private String routingBureauShortName;
+	private int relativeTargetTimeDay;
 	private String endBureau;//终到局局码
 	private String endBureauFull;//终到局全称
-	
-	
-
 	private String startTimeStr;
 	private String endTimeStr;
 
 	private String startBureauFull;//始发局全称
 	private String jylj;//经由路局  如：“京,济,上”
+	//列车种类：货运，客运
+	private String operation;
 	
+	
+	
+	public String getRoutingBureauShortName() {
+		return routingBureauShortName;
+	}
+	public void setRoutingBureauShortName(String routingBureauShortName) {
+		this.routingBureauShortName = routingBureauShortName;
+	}
+	public int getRelativeTargetTimeDay() {
+		return relativeTargetTimeDay;
+	}
+	public void setRelativeTargetTimeDay(int relativeTargetTimeDay) {
+		this.relativeTargetTimeDay = relativeTargetTimeDay;
+	}
+	private String endBreauShortName;
+	public String getStartBureauShortName() {
+		return startBureauShortName;
+	}
+	public void setStartBureauShortName(String startBureauShortName) {
+		this.startBureauShortName = startBureauShortName;
+	}
+	public String getEndBreauShortName() {
+		return endBreauShortName;
+	}
+	public void setEndBreauShortName(String endBreauShortName) {
+		this.endBreauShortName = endBreauShortName;
+	}
+	
+	public String getOperation() {
+		return operation;
+	}
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
 	//@Id
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	//@Column(name = "PLAN_TRAIN_ID", unique = true, nullable = false)
@@ -55,7 +91,7 @@ public class PlanTrain implements Serializable{
 	public void setPlanTrainId(String planTrainId) {
 		this.planTrainId = planTrainId;
 	}
-	
+	//select id as planTrainId,name as trainNbr,source_node_name as startStn, source_bureau_shortname as startBureauShortName, target_bureau_shortname as endBreauShortName,source_time,target_node_name,target_time from jhpt_rjh.m_trainlinetemp t where t.scheme_id = 'b4264afd-7755-48ba-9cf7-b31eeac6e085' AND NAME='G11' order by name
 	//@Column(name = "START_TIME")
 	public Date getStartTime() {
 		return startTime;

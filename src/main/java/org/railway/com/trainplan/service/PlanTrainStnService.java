@@ -1,6 +1,5 @@
 package org.railway.com.trainplan.service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,27 +7,22 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
-import org.railway.com.trainplan.common.utils.SpringContextUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.PlanTrain;
 import org.railway.com.trainplan.entity.PlanTrainStn;
+import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
-import org.railway.com.trainplan.service.message.SendMsgService;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Component
 @Transactional
@@ -46,16 +40,21 @@ public class PlanTrainStnService {
     @Autowired
     private BaseDao baseDao;
     
+    @Autowired
+    private TrainInfoService trainInfoService;
+    
+    @Autowired
+    private TrainTimeService trainTimeService;
     /**
-	 * 更新数据表plan_train中字段daylyplan_flag的值
+	 * 更新数据表plan_train中字段daylyplan_flag,的值
 	 * @param base_train_id
 	 * @return
 	 * @throws Exception
 	 */
    
-    public Result updatePlanTrainDaylyPlanFlag(String base_train_id) throws Exception {
+    public Result updatePlanTrainDaylyPlanFlag(Map<String,Object> reqMap) throws Exception {
     	Result result = new Result();
-    	 baseDao.updateBySql(Constants.TRAINPLANDAO_UPDATE_PLANFLAG, base_train_id);
+    	 baseDao.updateBySql(Constants.TRAINPLANDAO_UPDATE_PLANFLAG, reqMap);
     	return result;
     }
     /**
@@ -119,7 +118,7 @@ public class PlanTrainStnService {
 		if (listMap != null && listMap.size() > 0) {
 			for (Map<String, Object> map : listMap) {
 				PlanTrainDto dto = new PlanTrainDto();
-				dto.setPlanTrainId((BigDecimal) (map.get("PLAN_TRAIN_ID")));
+				dto.setPlanTrainId(StringUtil.objToStr(map.get("PLAN_TRAIN_ID")));
 				dto.setEndStn(StringUtil.objToStr(map.get("END_STN")));
 				dto.setRunDate(StringUtil.objToStr(map.get("RUN_DATE")));
 				dto.setStartStn(StringUtil.objToStr(map.get("START_STN")));
@@ -144,7 +143,7 @@ public class PlanTrainStnService {
 		
 		
 		// 调用后台接口，获取数据
-		final List<TrainlineTemplateDto> list = remoteService.getTrainLineInfoFromSchemeId(
+		 List<TrainlineTemplateDto> list = remoteService.getTrainLineInfoFromSchemeId(
 				schemeId, startDate);
 		
 		System.err.println("importTrainPlan--list.size==" + list.size());
@@ -158,6 +157,52 @@ public class PlanTrainStnService {
 		return returnMap;
 	}
 
+	
+	/**
+	 * 根据方案id查询列车并根据列车id查询列车时刻表
+	 * @param schemeId 方案id
+	 * @param runDate格式 yyyy-mm-dd
+	 * @return
+	 */
+	public List<TrainlineTemplateDto>  getTrainsWithSchemeId(String schemeId,String runDate){
+		   List<TrainlineTemplateDto> trainsList = new ArrayList<TrainlineTemplateDto>();
+		   //通过方案查询列车
+		   Map<String,Object> reqMap = new HashMap<String,Object>();
+		   reqMap.put("chartId",schemeId );
+		   List<PlanTrain> list = trainInfoService.getTrains(reqMap);
+		   if(list != null && list.size() > 0){
+			  
+			   for(PlanTrain dto : list){
+				   TrainlineTemplateDto trainLineDto = new TrainlineTemplateDto();
+				   //车次
+				   trainLineDto.setTrainNbr(dto.getTrainNbr());
+				   //始发局全称
+				   trainLineDto.setStartBureauFull(dto.getStartBureauFull());
+				   //终到局全称
+				   trainLineDto.setEndBureauFull(dto.getEndBureauFull());
+				   //始发站名
+				   trainLineDto.setStartStn(dto.getStartStn());
+				   //终到站名
+				   trainLineDto.setEndStn(dto.getEndStn());
+				   //始发时间
+				   trainLineDto.setStartTime(runDate + " " + dto.getStartTimeStr());
+				   //开行日期
+				   trainLineDto.setRunDate(runDate);
+				   String trainId = dto.getBaseTrainId();
+				   trainLineDto.setBaseTrainId(trainId);
+				   
+				   //获取列车时刻表信息
+				   List<TrainTimeInfo> subList = trainTimeService.getTrainTimes(trainId);
+				   if(subList != null && subList.size() > 0){
+					   List<TrainlineTemplateSubDto> stationList = new ArrayList<TrainlineTemplateSubDto>();
+					   for(TrainTimeInfo subDto :subList ){
+						   
+					   }
+				   }
+			   }
+		   }
+		   return trainsList;
+	}
 	/**
 	 * 将后台接口返回数据存入本地PLAN_TRAIN和PLAN_TRAIN_STN库中
 	 * @param list
