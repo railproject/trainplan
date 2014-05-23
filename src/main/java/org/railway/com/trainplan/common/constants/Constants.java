@@ -142,7 +142,10 @@ public class Constants {
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAININFO = "trainInfoDao.getTrainInfo";
     public static final String TRAININFO_GETTRAININFO_PAGE = "trainInfoDao.getTrainInfoForPage";
-    
+    //
+    public static final String TRAININFO_GET_TRAINS_AND_TIMES_COUNT = "trainInfoDao.getTrainsAndTimesCount";
+    //
+    public static final String TRAININFO_GET_TRAINS_AND_TIMES_FORPAGE = "trainInfoDao.getTrainsAndTimesForPage";
     public static final String TRAININFO_GETTRAININFO_COUNT="trainInfoDao.getTrainInfoTotalCount";
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";

@@ -26,6 +26,7 @@ import org.railway.com.trainplan.service.TrainTimeService;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
+import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,9 +145,17 @@ public class PlanTrainStnController {
 		
 		
 		//test
-		String trainId = StringUtil.objToStr(reqMap.get("trainId"));
+		/*String trainId = StringUtil.objToStr(reqMap.get("trainId"));
 		List<TrainTimeInfo> list = trainTimeService.getTrainTimes(trainId);
-		result.setData(list);
+		result.setData(list);*/
+		
+		
+		String chartId = StringUtil.objToStr(reqMap.get("chartId"));
+		String operation = StringUtil.objToStr(reqMap.get("operation"));
+		List<TrainlineTemplateDto> list = planTrainStnService.getTrainsWithSchemeId(chartId, operation, "2014-05-22");
+		System.err.println("trains--size==" + list.size());
+		
+		
 		return result;
 	}
 	
