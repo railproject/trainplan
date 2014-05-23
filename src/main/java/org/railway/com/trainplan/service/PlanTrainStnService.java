@@ -161,14 +161,17 @@ public class PlanTrainStnService {
 	/**
 	 * 根据方案id查询列车并根据列车id查询列车时刻表
 	 * @param schemeId 方案id
+	 * @param operation 货运 or 客运
 	 * @param runDate格式 yyyy-mm-dd
 	 * @return
 	 */
-	public List<TrainlineTemplateDto>  getTrainsWithSchemeId(String schemeId,String runDate){
+	public List<TrainlineTemplateDto>  getTrainsWithSchemeId(String schemeId,String operation,String runDate){
 		   List<TrainlineTemplateDto> trainsList = new ArrayList<TrainlineTemplateDto>();
 		   //通过方案查询列车
 		   Map<String,Object> reqMap = new HashMap<String,Object>();
 		   reqMap.put("chartId",schemeId );
+		   reqMap.put("operation",operation );
+		   long time1 = System.currentTimeMillis();
 		   List<PlanTrain> list = trainInfoService.getTrains(reqMap);
 		   if(list != null && list.size() > 0){
 			  
@@ -188,19 +191,45 @@ public class PlanTrainStnService {
 				   trainLineDto.setStartTime(runDate + " " + dto.getStartTimeStr());
 				   //开行日期
 				   trainLineDto.setRunDate(runDate);
-				   String trainId = dto.getBaseTrainId();
+				   //运行天数
+				   int runDay = dto.getRelativeTargetTimeDay();
+				   String endDate = DateUtil.getDateByDay(runDate, -runDay);
+				   //终到时间
+				   trainLineDto.setEndTime(endDate + " " + dto.getEndTimeStr());
+				   String trainId = dto.getPlanTrainId();
+				   //System.err.println("trainId==" + trainId);
 				   trainLineDto.setBaseTrainId(trainId);
+				   if(trainId != null && !"".equals(trainId)){
+					   
 				   
 				   //获取列车时刻表信息
 				   List<TrainTimeInfo> subList = trainTimeService.getTrainTimes(trainId);
+				   System.err.println("subList.size==" + subList.size());
 				   if(subList != null && subList.size() > 0){
 					   List<TrainlineTemplateSubDto> stationList = new ArrayList<TrainlineTemplateSubDto>();
 					   for(TrainTimeInfo subDto :subList ){
-						   
+						   TrainlineTemplateSubDto  tempDto = new TrainlineTemplateSubDto();
+						   //站点名称
+						   tempDto.setName(subDto.getStnName());
+						   int rundays = subDto.getRunDays();
+						   String date = DateUtil.getDateByDay(runDate, -rundays);
+						   //到站时间
+						   tempDto.setSourceTime(date + " " + subDto.getArrTime());
+						   //出发时间
+						   tempDto.setTargetTime(date + " " + subDto.getDptTime());
+						   tempDto.setTrackName(subDto.getTrackName());
+						   tempDto.setChildIndex(subDto.getChildIndex());
+						   stationList.add(tempDto);
 					   }
+					   System.err.println("stationList.size==" + stationList.size());
+					   trainLineDto.setStationList(stationList);
 				   }
+			     }
+				   trainsList.add(trainLineDto);
 			   }
 		   }
+		   long time2 = System.currentTimeMillis();
+		   System.err.println("所花时间：" +(time2-time1)/1000);
 		   return trainsList;
 	}
 	/**
