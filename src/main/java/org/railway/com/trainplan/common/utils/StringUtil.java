@@ -161,6 +161,7 @@ public class StringUtil {
 		//System.out.println(System.currentTimeMillis());
 		//System.out.println(new Date("2014-04-22 10:10:10"));
 		//System.out.println("" + handleTime("0:9:0:0"));
-		System.out.println("0:9:0:0".substring(0,1));
+		//System.out.println("0:9:0:0".substring(0,1));
+		System.err.println(278910/1000);
 	}
 }
