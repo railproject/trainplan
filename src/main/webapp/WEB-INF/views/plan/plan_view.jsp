@@ -8,6 +8,7 @@ String basePath = request.getContextPath();
 <head>
 <title>新图初始化</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
+<jsp:include page="/assets/commonpage/include-dwr-script.jsp" flush="true" />
 </head>
 <body class="Iframe_body">
 <!--以上为必须要的-->
@@ -138,8 +139,6 @@ String basePath = request.getContextPath();
 </div>
 
 
-<script src="<%=basePath%>/dwr/util.js" type="text/javascript"></script>
-<script src="<%=basePath%>/dwr/engine.js" type="text/javascript"></script>
 <script src="<%=basePath %>/assets/js/highcharts.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/plan/plan_view.js"></script>
 </body>
