@@ -311,27 +311,27 @@ function CrossModel() {
 				delCrosses.push(crosses[i]); 
 			}  
 		}   
-//		$.ajax({
-//			url : "cross/deleteCrosses",
-//			cache : false,
-//			type : "POST",
-//			dataType : "json",
-//			contentType : "application/json",
-//			data :JSON.stringify({  
-//				crossIds : crossIds
-//			}),
-//			success : function(result) {     
-//				if(result.code == 0){
-//					$.each(delCrosses, function(i, n){ 
-//						self.crossRows.rows.remove(n); 
-//					});
-//					showSuccessDialog("删除交路单元成功"); 
-//				}else{
-//					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-//				}
-//			}
-//		}); 
-	}
+		$.ajax({
+			url : "../cross/deleteUnitCorssInfo",
+			cache : false,
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+			data :JSON.stringify({  
+				crossIds : crossIds
+			}),
+			success : function(result) {     
+				if(result.code == 0){
+					$.each(delCrosses, function(i, n){ 
+						self.crossRows.rows.remove(n); 
+					});
+					showSuccessDialog("删除交路单元成功"); 
+				}else{
+					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+				}
+			}
+		}); 
+	};
 	
 	self.createUnitCrossInfo = function(){ 
 		var crossIds = "";
@@ -366,7 +366,7 @@ function CrossModel() {
 			return true;
 		});   
 		 $.ajax({
-				url : "cross/getUnitCrossTrainInfo",
+				url : "../cross/getUnitCrossTrainInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -377,13 +377,15 @@ function CrossModel() {
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {  
-							self.setCurrentCross(new CrossRow(result.data[0].unitCrossInfo));
+							self.setCurrentCross(new CrossRow(result.data[0].crossinfo));
 //							self.currentCross(new CrossRow(result.data[0].crossInfo));
+							console.log(result.data[0].unitCrossTrainInfo.length);
+							
 							if(result.data[0].unitCrossTrainInfo != null){
-								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
-									var row = new TrainRow(crossInfo);
+								for(var i = 0; i < result.data[0].unitCrossTrainInfo.length; i++){
+									var row = new TrainRow(result.data[0].unitCrossTrainInfo[i]); 
 									self.trains.push(row); 
-								});
+								} 
 							}
 						}
 						 
@@ -548,12 +550,14 @@ function TrainModel() {
 
 function TrainRow(data) {
 	var self = this; 
+	console.log(data);
 	self.crossTainId  = data.crossTainId;//BASE_CROSS_TRAIN_ID
 	self.crossId = data.crossId;//BASE_CROSS_ID
 	self.trainSort = data.trainSort;//TRAIN_SORT
 	self.baseTrainId = data.baseTrainId;
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
+	self.marshallingName = data.marshallingName;
 	//self.startBureau = data.startBureau;//START_BUREAU 
 	self.startBureau = ko.computed(function(){
 		for(var i = 0; i < gloabBureaus.length; i++){
