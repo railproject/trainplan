@@ -31,8 +31,16 @@ public class CrossTrainInfo {
 	private String unitCrossTrainId;
 	//unit_cross表id
 	private String unitCrossId;
+	private String marshallingName;
 	
 	
+	
+	public String getMarshallingName() {
+		return marshallingName;
+	}
+	public void setMarshallingName(String marshallingName) {
+		this.marshallingName = marshallingName;
+	}
 	public int getRunDay() {
 		return runDay;
 	}
