@@ -51,6 +51,11 @@ public class CrossController {
 		 return "cross/cross_unit_manage";
      }
 	 
+	 @RequestMapping(value="/runPlan", method = RequestMethod.GET)
+     public String runPlan() {
+		 return "cross/run_plan";
+     }
+	 
 	 @Autowired
 	private CrossService crossService;
 	

@@ -61,6 +61,10 @@ function ApplicationModel() {
 		return year+"-"+month+"-"+days;
 	};
 	
+	self.trainNbrToupper = function(n, event){
+		self.searchModle().trainNbr(event.target.value.toupercase());
+	};
+	
 	self.init = function(){   
 		
 		
@@ -125,7 +129,12 @@ function ApplicationModel() {
 		var startBureauShortName = self.searchModle().startBureau();  
 		var endBureauShortName = self.searchModle().endBureau();   
 		var chart = self.searchModle().chart(); 
+		var fuzzyFlag = self.searchModle().fuzzyFlag();
 		
+		if(chart == null){
+			showErrorDialog("请选择方案");
+			return;
+		}
 		console.log(startBureauShortName)
 		console.log(endBureauShortName)
 		console.log(trainNbr)
@@ -143,6 +152,7 @@ function ApplicationModel() {
 					startBureauShortName : startBureauShortName, 
 					endBureauShortName : endBureauShortName,
 					trainNbr : trainNbr,
+					fuzzyFlag : fuzzyFlag,
 					chartId : chart.chartId,
 					rownumstart : startIndex,
 					rownumend : endIndex
@@ -244,6 +254,15 @@ function ApplicationModel() {
 		}
 		
 	};  
+	
+	self.fuzzyChange = function(){
+		console.log(self.searchModle().fuzzyFlag())
+		if(self.searchModle().fuzzyFlag() == 0){
+			self.searchModle().fuzzyFlag(1);
+		}else{
+			self.searchModle().fuzzyFlag(0);
+		}
+	};
 }
 
 function searchModle(){
@@ -263,6 +282,8 @@ function searchModle(){
 	self.trainNbr = ko.observable(); 
 	
 	self.chart = ko.observable(); 
+	
+	self.fuzzyFlag = ko.observable(1); 
 	
 	self.loadBureau = function(bureaus){   
 		for ( var i = 0; i < bureaus.length; i++) {   

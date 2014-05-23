@@ -38,6 +38,9 @@ System.out.println(basePath);
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.gritter.min.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
+<script type="text/javascript">
+var basePath = "<%=basePath %>"
+</script>
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
  <style type="text/css">
 .pagination > li > a, .pagination > li > span {
