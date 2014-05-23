@@ -25,6 +25,8 @@ public class User {
 
     private String ljqc;
 
+    private String deptname;
+
     public int getId() {
         return id;
     }
@@ -79,5 +81,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDeptname() {
+        return deptname;
+    }
+
+    public void setDeptname(String deptname) {
+        this.deptname = deptname;
     }
 }

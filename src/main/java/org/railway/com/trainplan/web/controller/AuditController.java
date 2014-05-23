@@ -56,11 +56,14 @@ public class AuditController {
     }
 
 
-    @RequestMapping(value = "plan/checklev1", method = RequestMethod.POST)
-    public String checkLev1(@RequestBody List<Map<String, Object>> data) {
+    @RequestMapping(value = "plan/checklev1/{checkType}", method = RequestMethod.POST)
+    public String checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
         logger.debug("data::::" + data);
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-
-        return "OK";
+        int result = runPlanService.checkLev1(data, user, checkType);
+        if(result == 0) {
+            return "ok";
+        }
+        return "error";
     }
 }

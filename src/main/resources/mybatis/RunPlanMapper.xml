@@ -50,14 +50,11 @@
     </select>
 
     <insert id="checkLev1" useGeneratedKeys="true" parameterType="java.util.List">
-        <selectKey resultType="long" keyProperty="id" order="AFTER">
-            SELECT
-            LAST_INSERT_ID()
-        </selectKey>
-        insert into t_train_record (add_time,emp_id,activity_id,flag)
-        values
-        <foreach collection="list" item="item" index="index" separator="," >
-            (#{item.addTime},#{item.empId},#{item.activityId},#{item.flag})
+        INSERT INTO DAILYPLAN_CHECK(DAILYPLAN_CHECK_ID, DAILYPLAN_ID, PLAN_TRAIN_ID, CHECK_PEOPLE, CHECK_TIME, CHECK_DEPT, CHECK_BUREAU, CHECK_TYPE)
+        <foreach collection="list" item="item" index="index" separator="UNION" open="(" close=")">
+            SELECT #{item.id, jdbcType=VARCHAR}, #{item.lineId, jdbcType=VARCHAR}, #{item.planId, jdbcType=VARCHAR},
+            #{item.people, jdbcType=VARCHAR}, #{item.date, jdbcType=DATE}, #{item.dept, jdbcType=VARCHAR},
+            #{item.bureau, jdbcType=VARCHAR}, #{item.checkType, jdbcType=INTEGER} FROM DUAL
         </foreach>
     </insert>
 </mapper> 

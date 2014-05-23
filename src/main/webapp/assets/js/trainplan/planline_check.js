@@ -61,19 +61,17 @@ function ApplicationModel() {
             }
         })
         $.ajax({
-            url: "audit/plan/checklev1",
+            url: "audit/plan/checklev1/1",
             method: "POST",
             dataType: "json",
             data: JSON.stringify(data),
             contentType: "application/json; charset=UTF-8"
-        }).done(function(list) {
-            self.bureauList.removeAll();
-            for( var i = 0; i < list.length; i++) {
-                self.bureauList.push(list[i]);
-            }
+        }).done(function(resp) {
+            alert("done:" + resp);
         }).fail(function() {
-
+            alert("fail:" + resp);
         }).always(function() {
+            alert("always:" + resp);
         })
 
     }
@@ -103,7 +101,7 @@ function TableModel() {
     self.loadTable = function() {
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         $.ajax({
-            url: "audit/plan/runplan/" + date + "/" + $("#bureau option:selected").val() + "/1",
+            url: "audit/plan/runplan/" + date + "/1",
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {

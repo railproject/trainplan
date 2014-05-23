@@ -79,7 +79,7 @@ public class ShiroRealm extends AuthorizingRealm {
                     throw new DisabledAccountException();
                 }
 
-                ShiroUser shiroUser = new ShiroUser(user.getUsername(), user.getName(), Integer.parseInt(logininfo[1]), user.getLjpym(), user.getLjjc(), user.getLjqc());
+                ShiroUser shiroUser = new ShiroUser(user.getUsername(), user.getName(), Integer.parseInt(logininfo[1]), user.getLjpym(), user.getLjjc(), user.getLjqc(), user.getDeptname());
                 return new SimpleAuthenticationInfo(shiroUser, user.getPassword(), getName());
             }
         }catch(Exception e) {
@@ -95,6 +95,8 @@ public class ShiroRealm extends AuthorizingRealm {
         private String name;
 
         private int accId;
+
+        private String deptName;
 
         private String bureau;
 
@@ -150,19 +152,28 @@ public class ShiroRealm extends AuthorizingRealm {
             this.bureauFullName = bureauFullName;
         }
 
+        public String getDeptName() {
+            return deptName;
+        }
+
+        public void setDeptName(String deptName) {
+            this.deptName = deptName;
+        }
+
         public ShiroUser(String username, String name, int accId) {
             this.username = username;
             this.name = name;
             this.accId = accId;
         }
 
-        public ShiroUser(String username, String name, int accId, String bureau, String bureauShortName, String bureauFullName) {
+        public ShiroUser(String username, String name, int accId, String bureau, String bureauShortName, String bureauFullName, String deptName) {
             this.username = username;
             this.name = name;
             this.accId = accId;
             this.bureau = bureau;
             this.bureauShortName = bureauShortName;
             this.bureauFullName = bureauFullName;
+            this.deptName = deptName;
         }
 
         @Override
