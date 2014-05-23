@@ -21,6 +21,9 @@ public class TreadService {
 
 	@Autowired
 	private TrainInfoService trainInfoService ;
+	
+	@Autowired
+	private  QuoteService quoteService;
 	/**
 	 * @param runDate 格式yyyy-mm-dd
 	 * @param chartId
