@@ -295,7 +295,7 @@ function CrossModel() {
 		
 		if(chart == null){
 			showErrorDialog("请选择方案!");
-			//return;
+			return;
 		}
 		 
 		$.ajax({
@@ -394,26 +394,26 @@ function CrossModel() {
 				delCrosses.push(crosses[i]); 
 			}  
 		}   
-//		$.ajax({
-//			url : "cross/deleteCrosses",
-//			cache : false,
-//			type : "POST",
-//			dataType : "json",
-//			contentType : "application/json",
-//			data :JSON.stringify({  
-//				crossIds : crossIds
-//			}),
-//			success : function(result) {     
-//				if(result.code == 0){
-//					$.each(delCrosses, function(i, n){ 
-//						self.crossRows.rows.remove(n); 
-//					});
-//					showSuccessDialog("删除交路单元成功"); 
-//				}else{
-//					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-//				}
-//			}
-//		}); 
+		$.ajax({
+			url : "cross/deleteCorssInfo",
+			cache : false,
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+			data :JSON.stringify({  
+				crossIds : crossIds
+			}),
+			success : function(result) {     
+				if(result.code == 0){
+					$.each(delCrosses, function(i, n){ 
+						self.crossRows.rows.remove(n); 
+					});
+					showSuccessDialog("删除交路单元成功"); 
+				}else{
+					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+				}
+			}
+		}); 
 	};
 	
 	self.createUnitCrossInfo = function(){ 
