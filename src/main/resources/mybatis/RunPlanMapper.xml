@@ -54,7 +54,7 @@
         <foreach collection="list" item="item" index="index" separator="UNION" open="(" close=")">
             SELECT #{item.id, jdbcType=VARCHAR}, #{item.lineId, jdbcType=VARCHAR}, #{item.planId, jdbcType=VARCHAR},
             #{item.people, jdbcType=VARCHAR}, #{item.date, jdbcType=DATE}, #{item.dept, jdbcType=VARCHAR},
-            #{item.bureau, jdbcType=VARCHAR}, #{item.checkType, jdbcType=INTEGER} FROM DUAL
+            #{item.bureau, jdbcType=VARCHAR}, #{item.checkType, jdbcType=NUMERIC} FROM DUAL
         </foreach>
     </insert>
 </mapper> 
