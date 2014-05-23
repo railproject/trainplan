@@ -8,8 +8,11 @@
 
 	<select id="getTrainInfoTotalCount" parameterType="map" resultType="map">
 	  select count(*) as count from jhpt_rjh.m_trainlinetemp t where 1=1  AND t.scheme_id = #{chartId}
-	 	<if test="trainNbr != null">
+	 	<if test="trainNbr != null and fuzzyFlag == 1">
 			AND t.name like '%' || #{trainNbr} || '%'
+		</if>
+		<if test="trainNbr != null and fuzzyFlag == 0">
+			AND t.name = #{trainNbr} 
 		</if>
 		<if test="startBureauShortName != null">
 		   AND t.source_bureau_shortname = #{startBureauShortName}
@@ -66,8 +69,11 @@
         to_char(target_time,'hh24:mi:ss')  as endTimeStr,
         operation as operation
         from jhpt_rjh.m_trainlinetemp t where 1=1  AND t.scheme_id = #{chartId}
-    	<if test="trainNbr != null">
+    	<if test="trainNbr != null and fuzzyFlag == 1">
 			AND t.name like '%' || #{trainNbr} || '%'
+		</if>
+		<if test="trainNbr != null and fuzzyFlag == 0">
+			AND t.name = #{trainNbr} 
 		</if>
 		<if test="startBureauShortName != null">
 		   AND t.source_bureau_shortname = #{startBureauShortName}
