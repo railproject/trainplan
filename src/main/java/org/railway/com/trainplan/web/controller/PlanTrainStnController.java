@@ -14,7 +14,6 @@ import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.Ljzd;
-import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.CrossService;
@@ -23,10 +22,12 @@ import org.railway.com.trainplan.service.PlanTrainStnService;
 import org.railway.com.trainplan.service.RemoteService;
 import org.railway.com.trainplan.service.TrainInfoService;
 import org.railway.com.trainplan.service.TrainTimeService;
+import org.railway.com.trainplan.service.TreadService;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
+import org.railway.com.trainplan.service.task.DaytaskDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,9 @@ public class PlanTrainStnController {
 	
 	@Autowired
 	private TrainTimeService trainTimeService;
+	
+	@Autowired
+	private TreadService treadService;
 	//fortest
 	@Autowired
 	private BaseDao baseDao;
@@ -150,12 +154,26 @@ public class PlanTrainStnController {
 		result.setData(list);*/
 		
 		
-		String chartId = StringUtil.objToStr(reqMap.get("chartId"));
+		/*String chartId = StringUtil.objToStr(reqMap.get("chartId"));
 		String operation = StringUtil.objToStr(reqMap.get("operation"));
 		List<TrainlineTemplateDto> list = planTrainStnService.getTrainsWithSchemeId(chartId, operation, "2014-05-22");
-		System.err.println("trains--size==" + list.size());
+		System.err.println("trains--size==" + list.size());*/
+		long time1 = System.currentTimeMillis();
+		DaytaskDto reqDto = new DaytaskDto();
+		reqDto.setChartId("b4264afd-7755-48ba-9cf7-b31eeac6e085");
+		reqDto.setOperation("客运");
+		reqDto.setRunDate("2014-05-23");
+		reqDto.setRownumend(10);
+		reqDto.setRownumstart(1);
 		
 		
+		treadService.actionDayWork(reqDto, 1);
+		//List<TrainlineTemplateDto> list = trainInfoService.getTrainsAndTimesForList(reqDto);
+		long time2 = System.currentTimeMillis();
+		System.err.println("time==" + (time2-time1)/1000);
+		//System.err.println("size==" + list.size());
+		
+		//result.setData(list);
 		return result;
 	}
 	

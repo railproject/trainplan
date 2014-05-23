@@ -398,7 +398,15 @@
   
    <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select * from (select ROWNUM AS num,m.*  from  (select 
-		UNIT_CROSS_ID as unitCrossId,MARSHALLING_NAME as marshallingName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag,GROUP_SERIAL_NBR as groupSerialNbr from UNIT_CROSS
+		UNIT_CROSS_ID as unitCrossId,
+		MARSHALLING_NAME as marshallingName,
+		TOKEN_VEH_BUREAU as tokenVehBureau ,
+		START_BUREAU as startBureau,
+		HIGHLINE_FLAG as highlineFlag,
+		GROUP_SERIAL_NBR as groupSerialNbr ,
+		CROSS_NAME as crossName,
+		BASE_CROSS_ID as crossId
+		from UNIT_CROSS
 		where 1=1 
 		<if test="tokenVehBureau != null">
 			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
