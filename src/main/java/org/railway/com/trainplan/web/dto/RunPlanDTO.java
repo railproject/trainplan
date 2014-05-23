@@ -59,6 +59,12 @@ public class RunPlanDTO {
     // 生成运行线id
     private String dailyLineId;
 
+    // 是否一级审核
+    private int lev1Checked;
+
+    // 是否二级审核
+    private int lev2Checked;
+
     public RunPlanDTO(Map<String, Object> map) {
         this.id = MapUtils.getIntValue(map, "PLAN_TRAIN_ID");
         this.serial = MapUtils.getString(map, "TRAIN_NBR");
@@ -75,6 +81,8 @@ public class RunPlanDTO {
         this.checkLev1 = MapUtils.getIntValue(map, "CHECK_TYPE_LEV1");
         this.checkLev2 = MapUtils.getIntValue(map, "CHECK_TYPE_LEV2");
         this.dailyLineId = MapUtils.getString(map, "DAILYPLAN_ID");
+        this.lev1Checked = MapUtils.getIntValue(map, "LEV1_CHECKED");
+        this.lev2Checked = MapUtils.getIntValue(map, "LEV2_CHECKED");
     }
 
     public int getId() {
@@ -212,5 +220,21 @@ public class RunPlanDTO {
 
     public void setDailyLineId(String dailyLineId) {
         this.dailyLineId = dailyLineId;
+    }
+
+    public int getLev1Checked() {
+        return lev1Checked;
+    }
+
+    public void setLev1Checked(int lev1Checked) {
+        this.lev1Checked = lev1Checked;
+    }
+
+    public int getLev2Checked() {
+        return lev2Checked;
+    }
+
+    public void setLev2Checked(int lev2Checked) {
+        this.lev2Checked = lev2Checked;
     }
 }

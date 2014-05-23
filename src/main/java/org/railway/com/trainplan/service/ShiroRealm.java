@@ -48,6 +48,7 @@ public class ShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
+        logger.info("Authorization::::" + shiroUser.getUsername());
         if(shiroUser != null){
             int accId = shiroUser.getAccId();
             List<Role> roleList = roleDao.getRoleByAccId(accId);
@@ -66,6 +67,7 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         String username = usernamePasswordToken.getUsername();
+        logger.info("Authentication:::::" + username);
         String[] logininfo = username.split("@");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("username", logininfo[0]);
@@ -77,7 +79,7 @@ public class ShiroRealm extends AuthorizingRealm {
                     throw new DisabledAccountException();
                 }
 
-                ShiroUser shiroUser = new ShiroUser(user.getUsername(), user.getName(), Integer.parseInt(logininfo[1]));
+                ShiroUser shiroUser = new ShiroUser(user.getUsername(), user.getName(), Integer.parseInt(logininfo[1]), user.getLjpym(), user.getLjjc(), user.getLjqc(), user.getDeptname());
                 return new SimpleAuthenticationInfo(shiroUser, user.getPassword(), getName());
             }
         }catch(Exception e) {
@@ -93,6 +95,14 @@ public class ShiroRealm extends AuthorizingRealm {
         private String name;
 
         private int accId;
+
+        private String deptName;
+
+        private String bureau;
+
+        private String bureauShortName;
+
+        private String bureauFullName;
 
         public String getUsername() {
             return username;
@@ -118,10 +128,52 @@ public class ShiroRealm extends AuthorizingRealm {
             this.name = name;
         }
 
+        public String getBureau() {
+            return bureau;
+        }
+
+        public void setBureau(String bureau) {
+            this.bureau = bureau;
+        }
+
+        public String getBureauShortName() {
+            return bureauShortName;
+        }
+
+        public void setBureauShortName(String bureauShortName) {
+            this.bureauShortName = bureauShortName;
+        }
+
+        public String getBureauFullName() {
+            return bureauFullName;
+        }
+
+        public void setBureauFullName(String bureauFullName) {
+            this.bureauFullName = bureauFullName;
+        }
+
+        public String getDeptName() {
+            return deptName;
+        }
+
+        public void setDeptName(String deptName) {
+            this.deptName = deptName;
+        }
+
         public ShiroUser(String username, String name, int accId) {
             this.username = username;
             this.name = name;
             this.accId = accId;
+        }
+
+        public ShiroUser(String username, String name, int accId, String bureau, String bureauShortName, String bureauFullName, String deptName) {
+            this.username = username;
+            this.name = name;
+            this.accId = accId;
+            this.bureau = bureau;
+            this.bureauShortName = bureauShortName;
+            this.bureauFullName = bureauFullName;
+            this.deptName = deptName;
         }
 
         @Override

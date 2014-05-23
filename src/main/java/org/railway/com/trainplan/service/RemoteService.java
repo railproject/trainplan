@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 @Monitored
 public class RemoteService {
 	private static final Logger logger = Logger.getLogger(RemoteService.class);
+	//TODO 取不出来
 	@Value("#{restConfig['SERVICE_URL']}")
     private String restUrl;
 	/**
@@ -39,6 +40,7 @@ public class RemoteService {
 
 		List<SchemeDto> list = new ArrayList<SchemeDto>();
 		Map response = null;
+		System.err.println("restUrl==" + restUrl);
 		response = RestClientUtils.post(restUrl
 				+ Constants.GET_SCHEME_LIST, new HashMap(), Map.class);
 		logger.info("getSchemeLis--response= " + response);

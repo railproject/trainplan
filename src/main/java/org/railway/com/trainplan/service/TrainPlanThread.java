@@ -40,15 +40,10 @@ public class TrainPlanThread extends Thread {
 			 String tempStartDate = DateUtil.getDateByDay(
 					startDate, -i);
 			//logger.info("startDate==" + tempStartDate);
-            Map<String,Object> messageMap = new HashMap<String,Object>();
-            
+           
 			if (list != null && list.size() > 0) {
-				messageMap.put("startDate", tempStartDate);
-				messageMap.put("daycount", daycount);
-				messageMap.put("trainsCount", 0);
-				String message = objectMapper.writeValueAsString(messageMap);
-				// 推送开始某天记录的信息
 				
+				// 推送开始某天记录的信息
 				quoteService.sendQuotes(tempStartDate,daycount, 0, "plan.day.begin");
 				// 保存数据
 				planTrainStnService.addTrainPlanLine(list, tempStartDate);

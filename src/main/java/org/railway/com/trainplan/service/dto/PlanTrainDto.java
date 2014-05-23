@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class PlanTrainDto {
 	  //列车id
-		private BigDecimal planTrainId;//PLAN_TRAIN_ID;
+		private String planTrainId;//PLAN_TRAIN_ID;
 		//车次
 		private String trainNbr;//TRAIN_NBR;
 		//始发站
@@ -14,10 +14,10 @@ public class PlanTrainDto {
 		//开行时间
 		private String runDate;
 		
-		public BigDecimal getPlanTrainId() {
+		public String getPlanTrainId() {
 			return planTrainId;
 		}
-		public void setPlanTrainId(BigDecimal planTrainId) {
+		public void setPlanTrainId(String planTrainId) {
 			this.planTrainId = planTrainId;
 		}
 		public String getTrainNbr() {

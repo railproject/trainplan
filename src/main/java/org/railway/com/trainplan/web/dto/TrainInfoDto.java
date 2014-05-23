@@ -16,7 +16,7 @@ public class TrainInfoDto {
 	public String endTime;
 	public String startDate;
 	private String endDate;
-	public List<PlanLineSTNDTO> trainStns = new ArrayList<PlanLineSTNDTO>();
+	public List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
 	
 	
 	public String getStartDate() {
@@ -61,10 +61,10 @@ public class TrainInfoDto {
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
-	public List<PlanLineSTNDTO> getTrainStns() {
+	public List<PlanLineSTNDto> getTrainStns() {
 		return trainStns;
 	}
-	public void setTrainStns(List<PlanLineSTNDTO> trainStns) {
+	public void setTrainStns(List<PlanLineSTNDto> trainStns) {
 		this.trainStns = trainStns;
 	}
 	

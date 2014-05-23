@@ -2,52 +2,78 @@ package org.railway.com.trainplan.web.dto;
 
 import org.apache.commons.collections.MapUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 /**
- * Created by star on 5/14/14.
+ * Created by star on 5/12/14.
  */
-public class PlanLineSTNDTO {
-    private int runDays;
+public class PlanLineSTNDto {
+    // 记录id
+    private String id;
+
+    // 站顺序
+    private int index;
+
+    // 站名
     private String stnName;
+
+    // 所属局
+    private String bureau;
+
+    // 到站时间
     private String arrTime;
+
     private String dptTime;
-    private int stayTime;
 
-    public PlanLineSTNDTO(){}
-    public PlanLineSTNDTO(Map<String, Object> map) {
-        SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        this.runDays = MapUtils.getIntValue(map, "RUN_DAYS", 0);
-        this.stnName = MapUtils.getString(map, "STN_NAME", "");
-        java.sql.Timestamp dbArrDateTime = (java.sql.Timestamp)map.get("ARR_TIME");
-        if(dbArrDateTime != null) {
-            Date date = new Date(dbArrDateTime.getTime());
-            this.arrTime = ff.format(date);
+    private String trackName;
+
+    private int psg;
+
+    private boolean owner;
+
+    public PlanLineSTNDto(){}
+    public PlanLineSTNDto(Map<String, Object> map) {
+        this.index = MapUtils.getIntValue(map, "STN_INDEX");
+        this.stnName = MapUtils.getString(map, "STN_NAME");
+        this.bureau = MapUtils.getString(map, "BUREAU");
+        this.trackName = MapUtils.getString(map, "TRACK_NAME");
+        this.arrTime = MapUtils.getString(map, "ARR_TIME");
+        this.dptTime = MapUtils.getString(map, "DPT_TIME");
+    }
+
+    public PlanLineSTNDto(Map<String, Object> map, String bureau) {
+        this.index = MapUtils.getIntValue(map, "STN_INDEX");
+        this.stnName = MapUtils.getString(map, "STN_NAME");
+        this.bureau = MapUtils.getString(map, "BUREAU");
+        this.trackName = MapUtils.getString(map, "TRACK_NAME");
+        this.arrTime = MapUtils.getString(map, "ARR_TIME", "");
+        if(this.arrTime.length() > 0) {
+            this.arrTime = this.arrTime.substring(5, 16);
         }
-        java.sql.Timestamp dbDptDateTime = (java.sql.Timestamp)map.get("DPT_TIME");
-        if(dbDptDateTime != null) {
-            Date date = new Date(dbDptDateTime.getTime());
-            this.dptTime = ff.format(date);
+        this.dptTime = MapUtils.getString(map, "DPT_TIME", "");
+        if(this.dptTime.length() > 0) {
+            this.dptTime = this.dptTime.substring(5, 16);
         }
-        this.stayTime = 0;
+        this.owner = MapUtils.getString(map, "STN_BUREAU", "").equals(bureau);
     }
 
-    public PlanLineSTNDTO(Map<String, Object> map, int line) {
-        this.stnName = MapUtils.getString(map, "name", "");
-        this.arrTime = MapUtils.getString(map, "sourceTimeDto2", "");
-        this.arrTime = this.arrTime.substring(0, 16);
-        this.dptTime = MapUtils.getString(map, "targetTimeDto2", "");
-        this.dptTime = this.dptTime.substring(0, 16);
+    public PlanLineSTNDto(Map<String, Object> map, String bureau, String id) {
+        this.id = id;
+        this.index = MapUtils.getIntValue(map, "STN_INDEX");
+        this.stnName = MapUtils.getString(map, "STN_NAME");
+        this.bureau = MapUtils.getString(map, "BUREAU");
+        this.trackName = MapUtils.getString(map, "TRACK_NAME");
+        this.arrTime = MapUtils.getString(map, "ARR_TIME");
+        this.dptTime = MapUtils.getString(map, "DPT_TIME");
+        this.owner = MapUtils.getString(map, "STN_BUREAU", "").equals(bureau);
     }
 
-    public int getRunDays() {
-        return runDays;
+    public String getId() {
+        return id;
     }
 
-    public void setRunDays(int runDays) {
-        this.runDays = runDays;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getStnName() {
@@ -56,6 +82,14 @@ public class PlanLineSTNDTO {
 
     public void setStnName(String stnName) {
         this.stnName = stnName;
+    }
+
+    public String getBureau() {
+        return bureau;
+    }
+
+    public void setBureau(String bureau) {
+        this.bureau = bureau;
     }
 
     public String getArrTime() {
@@ -74,11 +108,35 @@ public class PlanLineSTNDTO {
         this.dptTime = dptTime;
     }
 
-    public int getStayTime() {
-        return stayTime;
+    public String getTrackName() {
+        return trackName;
     }
 
-    public void setStayTime(int stayTime) {
-        this.stayTime = stayTime;
+    public void setTrackName(String trackName) {
+        this.trackName = trackName;
+    }
+
+    public int getPsg() {
+        return psg;
+    }
+
+    public void setPsg(int psg) {
+        this.psg = psg;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

@@ -284,9 +284,9 @@ public class CrossController {
 	    TrainlineTemplateSubDto targetItemDto = (TrainlineTemplateSubDto)scheduleMap.get("targetItemDto");
 	    //经由站信息
 	    List<TrainlineTemplateSubDto> routeItemDtos = (List<TrainlineTemplateSubDto>) scheduleMap.get("routeItemDtos");
-	    List<PlanLineSTNDTO> trainStns = new ArrayList<PlanLineSTNDTO>();
+	    List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
 	    if(sourceItemDto != null){
-	    	PlanLineSTNDTO traintempDto = new PlanLineSTNDTO();
+	    	PlanLineSTNDto traintempDto = new PlanLineSTNDto();
 	    	traintempDto.setStnName(sourceItemDto.getName());
 	    	//起点站的日期是传入的runDay
 	    	traintempDto.setArrTime(runDate + " " + sourceItemDto.getSourceTime());
@@ -300,7 +300,7 @@ public class CrossController {
 	    //经由站
 	    if(routeItemDtos != null && routeItemDtos.size() > 0){
 	    	for(TrainlineTemplateSubDto routeDto : routeItemDtos){
-	    		PlanLineSTNDTO traintempDto = new PlanLineSTNDTO();
+	    		PlanLineSTNDto traintempDto = new PlanLineSTNDto();
 	    		traintempDto.setStnName(routeDto.getName());
 	    		Integer sourceDay = routeDto.getSourceDay();
 	    		Integer targetDay = routeDto.getTargetDay();
@@ -313,7 +313,7 @@ public class CrossController {
 	    }
 	    //终到站
 	    if(targetItemDto != null){
-	    	PlanLineSTNDTO traintempDto = new PlanLineSTNDTO();
+	    	PlanLineSTNDto traintempDto = new PlanLineSTNDto();
 	    	traintempDto.setStnName(targetItemDto.getName());
 	    	Integer sourceDay = targetItemDto.getSourceDay();
     		Integer targetDay = targetItemDto.getTargetDay();

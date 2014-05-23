@@ -135,4 +135,15 @@ public class Constants {
     public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoForCrossIds";
     //根据crossIds批量删除unit_cross_train表中数据
     public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_TRAIN_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoTrainForCrossIds";
+    
+    //获取全部方案列表
+    public static final String SCHEME_GETSCHEMEINFO = "schemeDao.getSchemeInfo";
+    
+    //根据方案ID和始发终到局获取列车列表
+    public static final String TRAININFO_GETTRAININFO = "trainInfoDao.getTrainInfo";
+    public static final String TRAININFO_GETTRAININFO_PAGE = "trainInfoDao.getTrainInfoForPage";
+    
+    public static final String TRAININFO_GETTRAININFO_COUNT="trainInfoDao.getTrainInfoTotalCount";
+    //根据方案ID和始发终到局获取列车列表
+    public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";
 }

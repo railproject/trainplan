@@ -119,7 +119,8 @@ function CrossModel() {
                 secureuri:false,
                 fileElementId:'fileToUpload',
                 type : "POST",
-                dataType: 'json',  
+                dataType: 'json', 
+                timeout:4000,
                 data:{
                 	chartId:chart.chartId,
                 	startDay:startDay,
