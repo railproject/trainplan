@@ -491,6 +491,20 @@ public class CrossService{
 	
 	
 	/**
+	 * 通过crossid查询crosstrainInfo信息
+	 * @param crossId
+	 * @return
+	 */
+	public List<CrossTrainInfo> getUnitCrossTrainInfoForCrossid(String crossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("crossId", crossId);
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSSTRAIN_INFO_FOR_CROSSID, paramMap);
+	}
+	
+	
+	
+	
+	/**
 	 * 通过UNITcrossid查询UNITcrossinfo信息
 	 * @param unitCrossId
 	 * @return

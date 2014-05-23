@@ -27,12 +27,14 @@ public class TrainsTask implements Callable<Integer>{
 	}
 	@Override
 	public Integer call() throws Exception {
-		//System.err.println("trainInfoService=="+trainInfoService);
+		
 		//1、查询数据，并解析
 		List<TrainlineTemplateDto>  list = trainInfoService.getTrainsAndTimesForList(dayTaskDto);
-		System.err.println("list.size==" + list);
+		System.err.println("list.size==" + list.size());
 		//2、插入数据库
-		return null;
+		// 保存数据
+		trainInfoService.addTrainPlanLine(list, dayTaskDto.getRunDate());
+		return list.size();
 	}
 
 }
