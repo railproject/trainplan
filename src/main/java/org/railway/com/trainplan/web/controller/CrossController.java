@@ -633,7 +633,7 @@ public class CrossController {
 		    	//先获取unitcross基本信息
 			 CrossInfo crossinfo = crossService.getCrossInfoForCrossid(crossId);
 			 //再获取unitcrosstrainInfo信息
-			 List<CrossTrainInfo> list = crossService.getCrossTrainInfoForCrossid(crossId);
+			 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForCrossid(crossId);
 		     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 		     Map<String,Object> dataMap = new HashMap<String,Object>();
 		     dataMap.put("crossinfo", crossinfo);

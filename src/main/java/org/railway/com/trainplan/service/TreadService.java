@@ -53,6 +53,8 @@ public class TreadService {
 				e.printStackTrace();
 			}
 		}
+		//关闭线程池
+		threadPool.shutdown();
 		return 0;
 	}
 }

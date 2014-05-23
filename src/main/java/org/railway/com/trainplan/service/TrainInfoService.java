@@ -5,16 +5,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.PlanTrain;
+import org.railway.com.trainplan.entity.PlanTrainStn;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
@@ -28,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Monitored
 public class TrainInfoService {
+	private static final Logger logger = Logger.getLogger(TrainInfoService.class);
 	@Autowired
 	private BaseDao baseDao;
 	
@@ -86,6 +90,99 @@ public class TrainInfoService {
 		}
 		
 		return returnList;
+	}
+	
+	/**
+	 * 将后台接口返回数据存入本地PLAN_TRAIN和PLAN_TRAIN_STN库中
+	 * @param list
+	 * @param tempStartDate 格式yyyy-mm-dd
+	 */
+	public void addTrainPlanLine(List<TrainlineTemplateDto> list,String tempStartDate) {
+		
+				if (list != null && list.size() > 0) {
+					
+					for (TrainlineTemplateDto dto : list) {
+						String runDate = tempStartDate;
+						String trainId= UUID.randomUUID().toString();
+						try{
+						
+						runDate = DateUtil.format(DateUtil.parse(runDate),"yyyy-MM-dd");
+						String starttime = dto.getStartTime();
+						String endtime = dto.getEndTime();
+	
+						Map<String,Object> paramMap = new HashMap<String,Object>();
+						paramMap.put("runDate",runDate.replaceAll("-", ""));
+						paramMap.put("trainNbr",dto.getTrainNbr() );
+						paramMap.put("startTime",starttime );
+						paramMap.put("endTime",endtime);
+						paramMap.put("startStn",dto.getStartStn() );
+						paramMap.put("endStn",dto.getEndStn() );
+						paramMap.put("baseChartId",dto.getBaseChartId() );
+						paramMap.put("baseTrainId",dto.getBaseTrainId() );
+						paramMap.put("startBureauFull", dto.getStartBureauFull());
+						paramMap.put("endBureauFull",dto.getEndBureauFull() );
+						paramMap.put("trainType",dto.getTrainType() );
+						//插入数据库
+					    int successCount = baseDao.insertBySql(Constants.TRAINPLANDAO_ADD_TRAIN_PLAN, paramMap);
+						logger.info("count of inserting into train_plan==" + successCount);
+						//获取当前的plan_train_id  plan_train_id
+						//Map map = (Map)baseDao.selectOneBySql(Constants.TRAINPLANDAO_GET_MAX_PLANTRAIN_ID, null);
+						//trainId = (BigDecimal)map.get("plan_train_id");
+						// 获取经由信息
+						List<TrainlineTemplateSubDto> stationList = dto
+								.getStationList();
+						//System.err.println("stationList==" + stationList);
+						if (stationList != null && stationList.size() > 0) {
+                            
+							List<PlanTrainStn> tempList = new ArrayList<PlanTrainStn>();
+							
+							for (TrainlineTemplateSubDto dtoStn : stationList) {
+								
+								PlanTrainStn tempSubDto = new PlanTrainStn();
+								//数据库主键
+								String planTrainStnId = UUID.randomUUID().toString();
+								tempSubDto.setPlanTrainStnId(planTrainStnId);
+								
+								String sourceTime = dtoStn.getSourceTime();
+								int daycountSouce = Integer.valueOf(sourceTime.substring(0,1));
+								String trueRunDate = DateUtil.getDateByDay(runDate, -daycountSouce);
+								String sourcetime = trueRunDate+ " "+ StringUtil.handleTime(sourceTime);
+								
+								String targetTime = dtoStn.getTargetTime();
+								int daycountTarget = Integer.valueOf(targetTime.substring(0,1));
+								trueRunDate = DateUtil.getDateByDay(runDate, -daycountTarget);
+								String targettime = trueRunDate+ " "+ StringUtil.handleTime(targetTime);
+                               
+								
+								tempSubDto.setArrTime(sourcetime);
+								tempSubDto.setDptTime(targettime);
+								tempSubDto.setBaseArrTime(sourcetime);
+								tempSubDto.setBaseDptTime(targettime );
+								tempSubDto.setStnName(dtoStn.getName());
+								tempSubDto.setStnBureauFull(dtoStn.getStnBureauFull());
+								tempSubDto.setStnSort(dtoStn.getIndex());
+								tempSubDto.setTrackName(dtoStn.getTrackName());
+								tempSubDto.setRunDays(dtoStn.getRunDays());
+								
+								tempList.add(tempSubDto);
+								
+								
+							}
+							//批量插入数据表train_plan_stn
+							int successCountStn = baseDao.insertBySql(Constants.TRAINPLANDAO_ADD_TRAIN_PLAN_STN, tempList);
+							logger.info("count of inserting into train_plan_stn==" + successCountStn);
+							
+						}
+
+					}catch(Exception e){
+						//不做任何处理，只打印日志
+						e.printStackTrace();
+						logger.error("存表plan_train失败，plan_train_id["+trainId +"],runDate["+runDate+"]");
+					}
+				 }
+					
+				}
+		
 	}
 	
 	/**
