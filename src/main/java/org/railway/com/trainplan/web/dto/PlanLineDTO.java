@@ -13,7 +13,7 @@ public class PlanLineDTO {
     private String trainName;
     private String startStn;
     private String endStn;
-    private List<PlanLineSTNDTO> trainStns = new ArrayList<PlanLineSTNDTO>();
+    private List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
 
     public PlanLineDTO(Map<String, Object> map) {
         this.trainName = MapUtils.getString(map, "TRAIN_NBR", "");
@@ -47,11 +47,11 @@ public class PlanLineDTO {
         this.endStn = endStn;
     }
 
-    public List<PlanLineSTNDTO> getTrainStns() {
+    public List<PlanLineSTNDto> getTrainStns() {
         return trainStns;
     }
 
-    public void setTrainStns(List<PlanLineSTNDTO> trainStns) {
+    public void setTrainStns(List<PlanLineSTNDto> trainStns) {
         this.trainStns = trainStns;
     }
 }
