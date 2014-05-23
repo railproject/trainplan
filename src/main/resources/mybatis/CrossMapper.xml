@@ -225,7 +225,7 @@
 	     B.MARSHALLING_NAME AS marshallingName
          from 
          unit_cross_train A,unit_cross B 
-         where  A.UNIT_CROSS_ID = B.UNIT_CROSS_ID and B.base_cross_id =#{crossId} order by B.unit_cross_id ,A.train_sort
+         where  A.UNIT_CROSS_ID = B.UNIT_CROSS_ID and B.base_cross_id =#{crossId} order by B.GROUP_SERIAL_NBR ,A.train_sort
    </select>
   
     <insert id="addUnitCrossInfo"  parameterType="java.util.List" >
