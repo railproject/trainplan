@@ -43,5 +43,14 @@ public interface RunPlanDao {
      * @param list
      * @return
      */
-    List<Map<String, Object>> checkLev1(List<LevelCheck> list);
+    int addCheckHis(List<LevelCheck> list);
+
+    /**
+     * 更新审核状态和已审核局
+     * @param map
+     * @return
+     */
+    int updateCheckInfo(Map<String, Object> map);
+
+    List<Map<String, Object>> findPlanInfoListByPlanId(String planIds);
 }

@@ -15,9 +15,6 @@
         <jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
         <jdbc.driver.version>5.1.22</jdbc.driver.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdbc.driver.groupId>mysql</jdbc.driver.groupId>
-        <jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
-        <jdbc.driver.version>5.1.22</jdbc.driver.version>
         <springside.version>4.2.2.GA</springside.version>
         <org.springframework.version>4.0.4.RELEASE</org.springframework.version>
         <org.hibernate.version>4.2.12.Final</org.hibernate.version>
