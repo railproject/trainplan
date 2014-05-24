@@ -46,11 +46,11 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
                                     <shiro:hasRole name="局客运调度">
-                                        <button type="button" id="checkBtn" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px">校验</button>
-                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1">客调审核</button>
+                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: autoCheck, enable: canCheckLev1">校验</button>
+                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1, enable: canCheckLev1">客调审核</button>
                                     </shiro:hasRole>
                                     <shiro:hasRole name="局值班主任">
-                                        <button type="button" class="btn btn-primary disabled" style="width: 100px; margin-right: 10px; border-radius: 4px">值班主任审核</button>
+                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev2, enable: canCheckLev2">值班主任审核</button>
                                     </shiro:hasRole>
 
                                 </div>
@@ -95,8 +95,11 @@
                                     </thead>
                                     <tbody data-bind="foreach: planList">
                                     <tr>
-                                        <shiro:hasRole name="局客运调度, 局值班主任">
+                                        <shiro:hasRole name="局客运调度">
                                             <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="enable: needLev1, checked: isSelected"/></td>
+                                        </shiro:hasRole>
+                                        <shiro:hasRole name="局值班主任">
+                                            <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="enable: needLev2, checked: isSelected"/></td>
                                         </shiro:hasRole>
                                         <td class="text-center" data-bind="text: $index() + 1"></td>
                                         <td class="text-center"><a href="#" data-bind="text: name"></a></td>

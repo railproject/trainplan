@@ -14,13 +14,63 @@ function ApplicationModel() {
 
     var tableModel = new TableModel();
 
-    $("#checkBtn").bind('click', {}, tableModel.autoCheck);
-
     self.tableModel = ko.observable(tableModel);
 
     self.paramModel = ko.observable(new ParamModel(tableModel));
 
     self.allBtn = ko.observable(false);
+
+    // 记录当前多少条计划正在校验，校验开始时赋值计划列表长度。每个校验请求返回的时候减一，为0时表示校验完毕
+    self.nbr = 0;
+
+    self.canCheckLev1 = ko.computed(function() {
+        ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
+            if(plan.needLev1()) {
+                return true;
+            }
+        });
+    });
+
+    self.canCheckLev2 = ko.computed(function() {
+        ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
+            if(plan.needLev2()) {
+                return true;
+            }
+        });
+    });
+
+    self.autoCheck = function() {
+        $checkBtn = $(this);
+        $checkBtn.prop( "disabled", true )
+        self.nbr = self.tableModel().planList();
+        ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
+            if(plan.dailyLineFlag() != "已上图" || !plan.dailyLineId()) {
+                plan.isTrainInfoMatch(-1);
+                plan.isTimeTableMatch(-1);
+                plan.isRoutingMatch(-1);
+            } else {
+                $.ajax({
+                    url: "audit/plan/" + plan.id() + "/line/" + plan.dailyLineId() + "/check",
+                    method: "GET",
+                    contentType: "application/json; charset=UTF-8"
+                }).done(function(data) {
+                    plan.isTrainInfoMatch(data.isTrainInfoMatch);
+                    plan.isTimeTableMatch(data.isTimeTableMatch);
+                    plan.isRoutingMatch(data.isRoutingMatch);
+                }).fail(function() {
+
+                }).always(function() {
+                    self.nbr = self.nbr - 1;
+                    if(self.nbr == 0) {
+                        $checkBtn.prop( "disabled", false )
+                    }
+                })
+            }
+        });
+        if(self.nbr == 0) {
+            $checkBtn.prop( "disabled", false )
+        }
+    }
 
 
     self.selectAllLev1 = function() {
@@ -204,32 +254,6 @@ function TableModel() {
 
         })
     };
-
-
-    self.autoCheck = function() {
-        $("#checkBtn").prop( "disabled", true )
-        ko.utils.arrayForEach(self.planList(), function(plan) {
-            if(plan.dailyLineFlag() != "已上图" || !plan.dailyLineId()) {
-                plan.isTrainInfoMatch(-1);
-                plan.isTimeTableMatch(-1);
-                plan.isRoutingMatch(-1);
-            } else {
-                $.ajax({
-                    url: "audit/plan/" + plan.id() + "/line/" + plan.dailyLineId() + "/check",
-                    method: "GET",
-                    contentType: "application/json; charset=UTF-8"
-                }).done(function(data) {
-                    plan.isTrainInfoMatch(data.isTrainInfoMatch);
-                    plan.isTimeTableMatch(data.isTimeTableMatch);
-                    plan.isRoutingMatch(data.isRoutingMatch);
-                }).fail(function() {
-
-                }).always(function() {
-
-                })
-            }
-        });
-    }
 }
 
 function Plan(dto) {
