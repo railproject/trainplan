@@ -3,8 +3,9 @@ package org.railway.com.trainplan.exceptions;
 /**
  * Created by speeder on 2014/5/23.
  */
-public class WrongDataException extends Exception {
+public class WrongDataException extends DailyPlanCheckException {
     public WrongDataException() {
+        super();
     }
 
     public WrongDataException(String message) {
@@ -19,7 +20,7 @@ public class WrongDataException extends Exception {
         super(cause);
     }
 
-    public WrongDataException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected WrongDataException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }
