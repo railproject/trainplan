@@ -1,18 +1,24 @@
 
 /**
- * @param context 画布对象
- * @param startX x起始位置
- * @param startY y起始位置
- * @param stepX x步长
- * @param stepY y步长
- * @param xScale x缩放比例 x轴时间（分钟）转换为长度像素px的除数 （建议整数：1、2、10等）
- * @param xDateArray 日期数组 [{runDate:"2014-05-10"},{runDate:"2014-05-11"}]//日期段，x轴刻度
- * @param stnArray 交路经由站数组 [{stnName:"成都"},{stnName:"遂宁",isCurrentBureau:1},{stnName:"南充",isCurrentBureau:1},{stnName:"蓬安"},{stnName:"营山"}]
+ * @param context (必选参数)画布对象
+ * @param xDateArray (必选参数)日期数组 用于绘制x轴 //日期段，x轴刻度
+ * 			[
+ * 				{runDate:"2014-05-10"},//（必选）
+ * 				{runDate:"2014-05-11"}
+ * 			]
+ * @param stnArray (必选参数)交路经由站数组 用于绘制y轴
+ * 			[
+ * 				{stnName:"成都"},//stnName（必选）
+ * 				{stnName:"遂宁",isCurrentBureau:1},//isCurrentBureau：（可选）是否为当前局 0：否，1：是
+ * 				{stnName:"南充",isCurrentBureau:1},
+ * 				{stnName:"蓬安"},
+ * 				{stnName:"营山"}
+ * 			]
  * @param expandObj (可选参数) 缩放比例参数对象
  * 			{
- * 				startX : 120,		//(可选参数)x开始位置（注意是指第一条竖线位置，站名位置在该位置左移）
- * 				startY : 50,		//(可选参数)y开始位置
- * 				xScale : 10,		//(可选参数)x轴缩放比例 除数
+ * 				startX : 120,		//(可选参数)x起始位置（注意是指第一条竖线位置，站名位置在该位置左移）
+ * 				startY : 50,		//(可选参数)y起始位置
+ * 				xScale : 10,		//(可选参数)x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数 （建议整数：1、2、10等）
  * 				xScaleCount : 1,	//(可选参数)x轴放大总倍数
  * 				yScale : 1			//(可选参数)y轴缩放比例 除数
  * 			}
@@ -23,11 +29,11 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	var _xDateArray = xDateArray;
 	var _stnArray = stnArray;
 	var _stnOffsetY = 45;	//第一个站横虚线y对于_startY（画布y起始位置）的偏移量
-	var _startX = 150;	//默认100 x开始位置
-	var _startY = 50;	//默认100 y开始位置
+	var _startX = 150;	//默认100 x起始位置
+	var _startY = 50;	//默认100 y起始位置
 	var _stepX = 1;		//默认1	x步长 每一分钟X轴步长为1px
 	var _stepY = 50;	//默认100 y步长
-	var _xScale = 10;	//默认10 x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数
+	var _xScale = 10;	//默认10 x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数 （建议整数：1、2、10等）
 	var _xScaleCount = 1;	//默认1 用于确定每天时刻竖线条数
 	var _yScale = 1;	//默认10 x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数
 	var _drawYMoreFlag = false;	//默认false	每一天x长度范围内是否绘制更多竖线 true/false
@@ -153,9 +159,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			});
 
 			if (_obj.isCurrentBureau && _obj.isCurrentBureau == 1) {//该站属于当前路局管内
-				_color = "#c101db";
+				_color = color;//#c101db
 			} else {
-				_color = color;
+				_color = "gray";//gray、浅绿#eefde3、#c101db
 			}
 			
 			_context.lineWidth = 1;
@@ -459,7 +465,18 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				return false;
 			}
 		};
-	    this.drawLine = function(ctx, x, y, booleanShowTrainDetail) {
+		/**
+		 * @param ctx 必选参数
+		 * @param expandObj 可选参数 扩展对象
+		 * 			{
+		 * 				x : 247,						//可选参数 当前鼠标x坐标
+		 * 				y : 458,					 	//可选参数 当前鼠标y坐标
+		 * 				trainNbr : "K818",				//可选参数 车次号，外部传入条件，以便绘图时该车次高亮显示，类是鼠标选中效果
+		 * 				booleanShowTrainDetail : true, 	//可选参数 是否显示该车次详细信息
+		 * 			}
+		 * 
+		 */
+	    this.drawLine = function(ctx, expandObj) {
 	    	ctx.save();
 	    	ctx.beginPath();
 			
@@ -511,8 +528,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				_parentDeptStn = {x:_dptTimeX, y: _y};
 			}
 
-	        
-			if(x && y && (ctx.isPointInStroke(x, y)||ctx.isPointInPath(x, y))) {
+			if(expandObj!=null && ((expandObj.x!="undefined" && expandObj.y!="undefined" && 
+								(ctx.isPointInStroke(expandObj.x, expandObj.y)||ctx.isPointInPath(expandObj.x, expandObj.y)))
+							|| (expandObj.trainNbr!="undefined" && expandObj.trainNbr == this.obj.trainName))) {
 				var currentColor = "#ff0000";
 				if ("#ff0000"==colorParam) {
 					currentColor = getRandomColor();//当前线条底色为红色时，鼠标选中颜色则重新随机产生
@@ -524,7 +542,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
                 line_self.showTrainName(_context, currentColor);
                 
                 //查看选中线 列车运行时刻信息
-                if (booleanShowTrainDetail) {
+                if (expandObj.booleanShowTrainDetail) {
                 	runTimeModel.loadData(this.obj);
                 }
             } else {
@@ -748,14 +766,14 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	
 	
 	/**
-	 * 绘制时间刻度 _xDateArray2天以上， 根据x轴放大倍数（_xScaleCount）绘制线条多少(包含0点、6点、12点、18点、0点)
+	 * 绘制时间刻度线 _xDateArray2天以上， 根据x轴放大倍数（_xScaleCount）绘制线条多少(包含0点、6点、12点、18点、0点)
 	 * public
 	 * 
 	 * 为避免循环中做逻辑if判断（会降低性能）。所以未与drawGridMoreY合并
 	 * private
 	 * @param color	//颜色
 	 */
-	function drawGridY(color) {
+	this.drawTimeLine = function(color) {
 		//画竖线
 		var _halfHourWidth = 30*_stepX/_xScale;	//半小时
 		var _oneHourWidth = 60*_stepX/_xScale;
@@ -834,7 +852,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				drawY(color, 2, "0", _startX+(i+1)*_oneDayWidth, false);//24点
 			}
 		}
-	}
+	};
 	
 	
 };
