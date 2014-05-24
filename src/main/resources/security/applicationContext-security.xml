@@ -28,8 +28,8 @@
                 /login = authc
                 /logout = logout
                 /assets/** = anon
-                /audit = user
-                /audit/** = anon
+                /audit = authc
+                /audit/** = authc
                 /user/** = anon
                 /index = user
                 /cross/** = anon

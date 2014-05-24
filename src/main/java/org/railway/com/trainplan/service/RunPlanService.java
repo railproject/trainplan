@@ -52,7 +52,8 @@ public class RunPlanService {
         return runPlanDao.findPlanInfoByPlanId(planId);
     }
 
-    public int checkLev1(List<Map<String, Object>> list, ShiroRealm.ShiroUser user, int checkType) {
+    public List<Map<String, Object>> checkLev1(List<Map<String, Object>> list, ShiroRealm.ShiroUser user, int checkType) {
+        List<Map<String, Object>> checkLev1Result = new ArrayList<Map<String, Object>>();
         try {
             // 准备参数
             java.sql.Date now = new java.sql.Date(new Date().getTime());
@@ -70,40 +71,117 @@ public class RunPlanService {
                 List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(stringBuilder.substring(0, stringBuilder.length() - 1));
 
                 for(Map<String, Object> plan: planList) {
-                    int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
-                    String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU");
-                    int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
-                    String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU");
-                    String passBureau = MapUtils.getString(plan, "PASS_BUREAU");
-                    // 计算一级已审核局
-                    String checkedLev1Bureau = addBureauCode(lev1Bureau, user.getBureauShortName());
-                    // 计算新1级审核状态
-                    int newLev1Type = newLev1Type(lev1Type, passBureau, lev1Bureau, user.getBureauShortName());
-                    // 一级审核完后，二级审核需要重新审核
-                    int newLev2Type = 0;
-                    // 二级已审核局也应该是空
-                    String checkedLev2Bureau = "";
-                    Map<String, Object> updateParam = new HashMap<String, Object>();
-                    updateParam.put("lev1Type", newLev1Type);
-                    updateParam.put("lev1Bureau", checkedLev1Bureau);
-                    updateParam.put("lev2Type", newLev2Type);
-                    updateParam.put("lev2Bureau", checkedLev2Bureau);
-                    updateParam.put("planId", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
-                    runPlanDao.updateCheckInfo(updateParam);
+
+                    try {
+                        // 组织返回结果对象
+                        Map<String, Object> levResult = new HashMap<String, Object>();
+                        levResult.put("id", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
+
+                        int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
+                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU");
+                        int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
+                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU");
+                        String passBureau = MapUtils.getString(plan, "PASS_BUREAU");
+                        // 计算一级已审核局
+                        String checkedLev1Bureau = addBureauCode(lev1Bureau, user.getBureauShortName());
+                        // 计算新1级审核状态
+                        int newLev1Type = newLev1Type(lev1Type, passBureau, lev1Bureau, user.getBureauShortName());
+                        // 一级审核完后，二级审核需要重新审核
+                        int newLev2Type = 0;
+                        // 二级已审核局也应该是空
+                        String checkedLev2Bureau = "";
+                        Map<String, Object> updateParam = new HashMap<String, Object>();
+                        updateParam.put("lev1Type", newLev1Type);
+                        updateParam.put("lev1Bureau", checkedLev1Bureau);
+                        updateParam.put("lev2Type", newLev2Type);
+                        updateParam.put("lev2Bureau", checkedLev2Bureau);
+                        updateParam.put("planId", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
+                        runPlanDao.updateCheckInfo(updateParam);
+                        // 本局一级审核状态
+                        levResult.put("checkLev1", newLev1Type);
+                        // 本局二级审核状态
+                        levResult.put("checkLev2", newLev2Type);
+                        // 本局一级审核是否已审核
+                        levResult.put("lev1Checked", 1);
+                        // 本局二级审核是否已审核
+                        levResult.put("lev2Checked", 0);
+                        checkLev1Result.add(levResult);
+                    } catch (DailyPlanCheckException e) {
+                        logger.error(e);
+                    }
                 }
             }
 
         } catch (Exception e) {
             logger.error("checkLev1::::::", e);
-            return -1;
-        } catch (WrongDataException e) {
-            logger.error("checkLev1::::::", e);
-            return -1;
-        } catch (DailyPlanCheckException e) {
-            logger.error("checkLev1::::::", e);
-            return -1;
         }
-        return 0;
+        return checkLev1Result;
+    }
+
+    public List<Map<String, Object>> checkLev2(List<Map<String, Object>> plans, ShiroRealm.ShiroUser user, int checkType) {
+        List<Map<String, Object>> checkLev1Result = new ArrayList<Map<String, Object>>();
+        try {
+            // 准备参数
+            java.sql.Date now = new java.sql.Date(new Date().getTime());
+            List<LevelCheck> params = new ArrayList<LevelCheck>();
+            StringBuilder stringBuilder = new StringBuilder();
+            for(Map<String, Object> item: plans) {
+                LevelCheck record = new LevelCheck(UUID.randomUUID().toString(), user.getName(), now, user.getDeptName(), user.getBureau(), checkType, MapUtils.getString(item, "planId"), MapUtils.getString(item, "lineId"));
+                params.add(record);
+                stringBuilder.append(record.getPlanId()).append(",");
+            }
+            if(stringBuilder.length() > 0) {
+                // 增加审核记录
+                runPlanDao.addCheckHis(params);
+                //修改审核状态和已审核局
+                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(stringBuilder.substring(0, stringBuilder.length() - 1));
+
+                for(Map<String, Object> plan: planList) {
+
+                    try {
+                        // 组织返回结果对象
+                        Map<String, Object> levResult = new HashMap<String, Object>();
+                        levResult.put("id", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
+
+                        int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
+                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU");
+                        int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
+                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU");
+                        String passBureau = MapUtils.getString(plan, "PASS_BUREAU");
+                        // 计算一级已审核局
+                        String checkedLev2Bureau = addBureauCode(lev2Bureau, user.getBureauShortName());
+                        // 计算新1级审核状态
+                        int newLev2Type = newLev1Type(lev2Type, passBureau, lev2Bureau, user.getBureauShortName());
+                        // 一级审核完后，二级审核需要重新审核
+//                        int newLev2Type = 0;
+//                        // 二级已审核局也应该是空
+//                        String checkedLev2Bureau = "";
+                        Map<String, Object> updateParam = new HashMap<String, Object>();
+//                        updateParam.put("lev1Type", newLev1Type);
+//                        updateParam.put("lev1Bureau", checkedLev1Bureau);
+                        updateParam.put("lev2Type", newLev2Type);
+                        updateParam.put("lev2Bureau", checkedLev2Bureau);
+                        updateParam.put("planId", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
+                        runPlanDao.updateCheckInfo(updateParam);
+                        // 本局一级审核状态
+//                        levResult.put("checkLev1", newLev1Type);
+                        // 本局二级审核状态
+                        levResult.put("checkLev2", newLev2Type);
+                        // 本局一级审核是否已审核
+//                        levResult.put("lev1Checked", 1);
+                        // 本局二级审核是否已审核
+                        levResult.put("lev2Checked", 1);
+                        checkLev1Result.add(levResult);
+                    } catch (DailyPlanCheckException e) {
+                        logger.error(e);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("checkLev1::::::", e);
+        }
+        return checkLev1Result;
     }
 
     /**

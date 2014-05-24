@@ -3,6 +3,8 @@ package org.railway.com.trainplan.web.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
 import org.railway.com.trainplan.service.PlanLineService;
 import org.railway.com.trainplan.service.RunPlanService;
 import org.railway.com.trainplan.service.ShiroRealm;
@@ -45,6 +47,7 @@ public class AuditController {
     }
 
     @RequestMapping(value = "plan/{planId}/line/{lineId}/check", method = RequestMethod.GET)
+    @RequiresRoles({"局客运调度", "局值班主任"})
     public PlanLineCheckResultDto checkPlanLine(@PathVariable String planId, @PathVariable String lineId) {
         logger.debug("checkPlanLine::: - planId: " + planId + " - lineId: " + lineId);
         PlanLineCheckResultDto result = new PlanLineCheckResultDto();
@@ -58,14 +61,20 @@ public class AuditController {
 
 
     @RequestMapping(value = "plan/checklev1/{checkType}", method = RequestMethod.POST)
+    @RequiresRoles("局客运调度")
     public Response checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
         logger.debug("data::::" + data);
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-        int result = runPlanService.checkLev1(data, user, checkType);
+        List<Map<String, Object>> resp = runPlanService.checkLev1(data, user, checkType);
+        return Response.ok(resp).build();
+    }
 
-        if(result == 0) {
-            return Response.ok().build();
-        }
-        return Response.serverError().entity("系统内部出错了").build();
+    @RequestMapping(value = "plan/checklev2/{checkType}", method = RequestMethod.POST)
+    @RequiresRoles("局值班主任")
+    public Response checkLev2(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
+        logger.debug("data::::" + data);
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        List<Map<String, Object>> resp = runPlanService.checkLev2(data, user, checkType);
+        return Response.ok(resp).build();
     }
 }

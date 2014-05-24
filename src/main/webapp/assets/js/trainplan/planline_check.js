@@ -51,6 +51,7 @@ function ApplicationModel() {
 
     // 一级审核
     self.checkLev1 = function() {
+        $(this).prop( "disabled", true )
         var data = new Array();
         ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
             if(plan.isSelected()) {
@@ -60,20 +61,106 @@ function ApplicationModel() {
                 data.push(paramObj);
             }
         })
+        if(data.length <= 0) {
+            $(this).prop( "disabled", false );
+            return false;
+        }
         $.ajax({
             url: "audit/plan/checklev1/1",
             method: "POST",
             dataType: "json",
             data: JSON.stringify(data),
             contentType: "application/json; charset=UTF-8"
-        }).done(function(resp) {
-            alert("done:" + resp);
+        }).done(function(response) {
+            ko.utils.arrayForEach(response.entity, function(resp) {
+                for(var i = 0; i < self.tableModel().planList().length; i ++) {
+                    if(resp.id == self.tableModel().planList()[i].id()) {
+                        self.tableModel().planList()[i].checkLev1(resp.checkLev1);
+                        self.tableModel().planList()[i].checkLev2(resp.checkLev2);
+                        self.tableModel().planList()[i].lev1Checked(resp.lev1Checked);
+                        self.tableModel().planList()[i].lev2Checked(resp.lev2Checked);
+                        self.tableModel().planList()[i].isSelected(false);
+                    }
+                }
+            });
+            $(this).prop( "disabled", false );
+            $.gritter.add({
+                title: getHintTitle(self.tableModel().planList().length, response.entity.length),
+                text: '审核成功[' + response.entity.length + ']条计划',
+                class_name: getHintCss(self.tableModel().planList().length, response.entity.length),
+                image: 'assets/img/screen.png',
+                sticky: false,
+                time: 3000
+            });
         }).fail(function(resp) {
-            alert("fail:" + resp);
+            $(this).prop( "disabled", false );
+            $.gritter.add({
+                title: '审核出错',
+                text: resp,
+                class_name: 'growl-danger',
+                image: 'assets/img/screen.png',
+                sticky: false,
+                time: 3000
+            });
         }).always(function() {
-            alert("always:");
         })
+    }
 
+    // 二级审核
+    self.checkLev2 = function() {
+        $(this).prop( "disabled", true )
+        var data = new Array();
+        ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
+            if(plan.isSelected()) {
+                var paramObj = new Object();
+                paramObj.planId = plan.id();
+                paramObj.lineId = plan.dailyLineId();
+                data.push(paramObj);
+            }
+        })
+        if(data.length <= 0) {
+            $(this).prop( "disabled", false );
+            return false;
+        }
+        $.ajax({
+            url: "audit/plan/checklev2/1",
+            method: "POST",
+            dataType: "json",
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(response) {
+            ko.utils.arrayForEach(response.entity, function(resp) {
+                for(var i = 0; i < self.tableModel().planList().length; i ++) {
+                    if(resp.id == self.tableModel().planList()[i].id()) {
+//                        self.tableModel().planList()[i].checkLev1(resp.checkLev1);
+//                        self.tableModel().planList()[i].checkLev2(resp.checkLev2);
+                        self.tableModel().planList()[i].lev1Checked(resp.lev1Checked);
+                        self.tableModel().planList()[i].lev2Checked(resp.lev2Checked);
+                        self.tableModel().planList()[i].isSelected(false);
+                    }
+                }
+            });
+            $(this).prop( "disabled", false );
+            $.gritter.add({
+                title:getHintTitle(self.tableModel().planList().length, response.entity.length),
+                text: '审核成功[' + response.entity.length + ']条计划',
+                class_name: getHintCss(self.tableModel().planList().length, response.entity.length),
+                image: 'assets/img/screen.png',
+                sticky: false,
+                time: 3000
+            });
+        }).fail(function(resp) {
+            $(this).prop( "disabled", false );
+            $.gritter.add({
+                title: '审核出错',
+                text: resp,
+                class_name: 'growl-danger',
+                image: 'assets/img/screen.png',
+                sticky: false,
+                time: 3000
+            });
+        }).always(function() {
+        })
     }
 }
 
@@ -321,5 +408,26 @@ function Plan(dto) {
     self.showTimeTableComparePanel = function() {
         var url = "audit/compare/timetable/" + $("#bureau option:selected").val() + "/plan/" + self.id() + "/line/" + self.dailyLineId();
         self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 850}).dialog("open");
+    }
+}
+
+
+function getHintTitle(reqLength, respLength) {
+    if(reqLength == respLength) {
+        return "审核成功";
+    } else if(reqLength > respLength) {
+        return "审核部分成功";
+    } else {
+        return "审核出错";
+    }
+}
+
+function getHintCss(reqLength, respLength) {
+    if(reqLength == respLength) {
+        return "growl-success";
+    } else if(reqLength > respLength) {
+        return "growl-warning";
+    } else {
+        return "growl-danger";
     }
 }
