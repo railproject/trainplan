@@ -22,42 +22,48 @@
     <div class="login_backgroud">
         <div class="login_overlay">
             <div class="login-logo"></div>
-            <div class="login_input" style="width: 500px">
-                <div class="form-group">
+            <div class="login_input">
+                <div class="form-group paddingtop30">
                     <label for="inputUsername" class="col-sm-2 control-label">账号：</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="inputUsername" placeholder="用户名" style="width: 240px">
                     </div>
                 </div>
                 <!--form-group-->
-                <div class="form-group paddingtop10">
+                <div class="form-group paddingtop30">
                     <label for="inputAccount" class="col-sm-2 control-label">岗位：</label>
                     <div class="col-sm-10">
                         <select id="inputAccount" class="form-control" style="width: 240px"></select>
                     </div>
                 </div>
                 <!--form-group-->
-                <div class="form-group paddingtop10">
+                <div class="form-group paddingtop30">
                     <label for="inputPassword" class="col-sm-2 control-label">密码：</label>
                     <div class="col-sm-10">
                         <div class="input-group">
                             <input type="password" class="form-control" id="inputPassword" placeholder="密码" style="border-radius: 4px; width: 240px">
                         </div>
                     </div>
-                    <form class="form-horizontal" role="form" method="post" action="${ctx}/login" id="loginForm" name="loginForm">
-                        <div class="btn-group">
-                            <input type="hidden" name="username"/>
-                            <input type="hidden" name="password"/>
-                            <button class="btn btn-warning" type="submit" id="login" style="padding:6px 13px;">登&nbsp;录</button>
-                        </div>
-                    </form>
                 </div>
+
+                <div class="form-group paddingtop30">
+                    <div class="col-sm-6">
+                        <form class="form-horizontal" role="form" method="post" action="${ctx}/login" id="loginForm" name="loginForm">
+                            <div class="btn-group">
+                                <input type="hidden" name="username"/>
+                                <input type="hidden" name="password"/>
+                                <button class="btn btn-warning pull-right" type="submit" id="login" style="padding:6px 13px; border-radius: 4px; width: 100px">登&nbsp;录</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!--输入框结束-->
                 <!--错误提示开始-->
                 <!--      <div class="alert alert-danger" style="margin-top:15px;width:200px;height:26px;line-height:26px;font-size:10px;padding-top:0px; ">您输入的用户名或密码有误！ </div>-->
                 <!--错误提示结束-->
             </div>
-            <div class="aquila"></div>
+            <div class="aquila" style="margin-right: -500px;"></div>
         </div>
     </div>
 </div>
