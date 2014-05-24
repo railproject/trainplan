@@ -8,18 +8,17 @@
  * @param xScale x缩放比例 x轴时间（分钟）转换为长度像素px的除数 （建议整数：1、2、10等）
  * @param xDateArray 日期数组 [{runDate:"2014-05-10"},{runDate:"2014-05-11"}]//日期段，x轴刻度
  * @param stnArray 交路经由站数组 [{stnName:"成都"},{stnName:"遂宁",isCurrentBureau:1},{stnName:"南充",isCurrentBureau:1},{stnName:"蓬安"},{stnName:"营山"}]
- * @param scale (可选参数) 缩放比例参数对象
+ * @param expandObj (可选参数) 缩放比例参数对象
  * 			{
  * 				startX : 120,		//(可选参数)x开始位置（注意是指第一条竖线位置，站名位置在该位置左移）
  * 				startY : 50,		//(可选参数)y开始位置
  * 				xScale : 10,		//(可选参数)x轴缩放比例 除数
  * 				xScaleCount : 1,	//(可选参数)x轴放大总倍数
- * 				yScale : 1,			//(可选参数)y轴缩放比例 除数
+ * 				yScale : 1			//(可选参数)y轴缩放比例 除数
  * 			}
  */
-var MyCanvasComponent = function(context, xDateArray, stnArray, scale) {
+var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	
-	var _self = this;
 	var _context = context;
 	var _xDateArray = xDateArray;
 	var _stnArray = stnArray;
@@ -43,20 +42,20 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, scale) {
 	 * private
 	 */
 	function initVariables() {
-		if (scale && scale.xScale && !isNaN(scale.xScale)) {
-			_xScale = scale.xScale;
+		if (expandObj && expandObj.xScale && !isNaN(expandObj.xScale)) {
+			_xScale = expandObj.xScale;
 		}
-		if (scale && scale.xScaleCount && !isNaN(scale.xScaleCount)) {
-			_xScaleCount = scale.xScaleCount;
+		if (expandObj && expandObj.xScaleCount && !isNaN(expandObj.xScaleCount)) {
+			_xScaleCount = expandObj.xScaleCount;
 		}
-		if (scale && scale.yScale && !isNaN(scale.yScale)) {
-			_yScale = scale.yScale;
+		if (expandObj && expandObj.yScale && !isNaN(expandObj.yScale)) {
+			_yScale = expandObj.yScale;
 		}
-		if (scale && scale.startX && !isNaN(scale.startX)) {
-			_startX = scale.startX;
+		if (expandObj && expandObj.startX && !isNaN(expandObj.startX)) {
+			_startX = expandObj.startX;
 		}
-		if (scale && scale.startY && !isNaN(scale.startY)) {
-			_startY = scale.startY;
+		if (expandObj && expandObj.startY && !isNaN(expandObj.startY)) {
+			_startY = expandObj.startY;
 		}
 		
 		
@@ -540,7 +539,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, scale) {
 			ctx.stroke();//绘画
 			ctx.fill();
 
-	    }
+	    };
 
 	};
 	
@@ -670,7 +669,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, scale) {
 			//绘线
 			myCanvasDrawLine(_context, 2, colorParam, fromX, fromY, fromX, fromY+offsetY);//接续左竖线
 			myCanvasDrawLine(_context, 2, colorParam, fromX, fromY+offsetY, toX, fromY+offsetY);//接续横线
-			myCanvasDrawLine(_context, 2, colorParam, toX, fromY+offsetY, toX, fromY);//接续右竖线
+			myCanvasDrawLine(_context, 2, colorParam, toX, fromY+offsetY, toX, toY);//接续右竖线
 			
 
 			_context.strokeStyle = colorParam;
