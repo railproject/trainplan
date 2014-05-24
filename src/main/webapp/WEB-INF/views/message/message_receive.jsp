@@ -9,16 +9,15 @@ String basePath = request.getContextPath();
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>message</title>
-<script type="text/javascript" src="<%=basePath%>/assets/oldAssets/js/jquery.js"></script>
-<script type="text/javascript" src="<%=basePath%>/dwr/util.js"></script>
-<script type="text/javascript" src="<%=basePath%>/dwr/engine.js"></script>
-<script type="text/javascript" src="<%=basePath%>/dwr/interface/PushMsg.js"></script>
+
+<jsp:include page="/assets/commonpage/global.jsp" flush="true" />
+<jsp:include page="/assets/commonpage/include-dwr-script.jsp" flush="true" />
+
 <script type="text/javascript">
-dwr.engine.setActiveReverseAjax(true);//js中开启dwr推功能
-dwr.engine.setNotifyServerOnPageUnload( true);//设置在页面关闭时，通知服务器销毁session
 
 
 function showMessage(message){
+	showErrorDialog("消息服务异常： 未知错误。");
 	alert(message);
 };
 </script> 

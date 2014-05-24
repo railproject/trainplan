@@ -31,6 +31,9 @@ String basePath = request.getContextPath();
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/plan/plan_runline_check.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
+<script type="text/javascript">
+var basePath = "<%=basePath %>";
+</script>
 <script type="text/html" id="tablefooter-short-template">  
  <table style="width:100%;height:20px;">
     <tr style="width:100%;height:20px;">
@@ -66,30 +69,39 @@ String basePath = request.getContextPath();
 		        		<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left:10px">
 										方案:&nbsp;</label> 
 						<div class="pull-left">
-							<select style="width:260px" id="input_cross_chart_id"
+							<select style="width:230px" id="input_cross_chart_id"
 								class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption:''">
 							</select>
 						</div>  
 				  <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left:15px"> 
 										始发局:&nbsp;</label> 
 						<div class="pull-left">
-							<select style="width: 50px" id="input_cross_chart_id"
+							<select style="width: 40px" id="input_cross_chart_id"
 								class="form-control" data-bind="options:searchModle().startBureaus(), value: searchModle().startBureau,  optionsValue: 'shortName', optionsText: 'shortName', optionsCaption: ''">
 							</select>
 						</div>   
 				     <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left:15px">
 										终到局:&nbsp;</label> 
 						<div class="pull-left">
-							<select style="width:50px" id="input_cross_chart_id"
+							<select style="width:40px" id="input_cross_chart_id"
 								class="form-control" data-bind="options:searchModle().endBureaus(), value: searchModle().endBureau, optionsValue: 'shortName', optionsText: 'shortName', optionsCaption: ''">
 							</select> 
-						</div>    
+						</div>
+				
 		          <div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
 		          	<label for="exampleInputEmail3" class="control-label pull-left"> 车次：&nbsp;</label>
 		            <div class="pull-left">
-                    	<input type="text" class="form-control" style="width:80px;" data-bind="value: searchModle().trainNbr" id="plan_construction_input_trainNbr">
+                    	<input type="text" class="form-control" style="width:80px;" data-bind="value: searchModle().trainNbr, evnet:{change: trainNbrToupper}" id="plan_construction_input_trainNbr">
 				    </div> 
 		          </div>
+		            <div class="pull-left">
+					<input type="checkbox" class="pull-left" class="form-control"
+						value="1" data-bind="checked: searchModle().fuzzyFlag(), event:{change: fuzzyChange}"
+						style="width: 20px; margin-left: 25px; margin-top: 5px"
+						class="form-control">
+				</div>
+				<label for="exampleInputEmail5" class="control-label pull-left">
+					模糊</label>    
 		        </div> 
 				<a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_createRunLine"  data-bind="click: loadTrains">查询</a>
 				 

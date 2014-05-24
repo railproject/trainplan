@@ -36,8 +36,17 @@ public class TrainlineTemplateSubDto {
 	
 	private Integer sourceDay;
 	private Integer targetDay;
+	//站点序号
+	private int childIndex;
 	
 	
+	
+	public int getChildIndex() {
+		return childIndex;
+	}
+	public void setChildIndex(int childIndex) {
+		this.childIndex = childIndex;
+	}
 	public String getBureauShortName() {
 		return bureauShortName;
 	}

@@ -56,6 +56,7 @@ public class ShiroRealm extends AuthorizingRealm {
                 SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
                 for(Role role: roleList) {
                     info.addRole(role.getName());
+                    logger.debug("添加角色::" + role.getName() + " TO 用户:::" + shiroUser.getName());
                 }
                 return info;
             }

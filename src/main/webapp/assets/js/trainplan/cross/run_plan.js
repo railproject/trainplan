@@ -1,10 +1,4 @@
-$(function() {
-	$("#file_upload_dlg").dialog("close"); 
-	$("#cross_train_time_dlg").dialog("close");
-	$("#cross_map_dlg").dialog("close"); 
-	$("#cross_train_dlg").dialog("close");
-	$("#cross_train_time_dlg").dialog("close");
-	
+$(function() { 
 	
 	var cross = new CrossModel();
 	ko.applyBindings(cross); 
@@ -12,11 +6,11 @@ $(function() {
 	cross.init();   
 });
 
-var highlingFlags = [{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
-var checkFlags = [{"value": "0", "text": "已"},{"value": 1, "text": "未"}];
-var unitCreateFlags = [{"value": "0", "text": "已"},{"value": 1, "text": "未"}];
-var highlingrules = [{"value": 1, "text": "平日"},{"value": 2, "text": "周末"},{"value": 3, "text": "高峰"}];
-var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔日"}];
+var highlingFlags = [{"value": "0", "text": "普线"},{"value": "1", "text": "高线"},{"value": "2", "text": "混合"}];
+var checkFlags = [{"value": "1", "text": "已"},{"value": "0", "text": "未"}];
+var unitCreateFlags = [{"value": "1", "text": "已"},{"value": "0", "text": "未"}];
+var highlingrules = [{"value": "1", "text": "平日"},{"value": "2", "text": "周末"},{"value": "3", "text": "高峰"}];
+var commonlinerules = [{"value": "1", "text": "每日"},{"value": "2", "text": "隔日"}];
  
 
 
@@ -30,6 +24,8 @@ function CrossModel() {
 	self.crossAllcheckBox = ko.observable(0);
 	
 	self.gloabBureaus = [];  
+	
+	self.currentTrain = ko.observable();
 	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
@@ -45,10 +41,15 @@ function CrossModel() {
 		}); 
 	};
 	
+	self.setCurrentTrain = function(train){
+		console.log(train)
+		self.currentTrain(train); 
+	};
+	
 	self.setCurrentCross = function(cross){
 		self.currentCross(cross);
 		if(self.searchModle().showCrossMap() == 1){
-			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideCrossChartData?crossId=" + cross.crossId);
+			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
 		}
 	};
 	
@@ -95,8 +96,53 @@ function CrossModel() {
 				 } 
 			  }); 
 		 };
-	}; 
+	};
+	
+	self.uploadCrossFile = function(){ 
+	        //starting setting some animation when the ajax starts and completes
+		    var chart = self.searchModle().chart();
+		    var startDay = $("#cross_start_day").val().replace(/-/g, "");
+		    if(chart == null){
+		    	showErrorDialog("请选择一个方案");
+		    	$("#file_upload_dlg").dialog("close"); 
+		    	return;
+		    }  
+		    if($("#fileToUpload").val() == null || $("#fileToUpload").val() == ""){
+		    	showErrorDialog("没有可导入的文件"); 
+		    	return;
+		    }
+		    $("#loading").show();
+		    $("#btn_fileToUpload").attr("disabled", "disabled");
+	        $.ajaxFileUpload
+	        ({
+                url:'cross/fileUpload',
+                secureuri:false,
+                fileElementId:'fileToUpload',
+                type : "POST",
+                dataType: 'json', 
+                timeout:4000,
+                data:{
+                	chartId:chart.chartId,
+                	startDay:startDay,
+                	chartName:chart.name
+                },
+                success: function (data, status)
+                {  
+                	showSuccessDialog("上传成功");
+                	$("#loading").hide();
+                	$("#btn_fileToUpload").removeAttr("disabled");
+                },
+                error: function(result){
+                	showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+                	$("#loading").hide();
+                	$("#btn_fileToUpload").removeAttr("disabled");
+                }
+            });  
+	        return true;
+	} ;
+	
 	 
+	
 	//当前选中的交路对象
 	self.currentCross = ko.observable(new CrossRow({"crossId":"",
 		"crossName":"", 
@@ -150,10 +196,26 @@ function CrossModel() {
 		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
 		//self.searchModle().loadBureau(self.gloabBureaus); 
 		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
-		  
+		$("#cross_map_dlg").dialog({
+		    onClose:function(){
+		    		self.searchModle().showCrossMap(0);
+		       }
+		   });
+		
+		
+		$("#file_upload_dlg").dialog("close"); 
+		$("#cross_train_time_dlg").dialog("close");
+		$("#cross_map_dlg").dialog("close"); 
+		$("#cross_train_dlg").dialog("close");
+		$("#cross_train_time_dlg").dialog("close"); 
+		$("#cross_start_day").datepicker();
+		
+		self.searchModle().startDay(self.currdate()); 
+		commonJsScreenLock();
+		var initFlag = 0;
 		//获取当期系统日期 
 		 $.ajax({
-				url : "../plan/getSchemeList",
+				url : "plan/getSchemeList",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -172,12 +234,16 @@ function CrossModel() {
 					showErrorDialog("接口调用失败");
 				},
 				complete : function(){
-					commonJsScreenUnLock();
+					initFlag++;
+					if(initFlag == 2){
+						commonJsScreenUnLock();
+					}
+					
 				}
-		    });
-		
+		    }); 
+		 
 	    $.ajax({
-			url : "../plan/getFullStationInfo",
+			url : "plan/getFullStationInfo",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -199,7 +265,10 @@ function CrossModel() {
 				showErrorDialog("接口调用失败");
 			},
 			complete : function(){
-				commonJsScreenUnLock();
+				initFlag++;
+				if(initFlag == 2){
+					commonJsScreenUnLock();
+				}
 			}
 	    });
 		
@@ -209,7 +278,8 @@ function CrossModel() {
 	self.loadCrosses = function(){
 		self.crossRows.loadRows();
 	};
-	self.loadCrosseForPage = function(startIndex, endIndex) {   
+	self.loadCrosseForPage = function(startIndex, endIndex) {  
+		commonJsScreenLock();
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -220,10 +290,16 @@ function CrossModel() {
 		var trainNbr = self.searchModle().filterTrainNbr(); 
 		var checkFlag = self.searchModle().checkFlag();
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
+		var chart = self.searchModle().chart();
 		var startBureauCode = self.searchModle().startBureau();  
+		
+		if(chart == null){
+			showErrorDialog("请选择方案!");
+			//return;
+		}
 		 
 		$.ajax({
-				url : "../cross/getUnitCrossInfo",
+				url : "cross/getCrossInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -234,6 +310,7 @@ function CrossModel() {
 					checkFlag : checkFlag == null ? null : checkFlag.value,
 					startBureau : startBureauCode,
 					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
+							chartId : chart == null ? null: chart.chartId,
 					trainNbr : trainNbr,
 					rownumstart : startIndex, 
 					rownumend : endIndex
@@ -247,7 +324,8 @@ function CrossModel() {
 								rows.push(new CrossRow(crossInfo));  
 							});   
 							self.crossRows.loadPageRows(result.data.totalRecord, rows);
-						}  
+						} 
+						
 						 $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
@@ -263,13 +341,14 @@ function CrossModel() {
 			}); 
 	};
 
-	self.crossRows = new PageModle(20, self.loadCrosseForPage);
+	self.crossRows = new PageModle(50, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() { 
-		alert(self.currentCross().tokenVehBureau())
+		alert(self.currentCross().tokenVehBureau());
 	};
 	 
 	self.showUploadDlg = function(){
+		
 		$("#file_upload_dlg").dialog("open");
 //		var diag = new Dialog();
 //		diag.Title = "上传对数文件";
@@ -281,13 +360,15 @@ function CrossModel() {
 	};
 	
 	self.showCrossMapDlg = function(){ 
-		if(self.currentCross().crossId == ''){
+		console.log(self.currentCross().crossId);
+		if(!self.currentCross().crossId || self.currentCross().crossId == ''){
 			return;
 		}
 		var crossId = self.currentCross().crossId; 
 		if(self.searchModle().showCrossMap() == 0){
-			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideCrossChartData?crossId=" + crossId);
-			$("#cross_map_dlg").dialog("open");
+			
+			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
+			$('#cross_map_dlg').dialog({ title: self.currentCross().crossName(), autoOpen: true, height:600,width: 800, modal: false, draggable: false, resizable:true })
 		};
 	};  
 	
@@ -301,6 +382,8 @@ function CrossModel() {
 	};
 	
 	self.deleteCrosses = function(){
+		
+		showConfirmDiv("提示", " 确定要执行删除操作?");
 		var crossIds = "";
 		var crosses = self.crossRows.rows(); 
 		var delCrosses = [];
@@ -311,39 +394,42 @@ function CrossModel() {
 				delCrosses.push(crosses[i]); 
 			}  
 		}   
-		$.ajax({
-			url : "../cross/deleteUnitCorssInfo",
-			cache : false,
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json",
-			data :JSON.stringify({  
-				crossIds : crossIds
-			}),
-			success : function(result) {     
-				if(result.code == 0){
-					$.each(delCrosses, function(i, n){ 
-						self.crossRows.rows.remove(n); 
-					});
-					showSuccessDialog("删除交路单元成功"); 
-				}else{
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-				}
-			}
-		}); 
+//		$.ajax({
+//			url : "cross/deleteCrosses",
+//			cache : false,
+//			type : "POST",
+//			dataType : "json",
+//			contentType : "application/json",
+//			data :JSON.stringify({  
+//				crossIds : crossIds
+//			}),
+//			success : function(result) {     
+//				if(result.code == 0){
+//					$.each(delCrosses, function(i, n){ 
+//						self.crossRows.rows.remove(n); 
+//					});
+//					showSuccessDialog("删除交路单元成功"); 
+//				}else{
+//					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+//				}
+//			}
+//		}); 
 	};
 	
 	self.createUnitCrossInfo = function(){ 
+		commonJsScreenLock();
 		var crossIds = "";
+		var delCrosses = [];
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].crossId;
+				delCrosses.push( crosses[i]);
 			}
 		} 
 		 $.ajax({
-				url : "../cross/updateUnitCrossId",
+				url : "cross/completeUnitCrossInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -353,20 +439,71 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){
-						showSuccessDialog("更新成功");
+						$.each(delCrosses, function(i, n){ 
+							n.unitCreateFlag("1");
+						});
+						showSuccessDialog("生成交路单元成功");
 					}else{
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					}
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
 				}
 			}); 
 	};
 	
+	self.checkCrossInfo = function(){
+		commonJsScreenLock();
+		var crossIds = "";
+		var delCrosses = [];
+		var crosses = self.crossRows.rows();
+		for(var i = 0; i < crosses.length; i++){ 
+			if(crosses[i].selected() == 1 && crosses[i].checkFlag()){ 
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += crosses[i].crossId;
+				delCrosses.push(crosses[i]);
+			}
+		} 
+		 $.ajax({
+				url : "cross/checkCorssInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					crossIds : crossIds
+				}),
+				success : function(result) {     
+					if(result.code == 0){
+						$.each(delCrosses, function(i, n){ 
+							n.checkFlag("1");
+						});
+						showSuccessDialog("审核成功");
+					}else{
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					}
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+		
+	};
+	
 	self.showTrains = function(row) {  
+		commonJsScreenLock();
 		self.trains.remove(function(item) {
 			return true;
 		});   
 		 $.ajax({
-				url : "../cross/getUnitCrossTrainInfo",
+				url : "cross/getCrossTrainInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -377,15 +514,13 @@ function CrossModel() {
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {  
-							self.setCurrentCross(new CrossRow(result.data[0].crossinfo));
+							self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
 //							self.currentCross(new CrossRow(result.data[0].crossInfo));
-							console.log(result.data[0].unitCrossTrainInfo.length);
-							
-							if(result.data[0].unitCrossTrainInfo != null){
-								for(var i = 0; i < result.data[0].unitCrossTrainInfo.length; i++){
-									var row = new TrainRow(result.data[0].unitCrossTrainInfo[i]); 
+							if(result.data[0].crossTrainInfo != null){
+								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
+									var row = new TrainRow(crossInfo);
 									self.trains.push(row); 
-								} 
+								});
 							}
 						}
 						 
@@ -474,7 +609,16 @@ function BureausRow(data) {
 	self.shortName = data.ljjc;   
 	self.code = data.ljpym;   
 	//方案ID 
-} 
+}
+
+function CrossRow(data) {
+	var self = this; 
+	self.id = data.chartId;
+	self.chartName = data.crossName; 
+	//方案ID 
+}
+
+ 
 
 function CrossRow(data) {
 	var self = this; 
@@ -485,27 +629,22 @@ function CrossRow(data) {
 	
 	self.crossId = data.crossId; 
 	
-	self.unitCrossId = data.unitCrossId;
-	
 	self.shortNameFlag =  ko.observable(true);
 	
 	self.crossName = ko.observable(data.crossName);  
 	
 	self.shortName = ko.computed(function(){
-		if(data.crossName ==  null){
-			return "";
-		}
 		trainNbrs = data.crossName.split('-');
 		if(trainNbrs.length > 2){
-			return trainNbrs[0] + '...' + trainNbrs[trainNbrs.length-1];
+			return trainNbrs[0] + '-......-' + trainNbrs[trainNbrs.length-1];
 		}else{
 			return data.crossName;
 		}
 	});  
 	
-	self.checkFlag = ko.observable(1);
+	self.checkFlag = ko.observable(data.checkFlag);
 	
-	self.unitCreateFlag = ko.observable(1);
+	self.unitCreateFlag = ko.observable(data.unitCreateFlag);
 	//方案ID
 	self.chartId = ko.observable(data.chartId);
 	self.chartName = ko.observable(data.chartName);
@@ -550,14 +689,12 @@ function TrainModel() {
 
 function TrainRow(data) {
 	var self = this; 
-	console.log(data);
 	self.crossTainId  = data.crossTainId;//BASE_CROSS_TRAIN_ID
 	self.crossId = data.crossId;//BASE_CROSS_ID
 	self.trainSort = data.trainSort;//TRAIN_SORT
 	self.baseTrainId = data.baseTrainId;
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
-	self.marshallingName = data.marshallingName;
 	//self.startBureau = data.startBureau;//START_BUREAU 
 	self.startBureau = ko.computed(function(){
 		for(var i = 0; i < gloabBureaus.length; i++){
@@ -659,7 +796,4 @@ function TrainRow(data) {
 function openLogin() {
 	$("#file_upload_dlg").dialog("open");
 }
-
-$(window.document).scroll(function () {
-	    var scrolltop = $(document).scrollTop(); 
-});
+ 

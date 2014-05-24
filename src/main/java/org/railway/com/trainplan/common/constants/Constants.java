@@ -112,6 +112,8 @@ public class Constants {
     //根据unit_cross_id查询unitcrossInfo信息 getUnitCrossInfoForUnitCrossid
 	public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_UNIT_CROSSID="crossDao.getUnitCrossInfoForUnitCrossid";
     public static final String CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID = "crossDao.getUnitCrossTrainInfoForUnitCrossid";
+    //getUnitCrossTrainInfoForCrossid
+    public static final String CROSSDAO_GET_UNIT_CROSSTRAIN_INFO_FOR_CROSSID = "crossDao.getUnitCrossTrainInfoForCrossid";
     //分页查询表unit_cross  getUnitCrossInfo
     public static final String CROSSDAO_GET_UNIT_CROSS_INFO = "crossDao.getUnitCrossInfo";
     //分页查询的总条数 
@@ -142,7 +144,10 @@ public class Constants {
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAININFO = "trainInfoDao.getTrainInfo";
     public static final String TRAININFO_GETTRAININFO_PAGE = "trainInfoDao.getTrainInfoForPage";
-    
+    //
+    public static final String TRAININFO_GET_TRAINS_AND_TIMES_COUNT = "trainInfoDao.getTrainsAndTimesCount";
+    //
+    public static final String TRAININFO_GET_TRAINS_AND_TIMES_FORPAGE = "trainInfoDao.getTrainsAndTimesForPage";
     public static final String TRAININFO_GETTRAININFO_COUNT="trainInfoDao.getTrainInfoTotalCount";
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";

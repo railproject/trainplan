@@ -57,7 +57,7 @@ System.out.println(basePath);
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">对数表维护</a></li>
+		<li><a href="#">基本交路单元维护</a></li>
 	</ol> 
         
 	<!--分栏框开始-->
@@ -148,7 +148,7 @@ System.out.println(basePath);
 											<a type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="click: deleteCrosses">删除</a>
 											<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;"
-												data-target="#" id="btn_cross_createCrossUnit" data-bind="click: createUnitCrossInfo">生成基本交路单元</a>
+												data-target="#" id="btn_cross_createCrossUnit" data-bind="click: createUnitCrossInfo">生成基本交路</a>
 											
 										</div> 
 										<table class="table table-bordered table-striped table-hover" 
@@ -520,6 +520,7 @@ System.out.println(basePath);
 										<tr>
 											<th style="width: 5%">序号</th>
 											<th style="width: 8%">车次</th>
+											<th style="width: 8%">所属交路</th>
 											<th style="width: 8%">发站</th>
 											<th style="width: 5%">发局</th>
 											<th style="width: 8%">终站</th>
@@ -539,6 +540,7 @@ System.out.println(basePath);
 										<tr>
 											<td style="width: 5px" data-bind="text: trainSort"></td>
 											<td style="width: 60px" data-bind="text: trainNbr"></td>
+											<td style="width: 100px" data-bind="text: marshallingName, attr:{title: marshallingName}"></td>
 											<td style="width: 100px" data-bind="text: startStn, attr:{title: startStn}"></td>
 											<td style="width: 50px" data-bind="text: startBureau"></td>
 											<td style="width: 100px" data-bind="text: endStn, attr:{title: endStn}"></td>
@@ -616,9 +618,9 @@ System.out.println(basePath);
   		<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
   	 </td>
      <td style="width:40%;height:20px;padding:0px;pading-bottom:-14">   
-		<a  style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: loadPre"></a>
-	    <input type="text"  style="margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
-		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: loadNext"  style="padding:0px 5px;"></a>
+		<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
+	    <input type="text"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
+		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
        </ul> 
 	 
      </td >

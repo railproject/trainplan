@@ -68,10 +68,10 @@ function ApplicationModel() {
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
             alert("done:" + resp);
-        }).fail(function() {
+        }).fail(function(resp) {
             alert("fail:" + resp);
         }).always(function() {
-            alert("always:" + resp);
+            alert("always:");
         })
 
     }

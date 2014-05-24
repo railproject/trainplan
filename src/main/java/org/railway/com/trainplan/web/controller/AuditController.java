@@ -11,6 +11,7 @@ import org.railway.com.trainplan.web.dto.RunPlanDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,13 +58,14 @@ public class AuditController {
 
 
     @RequestMapping(value = "plan/checklev1/{checkType}", method = RequestMethod.POST)
-    public String checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
+    public Response checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
         logger.debug("data::::" + data);
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         int result = runPlanService.checkLev1(data, user, checkType);
+
         if(result == 0) {
-            return "ok";
+            return Response.ok().build();
         }
-        return "error";
+        return Response.serverError().entity("系统内部出错了").build();
     }
 }

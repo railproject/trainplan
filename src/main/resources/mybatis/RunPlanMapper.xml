@@ -44,17 +44,28 @@
 
     <!-- 根据计划id查询计划主体信息 -->
     <select id="findPlanInfoByPlanId" parameterType="string" resultType="map">
-        SELECT PT.TRAIN_NBR AS TRAIN_NAME, PT.START_BUREAU_FULL AS START_BUREAU, PT.END_BUREAU_FULL AS END_BUREAU, PT.START_STN AS START_STN,
-        PT.END_STN AS END_STN, TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME
+        SELECT PT.PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NAME, PT.START_BUREAU_FULL AS START_BUREAU, PT.END_BUREAU_FULL AS END_BUREAU, PT.START_STN AS START_STN,
+        PT.END_STN AS END_STN, TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME, PT.PASS_BUREAU AS PASS_BUREAU,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV1_BUREAU AS CHECK_LEV1_BUREAU, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE, PT.CHECK_LEV2_BUREAU AS CHECK_LEV2_BUREAU
         FROM PLAN_TRAIN PT WHERE PT.PLAN_TRAIN_ID = #{planId}
     </select>
 
-    <insert id="checkLev1" useGeneratedKeys="true" parameterType="java.util.List">
-        INSERT INTO DAILYPLAN_CHECK(DAILYPLAN_CHECK_ID, DAILYPLAN_ID, PLAN_TRAIN_ID, CHECK_PEOPLE, CHECK_TIME, CHECK_DEPT, CHECK_BUREAU, CHECK_TYPE)
-        <foreach collection="list" item="item" index="index" separator="UNION" open="(" close=")">
-            SELECT #{item.id, jdbcType=VARCHAR}, #{item.lineId, jdbcType=VARCHAR}, #{item.planId, jdbcType=VARCHAR},
-            #{item.people, jdbcType=VARCHAR}, #{item.date, jdbcType=DATE}, #{item.dept, jdbcType=VARCHAR},
+    <insert id="addCheckHis" parameterType="java.util.List">
+        INSERT INTO DAILYPLAN_CHECK(DAILYPLAN_CHECK_ID,DAILYPLAN_ID,PLAN_TRAIN_ID,CHECK_PEOPLE,CHECK_TIME,CHECK_DEPT,CHECK_BUREAU,CHECK_TYPE)
+        <foreach collection="list" item="item" index="index" open="(" separator="UNION ALL" close=")">
+            SELECT #{item.id, jdbcType=VARCHAR}, #{item.lineId, jdbcType=VARCHAR}, #{item.planId, jdbcType=VARCHAR}, #{item.people, jdbcType=VARCHAR}, sysdate, #{item.dept, jdbcType=VARCHAR},
             #{item.bureau, jdbcType=VARCHAR}, #{item.checkType, jdbcType=NUMERIC} FROM DUAL
         </foreach>
     </insert>
+
+    <select id="findPlanInfoListByPlanId" parameterType="string" resultType="map">
+        SELECT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NAME, PT.START_BUREAU_FULL AS START_BUREAU, PT.END_BUREAU_FULL AS END_BUREAU, PT.START_STN AS START_STN,
+        PT.END_STN AS END_STN, TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME, PT.PASS_BUREAU AS PASS_BUREAU,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV1_BUREAU AS CHECK_LEV1_BUREAU, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE, PT.CHECK_LEV2_BUREAU AS CHECK_LEV2_BUREAU
+        FROM PLAN_TRAIN PT WHERE PT.PLAN_TRAIN_ID in (#{planIds})
+    </select>
+
+    <update id="updateCheckInfo" parameterType="map">
+        UPDATE PLAN_TRAIN PT SET PT.CHECK_LEV1_TYPE = #{lev1Type}, PT.CHECK_LEV1_BUREAU = #{lev1Bureau}, PT.CHECK_LEV2_TYPE = #{lev2Type}, PT.CHECK_LEV2_BUREAU = #{lev2Bureau} WHERE PT.PLAN_TRAIN_ID = #{planId}
+    </update>
 </mapper> 
