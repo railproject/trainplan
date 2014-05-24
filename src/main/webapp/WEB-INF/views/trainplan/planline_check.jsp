@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
@@ -23,6 +24,7 @@
     <script type="text/javascript" src="${ctx}/assets/js/purl.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/knockout.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/moment.min.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/trainplan/common.security.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/planline_check.js"></script>
 </head>
 <body class="Iframe-body">
@@ -43,9 +45,14 @@
                             <form class="form-inline" role="form">
                                 <div class="input-group">
                                     <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
-                                    <button type="button" id="checkBtn" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px">校验</button>
-                                    <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1">客调审核</button>
-                                    <button type="button" class="btn btn-primary disabled" style="width: 100px; margin-right: 10px; border-radius: 4px">值班主任审核</button>
+                                    <shiro:hasRole name="局客运调度">
+                                        <button type="button" id="checkBtn" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px">校验</button>
+                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1">客调审核</button>
+                                    </shiro:hasRole>
+                                    <shiro:hasRole name="局值班主任">
+                                        <button type="button" class="btn btn-primary disabled" style="width: 100px; margin-right: 10px; border-radius: 4px">值班主任审核</button>
+                                    </shiro:hasRole>
+
                                 </div>
                             </form>
                         </div>

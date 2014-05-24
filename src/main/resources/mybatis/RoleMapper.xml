@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace必须指向Dao接口 -->
-<mapper namespace="org.railway.com.trainplan.repository.mybatis.RoleDaoDao">
+<mapper namespace="org.railway.com.trainplan.repository.mybatis.RoleDao">
 
     <resultMap id="role" type="org.railway.com.trainplan.entity.Role">
         <id column="ROL_ID" property="id"/>
