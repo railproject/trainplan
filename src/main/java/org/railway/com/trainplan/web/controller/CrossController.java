@@ -51,6 +51,11 @@ public class CrossController {
 		 return "cross/cross_unit_manage";
      }
 	 
+	 @RequestMapping(value="/runPlan", method = RequestMethod.GET)
+     public String runPlan() {
+		 return "cross/run_plan";
+     }
+	 
 	 @Autowired
 	private CrossService crossService;
 	
@@ -622,16 +627,16 @@ public class CrossController {
 	@RequestMapping(value = "/getUnitCrossTrainInfo", method = RequestMethod.POST)
 	public Result getUnitCrossTrainInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
-		String unitCrossId = (String)reqMap.get("unitCrossId");
-		logger.debug("unitCrossId==" + unitCrossId);
+		String crossId = (String)reqMap.get("crossId");
+		logger.debug("crossId==" + crossId);
 		 try{
 		    	//先获取unitcross基本信息
-			 CrossInfo crossinfo = crossService.getUnitCrossInfoForUnitCrossid(unitCrossId);
+			 CrossInfo crossinfo = crossService.getCrossInfoForCrossid(crossId);
 			 //再获取unitcrosstrainInfo信息
-			 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
+			 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForCrossid(crossId);
 		     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 		     Map<String,Object> dataMap = new HashMap<String,Object>();
-		     dataMap.put("unitCrossInfo", crossinfo);
+		     dataMap.put("crossinfo", crossinfo);
 		     dataMap.put("unitCrossTrainInfo", list);
 		     dataList.add(dataMap);
 			 result.setData(dataList);

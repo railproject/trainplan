@@ -46,7 +46,7 @@ public class TrainPlanThread extends Thread {
 				// 推送开始某天记录的信息
 				quoteService.sendQuotes(tempStartDate,daycount, 0, "plan.day.begin");
 				// 保存数据
-				planTrainStnService.addTrainPlanLine(list, tempStartDate);
+				//planTrainStnService.addTrainPlanLine(list, tempStartDate);
 				
 				// 推送结束某天记录信息
 				quoteService.sendQuotes(tempStartDate,daycount, list.size(), "plan.day.end");

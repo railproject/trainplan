@@ -200,6 +200,33 @@
 	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId} and BASE_TRAIN_ID is not null order by TRAIN_SORT
    </select>
    
+   
+     <select id="getUnitCrossTrainInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
+         select 
+          A.UNIT_CROSS_TRAIN_ID as unitCrossTrainId,
+         A.UNIT_CROSS_ID as unitCrossId,
+	     A.TRAIN_SORT AS trainSort,
+	     A.TRAIN_NBR AS trainNbr,
+	     A.BASE_TRAIN_ID AS baseTrainId ,
+	     A.START_STN AS startStn,
+	     A.START_BUREAU AS startBureau,
+	     A.END_STN AS endStn,
+	     A.END_BUREAU AS endBureau,
+	     A.DAY_GAP AS dayGap ,
+	     A.ALTERNATE_TRAIN_NBR AS alertNateTrainNbr,
+	     A.ALTERNATE_TIME AS alertNateTime ,
+	     A.SPARE_FLAG AS spareFlag,
+	     A.SPARE_APPLY_FLAG AS spareApplyFlage,
+	     A.HIGHLINE_FLAG AS highlineFlag,
+	     A.HIGHLINE_RULE AS highlineRule,
+	     A.COMMONLINE_RULE AS commonLineRule,
+	     A.APPOINT_WEEK AS appointWeek,
+	     A.APPOINT_DAY AS appointDay,
+	     B.MARSHALLING_NAME AS marshallingName
+         from 
+         unit_cross_train A,unit_cross B 
+         where  A.UNIT_CROSS_ID = B.UNIT_CROSS_ID and B.base_cross_id =#{crossId} order by B.GROUP_SERIAL_NBR ,A.train_sort
+   </select>
   
     <insert id="addUnitCrossInfo"  parameterType="java.util.List" >
 

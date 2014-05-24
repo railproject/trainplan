@@ -112,6 +112,8 @@ public class Constants {
     //根据unit_cross_id查询unitcrossInfo信息 getUnitCrossInfoForUnitCrossid
 	public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_UNIT_CROSSID="crossDao.getUnitCrossInfoForUnitCrossid";
     public static final String CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID = "crossDao.getUnitCrossTrainInfoForUnitCrossid";
+    //getUnitCrossTrainInfoForCrossid
+    public static final String CROSSDAO_GET_UNIT_CROSSTRAIN_INFO_FOR_CROSSID = "crossDao.getUnitCrossTrainInfoForCrossid";
     //分页查询表unit_cross  getUnitCrossInfo
     public static final String CROSSDAO_GET_UNIT_CROSS_INFO = "crossDao.getUnitCrossInfo";
     //分页查询的总条数 

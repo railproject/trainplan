@@ -21,6 +21,9 @@ public class TreadService {
 
 	@Autowired
 	private TrainInfoService trainInfoService ;
+	
+	@Autowired
+	private  QuoteService quoteService;
 	/**
 	 * @param runDate 格式yyyy-mm-dd
 	 * @param chartId
@@ -53,6 +56,8 @@ public class TreadService {
 				e.printStackTrace();
 			}
 		}
+		//关闭线程池
+		threadPool.shutdown();
 		return 0;
 	}
 }
