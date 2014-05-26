@@ -9,7 +9,21 @@ import java.util.UUID;
  */
 public class TrainlineTemplateSubDto {
 	
+	/**
+	 *  #{item.planTrainStnId,jdbcType=VARCHAR},
+	       #{item.planTrainId,jdbcType=VARCHAR},
+	       #{item.name,jdbcType=VARCHAR},
+	       #{item.stnBureauFull,jdbcType=VARCHAR},
+	       #{item.index,jdbcType=NUMERIC},
+	       #{item.trackName,jdbcType=VARCHAR},
+	       #{item.runDays,jdbcType=NUMERIC},
+	       to_date(#{item.sourceTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'),
+		   to_date(#{item.targetTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'),
+		    to_date(#{item.baseArrTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'),
+			to_date(#{item.baseDptTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss')
+	 */
 	private String planTrainStnId ;
+	private String planTrainId;
 	 //站点名称
 	private String name;
 	//到站时间
@@ -38,9 +52,23 @@ public class TrainlineTemplateSubDto {
 	private Integer targetDay;
 	//站点序号
 	private int childIndex;
+	//车次
+	private String trainNbr;
 	
 	
 	
+	public String getTrainNbr() {
+		return trainNbr;
+	}
+	public void setTrainNbr(String trainNbr) {
+		this.trainNbr = trainNbr;
+	}
+	public String getPlanTrainId() {
+		return planTrainId;
+	}
+	public void setPlanTrainId(String planTrainId) {
+		this.planTrainId = planTrainId;
+	}
 	public int getChildIndex() {
 		return childIndex;
 	}
