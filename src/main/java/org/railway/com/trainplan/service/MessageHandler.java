@@ -3,6 +3,8 @@ package org.railway.com.trainplan.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.utils.StringUtil;
@@ -32,14 +34,21 @@ public class MessageHandler implements MessageListener{
 			 logger.debug("msg======" + msg);
 			 System.err.println("msg======" + msg);
 			 if(msg != null && msg.size()>0){
-				 Map<String,Object> result = (Map<String,Object>)msg.get("result");
-				 if(result != null && result.size()>0){
+				 Map<String,Object> result = ((Map<String,Object>)msg.get("result"));
+				 String resultString = (String)result.get("result");
+				 JSONObject json = new JSONObject();
+				 JSONObject result1 = json.fromObject(resultString);
+				 System.err.println("result1==" + result1);
+				// Map<String,Object> result1 = mapper.readValue(resultString, Map.class);
+				 if(result1 != null && result1.size()>0){
 					 String code = StringUtil.objToStr(result.get("code"));
+					 String userparamStr = (String)result.get("userparam");
+					 JSONObject paramObj = json.fromObject(userparamStr);
 					 //成功
 					 if("0".equals(code)){
 						 Map<String,Object> reqMap = new HashMap<String,Object>();
-						 String baseTrainId = StringUtil.objToStr(msg.get("reuqestId"));
-						 String daylyPlanId = StringUtil.objToStr(msg.get("id"));
+						 String baseTrainId = StringUtil.objToStr(paramObj.get("sourceEntityId"));
+						 String daylyPlanId = StringUtil.objToStr(result1.get("id"));
 						 reqMap.put("baseTrainId", baseTrainId);
 						 reqMap.put("daylyPlanId",daylyPlanId );
 						 //更新表plan_train中字段DAILYPLAN_FLAG值为0
@@ -48,7 +57,7 @@ public class MessageHandler implements MessageListener{
 				 }	 
 			 }
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		System.out.println("----------------------------------------------");
 		

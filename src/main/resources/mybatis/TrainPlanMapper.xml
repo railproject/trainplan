@@ -46,7 +46,7 @@
 
 	</select>
 
-	<insert id="addTrainPlanStn"  parameterType="java.util.List">
+	<insert id="addTrainPlanStn"  parameterType="java.util.Map">
 		insert into plan_train_stn
 		(PLAN_TRAIN_STN_ID,
 		PLAN_TRAIN_ID,
@@ -55,53 +55,30 @@
 		STN_SORT,
 		TRACK_NAME,
 		RUN_DAYS,
+		STN_BUREAU,
+		ARR_TRAIN_NBR,
+		DPT_TRAIN_NBR,
 		ARR_TIME,
 		DPT_TIME,
 		BASE_ARR_TIME,
-		BASE_DPT_TIME
-		)
-		 (<foreach collection="list" item="item" index="index"
+		BASE_DPT_TIME)
+		 (<foreach collection="trainStnList" item="item" index="index"
             separator="UNION">
 	       SELECT
 	       #{item.planTrainStnId,jdbcType=VARCHAR},
 	       #{item.planTrainId,jdbcType=VARCHAR},
-	       #{item.stnName,jdbcType=VARCHAR},
+	       #{item.name,jdbcType=VARCHAR},
 	       #{item.stnBureauFull,jdbcType=VARCHAR},
-	       #{item.stnSort,jdbcType=NUMERIC},
+	       #{item.index,jdbcType=NUMERIC},
 	       #{item.trackName,jdbcType=VARCHAR},
 	       #{item.runDays,jdbcType=NUMERIC},
-	       <choose>
-			<when test="item.arrTime != null">
-				to_date(#{arrTime},'yyyy-MM-dd hh24:mi:ss'),
-			</when>
-			<otherwise>
-				null,
-			</otherwise>
-		</choose>
-		<choose>
-			<when test="item.dptTime != null">
-				to_date(#{dptTime},'yyyy-MM-dd hh24:mi:ss'),
-			</when>
-			<otherwise>
-				null,
-			</otherwise>
-		</choose>
-		   <choose>
-			<when test="item.baseArrTime != null">
-				to_date(#{baseArrTime},'yyyy-MM-dd hh24:mi:ss'),
-			</when>
-			<otherwise>
-				null,
-			</otherwise>
-		</choose>
-		<choose>
-			<when test="item.baseDptTime != null">
-				to_date(#{baseDptTime},'yyyy-MM-dd hh24:mi:ss')
-			</when>
-			<otherwise>
-				null
-			</otherwise>
-		</choose>
+	       #{item.bureauShortName,jdbcType=VARCHAR},
+	       #{item.trainNbr,jdbcType=VARCHAR},
+	       #{item.trainNbr,jdbcType=VARCHAR},
+	       to_date(#{item.sourceTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'),
+		   to_date(#{item.targetTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'),
+		    to_date(#{item.baseArrTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'),
+			to_date(#{item.baseDptTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss')
 	       from dual
 	       
 	      </foreach>
@@ -109,8 +86,9 @@
 	</insert>
 	
 	
-	<insert id="addTrainPlan"  parameterType="java.util.List">
-
+	
+	<insert id="addTrainPlan"  parameterType="java.util.Map">
+		 
 		insert into plan_train
 		(PLAN_TRAIN_ID,
 		RUN_DATE,
@@ -121,42 +99,44 @@
 		BASE_TRAIN_ID,
 		START_BUREAU_FULL,
 		END_BUREAU_FULL,
-		TRAIN_TYPE,
+		START_BUREAU,
+		END_BUREAU,
+		PLAN_CROSS_ID,
+		PASS_BUREAU,
+		TRAIN_SCOPE,
+		TRAIN_TYPE_ID,
+		CREAT_TYPE,
+		PLAN_TRAIN_SIGN,
+		CREAT_TIME,
 		START_TIME,
 		END_TIME)
-		  (<foreach collection="list" item="item" index="index"
-            separator="UNION">
+	      (	<foreach collection="trainList" item="item" index="index"
+                separator="UNION">
 	       SELECT
 	       #{item.planTrainId,jdbcType=VARCHAR},
-	       #{item.runDate,jdbcType=VARCHAR},
+	       #{item.runDate_8,jdbcType=VARCHAR},
 	       #{item.trainNbr,jdbcType=VARCHAR},
 	       #{item.startStn,jdbcType=VARCHAR},
 	       #{item.endStn,jdbcType=VARCHAR},
 	       #{item.baseChartId,jdbcType=VARCHAR},
-	       #{item.baseTrainId,jdbcType=VARCHAR},
+	       #{item.baseTrainId,jdbcType=VARCHAR} as BASE_TRAIN_ID,
+	       #{item.startBureauFull,jdbcType=VARCHAR},
+	       #{item.endBureauFull,jdbcType=VARCHAR},
 	       #{item.startBureau,jdbcType=VARCHAR},
 	       #{item.endBureau,jdbcType=VARCHAR},
-	       #{item.trainType,jdbcType=VARCHAR},
-	       <choose>
-			<when test="item.startTime != null">
-				to_date(#{startTime},'yyyy-MM-dd hh24:mi:ss'),
-			</when>
-			<otherwise>
-				null,
-			</otherwise>
-		</choose>
-		<choose>
-			<when test="item.endTime != null">
-				to_date(#{endTime},'yyyy-MM-dd hh24:mi:ss')
-			</when>
-			<otherwise>
-				null
-			</otherwise>
-		</choose>
+	       #{item.planCrossId,jdbcType=VARCHAR},
+	       #{item.passBureau,jdbcType=VARCHAR},
+	       #{item.trainScope,jdbcType=NUMERIC},
+	       #{item.trainTypeId,jdbcType=VARCHAR},
+	       #{item.createType,jdbcType=NUMERIC},
+	       #{item.planTrainSign,jdbcType=VARCHAR},
+	       sysdate,
+	       to_date(#{item.startTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'),
+	       to_date(#{item.endTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss')
 	       from dual
-	       
 	      </foreach>
 	     ) 
+		
 	</insert>
 
 	<select id="getMaxPlanTrainId" resultType="map">

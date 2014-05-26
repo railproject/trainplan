@@ -19,6 +19,7 @@ import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
+import org.railway.com.trainplan.service.task.DaytaskDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,6 +46,9 @@ public class PlanTrainStnService {
     
     @Autowired
     private TrainTimeService trainTimeService;
+    
+    @Autowired
+    private TreadService treadService;
     /**
 	 * 更新数据表plan_train中字段daylyplan_flag,的值
 	 * @param base_train_id
@@ -82,8 +86,8 @@ public class PlanTrainStnService {
     	    	 System.err.println("mapList.size===" + mapList.size());
     	    	for(Map<String,Object> map :mapList ){
     	    		ParamDto dto = new ParamDto();
-    	    		dto.setSourceEntityId(StringUtil.objToStr(map.get("base_train_id")));
-    	    		String time = StringUtil.objToStr(map.get("run_date"));
+    	    		dto.setSourceEntityId(StringUtil.objToStr(map.get("BASE_TRAIN_ID")));
+    	    		String time = StringUtil.objToStr(map.get("RUN_DATE"));
     	    		dto.setTime(DateUtil.formateDate(time));
     	    		list.add(dto);
     	    	}
@@ -141,17 +145,25 @@ public class PlanTrainStnService {
 		//调用后台接口之前推送一条消息到页面
 		quoteService.sendQuotes("", 0, 0, "plan.getInfo.begin");
 		
+		DaytaskDto reqDto = new DaytaskDto();
+		reqDto.setChartId(schemeId);
+		reqDto.setOperation("客运");
+		reqDto.setRunDate(startDate);
+		//reqDto.setRownumend(10);
+		//reqDto.setRownumstart(1);
+		
+		
+		treadService.actionDayWork(reqDto, Integer.valueOf(dayCount));
 		
 		// 调用后台接口，获取数据
-		 List<TrainlineTemplateDto> list = remoteService.getTrainLineInfoFromSchemeId(
-				schemeId, startDate);
+		 //List<TrainlineTemplateDto> list = remoteService.getTrainLineInfoFromSchemeId(schemeId, startDate);
 		
-		System.err.println("importTrainPlan--list.size==" + list.size());
+		//System.err.println("importTrainPlan--list.size==" + list.size());
 		
 		// 循环dayCount次
-		TrainPlanThread  thread = new TrainPlanThread(list,startDate,dayCount,this,quoteService);
+		//TrainPlanThread  thread = new TrainPlanThread(list,startDate,dayCount,this,quoteService);
 		//启动thread
-		thread.start();
+		//thread.start();
 		
 		//returnMap.put("", schemeId);
 		return returnMap;

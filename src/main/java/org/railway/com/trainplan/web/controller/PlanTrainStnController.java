@@ -49,7 +49,7 @@ public class PlanTrainStnController {
 	//@Autowired
 	//private QuoteService quoteService;
 
-	//@Autowired
+	@Autowired
 	private AmqpTemplate amqpTemplate;
 	
 	@Autowired
@@ -223,7 +223,9 @@ public class PlanTrainStnController {
 			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
 		}
 		}catch(Exception e){
+			e.printStackTrace();
 			logger.error("batchHandleTrainLines error==" + e.getMessage());
+			
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
 		}
@@ -390,8 +392,8 @@ public class PlanTrainStnController {
 				
 				for(ParamDto dto : listDto){
 					String base_plan_id = dto.getSourceEntityId();
-					//审核通过，更改表plan_train中check_state为1
-					planTrainStnService.updatePlanTrainCheckStats(base_plan_id);
+					//TODO 判断表plan_train中字段CHECK_LEV1_TYPE，当CHECK_LEV1_TYPE=2时才能生成运行线
+					
 					//组装发往rabbit的报文
 					JSONObject  temp = new JSONObject();
 					temp.put("sourceEntityId", dto.getSourceEntityId());

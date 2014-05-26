@@ -15,6 +15,7 @@ import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.service.RemoteService;
 import org.railway.com.trainplan.service.dto.*;
 import org.railway.com.trainplan.web.dto.*;
+import org.railway.com.trainplan.web.dto.TrainInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;

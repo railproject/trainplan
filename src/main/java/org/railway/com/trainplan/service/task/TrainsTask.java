@@ -19,21 +19,22 @@ public class TrainsTask implements Callable<Integer>{
 	private TrainInfoService trainInfoService;
 	private DaytaskDto dayTaskDto;
 	public TrainsTask(DaytaskDto dayTaskDto,TrainInfoService trainInfoService){
-		System.err.println("startNum==" + dayTaskDto.getRownumstart());
-		System.err.println("endNum==" + dayTaskDto.getRownumend());
-		System.err.println("************************");
+		//System.err.println("startNum1111==" + dayTaskDto.getRownumstart());
+		//System.err.println("endNum11111==" + dayTaskDto.getRownumend());
 		this.dayTaskDto = dayTaskDto;
 		this.trainInfoService = trainInfoService;
 	}
 	@Override
 	public Integer call() throws Exception {
-		
+		System.err.println("startNum==" + dayTaskDto.getRownumstart());
+		System.err.println("endNum==" + dayTaskDto.getRownumend());
+		System.err.println("************************");
 		//1、查询数据，并解析
 		List<TrainlineTemplateDto>  list = trainInfoService.getTrainsAndTimesForList(dayTaskDto);
 		System.err.println("list.size==" + list.size());
 		//2、插入数据库
 		// 保存数据
-		trainInfoService.addTrainPlanLine(list, dayTaskDto.getRunDate());
+		trainInfoService.addTrainPlanLine(list);
 		return list.size();
 	}
 
