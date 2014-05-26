@@ -24,11 +24,14 @@ function ApplicationModel() {
     self.nbr = 0;
 
     self.canCheckLev1 = ko.computed(function() {
+        var flag = false;
         ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
             if(plan.needLev1()) {
+                flag = true;;
                 return true;
             }
         });
+        return flag;
     });
 
     self.canCheckLev2 = ko.computed(function() {
