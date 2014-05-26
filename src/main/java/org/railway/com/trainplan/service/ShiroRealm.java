@@ -49,16 +49,22 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
         logger.info("Authorization::::" + shiroUser.getUsername());
-        if(shiroUser != null){
-            int accId = shiroUser.getAccId();
-            List<Role> roleList = roleDao.getRoleByAccId(accId);
-            if(roleList != null && !roleList.isEmpty()) {
-                SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-                for(Role role: roleList) {
-                    info.addRole(role.getName());
+        try {
+            if(shiroUser != null){
+                int accId = shiroUser.getAccId();
+                List<Role> roleList = roleDao.getRoleByAccId(accId);
+                if(roleList != null && !roleList.isEmpty()) {
+                    SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+                    for(Role role: roleList) {
+                        info.addRole(role.getName());
+                        logger.debug("添加角色::" + role.getName() + " TO 用户:::" + shiroUser.getName());
+                    }
+                    return info;
                 }
-                return info;
             }
+        } catch (Exception e) {
+            logger.error("查询角色出错::::::");
+            logger.error(e);
         }
         return null;
     }

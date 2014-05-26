@@ -3,6 +3,8 @@ package org.railway.com.trainplan.web.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
 import org.railway.com.trainplan.service.PlanLineService;
 import org.railway.com.trainplan.service.RunPlanService;
 import org.railway.com.trainplan.service.ShiroRealm;
@@ -11,6 +13,7 @@ import org.railway.com.trainplan.web.dto.RunPlanDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +38,7 @@ public class AuditController {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         logger.debug(String.format("-X GET plan/runplan/", new Object[]{date, type}));
         List<RunPlanDTO> result = new ArrayList<RunPlanDTO>();
-        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureau(), type);
+        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureauShortName(), type);
         for(Map<String, Object> map: list) {
             result.add(new RunPlanDTO(map));
         }
@@ -44,6 +47,7 @@ public class AuditController {
     }
 
     @RequestMapping(value = "plan/{planId}/line/{lineId}/check", method = RequestMethod.GET)
+    @RequiresRoles({"局客运调度", "局值班主任"})
     public PlanLineCheckResultDto checkPlanLine(@PathVariable String planId, @PathVariable String lineId) {
         logger.debug("checkPlanLine::: - planId: " + planId + " - lineId: " + lineId);
         PlanLineCheckResultDto result = new PlanLineCheckResultDto();
@@ -57,13 +61,20 @@ public class AuditController {
 
 
     @RequestMapping(value = "plan/checklev1/{checkType}", method = RequestMethod.POST)
-    public String checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
+    @RequiresRoles("局客运调度")
+    public Response checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
         logger.debug("data::::" + data);
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-        int result = runPlanService.checkLev1(data, user, checkType);
-        if(result == 0) {
-            return "ok";
-        }
-        return "error";
+        List<Map<String, Object>> resp = runPlanService.checkLev1(data, user, checkType);
+        return Response.ok(resp).build();
+    }
+
+    @RequestMapping(value = "plan/checklev2/{checkType}", method = RequestMethod.POST)
+    @RequiresRoles("局值班主任")
+    public Response checkLev2(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
+        logger.debug("data::::" + data);
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        List<Map<String, Object>> resp = runPlanService.checkLev2(data, user, checkType);
+        return Response.ok(resp).build();
     }
 }
