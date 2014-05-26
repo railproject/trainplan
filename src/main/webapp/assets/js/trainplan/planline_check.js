@@ -293,7 +293,7 @@ function Plan(dto) {
                 className = "btn-warning";
                 break;
             case 1:
-                className = "btn-success";
+                className = "btn-info";
                 break;
             case -1:
                 className = "btn-danger";
@@ -402,7 +402,7 @@ function Plan(dto) {
         width: 800,
         title: "",
         position: [($(window).width() - 800), 0],
-        maxWidth: 870,
+        maxWidth: $(window).width(),
         maxHeight: $(window).height(),
         model: true
     };
@@ -434,7 +434,7 @@ function Plan(dto) {
 
     self.showTimeTableComparePanel = function() {
         var url = "audit/compare/timetable/" + $("#bureau option:selected").val() + "/plan/" + self.id() + "/line/" + self.dailyLineId();
-        self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 850}).dialog("open");
+        self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 1024}).dialog("open");
     }
 }
 
