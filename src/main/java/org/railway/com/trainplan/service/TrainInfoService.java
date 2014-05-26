@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
@@ -51,15 +52,24 @@ public class TrainInfoService {
 		TrainlineTemplateDto dto = new TrainlineTemplateDto();
 		//设置一个主键，为后面存库做准备
 		dto.setPlanTrainId(UUID.randomUUID().toString());
+		System.err.println("~~~listMap==" + listMap);
 		if(listMap != null && size > 0){
 			
 			for(int i = 0;i<size;i++){
 				
 				Map<String,Object> map = listMap.get(i);
 				TrainlineTemplateSubDto subDto = new TrainlineTemplateSubDto();
-			
+				//设置经由
+				subDto = setTrainlineTemplateSubDto(map,subDto,runDate);
+				//单独设置车次
+				//subDto.setTrainNbr(dto.getTrainNbr());
+				stationList.add(subDto);
+				//fortest
 				
-		
+				
+				
+				
+				/////////////////////
 				String baseTrainId = StringUtil.objToStr(map.get("BASE_TRAIN_ID"));
 				String baseTrainIdNext = "";
 				if(i+1 < size){
@@ -71,6 +81,8 @@ public class TrainInfoService {
 						//设置经由中的planTrainId
 						subDto.setPlanTrainId(dto.getPlanTrainId());
 					}else{
+						System.err.println("~~~~trainNbr==" + dto.getTrainNbr());
+						System.err.println("~~~~ stationList.size()==" + stationList.size());
 						dto.setStationList(stationList);
 						returnList.add(dto);
 						
@@ -81,6 +93,7 @@ public class TrainInfoService {
 						dto.setPlanTrainId(UUID.randomUUID().toString());
 					}
 				}else{
+					System.err.println("最后一个map==" + map);
 					dto = setTrainlineTemplateDto(map,dto,runDate,chartId);
 					//设置经由中的planTrainId
 					subDto.setPlanTrainId(dto.getPlanTrainId());
@@ -88,11 +101,7 @@ public class TrainInfoService {
 					returnList.add(dto);
 				}
 				
-				//设置经由
-				subDto = setTrainlineTemplateSubDto(map,subDto,runDate);
-				//单独设置车次
-				subDto.setTrainNbr(dto.getTrainNbr());
-				stationList.add(subDto);
+				
 			}
 		}
 		
@@ -204,7 +213,8 @@ public class TrainInfoService {
 		dto.setStartBureau(StringUtil.objToStr(map.get("START_BUREAU")));
 		dto.setEndBureau(StringUtil.objToStr(map.get("END_BUREAU")));
 		//列车运行的天数
-		int runDaysAll = (( BigDecimal)map.get("RUN_DAYS_ALL")).intValue();
+//		int runDaysAll = (( BigDecimal)map.get("RUN_DAYS_ALL")).intValue();
+		int runDaysAll = MapUtils.getIntValue(map, "RUN_DAYS_ALL", 0);
 		dto.setStartTime(runDate + " " + startTime);
 		String endRunDate = DateUtil.getDateByDay(runDate, -runDaysAll);
 		dto.setEndTime(endRunDate + " " + StringUtil.objToStr(map.get("END_TIME")));
@@ -223,7 +233,8 @@ public class TrainInfoService {
 		//同一列车，设置经由站
 		//站点名
 		subDto.setName(StringUtil.objToStr(map.get("STN_NAME")));
-		
+		//设置列车号
+		subDto.setTrainNbr(StringUtil.objToStr(map.get("TRAIN_NBR")));
 		//所属局简称
 		subDto.setBureauShortName(StringUtil.objToStr(map.get("STN_BUREAU")));
 		//所属局全称
@@ -232,7 +243,9 @@ public class TrainInfoService {
 		subDto.setTrackName(StringUtil.objToStr(map.get("TRACK_NAME")));
 		subDto.setIndex((( BigDecimal)map.get("STN_SORT")).intValue());
 		subDto.setRunDays((( BigDecimal)map.get("RUN_DAYS")).intValue());
-		int  rundays = (( BigDecimal)map.get("RUN_DAYS")).intValue();
+		
+		//int  rundays = (( BigDecimal)map.get("RUN_DAYS")).intValue();
+		int rundays = MapUtils.getIntValue(map, "RUN_DAYS", 0);
 		String currentRunDate = DateUtil.getDateByDay(runDate, -rundays);	
 		//到站时间
 		subDto.setSourceTime(currentRunDate + " " + StringUtil.objToStr(map.get("ARR_TIME")) );

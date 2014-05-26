@@ -68,7 +68,7 @@
     
     <select id="getTrainsAndTimesForPage" parameterType="map" resultType="map">
      
-  select * from (
+ select * from (
   select t1.*, t2.*
   from (SELECT t.parent_id as BASE_TRAIN_ID1,
                t.parent_name as TRAIN_NBR,
@@ -119,7 +119,7 @@
                t.type_id TRAIN_TYPE_ID
           from JHPT_RJH.m_trainlinetemp t
          where t.scheme_id = #{chartId}
-           and t.operation =#{operation}) t1
+           and t.operation = #{operation}) t1
  where t1.BASE_TRAIN_ID = t2.BASE_TRAIN_ID1
  order by t1.BASE_TRAIN_ID, STN_SORT
  ) A,
@@ -128,7 +128,7 @@
  (select ROWNUM AS num, trainNbr  from  
    ( select name as trainNbr from jhpt_rjh.m_trainlinetemp t where 1=1  
 	AND t.scheme_id = #{chartId}
-        AND t.operation = #{operation} 
+        AND t.operation = #{operation}
         order by trainNbr
     ) 
  ) where num >=#{rownumstart} AND num &lt;=#{rownumend}

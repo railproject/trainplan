@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Monitored
 public class TreadService {
+	private static final Logger logger = Logger.getLogger(TreadService.class);
 
 	@Autowired
 	private TrainInfoService trainInfoService ;
@@ -43,8 +45,10 @@ public class TreadService {
 		params.put("operation", reqDto.getOperation());
 		//列车总数
 		final int totalCount = trainInfoService.getTrainInfoCount(params);
+		//final int totalCount = 1;
 		//final int totalCount = trainInfoService.getTrainsAndTimesCount(reqDto.getChartId(), reqDto.getOperation());
-		System.err.println("totalCount===" + totalCount);
+		logger.info("traintotalCount===" + totalCount);
+		System.err.println("traintotalCount===" + totalCount);
 		
 		(new Thread() {
 			public void run() {
@@ -68,9 +72,10 @@ public class TreadService {
 						Map<String,Object> returnMap = pool.take().get();
 						String runDate = StringUtil.objToStr(returnMap.get("runDate"));
 						int count = (Integer)returnMap.get("totalCount");
+						System.err.println("dayTraincount===" + count);
 						//推送某天结束的信息
 						quoteService.sendQuotes(runDate,dayCount, count, "plan.day.end");
-						System.err.println("rundate==" + runDate);
+						//System.err.println("rundate==" + runDate);
 					
 				}
 				//关闭线程池

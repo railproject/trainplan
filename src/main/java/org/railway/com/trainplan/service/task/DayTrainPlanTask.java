@@ -24,7 +24,7 @@ public class DayTrainPlanTask implements Callable<Map<String,Object>>{
 	private String chartId;
 	private String operation;
 	private int totalCount;
-	private int pageSize = 100;
+	private int pageSize = 200;
 	private int threadCount;
 	private int totalThreadCount = 20;
 	private TrainInfoService trainInfoService;
@@ -52,6 +52,7 @@ public class DayTrainPlanTask implements Callable<Map<String,Object>>{
 		ExecutorService service =Executors.newFixedThreadPool(totalThreadCount);
 		CompletionService<Integer> completion = new ExecutorCompletionService<Integer>(service);
 		int temp = threadCount;
+		int temp1= 0;
 		while(threadCount >0){
 			DaytaskDto dto = new DaytaskDto();
 			dto.setChartId(chartId);
@@ -60,13 +61,19 @@ public class DayTrainPlanTask implements Callable<Map<String,Object>>{
 			dto.setRownumend(threadCount*pageSize);
 			dto.setRownumstart((threadCount-1)*pageSize+1);
 			completion.submit(new TrainsTask(dto,trainInfoService));
+			temp1++;
 			threadCount --;
 		}
-		
+		System.err.println("temp1==" + temp1);
+		System.err.println("temp==" + temp);
 		int totalCount =0;
+		
 		for(int i =1;i<=temp;i++){
 			try {
-				int count = completion.take().get();
+				int count = 0;
+				
+				count = completion.take().get();
+				
 				totalCount = totalCount + count;
 				System.err.print("count==" + count);
 			} catch (InterruptedException e) {
