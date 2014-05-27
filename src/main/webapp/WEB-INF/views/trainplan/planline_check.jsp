@@ -72,9 +72,9 @@
                                 <table id="plan_table" class="table table-bordered table-striped table-hover tableradius" data-bind="with: tableModel">
                                     <thead>
                                     <tr>
-                                        <shiro:hasRole name="局客运调度:局值班主任">
+                                        <shiro:hasAnyRoles name="局客运调度,局值班主任">
                                             <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev1"/></th>
-                                        </shiro:hasRole>
+                                        </shiro:hasAnyRoles>
                                         <th rowspan="2" class="text-center">序号</th>
                                         <th rowspan="2" class="text-center">车次</th>
                                         <th rowspan="2" class="text-center">来源</th>

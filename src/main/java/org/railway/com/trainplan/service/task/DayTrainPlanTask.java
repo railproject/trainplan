@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.service.task;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -8,8 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.railway.com.trainplan.service.TrainInfoService;
-import org.railway.com.trainplan.service.TreadService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Map中的值有：
@@ -17,15 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author join
  *
  */
-public class DayTrainPlanTask implements Callable<String>{
+public class DayTrainPlanTask implements Callable<Map<String,Object>>{
 
 	
 	private String runDate;
 	private String chartId;
 	private String operation;
 	private int totalCount;
-	private int pageSize = 10;
+	private int pageSize = 200;
 	private int threadCount;
+	private int totalThreadCount = 20;
 	private TrainInfoService trainInfoService;
 	public DayTrainPlanTask(String runDate,String chartId,String operation,int totalCount,TrainInfoService trainInfoService){
 		this.runDate = runDate;
@@ -45,27 +46,36 @@ public class DayTrainPlanTask implements Callable<String>{
 	 * 返回的是runDay 格式yyyy-mm-dd
 	 */
 	@Override
-	public String call() throws Exception {
-		DaytaskDto dto = new DaytaskDto();
-		dto.setChartId(chartId);
-		dto.setOperation(operation);
-		dto.setRunDate(runDate);
+	public Map<String,Object> call() throws Exception {
+		
 		//对所有数据进行分页
-		ExecutorService service =Executors.newFixedThreadPool(20);
+		ExecutorService service =Executors.newFixedThreadPool(totalThreadCount);
 		CompletionService<Integer> completion = new ExecutorCompletionService<Integer>(service);
 		int temp = threadCount;
+		int temp1= 0;
 		while(threadCount >0){
-			
+			DaytaskDto dto = new DaytaskDto();
+			dto.setChartId(chartId);
+			dto.setOperation(operation);
+			dto.setRunDate(runDate);
 			dto.setRownumend(threadCount*pageSize);
 			dto.setRownumstart((threadCount-1)*pageSize+1);
 			completion.submit(new TrainsTask(dto,trainInfoService));
+			temp1++;
 			threadCount --;
 		}
+		System.err.println("temp1==" + temp1);
+		System.err.println("temp==" + temp);
+		int totalCount =0;
 		
 		for(int i =1;i<=temp;i++){
 			try {
-				int cout = completion.take().get();
-				System.err.print("cout==" + cout);
+				int count = 0;
+				
+				count = completion.take().get();
+				
+				totalCount = totalCount + count;
+				System.err.print("count==" + count);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -74,8 +84,11 @@ public class DayTrainPlanTask implements Callable<String>{
 				e.printStackTrace();
 			}
 		}
+		Map<String,Object> returnMap = new HashMap<String,Object>();
+		returnMap.put("totalCount", totalCount);
+		returnMap.put("runDate", runDate);
 		service.shutdown();
-		return runDate;
+		return returnMap;
 	}
 
 	

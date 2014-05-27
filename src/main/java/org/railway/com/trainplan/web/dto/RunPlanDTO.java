@@ -11,7 +11,7 @@ import java.util.Map;
 public class RunPlanDTO {
 
     // 列车ID
-    private int id;
+    private String id;
 
     // 车次
     private String serial = "";
@@ -66,7 +66,7 @@ public class RunPlanDTO {
     private int lev2Checked;
 
     public RunPlanDTO(Map<String, Object> map) {
-        this.id = MapUtils.getIntValue(map, "PLAN_TRAIN_ID");
+        this.id = MapUtils.getString(map, "PLAN_TRAIN_ID");
         this.serial = MapUtils.getString(map, "TRAIN_NBR");
         this.startSTN = MapUtils.getString(map, "START_STN");
         this.endSTN = MapUtils.getString(map, "END_STN", "");
@@ -85,11 +85,11 @@ public class RunPlanDTO {
         this.lev2Checked = MapUtils.getIntValue(map, "LEV2_CHECKED");
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

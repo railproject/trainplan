@@ -1,13 +1,17 @@
 package org.railway.com.trainplan.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.utils.DateUtil;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.service.task.DayTrainPlanTask;
 import org.railway.com.trainplan.service.task.DaytaskDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Monitored
 public class TreadService {
+	private static final Logger logger = Logger.getLogger(TreadService.class);
 
 	@Autowired
 	private TrainInfoService trainInfoService ;
@@ -32,32 +37,58 @@ public class TreadService {
 	 * @param totalCount
 	 * @return
 	 */
-	public int actionDayWork(DaytaskDto reqDto,int dayCount){
+	public void actionDayWork(final DaytaskDto reqDto,final int dayCount){
 		//System.err.println("trainInfoService111===" + trainInfoService);
 		//TODO 通过查询数据库得到totalCount
-		int totalCount = 100;
-		ExecutorService threadPool = Executors.newFixedThreadPool(dayCount);
-		CompletionService<String> pool = new ExecutorCompletionService<String>(threadPool);
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("chartId", reqDto.getChartId());
+		params.put("operation", reqDto.getOperation());
+		//列车总数
+		final int totalCount = trainInfoService.getTrainInfoCount(params);
+		//final int totalCount = 1;
+		//final int totalCount = trainInfoService.getTrainsAndTimesCount(reqDto.getChartId(), reqDto.getOperation());
+		logger.info("traintotalCount===" + totalCount);
+		System.err.println("traintotalCount===" + totalCount);
 		
-		for(int i =1;i<=dayCount;i++){
-			String currentRunDate = DateUtil.getDateByDay(reqDto.getRunDate(), -i);	
-			pool.submit(new DayTrainPlanTask(currentRunDate,reqDto.getChartId(),reqDto.getOperation(),totalCount,trainInfoService));
-		}
-		
-		for(int i =1;i<=dayCount;i++){
-			try {
-				String rundate = pool.take().get();
-				System.err.println("rundate==" + rundate);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		(new Thread() {
+			public void run() {
+				try{
+					
+				
+				
+				ExecutorService threadPool = Executors.newFixedThreadPool(dayCount);
+				CompletionService<Map<String,Object>> pool = new ExecutorCompletionService<Map<String,Object>>(threadPool);
+				
+				for(int i =0;i<dayCount;i++){
+					//推送某天开始的消息
+					// 推送开始某天记录的信息
+					quoteService.sendQuotes(reqDto.getRunDate(),dayCount, 0, "plan.day.begin");
+					String currentRunDate = DateUtil.getDateByDay(reqDto.getRunDate(), -i);	
+					pool.submit(new DayTrainPlanTask(currentRunDate,reqDto.getChartId(),reqDto.getOperation(),totalCount,trainInfoService));
+				}
+				
+				for(int i =0;i<dayCount;i++){
+					
+						Map<String,Object> returnMap = pool.take().get();
+						String runDate = StringUtil.objToStr(returnMap.get("runDate"));
+						int count = (Integer)returnMap.get("totalCount");
+						System.err.println("dayTraincount===" + count);
+						//推送某天结束的信息
+						quoteService.sendQuotes(runDate,dayCount, count, "plan.day.end");
+						//System.err.println("rundate==" + runDate);
+					
+				}
+				//关闭线程池
+				threadPool.shutdown();	
+				//推送全部结束的信息
+				quoteService.sendQuotes("", 0, 0, "plan.end");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		}
-		//关闭线程池
-		threadPool.shutdown();
-		return 0;
+		}).start();
+		
+		
 	}
 }

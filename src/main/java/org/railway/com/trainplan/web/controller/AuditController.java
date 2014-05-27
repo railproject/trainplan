@@ -38,7 +38,7 @@ public class AuditController {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         logger.debug(String.format("-X GET plan/runplan/", new Object[]{date, type}));
         List<RunPlanDTO> result = new ArrayList<RunPlanDTO>();
-        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureau(), type);
+        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureauShortName(), type);
         for(Map<String, Object> map: list) {
             result.add(new RunPlanDTO(map));
         }

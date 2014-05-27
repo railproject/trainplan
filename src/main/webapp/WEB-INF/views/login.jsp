@@ -15,7 +15,7 @@
     <script type="application/javascript" src="${ctx}/assets/js/bootstrap.min.js"></script>
     <script type="application/javascript" src="${ctx}/assets/js/respond.min.js"></script>
     <script type="application/javascript" type="application/javascript" src="${ctx}/assets/js/trainplan/login.js"></script>
-    <title>铁路实施计划平台</title>
+    <title>铁路运输调度计划平台</title>
 </head>
 <body>
 <div class="login">
@@ -52,7 +52,7 @@
                             <div class="btn-group">
                                 <input type="hidden" name="username"/>
                                 <input type="hidden" name="password"/>
-                                <button class="btn btn-warning pull-right" type="submit" id="login" style="padding:6px 13px; border-radius: 4px; width: 100px">登&nbsp;录</button>
+                                <button class="btn btn-warning" type="submit" id="login" style="padding:6px 13px; border-radius: 4px; width: 100px;margin-left: 170px;">登&nbsp;录</button>
                             </div>
                         </form>
                     </div>
