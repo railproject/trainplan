@@ -219,10 +219,12 @@ function ApplicationModel() {
 
 // ########### 页面参数模型 ###############
 function ParamModel(tableModel) {
+    var self = this;
 
     // 初始化时间控件
     $("#date_selector").datepicker({format: "yyyy-mm-dd"}).on('changeDate', function (ev) {
         tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
+        self.loadPies(moment(ev.date).format("YYYYMMDD"));
     });;
     var date = $.url().param("date");
     if (date) {
@@ -231,30 +233,56 @@ function ParamModel(tableModel) {
         $("#date_selector").datepicker('setValue', new Date());
     }
 
-    commonJsScreenLock();
-    // 统计图
-    $.ajax({
-        url: "audit/plan/chart",
-        method: "GET",
-        contentType: "application/json; charset=UTF-8"
-    }).done(function(resp) {
-        if(resp && resp.length) {
-            var name = Array();
-            var data = Array();
-            var dataArrayFinal = Array();
-            for(var i = 0; i < resp.length; i ++) {
-                name[i] = resp[i].name;
-                data[i] = resp[i].count;
-                dataArrayFinal[i] = new Array(name[i],data[i]);
+    self.loadPies = function(date) {
+        // 统计图
+        $.ajax({
+            url: "audit/plan/chart/traintype/" + date,
+            method: "GET",
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(resp) {
+            if(resp && resp.length) {
+                var name = Array();
+                var data = Array();
+                var dataArrayFinal = Array();
+                for(var i = 0; i < resp.length; i ++) {
+                    name[i] = resp[i].name;
+                    data[i] = resp[i].count;
+                    dataArrayFinal[i] = new Array(name[i],data[i]);
+                }
+                drawPie($("#chart_01"), '开行/热备/停运统计', dataArrayFinal);
             }
-            drawPie($("#chart_01"), '开行/热备/停运统计', dataArrayFinal);
-        }
 
-    }).fail(function() {
+        }).fail(function() {
 
-    }).always(function() {
-        commonJsScreenUnLock();
-    })
+        }).always(function() {
+
+        })
+
+
+
+        $.ajax({
+            url: "audit/plan/chart/planline/" + date,
+            method: "GET",
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(resp) {
+            if(resp && resp.length) {
+                var name = Array();
+                var data = Array();
+                var dataArrayFinal = Array();
+                for(var i = 0; i < resp.length; i ++) {
+                    name[i] = resp[i].name;
+                    data[i] = resp[i].count;
+                    dataArrayFinal[i] = new Array(name[i],data[i]);
+                }
+                drawPie($("#chart_02"), '客运计划已上图/未上图统计', dataArrayFinal);
+            }
+
+        }).fail(function() {
+
+        }).always(function() {
+
+        })
+    }
 
 }
 

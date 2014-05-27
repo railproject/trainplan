@@ -90,11 +90,11 @@ public class AuditController {
     }
 
 
-    @RequestMapping(value = "plan/chart", method = RequestMethod.GET)
-    public ResponseEntity<List<ChartDto>> getChartsDate() {
+    @RequestMapping(value = "plan/chart/traintype/{date}", method = RequestMethod.GET)
+    public ResponseEntity<List<ChartDto>> getTrainType(@PathVariable String date) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, Object> result = chartService.getPlanTypeChart();
+        Map<String, Object> result = chartService.getPlanTypeChart(date);
         List<ChartDto> charts = Lists.newArrayList();
 
         ChartDto chart1 = new ChartDto();
@@ -116,6 +116,30 @@ public class AuditController {
         chart4.setName("未知");
         chart4.setCount(MapUtils.getIntValue(result, "UNKNOWN", 0));
         charts.add(chart4);
+        return new ResponseEntity(charts, httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "plan/chart/planline/{date}", method = RequestMethod.GET)
+    public ResponseEntity<List<ChartDto>> getPlanLine(@PathVariable String date) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, Object> result = chartService.getPlanLineCount(date);
+        List<ChartDto> charts = Lists.newArrayList();
+
+        ChartDto chart1 = new ChartDto();
+        chart1.setName("已上图");
+        chart1.setCount(MapUtils.getIntValue(result, "LINE", 0));
+        charts.add(chart1);
+
+        ChartDto chart2 = new ChartDto();
+        chart2.setName("未上图");
+        chart2.setCount(MapUtils.getIntValue(result, "PLAN", 0));
+        charts.add(chart2);
+
+        ChartDto chart3 = new ChartDto();
+        chart3.setName("未知");
+        chart3.setCount(MapUtils.getIntValue(result, "UNKNOWN", 0));
+        charts.add(chart3);
         return new ResponseEntity(charts, httpHeaders, HttpStatus.OK);
     }
 }

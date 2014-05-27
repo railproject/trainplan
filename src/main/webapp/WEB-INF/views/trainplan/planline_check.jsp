@@ -72,10 +72,10 @@
                                         <div id="chart_01" style="height:253px; margin: 0 auto;"></div>
                                     </div>
                                     <div class="col-xs-4 col-md-4  col-sm-4 ">
-                                        <div id="chart_03" style="height:253px; margin:0 auto;"></div>
+                                        <div id="chart_02" style="height:253px; margin:0 auto;"></div>
                                     </div>
                                     <div class="col-xs-4 col-md-4  col-sm-4 ">
-                                        <div id="chart_02" style="height:270px; margin:0 auto;"></div>
+                                        <div id="chart_03" style="height:270px; margin:0 auto;"></div>
                                     </div>
                                 </div>
                             </div>
