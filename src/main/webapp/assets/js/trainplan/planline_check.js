@@ -219,8 +219,8 @@ function ApplicationModel() {
 
 // ########### 页面参数模型 ###############
 function ParamModel(tableModel) {
-    var self = this;
 
+    // 初始化时间控件
     $("#date_selector").datepicker({format: "yyyy-mm-dd"}).on('changeDate', function (ev) {
         tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
     });;
@@ -230,6 +230,32 @@ function ParamModel(tableModel) {
     } else {
         $("#date_selector").datepicker('setValue', new Date());
     }
+
+    commonJsScreenLock();
+    // 统计图
+    $.ajax({
+        url: "audit/plan/chart",
+        method: "GET",
+        contentType: "application/json; charset=UTF-8"
+    }).done(function(resp) {
+        if(resp && resp.length) {
+            var name = Array();
+            var data = Array();
+            var dataArrayFinal = Array();
+            for(var i = 0; i < resp.length; i ++) {
+                name[i] = resp[i].name;
+                data[i] = resp[i].count;
+                dataArrayFinal[i] = new Array(name[i],data[i]);
+            }
+            drawPie($("#chart_01"), '开行/热备/停运统计', dataArrayFinal);
+        }
+
+    }).fail(function() {
+
+    }).always(function() {
+        commonJsScreenUnLock();
+    })
+
 }
 
 // ################# 列表模型 #############
@@ -239,6 +265,7 @@ function TableModel() {
     self.planList = ko.observableArray();
 
     self.loadTable = function() {
+        commonJsScreenLock();
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         $.ajax({
             url: "audit/plan/runplan/" + date + "/1",
@@ -254,7 +281,7 @@ function TableModel() {
         }).fail(function() {
 
         }).always(function() {
-
+            commonJsScreenUnLock();
         })
     };
 }
@@ -457,4 +484,36 @@ function getHintCss(reqLength, respLength) {
     } else {
         return "growl-danger";
     }
+}
+
+function drawPie($div, chartName, data) {
+    $div.highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: chartName
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>',
+            percentageDecimals: 1
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: '列车数量',
+            data: data
+        }]
+    });
 }

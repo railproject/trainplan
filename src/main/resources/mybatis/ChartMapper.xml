@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="org.railway.com.trainplan.repository.mybatis.ChartDao">
+    <select id="getPlanTypeCount" resultType="map">
+        SELECT SUM(RUNNING) AS RUNNING, SUM(BACKUP) AS BACKUP, SUM(STOPPED) AS STOPPED, SUM(UNKNOWN) AS UNKNOWN FROM(
+            SELECT COUNT(PT.PLAN_TRAIN_ID) AS RUNNING, 0 AS BACKUP, 0 AS STOPPED, 0 AS UNKNOWN FROM PLAN_TRAIN PT WHERE PT.SPARE_FLAG = 1
+            UNION
+            SELECT 0 AS RUNNING, COUNT(PT.PLAN_TRAIN_ID) AS BACKUP, 0 AS STOPPED, 0 AS UNKNOWN FROM PLAN_TRAIN PT WHERE PT.SPARE_FLAG = 2
+            UNION
+            SELECT 0 AS RUNNING, 0 AS BACKUP, COUNT(PT.PLAN_TRAIN_ID) AS STOPPED, 0 AS UNKNOWN FROM PLAN_TRAIN PT WHERE PT.SPARE_FLAG = 0
+            UNION
+            SELECT 0 AS RUNNING, 0 AS BACKUP, 0 AS STOPPED, COUNT(PT.PLAN_TRAIN_ID) AS UNKNOWN FROM PLAN_TRAIN PT WHERE PT.SPARE_FLAG IS NULL
+        )
+    </select>
+</mapper> 
