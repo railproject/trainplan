@@ -57,6 +57,11 @@ public class CrossController {
 		 return "cross/run_plan";
      }
 	 
+	 @RequestMapping(value="/crossCanvas", method = RequestMethod.GET)
+     public String crossCanvas() {
+		 return "cross/canvas_event_getvalue";
+     }
+	
 	 @Autowired
 	private CrossService crossService;
 	
@@ -257,6 +262,52 @@ public class CrossController {
 					logger.debug("gridStr==" + gridStr);
 					result.addObject("gridData",gridStr);
 		
+			}
+		
+		System.err.println("result===" + result);
+		return result ;
+	}
+	
+	
+	
+	/**
+	 * 提供画交路图形的数据
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/createCrossMap", method = RequestMethod.POST)
+	public Result  createCrossMap(@RequestBody Map<String,Object> reqMap) throws Exception{
+		 	Result result = new Result();
+			String crossId = StringUtil.objToStr(reqMap.get("crossId"));
+			System.err.println("crossId=="+ crossId);
+			//经由信息，由后面调用接口获取，用户提供画图的坐标
+			
+			ObjectMapper objectMapper = new ObjectMapper();
+			if(crossId !=null){
+				
+				List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
+				
+				BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(crossId);
+				Map<String,Object> crossMap = new HashMap<String,Object>();
+				Map<String,Object> oneCrossMap = provideOneCrossChartData(baseCrossDto,true,Constants.TYPE_CROSS);
+				crossMap.put("jxgx", oneCrossMap.get("jxgx"));
+				crossMap.put("trains", oneCrossMap.get("trains"));
+				crossMap.put("crossName", oneCrossMap.get("crossName"));
+				dataList.add(crossMap);
+				String myJlData = objectMapper.writeValueAsString(dataList);
+				//图形数据
+				Map<String , Object> map = new HashMap<String , Object>();
+				map.put("myJlData", myJlData);
+				
+				
+				//坐标信息
+				PlanLineGrid grid = (PlanLineGrid)oneCrossMap.get("gridData");
+				String gridStr = objectMapper.writeValueAsString(grid);
+				logger.debug("gridStr==" + gridStr);
+			 
+				
+				map.put("gridData", gridStr);
+				result.setData(map); 
 			}
 		
 		System.err.println("result===" + result);

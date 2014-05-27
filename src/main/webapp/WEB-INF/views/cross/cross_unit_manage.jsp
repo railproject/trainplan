@@ -105,7 +105,7 @@ System.out.println(basePath);
 												车次:&nbsp;</label>
 											<div class="pull-left">
 												<input type="text" class="form-control" style="width: 100px;"
-													placeholder="车次" id="input_cross_filter_trainNbr" data-bind=" value: searchModle().trainNbr">
+													placeholder="车次" id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
 											</div> 
 											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;" >
 												生成:</label>

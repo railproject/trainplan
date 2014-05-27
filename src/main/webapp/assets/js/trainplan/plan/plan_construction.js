@@ -100,63 +100,110 @@ var PlanConstructionPage = function(){
 		});
 	};
 	 
+   _self.onReplay = function(message){
+	   var trainLines = $.parseJSON(message); 
+		 if(trainLines.code != "-1"){   
+			 if (trainLines.data != null) { 
+				 var temp = trainLines.data[0];
+					var skarr = []; 
+					if(temp.scheduleDto.sourceItemDto != null){
+						skarr.push(temp.scheduleDto.sourceItemDto); 
+					}   
+					
+					if(temp.scheduleDto.routeItemDtos != null && temp.scheduleDto.routeItemDtos.length > 0){
+						$.each(temp.scheduleDto.routeItemDtos,function(i, a){ 
+							skarr.push(a);
+						});
+					} 
+					if(temp.scheduleDto.targetItemDto != null){
+						skarr.push(temp.scheduleDto.targetItemDto);
+					} 
+					
+					skarr.sort(function(a, b){  
+						return a.index - b.index;
+					});  
+					
+					 
+					for(var i = 0; i < _self.trainLineMap.length; i++){  
+						if(_self.trainLineMap[i].requestId == trainLines.requestId){  
+							_self.trainLineMap[i].setLines(skarr);
+							$(_self.trainLineMap[i].checkbox).parent().parent().find("td:eq(7)").html("<span color=\'red\'>生成运行线成功</span>");
+							break;
+						}
+					} 
+					 
+					//_self.showTable(skarr);
+			 }
+		 }else{   
+			 for(var i = 0; i < _self.trainLineMap.length; i++){
+				 if(_self.trainLineMap[i].routLines != null){
+					 _self.trainLineMap[i].routLines = null;
+				 }
+				 if(_self.trainLineMap[i].requestId == trainLines.requestId){  
+					   $(_self.trainLineMap[i].checkbox).parent().parent().find("td:eq(7)").html("<span color=\'red\'>生成运行线失败</span>");
+						break;
+				}
+				
+			} 
+		 }   
+   };
 	/**
 	 * socket连接
 	 */
-	_self.connect = function() {
-	     stompClient.connect({}, function(frame) { 
-	    	 //监听xx日计划开始事件
-			 stompClient.subscribe("/railwayplan/plan.freightTransport.replay", function(message) {   
-				 var trainLines = $.parseJSON($.parseJSON(message.body.toString())); 
-				 if(trainLines.code != "-1"){   
-					 if (trainLines.data != null) { 
-						 var temp = trainLines.data[0];
-							var skarr = []; 
-							if(temp.scheduleDto.sourceItemDto != null){
-								skarr.push(temp.scheduleDto.sourceItemDto); 
-							}   
-							
-							if(temp.scheduleDto.routeItemDtos != null && temp.scheduleDto.routeItemDtos.length > 0){
-								$.each(temp.scheduleDto.routeItemDtos,function(i, a){ 
-									skarr.push(a);
-								});
-							} 
-							if(temp.scheduleDto.targetItemDto != null){
-								skarr.push(temp.scheduleDto.targetItemDto);
-							} 
-							
-							skarr.sort(function(a, b){  
-								return a.index - b.index;
-							});  
-							
-							 
-							for(var i = 0; i < _self.trainLineMap.length; i++){  
-								if(_self.trainLineMap[i].requestId == trainLines.requestId){  
-									_self.trainLineMap[i].setLines(skarr);
-									$(_self.trainLineMap[i].checkbox).parent().parent().find("td:eq(7)").html("<span color=\'red\'>生成运行线成功</span>");
-									break;
-								}
-							} 
-							 
-							//_self.showTable(skarr);
-					 }
-				 }else{   
-					 for(var i = 0; i < _self.trainLineMap.length; i++){
-						 if(_self.trainLineMap[i].routLines != null){
-							 _self.trainLineMap[i].routLines = null;
-						 }
-						 if(_self.trainLineMap[i].requestId == trainLines.requestId){  
-							   $(_self.trainLineMap[i].checkbox).parent().parent().find("td:eq(7)").html("<span color=\'red\'>生成运行线失败</span>");
-								break;
-						}
-						
-					} 
-				 }   
-			 }); 
-	    }, function(error) {
-//	    	console.log("STOMP protocol error " + error);
-	    });
-	};
+//	_self.connect = function() {
+//	     stompClient.connect({}, function(frame) { 
+//	    	 //监听xx日计划开始事件
+//			 stompClient.subscribe("/railwayplan/plan.freightTransport.replay", function(message) {   
+//				 var trainLines = $.parseJSON($.parseJSON(message.body.toString())); 
+//				 if(trainLines.code != "-1"){   
+//					 if (trainLines.data != null) { 
+//						 var temp = trainLines.data[0];
+//							var skarr = []; 
+//							if(temp.scheduleDto.sourceItemDto != null){
+//								skarr.push(temp.scheduleDto.sourceItemDto); 
+//							}   
+//							
+//							if(temp.scheduleDto.routeItemDtos != null && temp.scheduleDto.routeItemDtos.length > 0){
+//								$.each(temp.scheduleDto.routeItemDtos,function(i, a){ 
+//									skarr.push(a);
+//								});
+//							} 
+//							if(temp.scheduleDto.targetItemDto != null){
+//								skarr.push(temp.scheduleDto.targetItemDto);
+//							} 
+//							
+//							skarr.sort(function(a, b){  
+//								return a.index - b.index;
+//							});  
+//							
+//							 
+//							for(var i = 0; i < _self.trainLineMap.length; i++){  
+//								if(_self.trainLineMap[i].requestId == trainLines.requestId){  
+//									_self.trainLineMap[i].setLines(skarr);
+//									$(_self.trainLineMap[i].checkbox).parent().parent().find("td:eq(7)").html("<span color=\'red\'>生成运行线成功</span>");
+//									break;
+//								}
+//							} 
+//							 
+//							//_self.showTable(skarr);
+//					 }
+//				 }else{   
+//					 for(var i = 0; i < _self.trainLineMap.length; i++){
+//						 if(_self.trainLineMap[i].routLines != null){
+//							 _self.trainLineMap[i].routLines = null;
+//						 }
+//						 if(_self.trainLineMap[i].requestId == trainLines.requestId){  
+//							   $(_self.trainLineMap[i].checkbox).parent().parent().find("td:eq(7)").html("<span color=\'red\'>生成运行线失败</span>");
+//								break;
+//						}
+//						
+//					} 
+//				 }   
+//			 }); 
+//	    }, function(error) {
+////	    	console.log("STOMP protocol error " + error);
+//	    });
+//	};
 	_self.logout = function() {
 		stompClient.disconnect();
 		window.location.href = "../logout.html";
@@ -181,7 +228,7 @@ var PlanConstructionPage = function(){
 		
 		
 		//初始化socket连接
-		_self.connect();
+//		_self.connect();
 		
 		
 	};
@@ -443,8 +490,8 @@ $(function(){
 //     });
      
 	//创建websocket连接
-	socket = new SockJS(basePath+'/portfolio');
-    stompClient = Stomp.over(socket);
+//	socket = new SockJS(basePath+'/portfolio');
+//    stompClient = Stomp.over(socket);
     _PlanConstructionPage.initPage(); 
 	
 });

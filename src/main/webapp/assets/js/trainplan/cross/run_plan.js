@@ -2,7 +2,8 @@ $(function() {
 	
 	var cross = new CrossModel();
 	ko.applyBindings(cross); 
-	 
+	
+	console.dir(canvasData); 
 	cross.init();   
 });
 
@@ -20,15 +21,47 @@ function CrossModel() {
 	var self = this;
 		//列车列表
 	self.trains = ko.observableArray();
+	
+	self.stns = ko.observableArray();
 	//交路列表 
 	self.crossAllcheckBox = ko.observable(0);
 	
+	self.trainPlans = ko.observableArray([{"trainNbr": "G1", "runPlans": [{"day": "05-26", "runFlag": "1"},{"day": "05-27", "runFlag": "1"},
+	                                                                      {"day": "05-26", "runFlag": "1"},{"day": "05-26", "runFlag": "1"},
+	                              	                                      {"day": "05-26", "runFlag": "1"},{"day": "05-26", "runFlag": "1"},
+	                              	                                      {"day": "05-26", "runFlag": "1"},{"day": "05-26", "runFlag": "1"},
+	                            	                                      {"day": "05-26", "runFlag": "1"}]},
+	                            	      {"trainNbr": "G2", "runPlans": [{"day": "05-26", "runFlag": "1"},{"day": "05-27", "runFlag": "1"},
+	                            	                                      {"day": "05-26", "runFlag": "1"},{"day": "05-26", "runFlag": "1"},
+	                            	                              	      {"day": "05-26", "runFlag": "1"},{"day": "05-26", "runFlag": "1"},
+	                            	                              	      {"day": "05-26", "runFlag": "1"},{"day": "05-26", "runFlag": "1"},
+	                            	                            	      {"day": "05-26", "runFlag": "1"}]}]);
+	
+	self.planDays = ko.observableArray([{"day": "05-26"},{"day": "05-27"},{"day": "05-26"},{"day": "05-26"},
+	                                    {"day": "05-26"},{"day": "05-26"},{"day": "05-26"},{"day": "05-26"},
+	                                    {"day": "05-26"}]);
+	
 	self.gloabBureaus = [];  
+	
+	self.runPlanCanvasPage = new RunPlanCanvasPage(self);
 	
 	self.currentTrain = ko.observable();
 	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
+	
+	
+	self.trainRunPlanChange = function(row, event){ 
+		console.log(row);
+		console.log(event.target.name);
+		console.log("trainRunPlanChange test");
+	};
+	
+	self.dragRunPlan = function(n,event){
+		console.log(event.target);
+		$(event.target).dialog("open");
+		
+	};
 	
 	self.selectCrosses = function(){
 //		self.crossAllcheckBox(); 
@@ -41,6 +74,16 @@ function CrossModel() {
 		}); 
 	};
 	
+	self.loadStns = function(stns){ 
+		self.stns.remove(function(item) {
+			return true;
+		});   
+		if(stns){
+			 $.each(stns, function(z, n){
+				 self.stns.push(new TrainTimeRow(n));
+			 }); 
+		};
+	};
 	self.setCurrentTrain = function(train){
 		console.log(train)
 		self.currentTrain(train); 
@@ -96,6 +139,10 @@ function CrossModel() {
 				 } 
 			  }); 
 		 };
+	};
+	
+	self.loadCrossRunPaln =function(){
+		
 	};
 	
 	self.uploadCrossFile = function(){ 
@@ -192,30 +239,149 @@ function CrossModel() {
 		return year+"-"+month+"-"+days;
 	};
 	
+	self.get40Date = function(){
+		var d = new Date();
+		d.setDate(d.getDate() + 40);
+		
+		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
+		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
+		var days = d.getDate(); 
+		month = ("" + month).length == 1 ? "0" + month : month;
+		days = ("" + days).length == 1 ? "0" + days : days;
+		return year+"-"+month+"-"+days;
+	}
+	
+	
+	
 	self.init = function(){  
 		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
 		//self.searchModle().loadBureau(self.gloabBureaus); 
 		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
-		$("#cross_map_dlg").dialog({
-		    onClose:function(){
-		    		self.searchModle().showCrossMap(0);
-		       }
-		   });
+//		$("#cross_map_dlg").dialog({
+//		    onClose:function(){
+//		    		self.searchModle().showCrossMap(0);
+//		       }
+//		   });
+//		
+//		
+//		$("#file_upload_dlg").dialog("close"); 
+//		$("#cross_train_time_dlg").dialog("close");
+//		$("#cross_map_dlg").dialog("close"); 
+//		$("#cross_train_dlg").dialog("close");
+//		$("#cross_train_time_dlg").dialog("close"); 
+//		$("#cross_start_day").datepicker();
+//		
 		
+		//x放大2倍
+		$("#canvas_event_btn_x_magnification").click(function(){
+			if (currentXScaleCount == 32) {
+				showErrorDialog("当前已经不支持继续放大啦！");
+				return;
+			}
+			
+			//必须清除
+			lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
+			jlList = [];	//用于保存交路数据元素，以便重新绘图
+			
+			//计算画布比例及倍数
+			currentXScale = currentXScale/2;
+			currentXScaleCount = currentXScaleCount*2;
+
+			$("#canvas_event_label_xscale").text(currentXScaleCount);
+			self.runPlanCanvasPage.clearChart();	//清除画布
+			self.runPlanCanvasPage.drawChart({
+					 xScale : currentXScale,			//x轴缩放比例
+					 xScaleCount : currentXScaleCount,	//x轴放大总倍数
+					 yScale : currentYScale			//y轴缩放比例
+				 });
+			
+		});
 		
-		$("#file_upload_dlg").dialog("close"); 
-		$("#cross_train_time_dlg").dialog("close");
-		$("#cross_map_dlg").dialog("close"); 
-		$("#cross_train_dlg").dialog("close");
-		$("#cross_train_time_dlg").dialog("close"); 
-		$("#cross_start_day").datepicker();
+		//x缩小2倍
+		$("#canvas_event_btn_x_shrink").click(function(){
+			if (currentXScaleCount == 0.25) {
+				showErrorDialog("当前已经不支持继续缩小啦！");
+				return;
+			}
+			
+			//必须清除
+			lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
+			jlList = [];	//用于保存交路数据元素，以便重新绘图
+
+			//计算画布比例及倍数
+			currentXScale = currentXScale*2;
+			currentXScaleCount = currentXScaleCount/2;
+
+			$("#canvas_event_label_xscale").text(currentXScaleCount);
+			self.runPlanCanvasPage.clearChart();	//清除画布
+			self.runPlanCanvasPage.drawChart({
+				 xScale : currentXScale,			//x轴缩放比例
+				 xScaleCount : currentXScaleCount,	//x轴放大总倍数
+				 yScale : currentYScale			//y轴缩放比例
+			 });
+		});
+		//y放大2倍
+		$("#canvas_event_btn_y_magnification").click(function(){
+			if (currentYScaleCount == 8) {
+				showErrorDialog("当前已经不支持继续放大啦！");
+				return;
+			}
+			
+			//必须清除
+			lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
+			jlList = [];	//用于保存交路数据元素，以便重新绘图
+			
+			//计算画布比例及倍数
+			currentYScale = currentYScale/2;
+			currentYScaleCount = currentYScaleCount*2;
+
+			$("#canvas_event_label_yscale").text(currentYScaleCount);
+			self.runPlanCanvasPage.clearChart();	//清除画布
+			self.runPlanCanvasPage.drawChart({
+					 xScale : currentXScale,			//x轴缩放比例
+					 xScaleCount : currentXScaleCount,	//x轴放大总倍数
+					 yScale : currentYScale			//y轴缩放比例
+				 }); 
+		});
+		
+		//y缩小2倍
+		$("#canvas_event_btn_y_shrink").click(function(){
+			if (currentYScaleCount == 0.25) {
+				showErrorDialog("当前已经不支持继续缩小啦！");
+				return;
+			}
+			
+			//必须清除
+			lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
+			jlList = [];	//用于保存交路数据元素，以便重新绘图
+
+			//计算画布比例及倍数
+			currentYScale = currentYScale*2;
+			currentYScaleCount = currentYScaleCount/2;
+
+			$("#canvas_event_label_yscale").text(currentYScaleCount);
+			self.runPlanCanvasPage.clearChart();	//清除画布
+			self.runPlanCanvasPage.drawChart({
+				 xScale : currentXScale,			//x轴缩放比例
+				 xScaleCount : currentXScaleCount,	//x轴放大总倍数
+				 yScale : currentYScale			//y轴缩放比例
+			 });
+		}); 
+		
+//		runPlanCanvasPage = new RunPlanCanvasPage(cross);
+		self.runPlanCanvasPage.initPage(); 
 		
 		self.searchModle().startDay(self.currdate()); 
+		
+		self.searchModle().planStartDate(self.currdate());
+		
+		self.searchModle().planEndDate(self.get40Date());
+		
 		commonJsScreenLock();
 		var initFlag = 0;
 		//获取当期系统日期 
 		 $.ajax({
-				url : "plan/getSchemeList",
+				url : "../plan/getSchemeList",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -243,7 +409,7 @@ function CrossModel() {
 		    }); 
 		 
 	    $.ajax({
-			url : "plan/getFullStationInfo",
+			url : "../plan/getFullStationInfo",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -292,14 +458,13 @@ function CrossModel() {
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
 		var chart = self.searchModle().chart();
 		var startBureauCode = self.searchModle().startBureau();  
-		
+
 		if(chart == null){
 			showErrorDialog("请选择方案!");
 			//return;
-		}
-		 
+		} 
 		$.ajax({
-				url : "cross/getCrossInfo",
+				url : "../cross/getCrossInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -380,6 +545,50 @@ function CrossModel() {
 		
 		$("#cross_train_time_dlg").dialog("open");
 	};
+	
+	self.showTrainTimes = function(row) {
+		console.log(row);
+		self.currentTrain(row);
+		self.runPlanCanvasPage.reDrawByTrainNbr(row.trainNbr);
+		self.stns.remove(function(item){
+			return true;
+		});
+		if(row.times().length > 0){ 
+			$.each(row.times(), function(i, n){
+				self.stns.push(n); 
+			}) ;
+			 
+		}else{
+			$.ajax({
+				url : "../jbtcx/queryTrainTimes",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({   
+					trainId : row.baseTrainId
+				}),
+				success : function(result) {  
+					console.log(result) 
+					if (result != null && result != "undefind" && result.code == "0") {  
+						row.loadTimes(result.data);  
+						$.each(row.times(), function(i, n){
+							self.stns.push(n); 
+						});
+					} else {
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					};
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+		}
+		
+	};  
 	
 	self.deleteCrosses = function(){
 		
@@ -469,7 +678,7 @@ function CrossModel() {
 			}
 		} 
 		 $.ajax({
-				url : "cross/checkCorssInfo",
+				url : "../cross/checkCorssInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -497,13 +706,51 @@ function CrossModel() {
 		
 	};
 	
+	self.createCrossMap = function(row){
+		 $.ajax({
+				url : "../cross/createCrossMap",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					crossId : row.crossId  
+				}),
+				success : function(result) {    
+					console.log(result);
+					if (result != null && result != "undefind" && result.code == "0") {
+						if (result.data !=null) {   
+							canvasData = {
+									grid: $.parseJSON(result.data.gridData),
+									jlData: $.parseJSON(result.data.myJlData)
+							};
+							lineList = [];
+							jlList = [];
+							console.log("-------------------------111-----------------------");
+							self.runPlanCanvasPage.drawChart({startX:60, yScale: 2});
+							
+						}
+						 
+					} else {
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					} 
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+	};
 	self.showTrains = function(row) {  
 		commonJsScreenLock();
+		self.createCrossMap(row);
 		self.trains.remove(function(item) {
 			return true;
 		});   
 		 $.ajax({
-				url : "cross/getCrossTrainInfo",
+				url : "../cross/getCrossTrainInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -554,7 +801,13 @@ function CrossModel() {
 
 function searchModle(){
 	self = this;  
-	self.bureaus = ko.observableArray();  
+	
+	self.planStartDate = ko.observable();
+	
+	self.planEndDate = ko.observable();
+	
+	self.bureaus = ko.observableArray();
+	
 	self.startBureaus = ko.observableArray();
 	
 	self.charts = ko.observableArray();
@@ -696,6 +949,13 @@ function TrainRow(data) {
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
 	//self.startBureau = data.startBureau;//START_BUREAU 
+	self.times = ko.observableArray(); 
+	self.loadTimes = function(times){
+		$.each(times, function(i, n){ 
+			self.times.push(new TrainTimeRow(n));
+		});
+	}; 
+	
 	self.startBureau = ko.computed(function(){
 		for(var i = 0; i < gloabBureaus.length; i++){
 			if(gloabBureaus[i].code == data.startBureau){ 
@@ -791,8 +1051,57 @@ function TrainRow(data) {
 	self.otherRule = self.appointWeek == null ? "" : self.appointWeek + " " + self.appointDay == null ? "" : self.appointDay;
 
 } ;
+function filterValue(value){
+	return value == null || value == "null" ? "--" : value;
+};
 
-
+function TrainTimeRow(data) { 
+	var self = this; 
+	self.index = data.childIndex + 1;
+	self.stnName = filterValue(data.stnName);
+	self.bureauShortName = filterValue(data.bureauShortName);
+	self.arrTime = data.arrTime != null ? data.arrTime.length > 8 ? data.arrTime.replace(/-/g,"").substring(4, 14) : data.arrTime: "--";
+	self.dptTime = data.dptTime != null ? data.dptTime.length > 8 ? data.dptTime.replace(/-/g,"").substring(4, 14) : data.dptTime: "--";
+	self.stepStr = GetDateDiff(data); 
+	self.trackName = filterValue(data.trackName);  
+	self.runDays = data.runDays; 
+};
+function GetDateDiff(data)
+{ 
+	if(data.childIndex == 0)
+		return "";
+	else if(data.dptTime == '-'){
+		return "";
+	} 
+	var startTime = new Date("1977-7-7 " + data.arrTime);
+	var endTime = new Date("1977-7-7 " + data.dptTime);  
+	var result = "";
+	
+	var date3=endTime.getTime()-startTime.getTime(); //时间差的毫秒数 
+	
+	//计算出相差天数
+	var days=Math.floor(date3/(24*3600*1000));
+	
+	result += days > 0 ? days + "天" : "";  
+	//计算出小时数
+	var leave1=date3%(24*3600*1000);     //计算天数后剩余的毫秒数
+	var hours=Math.floor(leave1/(3600*1000));
+	
+	result += hours > 0 ? hours + "小时" : ""; 
+	
+	//计算相差分钟数
+	var leave2=leave1%(3600*1000);        //计算小时数后剩余的毫秒数
+	var minutes=Math.floor(leave2/(60*1000));
+	
+	result += minutes > 0 ? minutes + "分" : "";
+	//计算相差秒数
+	var leave3=leave2%(60*1000);          //计算分钟数后剩余的毫秒数
+	var seconds=Math.round(leave3/1000);
+	
+	result += seconds > 0 ? seconds + "秒" : "";  
+	 
+	return result == "" ? "" : result; 
+};
 function openLogin() {
 	$("#file_upload_dlg").dialog("open");
 }

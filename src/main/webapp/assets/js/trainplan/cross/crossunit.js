@@ -52,6 +52,10 @@ function CrossModel() {
 		}
 	};
 	
+	self.trainNbrChange = function(n,  event){
+		self.searchModle().filterTrainNbr(event.target.value.toUpperCase());
+	};
+	
 	self.selectCross = function(row){
 //		self.crossAllcheckBox();
 		console.log(row.selected());

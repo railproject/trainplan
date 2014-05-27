@@ -8,16 +8,15 @@ import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
-//import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+//import org.springframework.amqp.core.AmqpTemplate;
  
 
 @Component
@@ -29,8 +28,8 @@ public class ConstructionService {
 	//@Autowired
 	//private QuoteService quoteService; 
 	
-	//@Autowired
-	//private AmqpTemplate amqpTemplate;
+	@Autowired
+	private AmqpTemplate amqpTemplate;
 
 	
 	public String getConstructions(String trainNbr) {
@@ -114,7 +113,7 @@ public class ConstructionService {
 		
 		json.put("param", jsonArray);
 		 
-		//amqpTemplate.convertAndSend("crec.event.createFreightTransport", json.toString()); 
+		amqpTemplate.convertAndSend("crec.event.createFreightTransport", json.toString()); 
 		return "{\"code\": 0, \"requestId\":\"" + uuid + "\"}";
 	}
 
