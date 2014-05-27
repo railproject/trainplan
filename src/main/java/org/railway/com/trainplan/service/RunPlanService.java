@@ -78,10 +78,10 @@ public class RunPlanService {
                         levResult.put("id", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
 
                         int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
-                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU");
+                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU", "");
                         int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
-                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU");
-                        String passBureau = MapUtils.getString(plan, "PASS_BUREAU");
+                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU", "");
+                        String passBureau = MapUtils.getString(plan, "PASS_BUREAU", "");
                         // 计算一级已审核局
                         String checkedLev1Bureau = addBureauCode(lev1Bureau, user.getBureauShortName());
                         // 计算新1级审核状态
