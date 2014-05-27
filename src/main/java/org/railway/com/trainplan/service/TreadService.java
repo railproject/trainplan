@@ -45,7 +45,7 @@ public class TreadService {
 		params.put("operation", reqDto.getOperation());
 		//列车总数
 		final int totalCount = trainInfoService.getTrainInfoCount(params);
-		//final int totalCount = 1;
+		//final int totalCount = 2;
 		//final int totalCount = trainInfoService.getTrainsAndTimesCount(reqDto.getChartId(), reqDto.getOperation());
 		logger.info("traintotalCount===" + totalCount);
 		System.err.println("traintotalCount===" + totalCount);

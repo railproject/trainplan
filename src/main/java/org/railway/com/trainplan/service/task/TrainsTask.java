@@ -24,9 +24,9 @@ public class TrainsTask implements Callable<Integer>{
 		this.trainInfoService = trainInfoService;
 	}
 	@Override
-	public Integer call() {
+	public Integer call() throws Exception{
 		List<TrainlineTemplateDto>  list = new ArrayList<TrainlineTemplateDto>();
-		try{
+		
 			System.err.println("startNum==" + dayTaskDto.getRownumstart());
 			System.err.println("endNum==" + dayTaskDto.getRownumend());
 			System.err.println("************************");
@@ -36,9 +36,7 @@ public class TrainsTask implements Callable<Integer>{
 			//2、插入数据库
 			// 保存数据
 			trainInfoService.addTrainPlanLine(list);	
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		
 		
 		return list.size();
 	}

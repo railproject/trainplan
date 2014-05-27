@@ -46,30 +46,23 @@ public class TrainInfoService {
 		List<TrainlineTemplateDto> returnList = new ArrayList<TrainlineTemplateDto>();
 		//从数据库获取的数据列表
 		List<Map<String,Object>> listMap = getTrainsAndTimesForPage(reqDto.getChartId(),reqDto.getOperation(),reqDto.getRownumstart(),reqDto.getRownumend());
+		
 		int size = listMap.size();
+		
 		//不是同一列车,
 		List<TrainlineTemplateSubDto> stationList = new ArrayList<TrainlineTemplateSubDto>();
 		TrainlineTemplateDto dto = new TrainlineTemplateDto();
 		//设置一个主键，为后面存库做准备
 		dto.setPlanTrainId(UUID.randomUUID().toString());
-		System.err.println("~~~listMap==" + listMap);
+		
 		if(listMap != null && size > 0){
 			
 			for(int i = 0;i<size;i++){
 				
 				Map<String,Object> map = listMap.get(i);
 				TrainlineTemplateSubDto subDto = new TrainlineTemplateSubDto();
-				//设置经由
-				subDto = setTrainlineTemplateSubDto(map,subDto,runDate);
-				//单独设置车次
-				//subDto.setTrainNbr(dto.getTrainNbr());
-				stationList.add(subDto);
-				//fortest
 				
 				
-				
-				
-				/////////////////////
 				String baseTrainId = StringUtil.objToStr(map.get("BASE_TRAIN_ID"));
 				String baseTrainIdNext = "";
 				if(i+1 < size){
@@ -79,10 +72,15 @@ public class TrainInfoService {
 					if(baseTrainIdNext.equals(baseTrainId)){
 						dto = setTrainlineTemplateDto(map,dto,runDate,chartId);
 						//设置经由中的planTrainId
-						subDto.setPlanTrainId(dto.getPlanTrainId());
+						subDto = setTrainlineTemplateSubDto(map,subDto,runDate);
+						subDto.setPlanTrainId(dto.getPlanTrainId());//设置经由
+						stationList.add(subDto);
 					}else{
-						System.err.println("~~~~trainNbr==" + dto.getTrainNbr());
-						System.err.println("~~~~ stationList.size()==" + stationList.size());
+						//System.err.println("~~~~最后一个站" + subDto.getIndex() + "@@@@" + subDto.getName());
+						//System.err.println("~~~~ stationList.size()==" + stationList.size());
+						subDto = setTrainlineTemplateSubDto(map,subDto,runDate);
+						subDto.setPlanTrainId(dto.getPlanTrainId());//设置经由
+						stationList.add(subDto);
 						dto.setStationList(stationList);
 						returnList.add(dto);
 						
@@ -93,10 +91,13 @@ public class TrainInfoService {
 						dto.setPlanTrainId(UUID.randomUUID().toString());
 					}
 				}else{
-					System.err.println("最后一个map==" + map);
+					//System.err.println("最后一个map==" + map);
 					dto = setTrainlineTemplateDto(map,dto,runDate,chartId);
 					//设置经由中的planTrainId
-					subDto.setPlanTrainId(dto.getPlanTrainId());
+					subDto = setTrainlineTemplateSubDto(map,subDto,runDate);
+					subDto.setPlanTrainId(dto.getPlanTrainId());//设置经由
+					stationList.add(subDto);
+					
 					dto.setStationList(stationList);
 					returnList.add(dto);
 				}
@@ -104,6 +105,7 @@ public class TrainInfoService {
 				
 			}
 		}
+		
 		
 		return returnList;
 	}
@@ -116,20 +118,19 @@ public class TrainInfoService {
 	public void addTrainPlanLine(List<TrainlineTemplateDto> list) {
 		        try{
 		        	if(list != null && list.size() > 0){
-		        		//List<TrainInfoServiceDto> trainsList = new ArrayList<TrainInfoServiceDto>();
-						
+		        		
 						for(TrainlineTemplateDto dto : list){
-							//TrainInfoServiceDto destDto = new TrainInfoServiceDto();
+							
 							List<TrainlineTemplateSubDto> subList = dto.getStationList();
-							//BeanUtils.copyProperties(destDto, dto);
-							//trainsList.add(destDto);
+							
 							if(subList != null && subList.size() > 0){
 								
 								Map<String,Object>  map = new HashMap<String,Object>();
+								
 								map.put("trainStnList", subList);
 								//批量插入数据表train_plan_stn
 								int successCountStn = baseDao.insertBySql(Constants.TRAINPLANDAO_ADD_TRAIN_PLAN_STN, map);
-								logger.info("count of inserting into train_plan_stn==" + successCountStn);
+								System.err.println("count of inserting into train_plan_stn==" + successCountStn);
 									
 							}
 							
