@@ -41,6 +41,10 @@ function CrossModel() {
 		}); 
 	};
 	
+	self.trainNbrChange = function(n,  event){
+		self.searchModle().filterTrainNbr(event.target.value.toUpperCase());
+	};
+	
 	self.setCurrentTrain = function(train){
 		console.log(train)
 		self.currentTrain(train); 

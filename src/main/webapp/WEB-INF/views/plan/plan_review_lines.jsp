@@ -6,7 +6,7 @@ String basePath = request.getContextPath();
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>核查编制图定开行</title>
+<title>核查编制图定开行</title> 
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 
 </head>
@@ -94,7 +94,7 @@ String basePath = request.getContextPath();
 
 <script type="text/javascript" src="<%=basePath%>/dwr/util.js"></script>
 <script type="text/javascript" src="<%=basePath%>/dwr/engine.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/pagination.js" type="text/javascript"></script> 
+<script src="<%=basePath %>/assets/js/jquery.pagination.js" type="text/javascript"></script> 
 <script src="<%=basePath %>/assets/js/trainplan/plan/plan_review_lines.js"></script> 
 </body>
 </html>

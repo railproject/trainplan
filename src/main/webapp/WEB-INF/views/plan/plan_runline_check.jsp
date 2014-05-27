@@ -91,7 +91,7 @@ var basePath = "<%=basePath %>";
 		          <div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
 		          	<label for="exampleInputEmail3" class="control-label pull-left"> 车次：&nbsp;</label>
 		            <div class="pull-left">
-                    	<input type="text" class="form-control" style="width:80px;" data-bind="value: searchModle().trainNbr, evnet:{change: trainNbrToupper}" id="plan_construction_input_trainNbr">
+                    	<input type="text" class="form-control" style="width:80px;" data-bind="value: searchModle().trainNbr, event:{keyup: trainNbrChange}" id="plan_construction_input_trainNbr">
 				    </div> 
 		          </div>
 		            <div class="pull-left">

@@ -16,8 +16,9 @@ function SelectCheckModle(){
 		if(self.searchModle().showCrossMap() == 1){
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
 		}
-	};
+	}; 
 	
+	 
 	self.selectCross = function(row){
 //		self.crossAllcheckBox();
 		console.log(row.selected());
@@ -61,9 +62,7 @@ function ApplicationModel() {
 		return year+"-"+month+"-"+days;
 	};
 	
-	self.trainNbrToupper = function(n, event){
-		self.searchModle().trainNbr(event.target.value.toupercase());
-	};
+	
 	
 	self.init = function(){   
 		
@@ -120,6 +119,10 @@ function ApplicationModel() {
 		
 		
 	};  
+	
+	self.trainNbrChange = function(n,  event){
+		self.searchModle().trainNbr(event.target.value.toUpperCase());
+	};
 	
 	self.loadTrains = function(){
 		self.trainRows.loadRows();
