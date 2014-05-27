@@ -114,7 +114,8 @@
                     <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表维护</a></li>
                     <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>基本交路单元维护</a></li>
                     <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-eye"></i>日计划审核</a></li>
-                    <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图查询</a></li>
+                    <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图明细查询</a></li>
+                    <li><a href="http://10.1.191.154/WebReport/ReportServer?reportlet=JHPT%2FJHPT_JBT%2Fjbt_kxlstj.cpt" target="contentFrame"><i class="fa fa-bar-chart-o"></i>基本图信息汇总</a></li>
                 </ul>
             </li>
             <li><a href="${ctx}/default/transfer/planConstruction" class="menu_one" target="contentFrame"><i class="fa fa-truck"></i>货运列车 </a></li>

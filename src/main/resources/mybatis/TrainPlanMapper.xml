@@ -47,6 +47,7 @@
 	</select>
 
 	<insert id="addTrainPlanStn"  parameterType="java.util.Map">
+	
 		insert into plan_train_stn
 		(PLAN_TRAIN_STN_ID,
 		PLAN_TRAIN_ID,
@@ -62,8 +63,11 @@
 		DPT_TIME,
 		BASE_ARR_TIME,
 		BASE_DPT_TIME)
-		 (<foreach collection="trainStnList" item="item" index="index"
-            separator="UNION">
+		 (
+		 
+		 <foreach collection="trainStnList" item="item" index="index"
+            separator="UNION ALL">
+            <![CDATA[
 	       SELECT
 	       #{item.planTrainStnId,jdbcType=VARCHAR},
 	       #{item.planTrainId,jdbcType=VARCHAR},
@@ -80,9 +84,11 @@
 		    to_date(#{item.baseArrTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'),
 			to_date(#{item.baseDptTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss')
 	       from dual
-	       
+	         ]]>
 	      </foreach>
+	    
 	     ) 
+	     
 	</insert>
 	
 	
