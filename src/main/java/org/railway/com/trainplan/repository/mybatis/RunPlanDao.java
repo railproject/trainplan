@@ -52,5 +52,5 @@ public interface RunPlanDao {
      */
     int updateCheckInfo(Map<String, Object> map);
 
-    List<Map<String, Object>> findPlanInfoListByPlanId(String planIds);
+    List<Map<String, Object>> findPlanInfoListByPlanId(List<String> params);
 }

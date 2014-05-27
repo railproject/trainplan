@@ -23,13 +23,13 @@ public class ChartService {
     @Autowired
     private ChartDao chartDao;
 
-    public Map<String, Object> getPlanTypeChart(String date) {
+    public Map<String, Object> getPlanTypeChart(Map<String, Object> map) {
         logger.debug("getPlanTypeChart::::");
-        return chartDao.getPlanTypeCount(date);
+        return chartDao.getPlanTypeCount(map);
     }
 
-    public Map<String, Object> getPlanLineCount(String date) {
+    public Map<String, Object> getPlanLineCount(Map<String, Object> map) {
         logger.debug("getPlanLineCount::");
-        return chartDao.getPlanLineCount(date);
+        return chartDao.getPlanLineCount(map);
     }
 }

@@ -92,9 +92,13 @@ public class AuditController {
 
     @RequestMapping(value = "plan/chart/traintype/{date}", method = RequestMethod.GET)
     public ResponseEntity<List<ChartDto>> getTrainType(@PathVariable String date) {
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        Map<String, Object> params = Maps.newHashMap();
+        params.put("date", date);
+        params.put("bureau", user.getBureauShortName());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, Object> result = chartService.getPlanTypeChart(date);
+        Map<String, Object> result = chartService.getPlanTypeChart(params);
         List<ChartDto> charts = Lists.newArrayList();
 
         ChartDto chart1 = new ChartDto();
@@ -121,9 +125,13 @@ public class AuditController {
 
     @RequestMapping(value = "plan/chart/planline/{date}", method = RequestMethod.GET)
     public ResponseEntity<List<ChartDto>> getPlanLine(@PathVariable String date) {
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        Map<String, Object> params = Maps.newHashMap();
+        params.put("date", date);
+        params.put("bureau", user.getBureauShortName());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, Object> result = chartService.getPlanLineCount(date);
+        Map<String, Object> result = chartService.getPlanLineCount(params);
         List<ChartDto> charts = Lists.newArrayList();
 
         ChartDto chart1 = new ChartDto();

@@ -35,11 +35,14 @@ function ApplicationModel() {
     });
 
     self.canCheckLev2 = ko.computed(function() {
+        var flag = false;
         ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
             if(plan.needLev2()) {
+                flag = true;;
                 return true;
             }
         });
+        return flag;
     });
 
     self.autoCheck = function() {
@@ -138,9 +141,9 @@ function ApplicationModel() {
             });
             $(this).prop( "disabled", false );
             $.gritter.add({
-                title: getHintTitle(self.tableModel().planList().length, response.entity.length),
+                title: getHintTitle(data.length, response.entity.length),
                 text: '审核成功[' + response.entity.length + ']条计划',
-                class_name: getHintCss(self.tableModel().planList().length, response.entity.length),
+                class_name: getHintCss(data.length, response.entity.length),
                 image: 'assets/img/screen.png',
                 sticky: false,
                 time: 3000
@@ -195,9 +198,9 @@ function ApplicationModel() {
             });
             $(this).prop( "disabled", false );
             $.gritter.add({
-                title:getHintTitle(self.tableModel().planList().length, response.entity.length),
+                title:getHintTitle(data.length, response.entity.length),
                 text: '审核成功[' + response.entity.length + ']条计划',
-                class_name: getHintCss(self.tableModel().planList().length, response.entity.length),
+                class_name: getHintCss(data.length, response.entity.length),
                 image: 'assets/img/screen.png',
                 sticky: false,
                 time: 3000
@@ -382,7 +385,7 @@ function Plan(dto) {
                 className = "btn-warning";
                 break;
             case 1:
-                className = "btn-success";
+                className = "btn-info";
                 break;
             case -1:
                 className = "btn-danger";
@@ -416,7 +419,7 @@ function Plan(dto) {
                 className = "btn-warning";
                 break;
             case 1:
-                className = "btn-success";
+                className = "btn-info";
                 break;
             case -1:
                 className = "btn-danger";
@@ -448,7 +451,7 @@ function Plan(dto) {
     });
 
     self.needLev2 = ko.computed(function() {
-        return self.lev2Checked() == 0;
+        return self.checkLev1() == 2 && self.lev2Checked() == 0;
     });
 
     self._default = {
@@ -489,7 +492,7 @@ function Plan(dto) {
 
     self.showTimeTableComparePanel = function() {
         var url = "audit/compare/timetable/" + $("#bureau option:selected").val() + "/plan/" + self.id() + "/line/" + self.dailyLineId();
-        self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 1024}).dialog("open");
+        self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 1300}).dialog("open");
     }
 }
 

@@ -78,8 +78,8 @@ public class RunPlanDTO {
         this.sourceType = MapUtils.getString(map, "CREAT_TYPE");
         this.spareFlag = MapUtils.getString(map, "SPARE_FLAG");
         this.highLineFlag = MapUtils.getString(map, "HIGHLINE_FLAG");
-        this.checkLev1 = MapUtils.getIntValue(map, "CHECK_TYPE_LEV1");
-        this.checkLev2 = MapUtils.getIntValue(map, "CHECK_TYPE_LEV2");
+        this.checkLev1 = MapUtils.getIntValue(map, "CHECK_LEV1_TYPE");
+        this.checkLev2 = MapUtils.getIntValue(map, "CHECK_LEV2_TYPE");
         this.dailyLineId = MapUtils.getString(map, "DAILYPLAN_ID");
         this.lev1Checked = MapUtils.getIntValue(map, "LEV1_CHECKED");
         this.lev2Checked = MapUtils.getIntValue(map, "LEV2_CHECKED");
