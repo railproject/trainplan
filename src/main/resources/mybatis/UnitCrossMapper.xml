@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="org.railway.com.trainplan.repository.mybatis.UnitCrossDao">
+
+    <resultMap id="unitCross" type="org.railway.com.trainplan.entity.UnitCross">
+        <id column="UNIT_CROSS_ID" property="unitCrossId"/>
+        <collection property="unitCrossTrainList" resultMap="org.railway.com.trainplan.repository.mybatis.UnitCrossTrainDao.unitCrossTrain"/>
+    </resultMap>
+
+    <resultMap id="planCross" type="org.railway.com.trainplan.entity.PlanCross">
+        <id column="UNIT_CROSS_ID" property="unitCrossId"/>
+        <result column="GROUP_TOTAL_NBR" property="groupTotalNbr"/>
+        <result column="PLAN_CROSS_ID" property="planCrossId"/>
+        <collection property="unitCrossTrainList" resultMap="org.railway.com.trainplan.repository.mybatis.UnitCrossTrainDao.unitCrossTrain"/>
+    </resultMap>
+
+	<select id="findUnitCross" resultMap="unitCross">
+        SELECT UC.UNIT_CROSS_ID AS UNIT_CROSS_ID,
+        UCT.UNIT_CROSS_TRAIN_ID AS UNIT_CROSS_TRAIN_ID,
+        UCT.UNIT_CROSS_ID AS UNIT_CROSS_ID,
+        UCT.GROUP_SERIAL_NBR AS GROUP_SERIAL_NBR,
+        UCT.MARSHALLING_NAME AS MARSHALLING_NAME,
+        UCT.TRAIN_SORT AS TRAIN_SORT,
+        UCT.TRAIN_NBR AS TRAIN_NBR,
+        UCT.BASE_TRAIN_ID AS BASE_TRAIN_ID,
+        UCT.START_STN AS START_STN,
+        UCT.START_BUREAU AS START_BUREAU,
+        UCT.END_STN AS END_STN,
+        UCT.END_BUREAU AS END_BUREAU,
+        UCT.DAY_GAP AS DAY_GAP,
+        UCT.ALTERNATE_TRAIN_NBR AS ALTERNATE_TRAIN_NBR,
+        UCT.ALTERNATE_TIME AS ALTERNATE_TIME,
+        UCT.SPARE_FLAG AS SPARE_FLAG,
+        UCT.SPARE_APPLY_FLAG AS SPARE_APPLY_FLAG,
+        UCT.HIGHLINE_FLAG AS HIGHLINE_FLAG,
+        UCT.HIGHLINE_RULE AS HIGHLINE_RULE,
+        UCT.COMMONLINE_RULE AS COMMONLINE_RULE,
+        UCT.APPOINT_WEEK AS APPOINT_WEEK,
+        UCT.APPOINT_DAY AS APPOINT_DAY
+        FROM UNIT_CROSS UC INNER JOIN UNIT_CROSS_TRAIN UCT ON UC.UNIT_CROSS_ID = UCT.UNIT_CROSS_ID
+	</select>
+
+    <select id="findPlanCross" resultMap="planCross">
+        SELECT PC.UNIT_CROSS_ID AS UNIT_CROSS_ID,
+        PC.GROUP_TOTAL_NBR AS GROUP_TOTAL_NBR,
+        PC.PLAN_CROSS_ID AS PLAN_CROSS_ID,
+        UCT.UNIT_CROSS_TRAIN_ID AS UNIT_CROSS_TRAIN_ID,
+        UCT.UNIT_CROSS_ID AS UNIT_CROSS_ID,
+        UCT.GROUP_SERIAL_NBR AS GROUP_SERIAL_NBR,
+        UCT.MARSHALLING_NAME AS MARSHALLING_NAME,
+        UCT.TRAIN_SORT AS TRAIN_SORT,
+        UCT.TRAIN_NBR AS TRAIN_NBR,
+        UCT.BASE_TRAIN_ID AS BASE_TRAIN_ID,
+        UCT.START_STN AS START_STN,
+        UCT.START_BUREAU AS START_BUREAU,
+        UCT.END_STN AS END_STN,
+        UCT.END_BUREAU AS END_BUREAU,
+        UCT.DAY_GAP AS DAY_GAP,
+        UCT.ALTERNATE_TRAIN_NBR AS ALTERNATE_TRAIN_NBR,
+        UCT.ALTERNATE_TIME AS ALTERNATE_TIME,
+        UCT.SPARE_FLAG AS SPARE_FLAG,
+        UCT.SPARE_APPLY_FLAG AS SPARE_APPLY_FLAG,
+        UCT.HIGHLINE_FLAG AS HIGHLINE_FLAG,
+        UCT.HIGHLINE_RULE AS HIGHLINE_RULE,
+        UCT.COMMONLINE_RULE AS COMMONLINE_RULE,
+        UCT.APPOINT_WEEK AS APPOINT_WEEK,
+        UCT.APPOINT_DAY AS APPOINT_DAY
+        FROM PLAN_CROSS PC INNER JOIN UNIT_CROSS_TRAIN UCT ON PC.UNIT_CROSS_ID = UCT.UNIT_CROSS_ID
+        ORDER BY UCT.GROUP_SERIAL_NBR, UCT.TRAIN_SORT
+    </select>
+</mapper> 
