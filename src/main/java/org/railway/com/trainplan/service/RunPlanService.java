@@ -4,6 +4,8 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
+import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.entity.CrossRunPlanInfo;
 import org.railway.com.trainplan.entity.LevelCheck;
 import org.railway.com.trainplan.exceptions.DailyPlanCheckException;
 import org.railway.com.trainplan.exceptions.UnknownCheckTypeException;
@@ -11,10 +13,13 @@ import org.railway.com.trainplan.exceptions.WrongBureauCheckException;
 import org.railway.com.trainplan.exceptions.WrongDataException;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.repository.mybatis.RunPlanDao;
+import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
+import org.railway.com.trainplan.service.dto.TrainRunDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -26,7 +31,8 @@ import java.util.*;
 public class RunPlanService {
 
     private static final Log logger = LogFactory.getLog(RunPlanService.class);
-
+    
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
     @Autowired
     private RunPlanDao runPlanDao;
 
@@ -252,5 +258,30 @@ public class RunPlanService {
         }
         return true;
     }
+    
+    
+	public List<RunPlanTrainDto> getTrainRunPlans(Map<String , Object> map) throws Exception {
+			List<RunPlanTrainDto> runPlans = new ArrayList<RunPlanTrainDto>();
+			Map<String, RunPlanTrainDto> runPlanTrainMap = new HashMap<String, RunPlanTrainDto>();
+			List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.GET_TRAIN_RUN_PLAN, map);
+			String startDay = map.get("startDay").toString();
+			String endDay = map.get("endDay").toString();
+			for(CrossRunPlanInfo runPlan: crossRunPlans){
+					RunPlanTrainDto currTrain =  runPlanTrainMap.get(runPlan.getTrainNbr());
+					if(currTrain == null){
+						currTrain = new RunPlanTrainDto(startDay, endDay);
+						currTrain.setTrainNbr(runPlan.getTrainNbr()); 
+						runPlanTrainMap.put(runPlan.getTrainNbr(), currTrain);
+					} 
+					currTrain.setRunFlag(runPlan.getRunDay(), runPlan.getRunFlag());
+			} 
+			runPlans.addAll(runPlanTrainMap.values());   
+			return runPlans;
+	}
+
+	public List<RunPlanTrainDto> getPlanCross(Map<String, Object> reqMap) {
+		
+		return baseDao.selectListBySql(Constants.GET_PLAN_CROSS, reqMap);
+	}
 
 }

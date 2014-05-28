@@ -242,9 +242,12 @@ public class DateUtil {
 		//System.out.println(DateUtil.format(DateUtil.parse("20140501"), "yyyy-MM-dd"));
 		//DateTime dt = new DateTime();
 		//System.err.println( getDaysBetween("2014-02-27","2014-02-27"));
-		LocalDate sourceDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate("20140519");
-		System.err.println("" + sourceDate.toString("yyyy-MM-dd") );
+//		LocalDate sourceDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate("20140519");
+//		System.err.println("" + sourceDate.toString("yyyy-MM-dd") );
+		System.out.println(DateUtil.getDateByDay("2014-05-15", -1));
 	}
+		
+		
 	
 	
 	

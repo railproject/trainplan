@@ -1,6 +1,14 @@
 package org.railway.com.trainplan.web.dto;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.railway.com.trainplan.common.constants.StaticCodeType;
+import org.railway.com.trainplan.entity.CrossRunPlanInfo;
+import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
+import org.railway.com.trainplan.service.dto.TrainRunDto;
 
 public class Result {
 
@@ -44,5 +52,7 @@ public class Result {
 
 	public void setData(Object data) {
 		this.data = data;
-	}
+	} 
+	
+	
 }

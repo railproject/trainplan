@@ -16,7 +16,8 @@ System.out.println(basePath);
 <!--font-awesome-->
 <link href="<%=basePath %>/assets/css/datepicker.css" rel="stylesheet">
 <link href="<%=basePath %>/assets/easyui/themes/default/easyui.css"
-	rel="stylesheet">
+	rel="stylesheet"> 
+<link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
 
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/cross/custom-bootstrap.css">
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/font-awesome.min.css"/>
@@ -57,7 +58,7 @@ var basePath = "<%=basePath %>";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">车底交路维护</a></li>
+		<li><a href="#">客运计划管理</a></li>
 	</ol> 
    	<div id="plan_view_div_palnDayDetail" class="panel panel-default">
 	   <div class="row" style="margin: 10px 10px 10px 10px;"> 
@@ -538,8 +539,8 @@ var basePath = "<%=basePath %>";
 <script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/cross/canvas_event_getvalue_data.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/cross/canvas_event_getvalue.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue_data.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script>
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 </script>

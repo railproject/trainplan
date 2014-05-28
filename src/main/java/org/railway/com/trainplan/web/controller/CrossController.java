@@ -50,12 +50,7 @@ public class CrossController {
 	 @RequestMapping(value="/unit", method = RequestMethod.GET)
      public String unit() {
 		 return "cross/cross_unit_manage";
-     }
-	 
-	 @RequestMapping(value="/runPlan", method = RequestMethod.GET)
-     public String runPlan() {
-		 return "cross/run_plan";
-     }
+     } 
 	 
 	 @RequestMapping(value="/crossCanvas", method = RequestMethod.GET)
      public String crossCanvas() {
@@ -160,6 +155,30 @@ public class CrossController {
 			 if(crossIds != null){
 				String[] crossIdsArray = crossIds.split(",");
 				int count = crossService.updateCorssCheckTime(crossIdsArray);
+				System.err.println("update--count==" + count);
+			 } 
+		 }catch(Exception e){
+			 logger.error("checkCorssInfo error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		 }
+		
+		 return result;
+	}
+	
+	/**
+	 * 审核交路信息
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkUnitCorssInfo", method = RequestMethod.POST)
+	public Result checkUnitCorssInfo(@RequestBody Map<String,Object> reqMap) {
+		 Result result = new Result();
+		 try{
+			 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
+			 if(crossIds != null){
+				String[] crossIdsArray = crossIds.split(",");
+				int count = crossService.updateUnitCorssCheckTime(crossIdsArray);
 				System.err.println("update--count==" + count);
 			 } 
 		 }catch(Exception e){
@@ -683,7 +702,7 @@ public class CrossController {
 		logger.debug("crossId==" + crossId);
 		 try{
 		    	//先获取unitcross基本信息
-			 CrossInfo crossinfo = crossService.getCrossInfoForCrossid(crossId);
+			 CrossInfo crossinfo = crossService.getUnitCrossInfoForUnitCrossid(crossId);
 			 //再获取unitcrosstrainInfo信息
 			 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForCrossid(crossId);
 		     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();

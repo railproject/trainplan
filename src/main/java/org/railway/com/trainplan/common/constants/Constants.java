@@ -128,6 +128,9 @@ public class Constants {
     public static final String CROSSDAO_UPDATE_CROSS_CHECKTIME = "crossDao.updateCrossCheckTime";
     //更新base_cross的creat_time  
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossUnitCreateTime";
+    
+    //更新base_cross的check_time   
+    public static final String CROSSDAO_UPDATE_UNIT_CROSS_CHECKTIME = "crossDao.updateUnitCrossCheckTime";
     //根据crossids批量删除base_cross表中数据
     public static final String CROSSDAO_DELETE_CROSS_INFO_FOR_CROSSIDS = "crossDao.deleteCrossInfoForCrossIds";
     //根据crossIds批量删除base_cross_train表中数据
@@ -151,4 +154,7 @@ public class Constants {
     public static final String TRAININFO_GETTRAININFO_COUNT="trainInfoDao.getTrainInfoTotalCount";
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";
+    
+    public static final String GET_TRAIN_RUN_PLAN = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlans";
+	public static final String GET_PLAN_CROSS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getPlanCross";
 }

@@ -24,6 +24,8 @@ public class CrossTrainInfo {
 	private String appointWeek;//APPOINT_WEEK
 	private String appointDay;//APPOINT_DAY
 	private String sourceTargetTime;
+	private String runDate;
+	private String endDate;
 	private String targetTime;
 	private int runDay;
 	/**以下字段是表unit_cross_train中用到  **/
@@ -33,8 +35,28 @@ public class CrossTrainInfo {
 	private String unitCrossId;
 	private String marshallingName;
 	
+	//组数序号,只有unit_cross表中有
+	private int groupSerialNbr;
 	
 	
+	public String getRunDate() {
+		return runDate;
+	}
+	public void setRunDate(String runDate) {
+		this.runDate = runDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public int getGroupSerialNbr() {
+		return groupSerialNbr;
+	}
+	public void setGroupSerialNbr(int groupSerialNbr) {
+		this.groupSerialNbr = groupSerialNbr;
+	}
 	public String getMarshallingName() {
 		return marshallingName;
 	}

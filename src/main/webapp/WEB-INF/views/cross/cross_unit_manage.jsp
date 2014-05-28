@@ -50,14 +50,16 @@ System.out.println(basePath);
 	margin-left: -1px;
 }
  </style>
-
+<script type="text/javascript">
+var basePath = "<%=basePath %>";
+</script>
  
 </head>
 <body class="Iframe_body"  >
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">基本交路单元维护</a></li>
+		<li><a href="#">基本交路单元管理</a></li>
 	</ol> 
         
 	<!--分栏框开始-->
@@ -72,7 +74,16 @@ System.out.println(basePath);
 							<div class="row" style="margin-top: 5px;">
 									<div class="form-group"
 										style="float: left; margin-left: 0px; margin-top: 0px;width: 100%"> 
-										<div class="row"  >
+										 <div class="row" style="width: 100%">
+												<label for="exampleInputEmail3" class="control-label pull-left">
+																方案:&nbsp;</label> 
+												<div class="pull-left">
+													<select style="width: 273px" id="input_cross_chart_id"
+														class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+													</select>
+												</div>  
+										   </div> 
+										<div class="row"  style="margin-top: 5px;">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												车辆担当局:</label>
 											<div class="pull-left" style="margin-left: 5px;">
@@ -144,7 +155,7 @@ System.out.println(basePath);
 										<div class="form-group"
 											style="margin-left: 20px;">
 											<a type="button" class="btn btn-success" data-toggle="modal"
-												data-target="#" id="btn_cross_sure" >审核</a>
+												data-target="#" id="btn_cross_sure" data-bind="click: checkCrossInfo">审核</a>
 											<a type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="click: deleteCrosses">删除</a>
 											<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;"
@@ -163,12 +174,12 @@ System.out.println(basePath);
 												</tr>
 											</thead>
 											<tbody data-bind="foreach: crossRows.rows">
-												<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'red':''}" >
+												<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().unitCrossId == unitCrossId ? 'red':''}" >
 												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
 													<td data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
 													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
-													<td data-bind="style:{color:checkFlag == 1 ? green : ''},  text: checkFlag == 1 ? '已' : '未' "></td>
-													<td data-bind="style:{color:unitCreateFlag == 1 ? green : ''}, text: unitCreateFlag == 1 ? '已' : '未' "></td>
+													<td  align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
+													<td  align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
 												</tr> 
 											</tbody>  					 
 										</table>
@@ -517,43 +528,47 @@ System.out.println(basePath);
 								<table class="table table-bordered table-striped table-hover"
 									id="cross_trainInfo">
 									<thead>
-										<tr>
-											<th style="width: 5%">序号</th>
-											<th style="width: 8%">车次</th>
-											<th style="width: 8%">所属交路</th>
+										<tr> 	
+											<th style="width: 5%">组序</th> 
+											<th style="width: 5%">车序</th>
+											<th style="width: 8%">车次</th>  
+											<th style="width: 7%">始发日期</th>
+											<th style="width: 7%">终到日期</th>
 											<th style="width: 8%">发站</th>
 											<th style="width: 5%">发局</th>
-											<th style="width: 8%">终站</th>
-											<th style="width: 5%">终局</th>
+											<th style="width: 8%">到站</th>
+											<th style="width: 5%">到局</th>
 											<th style="width: 5%">线型</th>
-											<th style="width: 5%">间隔(天)</th>
-											<th style="width: 5%">开行状态</th>
-											<th style="width: 5%">交替车次</th>
-											<th style="width: 11%">交替时间</th>
+											<th style="width: 5%">间隔</th>
+											<th style="width: 5%">状态</th> 
 											<th style="width: 5%">备用套跑</th>
 											<th style="width: 5%">高线规律</th>
 											<th style="width: 5%">普线规律</th>
 											<th style="width: 10%">特殊规律</th>
+											<th style="width: 5%">交替车次</th>
+											<th style="width: 9%">交替时间</th>
 										</tr>
 									</thead> 
 									<tbody data-bind="foreach: trains" >
-										<tr>
+										<tr> 
+											<td style="width: 5px" data-bind="text: groupSerialNbr"></td> 
 											<td style="width: 5px" data-bind="text: trainSort"></td>
-											<td style="width: 60px" data-bind="text: trainNbr"></td>
-											<td style="width: 100px" data-bind="text: marshallingName, attr:{title: marshallingName}"></td>
+											<td style="width: 60px" data-bind="text: trainNbr"></td> 
+											<td style="width: 60px" data-bind="text: runDate"></td> 
+											<td style="width: 60px" data-bind="text: endDate"></td> 
 											<td style="width: 100px" data-bind="text: startStn, attr:{title: startStn}"></td>
 											<td style="width: 50px" data-bind="text: startBureau"></td>
 											<td style="width: 100px" data-bind="text: endStn, attr:{title: endStn}"></td>
 											<td style="width: 50px" data-bind="text: endBureau"></td>
 											<td style="width: 50px" data-bind="text: highlineFlag"></td>
 											<td style="width: 50px" data-bind="text: dayGap"></td>
-											<td style="width: 50px" data-bind="text: spareFlag"></td>
-											<td style="width: 50px" data-bind="text: alertNateTrainNbr"></td>
-											<td style="width: 50px" data-bind="text: alertNateTime"></td>
+											<td style="width: 50px" data-bind="text: spareFlag"></td> 
 											<td style="width: 50px" data-bind="text: spareApplyFlage"></td>
 											<td style="width: 50px" data-bind="text: highlineRule"></td>
 											<td style="width: 50px" data-bind="text: commonLineRule"></td>
 											<td style="width: 50px" data-bind="text: otherRule"></td>
+											<td style="width: 50px" data-bind="text: alertNateTrainNbr"></td>
+											<td style="width: 50px" data-bind="text: alertNateTime"></td>
 										</tr>
 									</tbody>
 								</table>
@@ -570,7 +585,7 @@ System.out.println(basePath);
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 600px; padding: 10px">
-		 <iframe style="width: 800px; height: 600px;border: 0" src=""></iframe>
+		 <iframe style="margin:0;border: 0" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 

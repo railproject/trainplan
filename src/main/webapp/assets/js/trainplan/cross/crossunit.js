@@ -13,8 +13,8 @@ $(function() {
 });
 
 var highlingFlags = [{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
-var checkFlags = [{"value": "0", "text": "已"},{"value": 1, "text": "未"}];
-var unitCreateFlags = [{"value": "0", "text": "已"},{"value": 1, "text": "未"}];
+var checkFlags = [{"value": '1', "text": "已"},{"value": "0", "text": "未"}];
+var unitCreateFlags = [{"value": "1", "text": "已"},{"value": 0, "text": "未"}];
 var highlingrules = [{"value": 1, "text": "平日"},{"value": 2, "text": "周末"},{"value": 3, "text": "高峰"}];
 var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔日"}];
  
@@ -225,6 +225,14 @@ function CrossModel() {
 		var checkFlag = self.searchModle().checkFlag();
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
 		var startBureauCode = self.searchModle().startBureau();  
+		
+		var chart = self.searchModle().chart(); 
+		
+		if(chart == null){
+			showErrorDialog("请选择方案!");
+			commonJsScreenUnLock();
+			return;
+		}
 		 
 		$.ajax({
 				url : "../cross/getUnitCrossInfo",
@@ -238,6 +246,7 @@ function CrossModel() {
 					checkFlag : checkFlag == null ? null : checkFlag.value,
 					startBureau : startBureauCode,
 					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
+							chartId : chart == null ? null: chart.chartId,
 					trainNbr : trainNbr,
 					rownumstart : startIndex, 
 					rownumend : endIndex
@@ -311,7 +320,7 @@ function CrossModel() {
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].crossId; 
+				crossIds += crosses[i].unitCrossId; 
 				delCrosses.push(crosses[i]); 
 			}  
 		}   
@@ -329,6 +338,7 @@ function CrossModel() {
 					$.each(delCrosses, function(i, n){ 
 						self.crossRows.rows.remove(n); 
 					});
+					self.crossRows.loadRows();
 					showSuccessDialog("删除交路单元成功"); 
 				}else{
 					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
@@ -376,7 +386,7 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossId : row.crossId  
+					crossId : row.unitCrossId  
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
@@ -406,6 +416,52 @@ function CrossModel() {
 			}); 
 		
 	};  
+	
+	self.checkCrossInfo = function(){
+		commonJsScreenLock();
+		var crossIds = "";
+		var updateCrosses = [];
+		var crosses = self.crossRows.rows();
+		for(var i = 0; i < crosses.length; i++){ 
+			console.log(crosses[i].checkFlag());
+			if(crosses[i].selected() == 1 && crosses[i].checkFlag() == 0){ 
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += crosses[i].unitCrossId;
+				updateCrosses.push(crosses[i]);
+			}else{
+				showErrorDialog("你选择了未审核的记录，请先审核");
+				commonJsScreenUnLock();
+				return;
+			}
+		} 
+		 $.ajax({
+				url : "../cross/checkUnitCorssInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					crossIds : crossIds
+				}),
+				success : function(result) {     
+					if(result.code == 0){
+						$.each(updateCrosses, function(i, n){ 
+							n.checkFlag("1");
+						});
+						showSuccessDialog("审核成功");
+					}else{
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					}
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+		
+	};
 	
 	self.filterCrosses = function(){
 		var filterCheckFlag = self.searchModle().filterCheckFlag();  
@@ -485,9 +541,7 @@ function CrossRow(data) {
 	
 	self.visiableRow =  ko.observable(true); 
 	
-	self.selected =  ko.observable(0);
-	
-	self.crossId = data.crossId; 
+	self.selected =  ko.observable(0); 
 	
 	self.unitCrossId = data.unitCrossId;
 	
@@ -506,10 +560,11 @@ function CrossRow(data) {
 			return data.crossName;
 		}
 	});  
+	 
+ 
+	self.checkFlag = ko.observable(data.checkFlag);
 	
-	self.checkFlag = ko.observable(1);
-	
-	self.unitCreateFlag = ko.observable(1);
+	self.unitCreateFlag = ko.observable(data.unitCreateFlag == null ? '0' : data.unitCreateFlag);
 	//方案ID
 	self.chartId = ko.observable(data.chartId);
 	self.chartName = ko.observable(data.chartName);
@@ -559,8 +614,11 @@ function TrainRow(data) {
 	self.crossId = data.crossId;//BASE_CROSS_ID
 	self.trainSort = data.trainSort;//TRAIN_SORT
 	self.baseTrainId = data.baseTrainId;
+	self.runDate = data.runDate;
+	self.endDate = data.endDate;
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
+	self.groupSerialNbr = data.groupSerialNbr;//GROUP_SERIAL_NBR
 	self.marshallingName = data.marshallingName;
 	//self.startBureau = data.startBureau;//START_BUREAU 
 	self.startBureau = ko.computed(function(){
@@ -602,7 +660,7 @@ function TrainRow(data) {
 	});
 	 
 	self.spareApplyFlage =  ko.computed(function(){  
-		return data.spareApplyFlage == 1 ? "是" : "否";
+		return data.spareApplyFlage == 1 ? "是" : "";
 	});
 	//SPARE_APPLY_FLAG
 	//self.highlineFlag = data.highlineFlag ;//HIGHLINE_FLAG 

@@ -60,7 +60,7 @@ var basePath = "<%=basePath %>"
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">对数表维护</a></li>
+		<li><a href="#">对数表管理</a></li>
 	</ol> 
    	<div id="plan_view_div_palnDayDetail" class="panel panel-default">
 	 <div class="row" style="margin: 10px 10px 10px 10px;"> 
@@ -174,7 +174,7 @@ var basePath = "<%=basePath %>"
 										<div class="form-group"
 											style="margin-left: 20px;">
 											<a type="button" class="btn btn-success" data-toggle="modal"
-												data-target="#" id="btn_cross_sure" >审核</a>
+												data-target="#" id="btn_cross_sure" data-bind="click: checkCrossInfo">审核</a>
 											<a type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="click: deleteCrosses">删除</a>
 											<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;"
@@ -548,38 +548,42 @@ var basePath = "<%=basePath %>"
 										<tr>
 											<th style="width: 5%">序号</th>
 											<th style="width: 9%">车次</th>
+											<th style="width: 7%">始发日期</th>
+											<th style="width: 7%">终到日期</th>
 											<th style="width: 8%">发站</th>
 											<th style="width: 5%">发局</th>
-											<th style="width: 8%">终站</th>
-											<th style="width: 5%">终局</th>
+											<th style="width: 8%">到站</th>
+											<th style="width: 5%">到局</th>
 											<th style="width: 5%">线型</th>
-											<th style="width: 5%">间隔(天)</th>
-											<th style="width: 5%">开行状态</th>
-											<th style="width: 5%">交替车次</th>
-											<th style="width: 10%">交替时间</th>
+											<th style="width: 5%">间隔</th>
+											<th style="width: 5%">状态</th> 
 											<th style="width: 5%">备用套跑</th>
 											<th style="width: 5%">高线规律</th>
 											<th style="width: 5%">普线规律</th>
 											<th style="width: 10%">特殊规律</th>
+											<th style="width: 5%">交替车次</th>
+											<th style="width: 10%">交替时间</th>
 										</tr>
 									</thead> 
 									<tbody data-bind="foreach: trains" >
 										<tr  data-bind="click: $parent.setCurrentTrain, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
 											<td style="width: 5px" data-bind="text: trainSort"></td>
 											<td style="width: 60px" data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
+											<td style="width: 60px" data-bind="text: runDate"></td>
+											<td style="width: 60px" data-bind="text: endDate"></td>
 											<td style="width: 100px" data-bind="text: startStn, attr:{title: startStn}"></td>
 											<td style="width: 50px" data-bind="text: startBureau"></td>
 											<td style="width: 100px" data-bind="text: endStn, attr:{title: endStn}"></td>
 											<td style="width: 50px" data-bind="text: endBureau"></td>
 											<td style="width: 50px" data-bind="text: highlineFlag"></td>
 											<td style="width: 50px" data-bind="text: dayGap"></td>
-											<td style="width: 50px" data-bind="text: spareFlag"></td>
-											<td style="width: 50px" data-bind="text: alertNateTrainNbr"></td>
-											<td style="width: 50px" data-bind="text: alertNateTime"></td>
+											<td style="width: 50px" data-bind="text: spareFlag"></td> 
 											<td style="width: 50px" data-bind="text: spareApplyFlage"></td>
 											<td style="width: 50px" data-bind="text: highlineRule"></td>
 											<td style="width: 50px" data-bind="text: commonLineRule"></td>
 											<td style="width: 50px" data-bind="text: otherRule"></td>
+											<td style="width: 50px" data-bind="text: alertNateTrainNbr"></td>
+											<td style="width: 50px" data-bind="text: alertNateTime"></td>
 										</tr>
 									</tbody>
 								</table>
@@ -596,7 +600,7 @@ var basePath = "<%=basePath %>"
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 600px; padding: 10px">
-		 <iframe style="width: 800px; height: 600px;border: 0" src=""></iframe>
+		 <iframe style="width: 100%; height: 100%;border: 0" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 

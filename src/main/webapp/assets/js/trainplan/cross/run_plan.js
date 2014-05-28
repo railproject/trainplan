@@ -41,6 +41,7 @@ function CrossModel() {
 	                                    {"day": "05-26"},{"day": "05-26"},{"day": "05-26"},{"day": "05-26"},
 	                                    {"day": "05-26"}]);
 	
+	
 	self.gloabBureaus = [];  
 	
 	self.runPlanCanvasPage = new RunPlanCanvasPage(self);
@@ -451,31 +452,24 @@ function CrossModel() {
 			self.crossRows.push(row);
 			rowLookup[row.crossName] = row;
 		});  */
-		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag();
 		var trainNbr = self.searchModle().filterTrainNbr(); 
 		var checkFlag = self.searchModle().checkFlag();
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
 		var chart = self.searchModle().chart();
-		var startBureauCode = self.searchModle().startBureau();  
 
 		if(chart == null){
 			showErrorDialog("请选择方案!");
 			//return;
 		} 
 		$.ajax({
-				url : "../cross/getCrossInfo",
+				url : "runPlan/getPlanCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
-				data :JSON.stringify({ 
-					tokenVehBureau : bureauCode, 
-					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
-					checkFlag : checkFlag == null ? null : checkFlag.value,
-					startBureau : startBureauCode,
-					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
-							chartId : chart == null ? null: chart.chartId,
+				data :JSON.stringify({  
+					chartId : chart == null ? null: chart.chartId,
 					trainNbr : trainNbr,
 					rownumstart : startIndex, 
 					rownumend : endIndex

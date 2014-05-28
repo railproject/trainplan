@@ -166,7 +166,21 @@ public class ExcelUtil<T> {
 									} 
 									break;
 								case HSSFCell.CELL_TYPE_STRING :
-									value = cell.getStringCellValue() == null ? "" : cell.getStringCellValue().trim();
+									String resultStr = cell.getStringCellValue() == null ? "" : cell.getStringCellValue().trim();
+									if(pd.getPropertyType() == Integer.class || pd.getPropertyType() == int.class){
+										value = Integer.parseInt(resultStr);
+									}else if(pd.getPropertyType() == Float.class || pd.getPropertyType() == float.class){
+										value = Float.parseFloat(resultStr);
+									}else if(pd.getPropertyType() == Double.class || pd.getPropertyType() == double.class){
+										value = Double.parseDouble(resultStr);
+									}else if(pd.getPropertyType() == Long.class || pd.getPropertyType() == long.class){
+										value = Long.parseLong(resultStr);
+									}else if(pd.getPropertyType() == Short.class || pd.getPropertyType() == short.class){
+										value = Short.parseShort(resultStr);
+									}else if(pd.getPropertyType() == String.class){
+										 value = resultStr;
+									} 
+									
 									break;
 								default :
 									break;
@@ -174,8 +188,7 @@ public class ExcelUtil<T> {
 							}
 							String type = pd.getPropertyType().getName();
 	//					    System.out.println("------type:" + type);
-							if(type.endsWith("Date") && value != null){		
-								    System.out.println(value);
+							if(type.endsWith("Date") && value != null){	 
 									value = format.parseObject(String.valueOf(value));							
 							}
 							

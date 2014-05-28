@@ -8,6 +8,8 @@
      select 
 	     BASE_CROSS_ID AS crossId,
 	     TRAIN_SORT AS trainSort,
+	     RUN_DATE AS runDate,
+	      END_DATE AS endDate,
 	     TRAIN_NBR AS trainNbr,
 	     BASE_TRAIN_ID AS baseTrainId ,
 	     START_STN AS startStn,
@@ -78,9 +80,7 @@
 
   <select id="getUnitCrossInfoForCrossId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
   select 
-        UNIT_CROSS_ID as unitCrossId,
-        MARSHALLING_NAME as marshallingName, 
-		GROUP_SERIAL_NBR as groupSerialNbr,
+        UNIT_CROSS_ID as unitCrossId, 
         BASE_CHART_ID as chartId,
         BASE_CHART_NAME as chartName,
         CROSS_START_DATE as crossStartDate,
@@ -122,15 +122,13 @@
 		CREAT_PEOPLE  as createPeople ,
 		CREAT_PEOPLE_ORG  as createPeopleOrg ,
 		CREAT_TIME  as  createTime
-        from unit_cross where base_cross_id=#{crossId} order by GROUP_SERIAL_NBR
+        from unit_cross where unit_cross_id=#{crossId}
   
   </select>
-   <select id="getUnitCrossInfoForUnitCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
+   <select id="getUnitCrossInfoForUnitCrossid" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossInfo">
       select 
         UNIT_CROSS_ID as unitCrossId,
-        BASE_CROSS_ID as crossId,
-        MARSHALLING_NAME as marshallingName, 
-		GROUP_SERIAL_NBR as groupSerialNbr,
+        BASE_CROSS_ID as crossId, 
         BASE_CHART_ID as chartId,
         BASE_CHART_NAME as chartName,
         CROSS_START_DATE as crossStartDate,
@@ -180,6 +178,7 @@
      select 
          UNIT_CROSS_TRAIN_ID as unitCrossTrainId,
          UNIT_CROSS_ID as unitCrossId,
+         GROUP_SERIAL_NBR as groupSerialNbr,
 	     TRAIN_SORT AS trainSort,
 	     TRAIN_NBR AS trainNbr,
 	     BASE_TRAIN_ID AS baseTrainId ,
@@ -196,18 +195,22 @@
 	     HIGHLINE_RULE AS highlineRule,
 	     COMMONLINE_RULE AS commonLineRule,
 	     APPOINT_WEEK AS appointWeek,
-	     APPOINT_DAY AS appointDay
-	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId} and BASE_TRAIN_ID is not null order by TRAIN_SORT
+	     APPOINT_DAY AS appointDay,
+	     MARSHALLING_NAME AS marshallingName
+	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId} and BASE_TRAIN_ID is not null order by GROUP_SERIAL_NBR, TRAIN_SORT
    </select>
    
    
-     <select id="getUnitCrossTrainInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
+     <select id="getUnitCrossTrainInfoForCrossid" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
          select 
           A.UNIT_CROSS_TRAIN_ID as unitCrossTrainId,
          A.UNIT_CROSS_ID as unitCrossId,
 	     A.TRAIN_SORT AS trainSort,
 	     A.TRAIN_NBR AS trainNbr,
+	     A.RUN_DATE AS runDate,
+	     A.END_DATE AS endDate,
 	     A.BASE_TRAIN_ID AS baseTrainId ,
+	     A.GROUP_SERIAL_NBR AS groupSerialNbr,
 	     A.START_STN AS startStn,
 	     A.START_BUREAU AS startBureau,
 	     A.END_STN AS endStn,
@@ -222,18 +225,16 @@
 	     A.COMMONLINE_RULE AS commonLineRule,
 	     A.APPOINT_WEEK AS appointWeek,
 	     A.APPOINT_DAY AS appointDay,
-	     B.MARSHALLING_NAME AS marshallingName
+	     A.MARSHALLING_NAME AS marshallingName
          from 
-         unit_cross_train A,unit_cross B 
-         where  A.UNIT_CROSS_ID = B.UNIT_CROSS_ID and B.base_cross_id =#{crossId} order by B.GROUP_SERIAL_NBR ,A.train_sort
+         unit_cross_train A 
+         where  A.UNIT_CROSS_ID = #{crossId} order by A.GROUP_SERIAL_NBR ,A.train_sort
    </select>
   
     <insert id="addUnitCrossInfo"  parameterType="java.util.List" >
 
 		insert into unit_cross
-		(UNIT_CROSS_ID,
-		MARSHALLING_NAME,
-		GROUP_SERIAL_NBR,
+		(UNIT_CROSS_ID,  
 		BASE_CROSS_ID,
 		BASE_CHART_ID,BASE_CHART_NAME,CROSS_START_DATE,CROSS_END_DATE,
 		CROSS_NAME,CROSS_SPARE_NAME,ALTERNATE_DATE,ALTERNATE_TRAIN_NBR,
@@ -247,9 +248,7 @@
 		(<foreach collection="list" item="item" index="index"
             separator="UNION">
             SELECT
-            #{item.unitCrossId,jdbcType=VARCHAR},
-            #{item.marshallingName,jdbcType=VARCHAR},
-            #{item.groupSerialNbr,jdbcType=NUMERIC},
+            #{item.unitCrossId,jdbcType=VARCHAR},  
             #{item.crossId,jdbcType=VARCHAR},
             #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
             #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
@@ -269,6 +268,10 @@
 	<insert id="addUnitCrossTrainInfo" parameterType="java.util.List">
      insert into unit_cross_train
      (UNIT_CROSS_TRAIN_ID,
+     MARSHALLING_NAME,
+     RUN_DATE,
+     END_DATE,
+     GROUP_SERIAL_NBR,
      UNIT_CROSS_ID,
      TRAIN_SORT,TRAIN_NBR,BASE_TRAIN_ID,
      START_STN,START_BUREAU,END_STN,END_BUREAU,
@@ -279,6 +282,10 @@
            separator="UNION">
        SELECT
        #{item.unitCrossTrainId,jdbcType=VARCHAR},
+       #{item.marshallingName,jdbcType=VARCHAR},
+       #{item.runDate,jdbcType=VARCHAR},
+       #{item.endDate,jdbcType=VARCHAR},
+       #{item.groupSerialNbr,jdbcType=NUMERIC},
        #{item.unitCrossId,jdbcType=VARCHAR},#{item.trainSort,jdbcType=NUMERIC},#{item.trainNbr,jdbcType=VARCHAR},#{item.baseTrainId,jdbcType=VARCHAR},
        #{item.startStn,jdbcType=VARCHAR}, #{item.startBureau,jdbcType=VARCHAR},#{item.endStn,jdbcType=VARCHAR},#{item.endBureau,jdbcType=VARCHAR},
        #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
@@ -326,6 +333,8 @@
 	<insert id="addCrossTrainInfo" parameterType="java.util.List">
 	     insert into base_cross_train
 	     (BASE_CROSS_TRAIN_ID,
+	     RUN_DATE,
+	     END_DATE,
 	     BASE_CROSS_ID,TRAIN_SORT,TRAIN_NBR,BASE_TRAIN_ID,
 	     START_STN,START_BUREAU,END_STN,END_BUREAU,
 	     DAY_GAP,ALTERNATE_TRAIN_NBR,ALTERNATE_TIME,SPARE_FLAG,
@@ -335,9 +344,11 @@
             separator="UNION">
 	       SELECT
 	       #{item.crossTainId,jdbcType=VARCHAR},
+	       #{item.runDate,jdbcType=VARCHAR}, 
+           #{item.endDate,jdbcType=VARCHAR},
 	       #{item.crossId,jdbcType=VARCHAR},#{item.trainSort,jdbcType=NUMERIC},#{item.trainNbr,jdbcType=VARCHAR},#{item.baseTrainId,jdbcType=VARCHAR},
 	       #{item.startStn,jdbcType=VARCHAR}, #{item.startBureau,jdbcType=VARCHAR},#{item.endStn,jdbcType=VARCHAR},#{item.endBureau,jdbcType=VARCHAR},
-	       #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
+	       #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyyMMdd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
 	       #{item.spareApplyFlage,jdbcType=NUMERIC}, #{item.highlineFlag,jdbcType=NUMERIC},#{item.highlineRule,jdbcType=NUMERIC},#{item.commonLineRule,jdbcType=NUMERIC},
 	       #{item.appointWeek,jdbcType=VARCHAR},#{item.appointDay,jdbcType=VARCHAR}
 	       from dual
@@ -366,6 +377,9 @@
 	   <if test="unitCreateFlag == 0 ">
 		AND CREAT_UNIT_TIME is null
 		</if>
+		<if test="trainNbr != null">
+			AND cross_name like '%' || #{trainNbr} || '%'
+		</if>
 		 <if test="unitCreateFlag == 1 ">
 		AND CREAT_UNIT_TIME is not null
 		</if>
@@ -384,6 +398,9 @@
 		</if>
 		<if test="tokenVehBureau != null">
 			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+		</if>
+		<if test="trainNbr != null">
+			AND cross_name like '%' || #{trainNbr} || '%'
 		</if>
 		<if test="startBureau != null">
 		   AND START_BUREAU = #{startBureau}
@@ -413,11 +430,26 @@
      <if test="tokenVehBureau != null">
 			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
 		</if>
+		<if test="chartId != null">
+			AND BASE_CHART_ID= #{chartId}
+		</if>
 		<if test="startBureau != null">
 		   AND START_BUREAU = #{startBureau}
 		</if>
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
+		</if>
+		 <if test="checkFlag == 0 ">
+		AND check_time is null
+		</if>
+		 <if test="checkFlag == 1 ">
+		AND check_time is not null
+		</if>
+	   <if test="unitCreateFlag == 0 ">
+		AND CREAT_UNIT_TIME is null
+		</if>
+		 <if test="unitCreateFlag == 1 ">
+		AND CREAT_UNIT_TIME is not null
 		</if>
   </select>
   
@@ -425,14 +457,13 @@
   
    <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
 	  select * from (select ROWNUM AS num,m.*  from  (select 
-		UNIT_CROSS_ID as unitCrossId,
-		MARSHALLING_NAME as marshallingName,
+		UNIT_CROSS_ID as unitCrossId, 
 		TOKEN_VEH_BUREAU as tokenVehBureau ,
 		START_BUREAU as startBureau,
 		HIGHLINE_FLAG as highlineFlag,
-		GROUP_SERIAL_NBR as groupSerialNbr ,
 		CROSS_NAME as crossName,
-		BASE_CROSS_ID as crossId
+		BASE_CROSS_ID as crossId,  
+        case when check_time is not null  then '1' else '0' end as checkFlag
 		from UNIT_CROSS
 		where 1=1 
 		<if test="tokenVehBureau != null">
@@ -441,10 +472,25 @@
 		<if test="startBureau != null">
 		   AND START_BUREAU = #{startBureau}
 		</if>
+		<if test="chartId != null">
+			AND BASE_CHART_ID= #{chartId}
+		</if>
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
 		</if>
-		order by groupSerialNbr) m )  where num >=#{rownumstart} AND num &lt;=#{rownumend} 
+		 <if test="checkFlag == 0 ">
+		AND check_time is null
+		</if>
+		 <if test="checkFlag == 1 ">
+		AND check_time is not null
+		</if>
+	   <if test="unitCreateFlag == 0 ">
+		AND CREAT_UNIT_TIME is null
+		</if>
+		 <if test="unitCreateFlag == 1 ">
+		AND CREAT_UNIT_TIME is not null
+		</if>
+		order by  CROSS_NAME) m )  where num >=#{rownumstart} AND num &lt;=#{rownumend} 
 		
 	</select>
 	
@@ -462,9 +508,18 @@
    select  BASE_TRAIN_ID ,train_nbr,train_sort,day_gap  from base_cross_train where base_cross_id=#{baseCrossId} order by train_sort
    
    </select>
+   
+    <select id="getCrossRunPlans" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossInfo">
+     
+   </select>
 
  <update id="updateCrossCheckTime" parameterType="map">
 		 update base_cross set check_time = sysdate where base_cross_id in (${baseCrossIds})
+
+	</update>
+	
+	<update id="updateUnitCrossCheckTime" parameterType="map">
+		 update unit_cross set check_time = sysdate where unit_cross_id in (${baseCrossIds})
 
 	</update>
  
@@ -483,12 +538,12 @@
   </delete>
   
    <delete id="deleteUnitCrossInfoTrainForCrossIds" parameterType="map">
-    delete from unit_cross_train where unit_cross_id in (select  unit_cross_id from unit_cross where base_cross_id in (${baseCrossIds}))
+    delete from unit_cross_train where unit_cross_id in (${baseCrossIds})
 
   </delete>
   
    <delete id="deleteUnitCrossInfoForCrossIds" parameterType="map">
-       delete from unit_cross where base_cross_id in (${baseCrossIds})
+       delete from unit_cross where unit_cross_id in (${baseCrossIds})
   </delete>
   
  

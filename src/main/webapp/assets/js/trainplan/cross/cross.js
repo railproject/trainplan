@@ -219,7 +219,7 @@ function CrossModel() {
 		var initFlag = 0;
 		//获取当期系统日期 
 		 $.ajax({
-				url : "plan/getSchemeList",
+				url : "jbtcx/querySchemes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -299,6 +299,7 @@ function CrossModel() {
 		
 		if(chart == null){
 			showErrorDialog("请选择方案!");
+			commonJsScreenUnLock();
 			return;
 		}
 		 
@@ -372,7 +373,7 @@ function CrossModel() {
 		if(self.searchModle().showCrossMap() == 0){
 			
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
-			$('#cross_map_dlg').dialog({ title: self.currentCross().crossName(), autoOpen: true, height:600,width: 800, modal: false, draggable: false, resizable:true })
+			$('#cross_map_dlg').dialog({ title: self.currentCross().crossName(), autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true })
 		};
 	};  
 	
@@ -385,39 +386,41 @@ function CrossModel() {
 		$("#cross_train_time_dlg").dialog("open");
 	};
 	
-	self.deleteCrosses = function(){
-		
-		showConfirmDiv("提示", " 确定要执行删除操作?");
-		var crossIds = "";
-		var crosses = self.crossRows.rows(); 
-		var delCrosses = [];
-		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1){ 
-				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].crossId; 
-				delCrosses.push(crosses[i]); 
-			}  
-		}   
-		$.ajax({
-			url : "cross/deleteCorssInfo",
-			cache : false,
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json",
-			data :JSON.stringify({  
-				crossIds : crossIds
-			}),
-			success : function(result) {     
-				if(result.code == 0){
-					$.each(delCrosses, function(i, n){ 
-						self.crossRows.rows.remove(n); 
-					});
-					showSuccessDialog("删除交路单元成功"); 
-				}else{
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+	self.deleteCrosses = function(){  
+		showSuccessDialogWithFunc(" 确定要执行删除操作?", function(){
+			var crossIds = "";
+			var crosses = self.crossRows.rows(); 
+			var delCrosses = [];
+			for(var i = 0; i < crosses.length; i++){ 
+				if(crosses[i].selected() == 1){ 
+					crossIds += (crossIds == "" ? "" : ",");
+					crossIds += crosses[i].crossId; 
+					delCrosses.push(crosses[i]); 
+				}; 
+			}   
+			$.ajax({
+				url : "cross/deleteCorssInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					crossIds : crossIds
+				}),
+				success : function(result) {     
+					if(result.code == 0){
+						$.each(delCrosses, function(i, n){ 
+							self.crossRows.rows.remove(n); 
+						});
+						self.crossRows.loadRows();
+						showSuccessDialog("删除交路单元成功"); 
+					}else{
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					}; 
 				}
-			}
-		}); 
+			}); 
+		});
+		
 	};
 	
 	self.createUnitCrossInfo = function(){ 
@@ -425,12 +428,21 @@ function CrossModel() {
 		var crossIds = "";
 		var delCrosses = [];
 		var crosses = self.crossRows.rows();
-		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1){ 
+		for(var i = 0; i < crosses.length; i++){
+			console.log(crosses[i].checkFlag());
+			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].crossId;
 				delCrosses.push( crosses[i]);
-			}
+			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
+				showErrorDialog("你选择了未审核的记录，请先审核");
+				commonJsScreenUnLock();
+				return;
+			}else if(crosses[i].unitCreateFlag() == 1 && crosses[i].selected() == 1){
+				showErrorDialog("不能重复审核");
+				commonJsScreenUnLock();
+				return;
+			};
 		} 
 		 $.ajax({
 				url : "cross/completeUnitCrossInfo",
@@ -463,13 +475,15 @@ function CrossModel() {
 	self.checkCrossInfo = function(){
 		commonJsScreenLock();
 		var crossIds = "";
-		var delCrosses = [];
+		var updateCrosses = [];
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1 && crosses[i].checkFlag()){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].crossId;
-				delCrosses.push(crosses[i]);
+				updateCrosses.push(crosses[i]);
+			}else{
+				crosses[i].selected(0);
 			}
 		} 
 		 $.ajax({
@@ -483,7 +497,7 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){
-						$.each(delCrosses, function(i, n){ 
+						$.each(updateCrosses, function(i, n){ 
 							n.checkFlag("1");
 						});
 						showSuccessDialog("审核成功");
@@ -602,7 +616,7 @@ function searchModle(){
 	
 	self.loadChats = function(charts){   
 		for ( var i = 0; i < charts.length; i++) {   
-			self.charts.push({"chartId": charts[i].schemeId, "name": charts[i].schemeName});  
+			self.charts.push({"chartId": charts[i].schemetId, "name": charts[i].schemeName});  
 		} 
 	}; 
 	
@@ -699,6 +713,9 @@ function TrainRow(data) {
 	self.baseTrainId = data.baseTrainId;
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
+	self.runDate = data.runDate;
+	self.endDate = data.endDate;
+	
 	//self.startBureau = data.startBureau;//START_BUREAU 
 	self.startBureau = ko.computed(function(){
 		for(var i = 0; i < gloabBureaus.length; i++){
@@ -739,7 +756,7 @@ function TrainRow(data) {
 	});
 	 
 	self.spareApplyFlage =  ko.computed(function(){  
-		return data.spareApplyFlage == 1 ? "是" : "否";
+		return data.spareApplyFlage == 1 ? "是" : "";
 	});
 	//SPARE_APPLY_FLAG
 	//self.highlineFlag = data.highlineFlag ;//HIGHLINE_FLAG 

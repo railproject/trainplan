@@ -234,6 +234,31 @@ public class CrossService{
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_CROSS_CHECKTIME, reqMap);
 		
 	}
+	
+	/**
+	 * 更新base_cross中的check_time字段的值
+	 * @param crossIds
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateUnitCorssCheckTime(String[] crossIds) throws Exception{
+		//组装字符串
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIds.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIds[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("baseCrossIds", bf.toString());
+		
+		System.err.println("bf.toString()==" +  bf.toString());
+		
+		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_UNIT_CROSS_CHECKTIME, reqMap);
+		
+	}
 	/**
 	 * 根据unitCrossid查询trainNbr,以逗号分隔组成一个字符串
 	 * @param unitCrossId
@@ -260,10 +285,21 @@ public class CrossService{
 		System.err.println("listCrossTrainInfo.size==" + listCrossTrainInfo.size());
 		List<CrossInfo> list = prepareUnitCrossInfo(crossInfo);
 		System.err.println("list.size==" + list.size());
+		
+		///前面的规则没变这个地方直接使用前面的结果，如果前面的规则计算错误这里会有影响 
+		List<CrossInfo> result = new ArrayList<CrossInfo>();
+		CrossInfo resultCorssInfo = new CrossInfo();
+		BeanUtils.copyProperties(resultCorssInfo, crossInfo); 
+		resultCorssInfo.setCrossStartDate(crossInfo.getCrossStartDate());
+		resultCorssInfo.setCrossEndDate(list.get(list.size() - 1).getCrossEndDate()); 
+		
+		resultCorssInfo.setUnitCrossId(UUID.randomUUID().toString());
+		result.add(resultCorssInfo); 
+		  
 		if(list !=null && list.size() > 0){
-			List<CrossTrainInfo> listCrossTrain = prepareUnitCrossTrainInfo(listCrossTrainInfo,list);
+			List<CrossTrainInfo> listCrossTrain = prepareUnitCrossTrainInfo(listCrossTrainInfo, list, resultCorssInfo.getUnitCrossId());
 			System.err.println("listCrossTrain.size===" + listCrossTrain.size());
-			int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_INFO, list);
+			int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_INFO, result);
 			System.err.println("count=====" + count);
 			if(listCrossTrain !=null && listCrossTrain.size() > 0){
 				int trainCount = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_TRAIN_INFO, listCrossTrain);
@@ -280,16 +316,36 @@ public class CrossService{
 	 * @param crossInfoList 通过crossid对表base_cross查询并对groupTotalNbr进行分组的结果
 	 * @return 需要插入到表unit_cross_train表中的数据
 	 */
-	private List<CrossTrainInfo> prepareUnitCrossTrainInfo(List<CrossTrainInfo> crossTrainInfoList,List<CrossInfo> crossInfoList) throws Exception{
+	private List<CrossTrainInfo> prepareUnitCrossTrainInfo(List<CrossTrainInfo> crossTrainInfoList,List<CrossInfo> crossInfoList, String unitCrossId) throws Exception{
 		List<CrossTrainInfo> list = new ArrayList<CrossTrainInfo>();
 		if(crossTrainInfoList != null && crossTrainInfoList.size() > 0){
-			for(CrossTrainInfo crossTrainInfo : crossTrainInfoList){
-				
+			for(CrossTrainInfo crossTrainInfo : crossTrainInfoList){ 
 				if(crossInfoList != null && crossInfoList.size() > 0){
 					for(CrossInfo crossInfo : crossInfoList){
 						CrossTrainInfo temp = new CrossTrainInfo();
 						BeanUtils.copyProperties(temp, crossTrainInfo);
-						temp.setUnitCrossId(crossInfo.getUnitCrossId());
+						temp.setUnitCrossId(unitCrossId); 
+						temp.setMarshallingName(crossInfo.getMarshallingName());
+						temp.setGroupSerialNbr(crossInfo.getGroupSerialNbr()); 
+						
+						Date date = dateFormat.parse(crossTrainInfo.getRunDate());   
+					    Calendar calendar = new GregorianCalendar();
+					    calendar.setTime(date);
+					    calendar.add(Calendar.DATE, crossInfo.getGroupSerialNbr() - 1);
+					    System.err.println((crossInfo.getGroupSerialNbr() - 1 ) + "==------------------------------" + crossTrainInfo.getRunDate());
+					    temp.setRunDate(dateFormat.format(calendar.getTime()));
+					    System.err.println((crossInfo.getGroupSerialNbr() - 1 ) + "==------------------------------" + temp.getRunDate());
+					   
+					    date = dateFormat.parse(crossTrainInfo.getEndDate());   
+					    System.err.println((crossInfo.getGroupSerialNbr() - 1 ) + "==------------------------------" + crossTrainInfo.getEndDate());
+					    calendar = new GregorianCalendar();
+					    calendar.setTime(date);
+					    calendar.add(Calendar.DATE, crossInfo.getGroupSerialNbr() - 1);
+					    
+					    temp.setEndDate(dateFormat.format(calendar.getTime())); 
+					    
+					    System.err.println((crossInfo.getGroupSerialNbr() - 1 ) + "==------------------------------" + temp.getEndDate());
+					   
 						//设置主键
 						temp.setUnitCrossTrainId(UUID.randomUUID().toString());
 						list.add(temp);
@@ -309,22 +365,12 @@ public class CrossService{
 	private List<CrossInfo>  prepareUnitCrossInfo(CrossInfo crossInfo) throws Exception{
 		List<CrossInfo> list = new ArrayList<CrossInfo>();
 		//组数（需几组车底担当）
-		int groupTotalNbr = crossInfo.getGroupTotalNbr();
-		String crossId = crossInfo.getCrossId();
-		//通过crossId查询cross_train信息
-		 List<CrossTrainInfo> crossTrainList = getCrossTrainInfoForCrossid(crossId);
-		//交路开始日期,格式yyyyMMdd
-		String crossStartDate = crossInfo.getCrossStartDate();
-		String crossEndDate = crossInfo.getCrossEndDate();
-		System.err.println("crossStartDate11==" + crossStartDate);
-		System.err.println("crossEndDate11==" + crossEndDate);
+		int groupTotalNbr = crossInfo.getGroupTotalNbr(); 
 		
-		//第一辆车的始发站
-		String startStn = crossInfo.getStartStn();
-		//获取第一辆车的车次
-		String trainNbr = "";
-		//一个交路跨越的天数
-		int crossDay = DateUtil.getDaysBetween(DateUtil.getFormateDay(crossEndDate), DateUtil.getFormateDay(crossStartDate));
+		//通过crossId查询cross_train信息
+	    List<CrossTrainInfo> crossTrainList = getCrossTrainInfoForCrossid( crossInfo.getCrossId());
+	    CrossTrainInfo crossTrain = crossTrainList.get(0); 
+	    String marshallingNamePre = crossTrain.getStartStn() == null ? crossTrain.getTrainNbr() +"-" : crossTrain.getStartStn().substring(0,1) + "开" + "-" + crossTrain.getTrainNbr() +"-"; 
 		//高线标记
 		int highlineFlag = 0;
 		//高线开行规律
@@ -332,82 +378,58 @@ public class CrossService{
 		//普线开行规律,普线开行规律（1:每日;2:隔日）
 		int commonlineRule = 1;
 		
-		/*if(!StringUtil.strIsNull(crossInfo.getHighlineFlag())){
-			highlineFlag = Integer.valueOf(crossInfo.getHighlineFlag());
+		if(!StringUtil.strIsNull(crossInfo.getHighlineFlag())){
+			highlineFlag = Integer.valueOf(crossTrain.getHighlineFlag());
 		}
 		if(!StringUtil.strIsNull(crossInfo.getHighlineRule())){
-			highlineRule = Integer.valueOf(crossInfo.getHighlineRule());
+			highlineRule = Integer.valueOf(crossTrain.getHighlineRule());
+			highlineRule = highlineRule == 0 ? 1 : highlineRule;
 		}
 		if(!StringUtil.strIsNull(crossInfo.getCommonlineRule())){
-			commonlineRule = Integer.valueOf(crossInfo.getCommonlineRule());
-		}*/
-		
-		
-		if(groupTotalNbr >0 ){
-			for(int i = 0;i<groupTotalNbr;i++){
-				CrossInfo tempInfo = new CrossInfo();
-				BeanUtils.copyProperties(tempInfo, crossInfo);
-				if(crossTrainList != null && crossTrainList.size()-1>=i ){
-					CrossTrainInfo trainInfo = crossTrainList.get(i);
-					highlineFlag = trainInfo.getHighlineFlag();
-					highlineRule = trainInfo.getHighlineRule();
-					commonlineRule = trainInfo.getCommonLineRule();
-					trainNbr = trainInfo.getTrainNbr();
-				}
-				//如果是第一组交路单元，那么交路单元的开始日期为交路的开始日期
-				if(i == 0){
-					tempInfo.setCrossStartDate(crossStartDate);
-					tempInfo.setCrossEndDate(crossEndDate);
-				}else{
+			commonlineRule = Integer.valueOf(crossTrain.getCommonLineRule());
+			commonlineRule  = commonlineRule == 0 ? 1 : commonlineRule;
+		}  
+		 
+		CrossInfo preUnitCross = null;
+		String crossStartDate = crossInfo.getCrossStartDate();
+		String crossEndDate = crossInfo.getCrossEndDate();
+		if(groupTotalNbr > 0 ){
+			for(int i = 0; i < groupTotalNbr; i++){
+				CrossInfo tempInfo = new CrossInfo(); 
+				if(preUnitCross != null){
 					/**计算下一个交路单元的开始日期，在上一个交路单元的终到日期的基础上再加上间隔天数**/
 					//上一个交路单元的终到日期,格式为yyyyMMdd
-					System.err.println("list.get(i-1)" +list.get(i-1));
-					String preCrossEndDate = list.get(i-1).getCrossEndDate();
-					String nextCrossStartDate = "";
-					String nextCrossEndDate = "";
+					String preCrossStartDate = preUnitCross.getCrossStartDate(); 
+					String preCrossEndDate =  preUnitCross.getCrossEndDate();  
 					//高线标记（1:高线；0:普线；2:混合）
 					if(highlineFlag == 0 || highlineFlag == 2){
-						nextCrossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -commonlineRule);
-						
+						crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -commonlineRule); 
+						crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -commonlineRule); 
+						 
 					}else {
 						//高线开行规律（1:平日;2:周末;3:高峰）
 						if(highlineRule == 1){
-							nextCrossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -highlineRule);	
-						
+							crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -highlineRule);	
+							crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -highlineRule);
 						}else if(highlineRule == 2 || highlineRule ==3 ){
-							//TODO 暂时不处理
-						}
-						
-					}
-					if(!"".equals(nextCrossStartDate)){
-						LocalDate sourceDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(nextCrossStartDate);
-						nextCrossStartDate = sourceDate.toString("yyyyMMdd");
-						
-						tempInfo.setCrossStartDate(nextCrossStartDate);
-						//计算终到日期
-						nextCrossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(nextCrossStartDate), -crossDay);
-						sourceDate =  DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(nextCrossEndDate);
-						tempInfo.setCrossEndDate( sourceDate.toString("yyyyMMdd"));	
-					}
-					
-					
-				}	
-				tempInfo.setUnitCrossId(UUID.randomUUID().toString());
-				//编组名，规则：第一辆车的始发站的第一个字 + "开" + "-" +第一辆车的车次+组数
-				int teamNum = i+1;
-				if( startStn != null && !"".equals(startStn) ){
-					tempInfo.setMarshallingName(startStn.substring(0,1)+"开"+"-"+trainNbr+"-" +teamNum);
-				}else{
-					//TODO
-					tempInfo.setMarshallingName(trainNbr+"-" +teamNum);
+							//TODO 暂时不处理   默认向后推1天
+							crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -1);	
+							crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -1);
+						}else{
+							crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -1);	
+							crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -1);
+						} 
+					} 
 				}
-				
-				//组数序号
-				tempInfo.setGroupSerialNbr(teamNum);
+				tempInfo.setCrossStartDate(crossStartDate.replaceAll("-", ""));
+				tempInfo.setCrossEndDate(crossEndDate.replaceAll("-", ""));
+				tempInfo.setGroupSerialNbr((i + 1));
+				tempInfo.setMarshallingName(marshallingNamePre + (i + 1)); 
 				list.add(tempInfo);
+				preUnitCross = tempInfo;
 			}
-		}
-		System.err.println("CrossInfo_list=====" + list);
+		} 
+		
 		return list;
 	}
 	/**
@@ -685,9 +707,9 @@ public class CrossService{
 			}
 			
 			ExecutorService service = Executors.newFixedThreadPool(10);
-			CompletionService<List<CrossTrainInfo>> completion = new ExecutorCompletionService<List<CrossTrainInfo>>(service);
+			CompletionService<String> completion = new ExecutorCompletionService<String>(service);
 			 
-			ArrayList<CrossTrainInfo> crossTrains = new ArrayList<CrossTrainInfo>();
+//			ArrayList<CrossTrainInfo> crossTrains = new ArrayList<CrossTrainInfo>();
 			
 			for(int i = 0; i < alllist.size(); i++){
 				CrossInfo crossInfo = alllist.get(i);
@@ -696,42 +718,20 @@ public class CrossService{
 				 if(StringUtils.isEmpty(crossInfo.getAlterNateDate())){
 					 crossInfo.setAlterNateDate(startDay);
 				 }
-				completion.submit(new CrossCompletionService(alllist.get(i)));
+				completion.submit(new CrossCompletionService(alllist.get(i), baseDao));
 			}
 			
 			for(int i = 0; i < alllist.size(); i++){
 				try {
-					crossTrains.addAll(completion.take().get());
+					completion.take().get();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 			} 
-			service.shutdown();
-		 
-			///fortest
-			if(alllist != null && alllist.size() > 0){
-				for(int i = 0;i<alllist.size();i++){
-					CrossInfo crossinfo = alllist.get(i);
-					System.err.println("chartId==" + crossinfo.getChartId());
-					System.err.println("chartName==" + crossinfo.getChartName());
-					System.err.println("***********************");
-					
-				}
-			}
+			service.shutdown(); 
 			
-			///////////
-			
-			if(alllist != null && alllist.size() > 0){
-				//保存交路信息
-				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO,alllist);
-				
-			}
-			System.err.println("crossTrains===" + crossTrains);
-        	//保存列车
-			if(crossTrains != null && crossTrains.size() > 0 ){
-				baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
-			}
+			/////////// 
 	
 			
 		}catch(FileNotFoundException e){
@@ -750,14 +750,41 @@ public class CrossService{
 			 
 		}
 	} 
-	
+	 
 	private void setEndDateForCross(LinkedList<CrossTrainInfo> crossTrains, CrossInfo cross){
 		 try{
 			 //设置交路的终到日期
 			 int dayGapForCross = 0;
-			 for(CrossTrainInfo crosstrain : crossTrains){
-				 dayGapForCross += crosstrain.getRunDay() + crosstrain.getDayGap();
-			 } 
+			 String crossStartDate = cross.getCrossStartDate();
+			 
+			 for(int i = 0; i <  crossTrains.size(); i++){
+				 CrossTrainInfo crosstrain = crossTrains.get(i);
+				 if(i == 0){
+					 crosstrain.setRunDate(cross.getCrossStartDate());
+					 
+					 Date date = dateFormat.parse(crossStartDate);   
+					 Calendar calendar = new GregorianCalendar();
+					 calendar.setTime(date);
+					 calendar.add(Calendar.DATE, crosstrain.getRunDay());
+					 crosstrain.setEndDate(dateFormat.format(calendar.getTime()));
+					 
+					 dayGapForCross += crosstrain.getRunDay();
+				 }else{
+					 //第二个车+前面的车的总天数 + daygap
+					 Date date = dateFormat.parse(crossStartDate);   
+					 Calendar calendar = new GregorianCalendar();
+					 calendar.setTime(date);
+					 calendar.add(Calendar.DATE, dayGapForCross + crosstrain.getDayGap()); 
+					 
+					 crosstrain.setRunDate(dateFormat.format(calendar.getTime())); 
+					 
+					 dayGapForCross += crosstrain.getRunDay() + crosstrain.getDayGap(); 
+					 
+					 //设置结束时间
+					 calendar.add(Calendar.DATE, crosstrain.getRunDay());
+					 crosstrain.setEndDate(dateFormat.format(calendar.getTime())); 
+				 } 
+			 }  
 			 Date date = dateFormat.parse(cross.getCrossStartDate());   
 			 Calendar calendar = new GregorianCalendar();
 			 calendar.setTime(date);
@@ -802,7 +829,7 @@ public class CrossService{
 	 * @author Administrator
 	 *
 	 */
-	class CrossCompletionService implements Callable<List<CrossTrainInfo>> {
+	class CrossCompletionService implements Callable<String> {
 		
 		/**
 		 * 并行处理列车基本信息
@@ -942,13 +969,32 @@ public class CrossService{
 			
 		private CrossInfo cross;
 		
-		public CrossCompletionService(CrossInfo cross ){
+		private BaseDao baseDao;
+		
+		public CrossCompletionService(CrossInfo cross){
 		   this.cross = cross;
 		}
 		
-		public List<CrossTrainInfo> call() throws Exception {
+		public CrossCompletionService(CrossInfo cross, BaseDao baseDao){
+		   this.cross = cross;
+		   this.baseDao = baseDao;
+		}
+		
+		public String call() throws Exception {  
+			LinkedList<CrossTrainInfo>  crossTrains = this.createTrainsForCross(this.cross); 
+			//保存交路信息
+			ArrayList<CrossInfo> crossList = new ArrayList<CrossInfo>();
+			crossList.add(this.cross);
+			
+			 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO, crossList); 
 			 
-		    return this.createTrainsForCross(this.cross);
+			System.err.println(this.cross.getCrossName() + " ===crossTrains===" + crossTrains.size());
+        	//保存列车
+			if(crossTrains != null && crossTrains.size() > 0 ){
+				 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
+			} 
+			
+		   return "success";
 		}
 		
 		private LinkedList<CrossTrainInfo> createTrainsForCross(CrossInfo cross){
@@ -981,9 +1027,9 @@ public class CrossService{
 					//
 					if(alertNateDate != null ){
 						if(alertNateDate.length == 1){
-							train.setAlertNateTime(alertNateDate[0]); 
+							train.setAlertNateTime(alertNateDate[0] + " 02:00:00"); 
 						}else{ 
-							train.setAlertNateTime(alertNateDate[i]);
+							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
 						}  
 					}
 					//
@@ -1039,6 +1085,7 @@ public class CrossService{
 				}catch(Exception e){
 					logger.error("创建列车信息出错:" , e);
 				}
+				
 				crossTrains.add(train);
 			} 
 			//获取列车时刻表和其实和终到站
@@ -1056,7 +1103,7 @@ public class CrossService{
 					if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 						cross.setStartBureau(crossTrain.getStartBureau());
 	//					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
-						cross.setCrossStartDate(crossTrain.getAlertNateTime());
+						cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8));
 					}   
 					
 				} catch (InterruptedException e) {
@@ -1138,11 +1185,12 @@ public class CrossService{
 			 
 //			String trains = crossName.split("-");
 		logger.debug(this.cross.getCrossName() + "==crossTrains=" + crossTrains.size());
-		
+		 
 		return crossTrains; 
 	}
 		
 		
 	
-	}
+	} 
+ 
 }
