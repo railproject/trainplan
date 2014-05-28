@@ -1,6 +1,8 @@
 package org.railway.com.trainplan.repository.mybatis;
 
 import org.railway.com.trainplan.entity.LevelCheck;
+import org.railway.com.trainplan.entity.RunPlan;
+import org.railway.com.trainplan.entity.UnitCross;
 
 import java.util.List;
 import java.util.Map;
@@ -52,5 +54,13 @@ public interface RunPlanDao {
      */
     int updateCheckInfo(Map<String, Object> map);
 
-    List<Map<String, Object>> findPlanInfoListByPlanId(String planIds);
+    /**
+     * 根据计划id列表查询列车信息列表
+     * @param params
+     * @return
+     */
+    List<Map<String, Object>> findPlanInfoListByPlanId(List<String> params);
+
+
+    int addRunPlan(RunPlan runplan);
 }

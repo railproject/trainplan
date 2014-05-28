@@ -14,6 +14,7 @@ import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.Ljzd;
+import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.CrossService;
@@ -158,22 +159,29 @@ public class PlanTrainStnController {
 		String operation = StringUtil.objToStr(reqMap.get("operation"));
 		List<TrainlineTemplateDto> list = planTrainStnService.getTrainsWithSchemeId(chartId, operation, "2014-05-22");
 		System.err.println("trains--size==" + list.size());*/
-		long time1 = System.currentTimeMillis();
-		DaytaskDto reqDto = new DaytaskDto();
-		reqDto.setChartId("b4264afd-7755-48ba-9cf7-b31eeac6e085");
-		reqDto.setOperation("客运");
-		reqDto.setRunDate("2014-05-23");
-		reqDto.setRownumend(10);
-		reqDto.setRownumstart(1);
+//		long time1 = System.currentTimeMillis();
+//		DaytaskDto reqDto = new DaytaskDto();
+//		reqDto.setChartId("b4264afd-7755-48ba-9cf7-b31eeac6e085");
+//		reqDto.setOperation("客运");
+//		reqDto.setRunDate("2014-05-23");
+//		reqDto.setRownumend(10);
+//		reqDto.setRownumstart(1);
 		
 		
-		treadService.actionDayWork(reqDto, 1);
+//		treadService.actionDayWork(reqDto, 1);
 		//List<TrainlineTemplateDto> list = trainInfoService.getTrainsAndTimesForList(reqDto);
-		long time2 = System.currentTimeMillis();
-		System.err.println("time==" + (time2-time1)/1000);
+//		long time2 = System.currentTimeMillis();
+//		System.err.println("time==" + (time2-time1)/1000);
 		//System.err.println("size==" + list.size());
 		
 		//result.setData(list);
+		
+		
+		//fortest
+		String unitCrossId = StringUtil.objToStr(reqMap.get("unitCrossId"));
+		System.err.println("unitCrossId==" +unitCrossId );
+		List<UnitCrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
+		result.setData(list);
 		return result;
 	}
 	
@@ -353,14 +361,7 @@ public class PlanTrainStnController {
 		   return result;
 		}
 		try{
-			//先删除历史数据
-			String startRundate = DateUtil.format(DateUtil.parse(startDate),"yyyyMMdd");
-			String endRundate = DateUtil.getDateByDay(startDate, -(Integer.valueOf(dayCount)-1));
-			endRundate = DateUtil.format(DateUtil.parse(endRundate),"yyyyMMdd");
-			//删除子表数据
-			planTrainCheckService.deletePlanTrainStnHistoryDate(startRundate, endRundate);
-			//删除父表数据
-			planTrainCheckService.deletePlanTrainHistoryDate(startRundate, endRundate);
+			
 			//调入后台导入数据
 			planTrainStnService.importTainPlan(schemeId, startDate, dayCount);	
 			

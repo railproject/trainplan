@@ -6,20 +6,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.CrossInfo;
+import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.PlanTrain;
-import org.railway.com.trainplan.entity.PlanTrainStn;
 import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
-import org.railway.com.trainplan.service.task.DaytaskDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,13 @@ public class PlanTrainStnService {
     
     @Autowired
     private TreadService treadService;
+    
+    @Autowired
+    private CrossService crossService;
+    
+    @Autowired
+    private RunPlanService runPlanService;
+    
     /**
 	 * 更新数据表plan_train中字段daylyplan_flag,的值
 	 * @param base_train_id
@@ -139,34 +147,36 @@ public class PlanTrainStnService {
 	 * @throws Exception
 	 */
 
-	public Map<String, Object> importTainPlan( String schemeId,
+	public int importTainPlan( String schemeId,
 			 String startDate,  String dayCount) throws Exception {
-		Map<String, Object> returnMap = new HashMap<String, Object>();
 		//调用后台接口之前推送一条消息到页面
 		quoteService.sendQuotes("", 0, 0, "plan.getInfo.begin");
 		
-		DaytaskDto reqDto = new DaytaskDto();
-		reqDto.setChartId(schemeId);
-		reqDto.setOperation("客运");
-		reqDto.setRunDate(startDate);
-		//reqDto.setRownumend(10);
-		//reqDto.setRownumstart(1);
+		List<PlanCrossInfo> listPlanCross = new ArrayList<PlanCrossInfo>();
+		List<CrossInfo> listCross = crossService.getUnitCrossInfoForChartId(schemeId);
+		if(listCross != null && listCross.size() > 0){
+			for(CrossInfo cross : listCross){
+				PlanCrossInfo planCross = new PlanCrossInfo();
+				BeanUtils.copyProperties(planCross, cross);
+				//单独设置属性名不一样的字段
+				planCross.setPlanCrossId(UUID.randomUUID().toString());
+				planCross.setBaseChartId(cross.getChartId());
+				planCross.setBaseChartName(cross.getChartName());
+				planCross.setBaseCrossId(cross.getBaseCrossId());
+				planCross.setCrossStartDate(startDate.replaceAll("-",""));
+				//TODO 暂时指定时间，以后要通过计算
+				planCross.setCrossEndDate("20140830");
+				listPlanCross.add(planCross);
+			}
+		}
+		//添加数据到表plan_cross
+		int count = crossService.addPlanCrossInfo(listPlanCross);
+		//做交路计划，第一个参数传null,表示全部交路都做
+		int crossCount = runPlanService.generateRunPlan(null, startDate, Integer.valueOf(dayCount));
+		//全部处理完了，推送一条消息到页面
+		quoteService.sendQuotes("", 0, 0, "plan.end");
 		
-		
-		treadService.actionDayWork(reqDto, Integer.valueOf(dayCount));
-		
-		// 调用后台接口，获取数据
-		 //List<TrainlineTemplateDto> list = remoteService.getTrainLineInfoFromSchemeId(schemeId, startDate);
-		
-		//System.err.println("importTrainPlan--list.size==" + list.size());
-		
-		// 循环dayCount次
-		//TrainPlanThread  thread = new TrainPlanThread(list,startDate,dayCount,this,quoteService);
-		//启动thread
-		//thread.start();
-		
-		//returnMap.put("", schemeId);
-		return returnMap;
+		return crossCount;
 	}
 
 	

@@ -55,21 +55,13 @@ public class PlanLineService {
         }
         // 客运计划和日计划存储的始发站-到站时间 和 终到站-出发时间 不一样，且时刻表不关心这2个时间，所以不校验。
         Map<String, Object> plan_start = plans.get(0);
-        plans.remove(plan_start);
         plan_start.remove("ARR_TIME");
-        plans.add(plan_start);
         Map<String, Object> line_start = lines.get(0);
-        lines.remove(line_start);
         line_start.remove("ARR_TIME");
-        lines.add(line_start);
         Map<String, Object> plan_end = plans.get(plans.size() - 1);
-        plans.remove(plan_end);
         plan_end.remove("DPT_TIME");
-        plans.add(plan_end);
         Map<String, Object> line_end = lines.get(lines.size() - 1);
-        lines.remove(line_end);
         line_end.remove("DPT_TIME");
-        lines.add(line_end);
 
         if(plans.containsAll(lines) && lines.containsAll(plans)) {
             return 1;

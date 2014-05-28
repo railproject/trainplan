@@ -41,6 +41,10 @@ public class Constants {
 	
 	//列车类型：客运
 	public static final String ZUOYE_DENGJI_KEYUN = "客运";
+	//查询全部的经由
+	public static final String STATION_TYPE_ALL = "ALL";
+	//查询始发站和终到站
+	public static final String STATION_TYPE_START_END = "START_END";
 	
 	public static final String TYPE_CROSS = "cross";
 	public static final String TYPE_UNIT_CROSS="unitcross";
@@ -93,6 +97,8 @@ public class Constants {
 	public static final String TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU_COUNT = "trainPlanDao.findPlanTrainByStartBureauCount";
 
     /****CrossMapper.xml  ****/
+	//表plan_cross插入数据
+	public static final String CROSSDAO_ADD_PLAN_CROSS_INFO = "crossDao.addPlanCrossInfo";
     //表base_cross插入数据addCrossInfo
 	public static final String CROSSDAO_ADD_CROSS_INFO = "crossDao.addCrossInfo";
 	//表base_cross_train插入数据addCrossTrainInfo
@@ -140,7 +146,8 @@ public class Constants {
     public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoForCrossIds";
     //根据crossIds批量删除unit_cross_train表中数据
     public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_TRAIN_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoTrainForCrossIds";
-    
+    //根据chartId查询unit_cross信息 
+    public static final String CROSSDAO_GET_UNIT_CROSSINFO_FOR_CHARTID = "crossDao.getUnitCrossInfoForChartId";
     //获取全部方案列表
     public static final String SCHEME_GETSCHEMEINFO = "schemeDao.getSchemeInfo";
     
@@ -152,6 +159,12 @@ public class Constants {
     //
     public static final String TRAININFO_GET_TRAINS_AND_TIMES_FORPAGE = "trainInfoDao.getTrainsAndTimesForPage";
     public static final String TRAININFO_GETTRAININFO_COUNT="trainInfoDao.getTrainInfoTotalCount";
+    //根据baseTrainId查询列车基本信息
+    public static final String TRAININFO_GETTRAININFO_FOR_TRAINID="trainInfoDao.getTrainInfoForTrainId";
+    //根据baseTrainId查询列车时刻表信息 
+    public static final String TRAININFO_GETTRAIN_TIME_INFO_FOR_TRAINID = "trainInfoDao.getTrainTimeInfoForTrainId";
+    //根据baseTrainId查询列车的起点和终点站信息 
+    public static final String TRAININFO_GET_START_END_TRAINTIME_FOR_TRAINID = "trainInfoDao.getStartEndTrainTimeInfoForTrainId";
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";
     

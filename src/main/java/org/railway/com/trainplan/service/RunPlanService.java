@@ -1,9 +1,12 @@
 package org.railway.com.trainplan.service;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
+  
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.entity.CrossRunPlanInfo;
 import org.railway.com.trainplan.entity.LevelCheck;
@@ -15,12 +18,26 @@ import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.repository.mybatis.RunPlanDao;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.service.dto.TrainRunDto;
+ 
+import org.joda.time.DateTimeUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.railway.com.trainplan.entity.*;
+import org.railway.com.trainplan.exceptions.*;
+import org.railway.com.trainplan.repository.mybatis.*; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+ 
+import java.sql.*;
+import java.text.ParseException; 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by star on 5/12/14.
@@ -36,6 +53,15 @@ public class RunPlanService {
     @Autowired
     private RunPlanDao runPlanDao;
 
+    @Autowired
+    private RunPlanStnDao runPlanStnDao;
+
+    @Autowired
+    private UnitCrossDao unitCrossDao;
+
+    @Autowired
+    private BaseTrainDao baseTrainDao;
+    
     @Autowired
     private BaseDao baseDao;
 
@@ -64,17 +90,17 @@ public class RunPlanService {
             // 准备参数
             java.sql.Date now = new java.sql.Date(new Date().getTime());
             List<LevelCheck> params = new ArrayList<LevelCheck>();
-            StringBuilder stringBuilder = new StringBuilder();
+            List<String> planIdList = Lists.newArrayList();
             for(Map<String, Object> item: list) {
                 LevelCheck record = new LevelCheck(UUID.randomUUID().toString(), user.getName(), now, user.getDeptName(), user.getBureau(), checkType, MapUtils.getString(item, "planId"), MapUtils.getString(item, "lineId"));
                 params.add(record);
-                stringBuilder.append(record.getPlanId()).append(",");
+                planIdList.add(record.getPlanId());
             }
-            if(stringBuilder.length() > 0) {
+            if(planIdList.size() > 0) {
                 // 增加审核记录
                 runPlanDao.addCheckHis(params);
                 //修改审核状态和已审核局
-                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(stringBuilder.substring(0, stringBuilder.length() - 1));
+                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(planIdList);
 
                 for(Map<String, Object> plan: planList) {
 
@@ -84,10 +110,10 @@ public class RunPlanService {
                         levResult.put("id", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
 
                         int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
-                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU");
+                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU", "");
                         int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
-                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU");
-                        String passBureau = MapUtils.getString(plan, "PASS_BUREAU");
+                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU", "");
+                        String passBureau = MapUtils.getString(plan, "PASS_BUREAU", "");
                         // 计算一级已审核局
                         String checkedLev1Bureau = addBureauCode(lev1Bureau, user.getBureauShortName());
                         // 计算新1级审核状态
@@ -130,17 +156,17 @@ public class RunPlanService {
             // 准备参数
             java.sql.Date now = new java.sql.Date(new Date().getTime());
             List<LevelCheck> params = new ArrayList<LevelCheck>();
-            StringBuilder stringBuilder = new StringBuilder();
+            List<String> planIdList = Lists.newArrayList();
             for(Map<String, Object> item: plans) {
                 LevelCheck record = new LevelCheck(UUID.randomUUID().toString(), user.getName(), now, user.getDeptName(), user.getBureau(), checkType, MapUtils.getString(item, "planId"), MapUtils.getString(item, "lineId"));
                 params.add(record);
-                stringBuilder.append(record.getPlanId()).append(",");
+                planIdList.add(record.getPlanId());
             }
-            if(stringBuilder.length() > 0) {
+            if(planIdList.size() > 0) {
                 // 增加审核记录
                 runPlanDao.addCheckHis(params);
                 //修改审核状态和已审核局
-                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(stringBuilder.substring(0, stringBuilder.length() - 1));
+                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(planIdList);
 
                 for(Map<String, Object> plan: planList) {
 
@@ -150,11 +176,11 @@ public class RunPlanService {
                         levResult.put("id", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
 
                         int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
-                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU");
+                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU", "");
                         int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
-                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU");
+                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU", "");
                         String passBureau = MapUtils.getString(plan, "PASS_BUREAU");
-                        // 计算一级已审核局
+                        // 计算二级已审核局
                         String checkedLev2Bureau = addBureauCode(lev2Bureau, user.getBureauShortName());
                         // 计算新1级审核状态
                         int newLev2Type = newLev1Type(lev2Type, passBureau, lev2Bureau, user.getBureauShortName());
@@ -163,8 +189,8 @@ public class RunPlanService {
 //                        // 二级已审核局也应该是空
 //                        String checkedLev2Bureau = "";
                         Map<String, Object> updateParam = new HashMap<String, Object>();
-//                        updateParam.put("lev1Type", newLev1Type);
-//                        updateParam.put("lev1Bureau", checkedLev1Bureau);
+                        updateParam.put("lev1Type", lev1Type);
+                        updateParam.put("lev1Bureau", lev1Bureau);
                         updateParam.put("lev2Type", newLev2Type);
                         updateParam.put("lev2Bureau", checkedLev2Bureau);
                         updateParam.put("planId", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
@@ -208,13 +234,13 @@ public class RunPlanService {
 
     private int newLev1Type(int current, String passBureau, String currentChecked, String split) throws DailyPlanCheckException {
         int result = 0;
-        if(current == 0) {
-            if(passBureau.contains(split)) {
-                result = 1;
-            } else {
-                throw new WrongBureauCheckException("计划不属于审核局");
-            }
-        } else if(current == 1 || current == 2) {
+        if(!passBureau.contains(split)) {
+            throw new WrongBureauCheckException("计划不属于审核局");
+        }
+        if(current == 2) {
+            throw new WrongCheckTypeException("该计划已经审核过");
+        }
+        if(current == 1 || current == 0) {
             result = computeLev1Type(current, passBureau, addBureauCode(currentChecked, split));
         } else {
             throw new UnknownCheckTypeException("未知审核类型");
@@ -223,7 +249,7 @@ public class RunPlanService {
     }
 
     private int computeLev1Type(int current, String passBureau, String checkedBureau) throws WrongDataException {
-        if(current == 1 && isAllChecked(passBureau, checkedBureau)) {
+        if(current != 2 && isAllChecked(passBureau, checkedBureau)) {
             return 2;
         }
         if(current == 1 && !isAllChecked(passBureau, checkedBureau)) {
@@ -284,4 +310,189 @@ public class RunPlanService {
 		return baseDao.selectListBySql(Constants.GET_PLAN_CROSS, reqMap);
 	}
 
+
+    public List<PlanCross> findPlanCross() {
+        try {
+            return unitCrossDao.findPlanCross();
+        } catch (Exception e) {
+            logger.error("findUnitCross:::::", e);
+        }
+        return null;
+    }
+
+
+    public List<RunPlan> findRunPlan() {
+        try {
+            return baseTrainDao.findBaseTrainByPlanCrossid(null);
+        } catch (Exception e) {
+            logger.error("findUnitCross:::::", e);
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param planCrossIdList
+     * @param startDate yyyy-MM-dd
+     * @param days 比如:30
+     * @return
+     */
+    public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        List<PlanCross> planCrossList = null;
+        try{
+            planCrossList = unitCrossDao.findPlanCross();
+            for(PlanCross planCross: planCrossList) {
+                executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
+            }
+        } finally {
+            executorService.shutdown();
+        }
+        return planCrossList.size();
+    }
+
+
+    class RunPlanGenerator implements Runnable {
+
+        // 传入参数
+        private PlanCross planCross;
+
+        // 保存客运计划用
+        private RunPlanDao runPlanDao;
+
+        private RunPlanStnDao runPlanStnDao;
+
+        // 查询基本图数据用
+        private BaseTrainDao baseTrainDao;
+
+        private String startDate;
+
+        private int days;
+
+        private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        private SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm:ss");
+
+        RunPlanGenerator(PlanCross planCross, RunPlanDao runPlanDao,
+                         BaseTrainDao baseTrainDao, String startDate,
+                         RunPlanStnDao runPlanStnDao, int days) {
+            this.planCross = planCross;
+            this.runPlanDao = runPlanDao;
+            this.baseTrainDao = baseTrainDao;
+            this.runPlanStnDao = runPlanStnDao;
+            this.startDate = startDate;
+            this.days = days;
+        }
+
+        @Override
+        @Transactional
+        @Monitored
+        public void run() {
+            List<UnitCrossTrain> unitCrossTrainList = this.planCross.getUnitCrossTrainList();
+            String planCrossId = planCross.getPlanCrossId();
+            Map<String, Object> params = Maps.newHashMap();
+            params.put("planCrossId", planCrossId);
+            List<RunPlan> runPlanList = baseTrainDao.findBaseTrainByPlanCrossid(params);
+            List<RunPlan> resultRunPlanList = Lists.newArrayList();
+            // 计算循环次数
+            int times = this.days / this.planCross.getGroupTotalNbr() + this.days % this.planCross.getGroupTotalNbr() > 0? 1:0;
+            LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(this.startDate);
+            // times循环一次就是生成一组unit_cross_train的计划
+            for(int i = 0; i < times; i ++) {
+                start = start.plusDays(this.planCross.getGroupTotalNbr() * i);
+
+                // 每次循环生成一组车底的计划
+                for(int n = 0; n < this.planCross.getGroupTotalNbr(); n ++ ) {
+                    // 每组车的第一趟车的开始日期
+                    LocalDate startDate = start.plusDays(n);
+                    // 计算每组有多少车
+                    int trainNbr = unitCrossTrainList.size() / this.planCross.getGroupTotalNbr();
+                    for(int m = 0; m < trainNbr; m++) {
+                        UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(n * trainNbr + m);
+                        for(RunPlan runPlan: runPlanList) {
+                            if(unitCrossTrain.getBaseTrainId().equals(runPlan.getBaseTrainId())) {
+                                LocalDate trainStartDate;
+                                runPlan.setPlanTrainId(UUID.randomUUID().toString());
+                                runPlan.setGroupSerialNbr(unitCrossTrain.getGroupSerialNbr());
+                                runPlan.setMarshallingName(unitCrossTrain.getMarshallingName());
+                                runPlan.setTrainSort(unitCrossTrain.getTrainSort());
+                                runPlan.setBaseChartId(planCross.getBaseChartId());
+                                // 如果不是每组车的第一趟车，就取上一趟车作为前序车
+                                if(m > 0) {
+                                    RunPlan preRunPlan = resultRunPlanList.get(resultRunPlanList.size() - 1);
+                                    // 前后续车都有了，互基
+                                    preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
+                                    runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
+                                    trainStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime())).plusDays(preRunPlan.getDayGap());
+                                } else {
+                                    // 每组车的第一趟车，取上一次循环中相同组数的最后一辆车作为前序车
+                                    // 处理到后续车的时候再去设置前序车的后续车字段
+                                    if(resultRunPlanList.size() > 0) {
+                                        // 找出前序车
+                                        RunPlan preRunPlan = resultRunPlanList.get(resultRunPlanList.size() - 1);
+                                        // 前后续车都有了，互基
+                                        preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
+                                        runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
+                                    }
+                                    trainStartDate = startDate.plusDays(m);
+
+                                }
+                                runPlan.setRunDate(trainStartDate.toString("yyyyMMdd"));
+
+                                runPlan.setPlanTrainSign(runPlan.getRunDate() + "-" + runPlan.getTrainNbr() + "-" + runPlan.getStartStn() + "-" + runPlan.getStartTimeStr());
+                                try {
+                                    runPlan.setStartDateTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.toString() + " " + runPlan.getStartTimeStr()).getTime()));
+                                } catch (ParseException e) {
+                                    logger.error("set runPlan start time error:::::", e);
+                                }
+                                List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
+                                // 计算计划主表信息
+                                runPlan.setPlanCrossId(planCrossId);
+
+                                // unitcross里的信息
+                                runPlan.setTrainNbr(unitCrossTrain.getTrainNbr());
+                                runPlan.setDayGap(unitCrossTrain.getDayGap());
+                                runPlan.setSpareFlag(unitCrossTrain.getSpareFlag());
+                                runPlan.setSpareApplyFlag(unitCrossTrain.getSpareApplyFlag());
+                                runPlan.setHighLineFlag(unitCrossTrain.getHighLineFlag());
+                                runPlan.setHightLineRule(unitCrossTrain.getHighLineFlag());
+                                runPlan.setCommonLineRule(unitCrossTrain.getCommonLineRule());
+                                runPlan.setAppointWeek(unitCrossTrain.getAppointWeek());
+                                runPlan.setAppointDay(unitCrossTrain.getAppointDay());
+                                // 计算计划从表信息
+                                for(RunPlanStn runPlanStn: runPlanStnList) {
+                                    runPlanStn.setPlanTrainId(runPlan.getPlanTrainId());
+                                    runPlanStn.setPlanTrainStnId(UUID.randomUUID().toString());
+                                    try {
+                                        runPlanStn.setArrTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
+                                        runPlanStn.setDptTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
+                                    } catch (ParseException e) {
+                                        logger.error("date parse error: ", e);
+                                    }
+                                    runPlanStn.setBaseArrTime(runPlanStn.getArrTime());
+                                    runPlanStn.setBaseDptTime(runPlanStn.getDptTime());
+                                }
+                                // 最后一个站的到站时间就是列车终到时间
+                                RunPlanStn lastRunPlanStn = runPlan.getRunPlanStnList().get(runPlan.getRunPlanStnList().size() - 1);
+                                runPlan.setEndDateTime(new java.sql.Date(lastRunPlanStn.getArrTime().getTime()));
+                                // 处理完了加到结果列表里
+                                resultRunPlanList.add(runPlan);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            for(RunPlan runPlan: resultRunPlanList) {
+                try {
+                    List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
+                    runPlanStnDao.addRunPlanStn(runPlanStnList);
+                    runPlanDao.addRunPlan(runPlan);
+                } catch (Exception e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
 }

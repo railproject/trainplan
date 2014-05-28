@@ -3,7 +3,26 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="crossDao">
-
+	<resultMap id="unitCrossTrain" type="org.railway.com.trainplan.entity.UnitCrossTrainInfo">
+	        <id column="GROUPSERIALNBR" property="groupSerialNbr"/>
+	        <result column="UNITCROSSTRAINID" property="unitCrossTrainId"/>
+	        <result column="UNITCROSSID" property="unitCrossId"/>
+	       
+	        <collection property="trainInfoList" resultMap="unitCrossSubTrain"/>
+	    </resultMap>
+	
+	    <resultMap id="unitCrossSubTrain" type="org.railway.com.trainplan.entity.UnitCrossTrainSubInfo">
+	        <id column="unitcrosstrainid" property="unitCrossTrainId"/>
+	        <result column="DAYGAP" property="dayGap"/>
+	        <result column="TRAINNBR" property="trainNbr"/>
+	        <result column="BASETRAINID" property="baseTrainId"/>
+	        <result column="STARTSTN" property="startStn"/>
+	        <result column="STARTBUREAU" property="startBureau"/>
+	        <result column="ENDSTN" property="endStn"/>
+	        <result column="ENDBUREAU" property="endBureau"/>
+	        <result column="TRAINSORT" property="trainSort"/> 
+    </resultMap>
+    
    <select id="getCrossTrainInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
      select 
 	     BASE_CROSS_ID AS crossId,
@@ -29,7 +48,140 @@
 	     from base_cross_train where BASE_CROSS_ID=#{crossId}    order by spareApplyFlage,trainSort
    </select>
    
+   <select id="getUnitCrossInfoForChartId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
+   select 
+        UNIT_CROSS_ID as unitCrossId,
+        BASE_CROSS_ID as baseCrossId,
+        BASE_CHART_ID as chartId,
+        BASE_CHART_NAME as chartName,
+        CROSS_START_DATE as crossStartDate,
+        CROSS_END_DATE as crossEndDate,
+        
+        CROSS_NAME as crossName,
+        CROSS_SPARE_NAME as crossSpareName,
+        ALTERNATE_DATE as alterNateDate,
+        ALTERNATE_TRAIN_NBR as alterNateTranNbr,
+        
+        SPARE_FLAG as spareFlag ,
+        CUT_OLD as  cutOld,
+        GROUP_TOTAL_NBR as groupTotalNbr ,
+        PAIR_NBR as pairNbr , 
+        
+        HIGHLINE_FLAG as  highlineFlag,
+        HIGHLINE_RULE as  highlineRule,
+        COMMONLINE_RULE as  commonlineRule,
+        APPOINT_WEEK as appointWeek ,
+        
+        APPOINT_DAY  as  appointDay,
+        CROSS_SECTION  as crossSection ,
+        THROUGH_LINE  as  throughline,
+        START_BUREAU  as startBureau ,
+        
+		TOKEN_VEH_BUREAU  as tokenVehBureau ,
+		TOKEN_VEH_DEPT  as  tokenVehDept,
+		TOKEN_VEH_DEPOT  as tokenVehDepot ,
+		TOKEN_PSG_BUREAU  as tokenPsgBureau ,
+		
+		TOKEN_PSG_DEPT  as tokenPsgDept ,	
+		LOCO_TYPE  as locoType ,
+		CRH_TYPE  as crhType ,
+		ELEC_SUPPLY  as elecSupply ,
+		
+		DEJ_COLLECT  as dejCollect ,
+		AIR_CONDITION  as airCondition ,
+		NOTE  as  note,
+		CREAT_PEOPLE  as createPeople ,
+		CREAT_PEOPLE_ORG  as createPeopleOrg ,
+		CREAT_TIME  as  createTime
+        from unit_cross where base_chart_id=#{chartId}
    
+   </select>
+   
+   <insert id="addPlanCrossInfo"  parameterType="java.util.Map">
+	
+		insert into plan_cross
+		(
+		PLAN_CROSS_ID,
+		UNIT_CROSS_ID,
+		BASE_CROSS_ID,
+		BASE_CHART_ID,
+		BASE_CHART_NAME,
+		CROSS_START_DATE,
+		CROSS_END_DATE,
+		CROSS_NAME,
+		CROSS_SPARE_NAME,
+		SPARE_FLAG,
+		GROUP_TOTAL_NBR,
+		PAIR_NBR,
+		HIGHLINE_FLAG,
+		HIGHLINE_RULE,
+		COMMONLINE_RULE,
+		APPOINT_WEEK,
+		APPOINT_DAY,
+		CROSS_SECTION,
+		THROUGH_LINE,
+		START_BUREAU,
+		TOKEN_VEH_BUREAU,
+		TOKEN_VEH_DEPT,
+		TOKEN_VEH_DEPOT,
+		TOKEN_PSG_BUREAU,
+		TOKEN_PSG_DEPT,
+		LOCO_TYPE,
+		CRH_TYPE,
+		ELEC_SUPPLY,
+		DEJ_COLLECT,
+		AIR_CONDITION,
+		NOTE,
+		CREAT_TIME
+		)
+		 (
+		 
+		 <foreach collection="trainCrossList" item="item" index="index"
+            separator="UNION ALL">
+            <![CDATA[
+	       SELECT
+	       #{item.planCrossId,jdbcType=VARCHAR},
+	       #{item.unitCrossId,jdbcType=VARCHAR},
+	       #{item.baseCrossId,jdbcType=VARCHAR},
+	       #{item.baseChartId,jdbcType=VARCHAR},
+	       #{item.baseChartName,jdbcType=VARCHAR},
+	       #{item.crossStartDate,jdbcType=VARCHAR},
+	       #{item.crossEndDate,jdbcType=VARCHAR},
+	       #{item.crossName,jdbcType=VARCHAR},
+	       #{item.crossSpareName,jdbcType=VARCHAR},
+	       #{item.spareFlag,jdbcType=VARCHAR},
+	        #{item.groupTotalNbr,jdbcType=NUMERIC},
+	        #{item.pairNbr,jdbcType=VARCHAR},
+	        #{item.highlineFlag,jdbcType=VARCHAR},
+	        #{item.highlineRule,jdbcType=VARCHAR},
+	        #{item.commonlineRule,jdbcType=VARCHAR},
+	        #{item.appointWeek,jdbcType=VARCHAR},
+	        #{item.appointDay,jdbcType=VARCHAR},
+	        #{item.crossSection,jdbcType=VARCHAR},
+	        #{item.throughline,jdbcType=VARCHAR},
+	        #{item.startBureau,jdbcType=VARCHAR},
+	        #{item.tokenVehBureau,jdbcType=VARCHAR},
+	        #{item.tokenVehDept,jdbcType=VARCHAR},
+	        #{item.tokenVehDepot,jdbcType=VARCHAR},
+	        #{item.tokenPsgBureau,jdbcType=VARCHAR},
+	        #{item.tokenPsgDept,jdbcType=VARCHAR},
+	        #{item.locoType,jdbcType=VARCHAR},
+	        #{item.crhType,jdbcType=VARCHAR},
+	        #{item.elecSupply,jdbcType=NUMERIC},
+	        #{item.dejCollect,jdbcType=NUMERIC},
+	        #{item.airCondition,jdbcType=NUMERIC},
+	        #{item.note,jdbcType=VARCHAR},
+	        sysdate
+	      
+	       from dual
+	         ]]>
+	      </foreach>
+	    
+	     ) 
+	     
+	</insert>
+	
+	
    <select id="getCrossInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
       select 
         BASE_CROSS_ID as crossId,
@@ -124,7 +276,8 @@
 		CREAT_TIME  as  createTime
         from unit_cross where unit_cross_id=#{crossId}
   
-  </select>
+  </select> 
+  
    <select id="getUnitCrossInfoForUnitCrossid" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossInfo">
       select 
         UNIT_CROSS_ID as unitCrossId,
@@ -173,8 +326,15 @@
   
       from unit_cross where UNIT_CROSS_ID=#{unitCrossId} 
    </select>
-  
-    <select id="getUnitCrossTrainInfoForUnitCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
+   
+   
+   
+    
+ 
+    
+    
+    
+    <select id="getUnitCrossTrainInfoForUnitCrossid" parameterType="map" resultMap="unitCrossTrain">
      select 
          UNIT_CROSS_TRAIN_ID as unitCrossTrainId,
          UNIT_CROSS_ID as unitCrossId,
@@ -194,10 +354,12 @@
 	     HIGHLINE_FLAG AS highlineFlag,
 	     HIGHLINE_RULE AS highlineRule,
 	     COMMONLINE_RULE AS commonLineRule,
-	     APPOINT_WEEK AS appointWeek,
+	     APPOINT_WEEK AS appointWeek, 
 	     APPOINT_DAY AS appointDay,
 	     MARSHALLING_NAME AS marshallingName
 	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId} and BASE_TRAIN_ID is not null order by GROUP_SERIAL_NBR, TRAIN_SORT
+	     APPOINT_DAY AS appointDay
+	     from unit_cross_train where  BASE_TRAIN_ID is not null and UNIT_CROSS_ID=#{unitCrossId} order by GROUP_SERIAL_NBR,TRAIN_SORT
    </select>
    
    

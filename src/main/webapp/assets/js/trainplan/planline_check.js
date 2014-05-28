@@ -35,11 +35,14 @@ function ApplicationModel() {
     });
 
     self.canCheckLev2 = ko.computed(function() {
+        var flag = false;
         ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
             if(plan.needLev2()) {
+                flag = true;;
                 return true;
             }
         });
+        return flag;
     });
 
     self.autoCheck = function() {
@@ -138,9 +141,9 @@ function ApplicationModel() {
             });
             $(this).prop( "disabled", false );
             $.gritter.add({
-                title: getHintTitle(self.tableModel().planList().length, response.entity.length),
+                title: getHintTitle(data.length, response.entity.length),
                 text: '审核成功[' + response.entity.length + ']条计划',
-                class_name: getHintCss(self.tableModel().planList().length, response.entity.length),
+                class_name: getHintCss(data.length, response.entity.length),
                 image: 'assets/img/screen.png',
                 sticky: false,
                 time: 3000
@@ -195,9 +198,9 @@ function ApplicationModel() {
             });
             $(this).prop( "disabled", false );
             $.gritter.add({
-                title:getHintTitle(self.tableModel().planList().length, response.entity.length),
+                title:getHintTitle(data.length, response.entity.length),
                 text: '审核成功[' + response.entity.length + ']条计划',
-                class_name: getHintCss(self.tableModel().planList().length, response.entity.length),
+                class_name: getHintCss(data.length, response.entity.length),
                 image: 'assets/img/screen.png',
                 sticky: false,
                 time: 3000
@@ -221,8 +224,10 @@ function ApplicationModel() {
 function ParamModel(tableModel) {
     var self = this;
 
+    // 初始化时间控件
     $("#date_selector").datepicker({format: "yyyy-mm-dd"}).on('changeDate', function (ev) {
         tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
+        self.loadPies(moment(ev.date).format("YYYYMMDD"));
     });;
     var date = $.url().param("date");
     if (date) {
@@ -230,6 +235,58 @@ function ParamModel(tableModel) {
     } else {
         $("#date_selector").datepicker('setValue', new Date());
     }
+
+    self.loadPies = function(date) {
+        // 统计图
+        $.ajax({
+            url: "audit/plan/chart/traintype/" + date,
+            method: "GET",
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(resp) {
+            if(resp && resp.length) {
+                var name = Array();
+                var data = Array();
+                var dataArrayFinal = Array();
+                for(var i = 0; i < resp.length; i ++) {
+                    name[i] = resp[i].name;
+                    data[i] = resp[i].count;
+                    dataArrayFinal[i] = new Array(name[i],data[i]);
+                }
+                drawPie($("#chart_01"), '开行/热备/停运统计', dataArrayFinal);
+            }
+
+        }).fail(function() {
+
+        }).always(function() {
+
+        })
+
+
+
+        $.ajax({
+            url: "audit/plan/chart/planline/" + date,
+            method: "GET",
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(resp) {
+            if(resp && resp.length) {
+                var name = Array();
+                var data = Array();
+                var dataArrayFinal = Array();
+                for(var i = 0; i < resp.length; i ++) {
+                    name[i] = resp[i].name;
+                    data[i] = resp[i].count;
+                    dataArrayFinal[i] = new Array(name[i],data[i]);
+                }
+                drawPie($("#chart_02"), '客运计划已上图/未上图统计', dataArrayFinal);
+            }
+
+        }).fail(function() {
+
+        }).always(function() {
+
+        })
+    }
+
 }
 
 // ################# 列表模型 #############
@@ -239,6 +296,7 @@ function TableModel() {
     self.planList = ko.observableArray();
 
     self.loadTable = function() {
+        commonJsScreenLock();
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         $.ajax({
             url: "audit/plan/runplan/" + date + "/1",
@@ -254,7 +312,7 @@ function TableModel() {
         }).fail(function() {
 
         }).always(function() {
-
+            commonJsScreenUnLock();
         })
     };
 }
@@ -327,7 +385,7 @@ function Plan(dto) {
                 className = "btn-warning";
                 break;
             case 1:
-                className = "btn-success";
+                className = "btn-info";
                 break;
             case -1:
                 className = "btn-danger";
@@ -361,7 +419,7 @@ function Plan(dto) {
                 className = "btn-warning";
                 break;
             case 1:
-                className = "btn-success";
+                className = "btn-info";
                 break;
             case -1:
                 className = "btn-danger";
@@ -393,7 +451,7 @@ function Plan(dto) {
     });
 
     self.needLev2 = ko.computed(function() {
-        return self.lev2Checked() == 0;
+        return self.checkLev1() == 2 && self.lev2Checked() == 0;
     });
 
     self._default = {
@@ -434,7 +492,7 @@ function Plan(dto) {
 
     self.showTimeTableComparePanel = function() {
         var url = "audit/compare/timetable/" + $("#bureau option:selected").val() + "/plan/" + self.id() + "/line/" + self.dailyLineId();
-        self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 1024}).dialog("open");
+        self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 1300}).dialog("open");
     }
 }
 
@@ -457,4 +515,36 @@ function getHintCss(reqLength, respLength) {
     } else {
         return "growl-danger";
     }
+}
+
+function drawPie($div, chartName, data) {
+    $div.highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: chartName
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>',
+            percentageDecimals: 1
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: '列车数量',
+            data: data
+        }]
+    });
 }

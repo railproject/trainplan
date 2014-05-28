@@ -62,6 +62,14 @@
 
             $("#kanban").get(0).click();
         });
+        
+        
+        $(function(){
+        	$("#indexLoginBtn").click(function(){
+                window.location = "${ctx}/login";
+            });
+        });
+        
     </script>
 </head>
 <body>
@@ -70,16 +78,24 @@
         <div class="pull-left logo_name"><img src="${ctx}/assets/img/login-logo.png" height="50px"> </div>
         <div class="col-md-4 col-sm-4 col-xs-4 pull-right">
             <div class="btn-group pull-right" style="margin-top:15px;">
-                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                    <i class="fa fa-user"></i>
-                    <shiro:principal/>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#"><i class="fa fa-cog"></i>修改密码</a></li>
-                    <li class="divider"></li>
-                    <li><a href="${ctx}/logout"><i class="fa fa-sign-out"></i> 退 出</a></li>
-                </ul>
+            	<!-- 已登录用户 -->
+            	<shiro:authenticated>
+	                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+	                    <i class="fa fa-user"></i>
+	                    <shiro:principal/>
+	                    <span class="caret"></span>
+	                </button>
+	                <ul class="dropdown-menu" role="menu">
+	                    <li><a href="#"><i class="fa fa-cog"></i>修改密码</a></li>
+	                    <li class="divider"></li>
+	                    <li><a href="${ctx}/logout"><i class="fa fa-sign-out"></i> 退 出</a></li>
+	                </ul>
+                </shiro:authenticated>
+                
+                <!-- 未登录用户 -->
+                <shiro:notAuthenticated>
+                	<button class="btn btn-warning" type="button" id="indexLoginBtn" style="padding:6px 13px; border-radius: 4px; width: 100px;margin-left: 170px;">登&nbsp;录</button>
+                </shiro:notAuthenticated>
             </div>
             <!--btn-group-->
         </div>
@@ -95,31 +111,35 @@
             <li>
                 <a href="http://10.1.186.116:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor:default;"><i class="fa fa-list-ol"></i>计划看板 </a>
             </li>
-            <li>
-                <a target="contentFrame" class="menu_one"><i class="fa fa-bar-chart-o"></i>计划分析<i class="fa fa-caret-down pull-right"></i></a>
-                <ul>
-                    <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-level-down"></i>局别始发汇总</a></li>
-                    <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-level-up"></i>局别接入汇总</a></li>
-                    <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-search"></i>日计划查询</a></li>
-                </ul>
-            </li>
-            <li><a target="contentFrame" class="menu_one"><i class="fa fa-road"></i>客运列车<i class="fa fa-caret-down pull-right"></i> </a>
-                <ul>
-                    <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-alt"></i>开行计划汇总</a></li>
-                    <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>核查编制图定开行</a></li>
-                    <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>批量上图</a></li>
-                    <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>新图初始化</a></li>
-                    
-                    
-                    <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表维护</a></li>
-                    <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>基本交路单元维护</a></li>
-                    <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-eye"></i>日计划审核</a></li>
-                    <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图查询</a></li>
-                </ul>
-            </li>
-            <li><a href="${ctx}/default/transfer/planConstruction" class="menu_one" target="contentFrame"><i class="fa fa-truck"></i>货运列车 </a></li>
-            <li><a href="http://10.1.191.135:7003/sgdd" target="_blank" class="menu_one"><i class="fa fa-gavel"></i>施工维修 </a></li>
-            <li class="pull-right"><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="_blank" class="menu_one"><i class="fa fa-file"></i>技术资料 </a></li>
+            
+            <shiro:authenticated>
+	            <li>
+	                <a target="contentFrame" class="menu_one"><i class="fa fa-bar-chart-o"></i>计划分析<i class="fa fa-caret-down pull-right"></i></a>
+	                <ul>
+	                    <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-level-down"></i>局别始发汇总</a></li>
+	                    <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-level-up"></i>局别接入汇总</a></li>
+	                    <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-search"></i>日计划查询</a></li>
+	                </ul>
+	            </li>
+	            <li><a target="contentFrame" class="menu_one"><i class="fa fa-road"></i>客运列车<i class="fa fa-caret-down pull-right"></i> </a>
+	                <ul>
+	                    <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-alt"></i>开行计划汇总</a></li>
+	                    <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>核查编制图定开行</a></li>
+	                    <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>批量上图</a></li>
+	                    <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>新图初始化</a></li>
+	                    
+	                    
+	                    <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表维护</a></li>
+	                    <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>基本交路单元维护</a></li>
+	                    <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-eye"></i>日计划审核</a></li>
+	                    <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图明细查询</a></li>
+	                    <li><a href="http://10.1.191.154/WebReport/ReportServer?reportlet=JHPT%2FJHPT_JBT%2Fjbt_kxlstj.cpt" target="contentFrame"><i class="fa fa-bar-chart-o"></i>基本图信息汇总</a></li>
+	                </ul>
+	            </li>
+	            <li><a href="${ctx}/default/transfer/planConstruction" class="menu_one" target="contentFrame"><i class="fa fa-truck"></i>货运列车 </a></li>
+	            <li><a href="http://10.1.191.135:7003/sgdd" target="_blank" class="menu_one"><i class="fa fa-gavel"></i>施工维修 </a></li>
+	            <li class="pull-right"><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="_blank" class="menu_one"><i class="fa fa-file"></i>技术资料 </a></li>
+            </shiro:authenticated>
         </ul>
 
         <!--      <a  href="form.html" class="menu_one"  target="contentFrame">FORM</a>

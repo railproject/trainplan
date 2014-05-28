@@ -22,7 +22,7 @@ Object grid =  request.getAttribute("gridData");
     <div class="panel panel-default">
       <!--panle-heading-->
       <div class="panel-body">
-        <div class="table-responsive" >
+        <div class="table-responsive" style="overflow: auto;">
         	<canvas id="unit_cross_canvas"></canvas>
         </div>
         

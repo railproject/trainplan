@@ -1,6 +1,13 @@
 package org.railway.com.trainplan.web.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -11,10 +18,21 @@ import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
+import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.service.RemoteService;
-import org.railway.com.trainplan.service.dto.*;
-import org.railway.com.trainplan.web.dto.*;
+import org.railway.com.trainplan.service.TrainInfoService;
+import org.railway.com.trainplan.service.dto.BaseCrossDto;
+import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
+import org.railway.com.trainplan.service.dto.PagingResult;
+import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
+import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
+import org.railway.com.trainplan.web.dto.CrossRelationDto;
+import org.railway.com.trainplan.web.dto.PlanLineGrid;
+import org.railway.com.trainplan.web.dto.PlanLineGridX;
+import org.railway.com.trainplan.web.dto.PlanLineGridY;
+import org.railway.com.trainplan.web.dto.PlanLineSTNDto;
+import org.railway.com.trainplan.web.dto.Result;
 import org.railway.com.trainplan.web.dto.TrainInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,15 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.beans.IntrospectionException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
  
 
@@ -62,6 +72,9 @@ public class CrossController {
 	
 	@Autowired
 	private RemoteService remoteService;
+	
+	@Autowired
+	private TrainInfoService trainInfoService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
@@ -190,7 +203,7 @@ public class CrossController {
 		 return result;
 	}
 	/**
-	 * 提供画交路图形的数据
+	 * 提供画交路单元图形的数据
 	 * @return
 	 */
 	@ResponseBody
@@ -198,14 +211,19 @@ public class CrossController {
 	public ModelAndView  provideUnitCrossChartData(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		 ModelAndView result = new ModelAndView("cross/unit_cross_canvas"); 
 		 ObjectMapper objectMapper = new ObjectMapper();
-		 String crossId = StringUtil.objToStr(request.getParameter("crossId"));
+		 String unitCrossId = StringUtil.objToStr(request.getParameter("unitCrossId"));
 		 PlanLineGrid grid = null;
 		 
-		 System.err.println("crossId---unit=="+ crossId);
+		 System.err.println("unitCrossId---unit=="+ unitCrossId);
 		
-		 //通过crossId获取unitCross列表信息
-		 List<CrossInfo> listUnitCross = crossService.getUnitCrossInfosForCrossId(crossId);
-		 if(listUnitCross != null){
+		 //通过unitCrossId获取unitCross列表信息
+		 CrossInfo unitCross = crossService.getUnitCrossInfoForUnitCrossid(unitCrossId);
+		 //通过unit_cross_id在表unit_cross_train中查询数据，根据组数和列车顺序排序
+		 List<UnitCrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
+		 
+		 
+		 
+		 /*if(listUnitCross != null){
 			 List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 				
 			 for(int i = 0;i<listUnitCross.size();i++){
@@ -239,7 +257,7 @@ public class CrossController {
 			logger.debug("gridStr==" + gridStr);
 			result.addObject("gridData",gridStr);
 		 }
-		
+		*/
 		
 		 
 		 return result;
@@ -378,12 +396,11 @@ public class CrossController {
 	    	for(TrainlineTemplateSubDto routeDto : routeItemDtos){
 	    		PlanLineSTNDto traintempDto = new PlanLineSTNDto();
 	    		traintempDto.setStnName(routeDto.getName());
-	    		Integer sourceDay = routeDto.getSourceDay();
-	    		Integer targetDay = routeDto.getTargetDay();
+	    		Integer runDay = routeDto.getRunDays();
 	    		//System.err.println("runDate==" + runDate);
 	    		LocalDate sourceDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(runDate);
-	    		traintempDto.setArrTime(sourceDate.plusDays(sourceDay).toString("yyyy-MM-dd") + " "+routeDto.getSourceTime());
-	    		traintempDto.setDptTime(sourceDate.plusDays(targetDay).toString("yyyy-MM-dd") + " " +routeDto.getTargetTime());
+	    		traintempDto.setArrTime(sourceDate.plusDays(runDay).toString("yyyy-MM-dd") + " "+routeDto.getSourceTime());
+	    		traintempDto.setDptTime(sourceDate.plusDays(runDay).toString("yyyy-MM-dd") + " " +routeDto.getTargetTime());
 	    		trainStns.add(traintempDto);
 	    	}
 	    }
@@ -391,14 +408,13 @@ public class CrossController {
 	    if(targetItemDto != null){
 	    	PlanLineSTNDto traintempDto = new PlanLineSTNDto();
 	    	traintempDto.setStnName(targetItemDto.getName());
-	    	Integer sourceDay = targetItemDto.getSourceDay();
-    		Integer targetDay = targetItemDto.getTargetDay();
-    		System.err.println("runDate22==" + runDate);
-    		System.err.println("sourceDay==" + sourceDay);
+	    	Integer runDay = targetItemDto.getRunDays();
+    		//Integer targetDay = targetItemDto.getTargetDay();
+    		
     		LocalDate targetDate = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(runDate);
-    		traintempDto.setArrTime(targetDate.plusDays(sourceDay).toString("yyyy-MM-dd") + " "+targetItemDto.getSourceTime());
+    		traintempDto.setArrTime(targetDate.plusDays(runDay).toString("yyyy-MM-dd") + " "+targetItemDto.getSourceTime());
     		//终到站离站日期
-    		String targetDateTemp = targetDate.plusDays(targetDay).toString("yyyy-MM-dd");
+    		String targetDateTemp = targetDate.plusDays(runDay).toString("yyyy-MM-dd");
     		traintempDto.setDptTime(targetDateTemp + " "+ targetItemDto.getTargetTime());
     		//设置终到站日期到对象
     		trainInfoDto.setEndDate(targetDateTemp);
@@ -420,13 +436,12 @@ public class CrossController {
 	private Map<String,Object> provideOneCrossChartData(BaseCrossDto baseCrossDto,boolean isProvideGrid,String type) throws Exception {
 		//Map<String,Object> crossChartMap = new HashMap<String,Object>();
 		//经由信息，由后面调用接口获取，用户提供画图的坐标
-		List<TrainlineTemplateSubDto> stationsInfo = new ArrayList<TrainlineTemplateSubDto>();
+		List<String> stationsInfo = new ArrayList<String>();
 	
 		Map<String,Object> crossMap = new HashMap<String,Object>();
 		List<TrainInfoDto> trains = new ArrayList<TrainInfoDto>();
 		List<CrossRelationDto> jxgx = new ArrayList<CrossRelationDto>();
 		//根据crossid查询crossName，trainNbr等信息对象
-		//BaseCrossDto baseCrossDto = crossService.getBaseCrossDtoWithCrossId(baseCrossId);
 		System.err.println("CrossStartDate==" + baseCrossDto.getCrossStartDate());
 		crossMap.put("crossName",baseCrossDto.getCrossName());
 		
@@ -438,8 +453,9 @@ public class CrossController {
 			for(BaseCrossTrainDto dto : listBaseCrossTrain){
 				String baseTrainId = dto.getBaseTrainId();
 				logger.debug("baseTrainId===" + baseTrainId);
-				//调用后台接口获取列车时刻表信息对象
-				TrainlineTemplateDto trainLineDto = remoteService.getTrainLinesInfoWithId(baseTrainId);
+				//调用后台接口获取列车信息,只查询起始站和终点站
+				TrainlineTemplateDto trainLineDto = trainInfoService.getTrainInfoAndTimeForTrainId(baseTrainId,Constants.STATION_TYPE_START_END);
+				
 				listTrainsInfo.add(trainLineDto);
 				
 				//组装列车信息
@@ -470,16 +486,30 @@ public class CrossController {
 			
 			//经由信息列表,取cross_name中第一辆车的经由站，为后面算纵坐标提供数据
 			if(listTrainsInfo != null && listTrainsInfo.size() > 0){
-				TrainlineTemplateDto dto = listTrainsInfo.get(0);
-				Map<String,Object> scheduleMap = dto.getScheduleMap();
-				TrainlineTemplateSubDto sourceItemDto = (TrainlineTemplateSubDto)scheduleMap.get("sourceItemDto");
-				TrainlineTemplateSubDto targetItemDto = (TrainlineTemplateSubDto)scheduleMap.get("targetItemDto");
-				List<TrainlineTemplateSubDto> routeItemDtos = (List<TrainlineTemplateSubDto>)scheduleMap.get("routeItemDtos");
-				stationsInfo.add(sourceItemDto);
-				for(TrainlineTemplateSubDto  routeDto : routeItemDtos){
-					stationsInfo.add(routeDto);
+				
+				for(int i = 0;i<listTrainsInfo.size();i++){
+					TrainlineTemplateDto dto = listTrainsInfo.get(i);
+					Map<String,Object> scheduleMap = dto.getScheduleMap();
+					TrainlineTemplateSubDto sourceItemDto = (TrainlineTemplateSubDto)scheduleMap.get("sourceItemDto");
+					TrainlineTemplateSubDto targetItemDto = (TrainlineTemplateSubDto)scheduleMap.get("targetItemDto");
+					List<TrainlineTemplateSubDto> routeItemDtos = (List<TrainlineTemplateSubDto>)scheduleMap.get("routeItemDtos");
+					//TODO
+					if(!stationsInfo.contains(sourceItemDto.getName())){
+						stationsInfo.add(sourceItemDto.getName());
+					}
+					if(!stationsInfo.contains(targetItemDto.getName())){
+						stationsInfo.add(targetItemDto.getName());
+					}
+					
+					if(routeItemDtos != null && routeItemDtos.size() > 0){
+						for(TrainlineTemplateSubDto subDto :routeItemDtos){
+							if(!stationsInfo.contains(subDto.getName())){
+								stationsInfo.add(subDto.getName());
+							}
+						}
+					}
 				}
-				stationsInfo.add(targetItemDto);
+				
 			}
 			
 		}
@@ -522,17 +552,18 @@ public class CrossController {
 	 * @param crossEndDate 交路终到日期，格式yyyyMMdd
 	 * @return 坐标轴对象
 	 */
-	private PlanLineGrid getPlanLineGrid(List<TrainlineTemplateSubDto> stationsInfo,String crossStartDate,String crossEndDate){
+	private PlanLineGrid getPlanLineGrid(List<String> stationsInfo,String crossStartDate,String crossEndDate){
 		//纵坐标
 		 List<PlanLineGridY> planLineGridYList = new ArrayList<PlanLineGridY>();
 		 //横坐标
 		 List<PlanLineGridX> gridXList = new ArrayList<PlanLineGridX>(); 
+		 
 		 /****组装纵坐标****/
 		 if(stationsInfo != null){
 			  
-				for(TrainlineTemplateSubDto subDto : stationsInfo){
-				    if(subDto != null){
-				    	planLineGridYList.add(new PlanLineGridY(subDto.getName()));
+				for(String stationName : stationsInfo){
+				    if(stationName != null){
+				    	planLineGridYList.add(new PlanLineGridY(stationName));
 				    }
 					
 				}
@@ -608,27 +639,28 @@ public class CrossController {
 	@RequestMapping(value = "/updateUnitCrossId", method = RequestMethod.POST)
 	public Result updateUnitCrossId(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
-		String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
-		logger.info("updateUnitCrossId----unitCrossIds=="+unitCrossIds);
+		String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
+		logger.info("updateUnitCrossId----crossIds=="+crossIds);
 		try{
-			if(unitCrossIds != null){
-				String[] unitcrossArray = unitCrossIds.split(",");
-				for(String unitCrossId :unitcrossArray){
-					List<Map<String,String>> listMap = crossService.getTrainNbrFromUnitCrossId(unitCrossId);
-					if(listMap !=null && listMap.size() > 0){
+			if(crossIds != null){
+				String[] crossArray = crossIds.split(",");
+				for(String crossId :crossArray){
+					List<CrossTrainInfo> listTrainInfo = crossService.getCrossTrainInfoForCrossid(crossId);
+					if(listTrainInfo !=null && listTrainInfo.size() > 0){
 						
 						//方案id
 						String baseChartId="";
-						int size = listMap.size();
+						int size = listTrainInfo.size();
 						List<String> trainNbrs = new ArrayList<String>();
 						for(int i = 0;i<size;i++){
-							String trainNbr = listMap.get(i).get("TRAIN_NBR");
-							baseChartId = listMap.get(i).get("BASE_CHART_ID");
-							trainNbrs.add(trainNbr);
+							//TODO 由于表结构发生变化，需要修改
+							//String trainNbr = listMap.get(i).get("TRAIN_NBR");
+							///baseChartId = listMap.get(i).get("BASE_CHART_ID");
+							//trainNbrs.add(trainNbr);
 							
 						}
 						//调用后台接口
-						remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrs);
+						remoteService.updateUnitCrossId(baseChartId, crossId, trainNbrs);
 					}
 					
 				}

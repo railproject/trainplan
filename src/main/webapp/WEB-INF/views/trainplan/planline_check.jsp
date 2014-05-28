@@ -24,6 +24,8 @@
     <script type="text/javascript" src="${ctx}/assets/js/purl.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/knockout.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/moment.min.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/highcharts.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/trainplan/common.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/common.security.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/planline_check.js"></script>
 </head>
@@ -60,20 +62,36 @@
                     <div class="row paddingtop5">
                         <div class="panel panel-default marginbottom0">
                             <div class="panel-body paddingbottom0">
+                                <%--
                                 <p>客运计划共709条，其中停运8条，热备52条，需下达709条。</p>
                                 <p>已生成运行线709条，未生成0条，调整0条。</p>
                                 <p>客调已审核709条，值班主任已审核12条。</p>
+                                --%>
+                                <div class="row">
+                                    <div class="col-xs-4 col-md-4  col-sm-4">
+                                        <div id="chart_01" style="height:253px; margin: 0 auto;"></div>
+                                    </div>
+                                    <div class="col-xs-4 col-md-4  col-sm-4 ">
+                                        <div id="chart_02" style="height:253px; margin:0 auto;"></div>
+                                    </div>
+                                    <div class="col-xs-4 col-md-4  col-sm-4 ">
+                                        <div id="chart_03" style="height:270px; margin:0 auto;"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5">
+                        <div class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5 paddingright0">
                             <div class="table-responsive">
                                 <table id="plan_table" class="table table-bordered table-striped table-hover tableradius" data-bind="with: tableModel">
                                     <thead>
                                     <tr>
-                                        <shiro:hasAnyRoles name="局客运调度,局值班主任">
+                                        <shiro:hasAnyRoles name="局客运调度">
                                             <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev1"/></th>
+                                        </shiro:hasAnyRoles>
+                                        <shiro:hasAnyRoles name="局值班主任">
+                                            <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev2"/></th>
                                         </shiro:hasAnyRoles>
                                         <th rowspan="2" class="text-center">序号</th>
                                         <th rowspan="2" class="text-center">车次</th>
