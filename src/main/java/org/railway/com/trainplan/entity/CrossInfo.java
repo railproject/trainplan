@@ -56,8 +56,7 @@ public class CrossInfo {
 	private String createTime ;
 	private String chartId;
 	private String chartName;
-	
-	
+	private String baseCrossId;
 	private String startStn;
 	/****以下字段unit_cross表用到  ****/
 	//unit_cross表主键
@@ -66,7 +65,14 @@ public class CrossInfo {
 	private String marshallingName;
 	//组数序号,只有unit_cross表中有
 	private int groupSerialNbr;
-		
+	
+	
+	public String getBaseCrossId() {
+		return baseCrossId;
+	}
+	public void setBaseCrossId(String baseCrossId) {
+		this.baseCrossId = baseCrossId;
+	}
 	public String getCrossIdForExcel() {
 		return crossIdForExcel;
 	}

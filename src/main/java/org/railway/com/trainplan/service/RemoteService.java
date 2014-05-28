@@ -5,21 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
+import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.common.utils.DateUtil;
+import org.railway.com.trainplan.common.utils.RestClientUtils;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.service.dto.PlanBureauStatisticsDto;
 import org.railway.com.trainplan.service.dto.PlanBureauTsDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
 import org.railway.com.trainplan.service.dto.TrainlineTemplateSubDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.railway.com.trainplan.common.constants.Constants;
-import org.railway.com.trainplan.common.utils.DateUtil;
-import org.railway.com.trainplan.common.utils.RestClientUtils;
-import org.railway.com.trainplan.common.utils.StringUtil;
-import org.apache.log4j.Logger;
 /**
  * 调用远程接口服务的service
  * @author join
@@ -33,6 +33,8 @@ public class RemoteService {
 	//TODO 取不出来
 	@Value("#{restConfig['SERVICE_URL']}")
     private String restUrl;
+	@Autowired
+	private TrainInfoService trainInfoService;
 	/**
 	 * 查询方案信息
 	 */
@@ -60,31 +62,7 @@ public class RemoteService {
 		return list;
 	}
 	
-	/**
-	 * 根据列车id查询列车运行时刻表
-	 * @param baseTrainId 
-	 * @return 列车车次基本运行线对象
-	 */
-    public TrainlineTemplateDto  getTrainLinesInfoWithId(String baseTrainId)  throws Exception{
-    	TrainlineTemplateDto dto  = null ;
-    	Map response = RestClientUtils.get(restUrl
-				+ Constants.GET_TRAIN_LINES_INFO_WITH_ID + baseTrainId,Map.class);
-    	System.err.println("response==" + response);
-    	//解析返回报文
-    	if (response != null && response.size() > 0) {
-    		String code = StringUtil.objToStr(response.get("code"));
-    		if (!"".equals(code) && code.equals("200")){
-    			List<Map<String, Object>> dataList = (List<Map<String, Object>>) response
-						.get("data");
-    			if (dataList != null && dataList.size() > 0){
-    				Map<String,Object> dataMap = dataList.get(0);
-    				dto =  parsDataMap(dataMap);
-    			}
-    		}
-    	}
-    	return dto;
-    }
-    
+
    
 	/**
 	 * 根据方案id查询基本运行线
@@ -307,6 +285,7 @@ public class RemoteService {
 		logger.info("updateUnitCrossId---response==" + response);
 		return "";
 	}
+	
 	
 	/**
 	 * 解析报文中data部分
