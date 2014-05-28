@@ -25,11 +25,9 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -44,22 +42,17 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
+import org.railway.com.trainplan.entity.PlanCrossInfo;
+import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.BaseCrossDto;
 import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.beans.IntrospectionException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.*;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
  
 @Service
 public class CrossService{
@@ -90,6 +83,25 @@ public class CrossService{
 //		System.out.println("G11(".substring(0,"G11(".indexOf('(')));
 	}
 
+	/**
+	 * 对表plan_cross批量插入数据
+	 * @param list
+	 * @return
+	 */
+	public int addPlanCrossInfo(List<PlanCrossInfo> list){
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("trainCrossList",list );
+		int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_PLAN_CROSS_INFO, reqMap);
+		System.err.println("addPlanCrossInfo--count==" + count);
+		return count;
+	}
+	/**
+	 *@param chartId  方案id
+	 * 通过chartId查询unit_cross信息
+	 */
+	public List<CrossInfo> getUnitCrossInfoForChartId(String chartId){
+		return baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSSINFO_FOR_CHARTID, chartId);
+	}
 	/**
 	 * 更新base_cross中的creat_unit_time字段的值
 	 * @param crossIds
@@ -520,7 +532,7 @@ public class CrossService{
 	 * @param unitCrossId
 	 * @return
 	 */
-	public List<CrossTrainInfo> getUnitCrossTrainInfoForUnitCrossid(String unitCrossId){
+	public List<UnitCrossTrainInfo> getUnitCrossTrainInfoForUnitCrossid(String unitCrossId){
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("unitCrossId", unitCrossId);
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
@@ -551,11 +563,11 @@ public class CrossService{
 		return baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID, baseCrossId);
 	}
 	
-	/**
+/*	*//**
 	 *  通过unitCorssId分别查询数据并组合
 	 * @param unitCorssId
 	 * @return
-	 */
+	 *//*
 	public BaseCrossDto  getUnitCrossDtoWithUnitCrossId(String unitCorssId){
 		BaseCrossDto baseCrossDto = new BaseCrossDto();
 		
@@ -566,9 +578,9 @@ public class CrossService{
 		baseCrossDto.setCrossStartDate(crossInfo.getCrossStartDate());
 		baseCrossDto.setCrossEndDate(crossInfo.getCrossEndDate());
 		List<BaseCrossTrainDto> subList = new ArrayList<BaseCrossTrainDto>();
-		/**
+		*//**
 		 * unitCrossTrain信息以train_sort升序排列
-		 */
+		 *//*
 		List<CrossTrainInfo> trainInfoList = getUnitCrossTrainInfoForUnitCrossid(unitCorssId);
 		if(trainInfoList != null && trainInfoList.size() > 0){
 			System.err.println("trainInfoList.size()==" + trainInfoList.size());
@@ -586,7 +598,7 @@ public class CrossService{
 			baseCrossDto.setListBaseCrossTrain(subList);
 		}
 		return baseCrossDto;
-	}
+	}*/
 	/**
 	 * 通过baseCrossId分别查询数据并组合
 	 * @param baseCrossId

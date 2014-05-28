@@ -32,8 +32,30 @@ public class TrainInfoService {
 	@Autowired
 	private BaseDao baseDao;
 	
+	/**
+	 * 根据列车id查询起始站和终到站时刻信息
+	 */
+	public List<TrainlineTemplateSubDto> getStartEndTrainInfoForTrainId(String baseTrainId){
+		return baseDao.selectListBySql(Constants.TRAININFO_GET_START_END_TRAINTIME_FOR_TRAINID, baseTrainId);
+		
+	}
+	/**
+	 * 根据列车id查询经由时刻信息
+	 * @param baseTrainId
+	 * @return
+	 */
+	public List<TrainlineTemplateSubDto>  getTrainTimeInfoForTrainId(String baseTrainId){
+		return baseDao.selectListBySql(Constants.TRAININFO_GETTRAIN_TIME_INFO_FOR_TRAINID, baseTrainId);
+	}
 	
-	
+	/**
+	 * 根据列车id查询列车基本信息
+	 * @param baseTrainId
+	 * @return
+	 */
+	public TrainlineTemplateDto getTrainInfoForTrainId(String baseTrainId){
+		return (TrainlineTemplateDto)baseDao.selectOneBySql(Constants.TRAININFO_GETTRAININFO_FOR_TRAINID, baseTrainId);
+	}
 	/**
 	 * 解析从数据库中获取的数据为列车的List对象
 	 * @param reqDto
@@ -108,6 +130,60 @@ public class TrainInfoService {
 		}
 		
 		return returnList;
+	}
+	
+	/**
+	 * 根据baseTrainId获取列车信息和列车时刻表信息
+	 * @param baseTrainId
+	 * @param type  查询类型 ALL  START_END:只查询始发站和终到站
+	 * @return
+	 */
+	public  TrainlineTemplateDto getTrainInfoAndTimeForTrainId(String baseTrainId,String type){
+		//通过baseTrainId和chartId查询列车信息
+		TrainlineTemplateDto dto = getTrainInfoForTrainId(baseTrainId);
+		
+		if(dto != null){
+			//根据列车id获取列车时刻表
+			List<TrainlineTemplateSubDto> listSubDto = null;
+			if(type.equals(Constants.STATION_TYPE_ALL)){
+				//获取全部的经由信息
+				listSubDto = getTrainTimeInfoForTrainId(baseTrainId);
+			}else if(type.equals(Constants.STATION_TYPE_START_END)){
+				//只获取起始站和终到站信息
+				listSubDto = getStartEndTrainInfoForTrainId(baseTrainId);
+			}
+			
+			//解析经由信息
+			Map<String,Object> myscheduleMap = new HashMap<String,Object>();
+			if(listSubDto != null && listSubDto.size() > 0){
+				int size = listSubDto.size() ;
+				 List<TrainlineTemplateSubDto> myRouteItemList = new ArrayList<TrainlineTemplateSubDto>();
+				for(int i = 0;i<size;i++){
+					TrainlineTemplateSubDto subDto = listSubDto.get(i);
+					if(i == 0){
+						//起始站对象
+						myscheduleMap.put("sourceItemDto", subDto);
+					}else if(i == (size -1)){
+						//终到站
+						myscheduleMap.put("targetItemDto", subDto);
+						//终到站的运行天数即为整个列车的运行天数
+						if(subDto != null){
+							dto.setRundays(subDto.getTargetDay()== null ?0:subDto.getTargetDay());
+						}else{
+							dto.setRundays(0);
+						}
+						
+					}else{
+						//
+						myRouteItemList.add(subDto);
+					}
+				}
+				myscheduleMap.put("routeItemDtos", myRouteItemList);
+			}
+			dto.setScheduleMap(myscheduleMap);
+		}
+		
+		return dto;
 	}
 	
 	/**

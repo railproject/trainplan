@@ -9,7 +9,7 @@
         <collection property="unitCrossTrainList" resultMap="org.railway.com.trainplan.repository.mybatis.UnitCrossTrainDao.unitCrossTrain"/>
     </resultMap>
 
-    <resultMap id="planCross" type="org.railway.com.trainplan.entity.PlanCross">
+    <resultMap id="planCross" type="org.railway.com.trainplan.entity.PlanCrossInfo">
         <id column="UNIT_CROSS_ID" property="unitCrossId"/>
         <result column="GROUP_TOTAL_NBR" property="groupTotalNbr"/>
         <result column="PLAN_CROSS_ID" property="planCrossId"/>
