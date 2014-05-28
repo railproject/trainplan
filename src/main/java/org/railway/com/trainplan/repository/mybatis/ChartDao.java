@@ -8,7 +8,7 @@ import java.util.Map;
 @MyBatisRepository
 public interface ChartDao {
 
-    Map<String, Object> getPlanTypeCount(String date);
+    Map<String, Object> getPlanTypeCount(Map<String, Object> map);
 
-    Map<String, Object> getPlanLineCount(String date);
+    Map<String, Object> getPlanLineCount(Map<String, Object> map);
 }

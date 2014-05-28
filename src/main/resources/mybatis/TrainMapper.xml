@@ -124,17 +124,16 @@
  order by t1.BASE_TRAIN_ID, STN_SORT
  ) A,
   
- (select * from 
- (select ROWNUM AS num, trainNbr  from  
-   ( select name as trainNbr from jhpt_rjh.m_trainlinetemp t where 1=1  
+ (select BASE_TRAIN_ID from 
+ (select ROWNUM AS num, BASE_TRAIN_ID  from  
+   ( select id as BASE_TRAIN_ID from jhpt_rjh.m_trainlinetemp t where 1=1  
 	AND t.scheme_id = #{chartId}
         AND t.operation = #{operation}
-        order by trainNbr
     ) 
  ) where num >=#{rownumstart} AND num &lt;=#{rownumend}
  ) B
 
- where A.TRAIN_NBR = B.trainNbr order by B.trainNbr,A.stn_sort
+ where A.BASE_TRAIN_ID1 = B.BASE_TRAIN_ID order by B.BASE_TRAIN_ID,A.stn_sort
     
     </select>
 

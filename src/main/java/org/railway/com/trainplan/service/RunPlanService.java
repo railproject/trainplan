@@ -1,14 +1,12 @@
 package org.railway.com.trainplan.service;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.entity.LevelCheck;
-import org.railway.com.trainplan.exceptions.DailyPlanCheckException;
-import org.railway.com.trainplan.exceptions.UnknownCheckTypeException;
-import org.railway.com.trainplan.exceptions.WrongBureauCheckException;
-import org.railway.com.trainplan.exceptions.WrongDataException;
+import org.railway.com.trainplan.exceptions.*;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.repository.mybatis.RunPlanDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,17 +56,17 @@ public class RunPlanService {
             // 准备参数
             java.sql.Date now = new java.sql.Date(new Date().getTime());
             List<LevelCheck> params = new ArrayList<LevelCheck>();
-            StringBuilder stringBuilder = new StringBuilder();
+            List<String> planIdList = Lists.newArrayList();
             for(Map<String, Object> item: list) {
                 LevelCheck record = new LevelCheck(UUID.randomUUID().toString(), user.getName(), now, user.getDeptName(), user.getBureau(), checkType, MapUtils.getString(item, "planId"), MapUtils.getString(item, "lineId"));
                 params.add(record);
-                stringBuilder.append(record.getPlanId()).append(",");
+                planIdList.add(record.getPlanId());
             }
-            if(stringBuilder.length() > 0) {
+            if(planIdList.size() > 0) {
                 // 增加审核记录
                 runPlanDao.addCheckHis(params);
                 //修改审核状态和已审核局
-                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(stringBuilder.substring(0, stringBuilder.length() - 1));
+                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(planIdList);
 
                 for(Map<String, Object> plan: planList) {
 
@@ -124,17 +122,17 @@ public class RunPlanService {
             // 准备参数
             java.sql.Date now = new java.sql.Date(new Date().getTime());
             List<LevelCheck> params = new ArrayList<LevelCheck>();
-            StringBuilder stringBuilder = new StringBuilder();
+            List<String> planIdList = Lists.newArrayList();
             for(Map<String, Object> item: plans) {
                 LevelCheck record = new LevelCheck(UUID.randomUUID().toString(), user.getName(), now, user.getDeptName(), user.getBureau(), checkType, MapUtils.getString(item, "planId"), MapUtils.getString(item, "lineId"));
                 params.add(record);
-                stringBuilder.append(record.getPlanId()).append(",");
+                planIdList.add(record.getPlanId());
             }
-            if(stringBuilder.length() > 0) {
+            if(planIdList.size() > 0) {
                 // 增加审核记录
                 runPlanDao.addCheckHis(params);
                 //修改审核状态和已审核局
-                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(stringBuilder.substring(0, stringBuilder.length() - 1));
+                List<Map<String, Object>> planList = runPlanDao.findPlanInfoListByPlanId(planIdList);
 
                 for(Map<String, Object> plan: planList) {
 
@@ -144,11 +142,11 @@ public class RunPlanService {
                         levResult.put("id", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
 
                         int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
-                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU");
+                        String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU", "");
                         int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
-                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU");
+                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU", "");
                         String passBureau = MapUtils.getString(plan, "PASS_BUREAU");
-                        // 计算一级已审核局
+                        // 计算二级已审核局
                         String checkedLev2Bureau = addBureauCode(lev2Bureau, user.getBureauShortName());
                         // 计算新1级审核状态
                         int newLev2Type = newLev1Type(lev2Type, passBureau, lev2Bureau, user.getBureauShortName());
@@ -157,8 +155,8 @@ public class RunPlanService {
 //                        // 二级已审核局也应该是空
 //                        String checkedLev2Bureau = "";
                         Map<String, Object> updateParam = new HashMap<String, Object>();
-//                        updateParam.put("lev1Type", newLev1Type);
-//                        updateParam.put("lev1Bureau", checkedLev1Bureau);
+                        updateParam.put("lev1Type", lev1Type);
+                        updateParam.put("lev1Bureau", lev1Bureau);
                         updateParam.put("lev2Type", newLev2Type);
                         updateParam.put("lev2Bureau", checkedLev2Bureau);
                         updateParam.put("planId", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
@@ -202,13 +200,13 @@ public class RunPlanService {
 
     private int newLev1Type(int current, String passBureau, String currentChecked, String split) throws DailyPlanCheckException {
         int result = 0;
-        if(current == 0) {
-            if(passBureau.contains(split)) {
-                result = 1;
-            } else {
-                throw new WrongBureauCheckException("计划不属于审核局");
-            }
-        } else if(current == 1 || current == 2) {
+        if(!passBureau.contains(split)) {
+            throw new WrongBureauCheckException("计划不属于审核局");
+        }
+        if(current == 2) {
+            throw new WrongCheckTypeException("该计划已经审核过");
+        }
+        if(current == 1 || current == 0) {
             result = computeLev1Type(current, passBureau, addBureauCode(currentChecked, split));
         } else {
             throw new UnknownCheckTypeException("未知审核类型");
@@ -217,7 +215,7 @@ public class RunPlanService {
     }
 
     private int computeLev1Type(int current, String passBureau, String checkedBureau) throws WrongDataException {
-        if(current == 1 && isAllChecked(passBureau, checkedBureau)) {
+        if(current != 2 && isAllChecked(passBureau, checkedBureau)) {
             return 2;
         }
         if(current == 1 && !isAllChecked(passBureau, checkedBureau)) {
