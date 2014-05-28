@@ -3,6 +3,7 @@ package org.railway.com.trainplan.repository.mybatis;
 import org.railway.com.trainplan.entity.RunPlan;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by speeder on 2014/5/28.
@@ -10,5 +11,5 @@ import java.util.List;
 @MyBatisRepository
 public interface BaseTrainDao {
 
-    List<RunPlan> findBaseTrainByPlanCrossid(String planCrossId);
+    List<RunPlan> findBaseTrainByPlanCrossid(Map<String, Object> map);
 }

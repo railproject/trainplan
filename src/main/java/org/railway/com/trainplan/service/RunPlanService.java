@@ -1,6 +1,7 @@
 package org.railway.com.trainplan.service;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,8 +30,6 @@ import java.util.concurrent.Executors;
 public class RunPlanService {
 
     private static final Log logger = LogFactory.getLog(RunPlanService.class);
-
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(20);
 
     @Autowired
     private RunPlanDao runPlanDao;
@@ -285,9 +284,15 @@ public class RunPlanService {
     }
 
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        List<PlanCross> planCrossList = unitCrossDao.findPlanCross();
-        for(PlanCross planCross: planCrossList) {
-            executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        List<PlanCross> planCrossList = null;
+        try{
+            planCrossList = unitCrossDao.findPlanCross();
+            for(PlanCross planCross: planCrossList) {
+                executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
+            }
+        } finally {
+            executorService.shutdown();
         }
         return planCrossList.size();
     }
@@ -325,7 +330,9 @@ public class RunPlanService {
         public void run() {
             List<UnitCrossTrain> unitCrossTrainList = this.planCross.getUnitCrossTrainList();
             String planCrossId = planCross.getPlanCrossId();
-            List<RunPlan> runPlanList = baseTrainDao.findBaseTrainByPlanCrossid(planCrossId);
+            Map<String, Object> params = Maps.newHashMap();
+            params.put("planCrossId", planCrossId);
+            List<RunPlan> runPlanList = baseTrainDao.findBaseTrainByPlanCrossid(params);
             List<RunPlan> resultRunPlanList = Lists.newArrayList();
             // 计算循环次数
             int times = this.days / this.planCross.getGroupTotalNbr() + this.days % this.planCross.getGroupTotalNbr() > 0? 1:0;
@@ -404,9 +411,9 @@ public class RunPlanService {
             }
 
             for(RunPlan runPlan: resultRunPlanList) {
-                List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
-                runPlanStnDao.addRunPlanStn(runPlanStnList);
-                runPlanDao.addRunPlan(runPlan);
+                    List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
+                    runPlanStnDao.addRunPlanStn(runPlanStnList);
+                    runPlanDao.addRunPlan(runPlan);
             }
         }
     }

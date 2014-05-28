@@ -4,41 +4,6 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="org.railway.com.trainplan.repository.mybatis.RunPlanDao">
 
-    <resultMap id="runPlan" type="org.railway.com.trainplan.entity.RunPlan">
-        <id property="planTrainId" column="PLAN_TRAIN_ID"/>
-        <result property="planTrainSign" column="PLAN_TRAIN_SIGN"/>
-        <result property="planCrossId" column="PLAN_CROSS_ID"/>
-        <result property="preTrainId" column="PRE_TRAIN_ID"/>
-        <result property="nextTrainId" column="NEXT_TRAIN_ID"/>
-        <result property="runDate" column="RUN_DATE"/>
-        <result property="trainNbr" column="TRAIN_NBR"/>
-        <result property="startDateTime" column="START_TIME"/>
-        <result property="endDateTime" column="END_TIME"/>
-        <result property="startBureauShortName" column="START_BUREAU"/>
-        <result property="startBureauFullName" column="START_BUREAU_FULL"/>
-        <result property="startStn" column="START_STN"/>
-        <result property="endBureauShortName" column="END_BUREAU"/>
-        <result property="endBureauFullName" column="END_BUREAU_FULL"/>
-        <result property="endStn" column="END_STN"/>
-        <result property="passBureau" column="PASS_BUREAU"/>
-        <result property="trainScope" column="TRAIN_SCOPE"/>
-        <result property="trainTypeId" column="TRAIN_TYPE_ID"/>
-        <result property="highLineFlag" column="HIGHLINE_FLAG"/>
-        <result property="baseChartId" column="BASE_CHART_ID"/>
-        <result property="baseTrainId" column="BASE_TRAIN_ID"/>
-        <result property="hightLineRule" column="HIGHLINE_RULE"/>
-        <result property="commonLineRule" column="COMMONLINE_RULE"/>
-        <result property="appointWeek" column="APPOINT_WEEK"/>
-        <result property="appointDay" column="APPOINT_DAY"/>
-        <result property="dayGap" column="DAY_GAP"/>
-        <result property="spareFlag" column="SPARE_FLAG"/>
-        <result property="spareApplyFlag" column="SPARE_APPLY_FLAG"/>
-        <result property="createType" column="CREAT_TYPE"/>
-        <result property="createDateTime" column="CREAT_TIME"/>
-        <result property="checkLev1Type" column="CHECK_LEV1_TYPE"/>
-        <result property="checkLev2Type" column="CHECK_LEV2_TYPE"/>
-        <result property="dailyPlanTimes" column="DAILYPLAN_TIMES"/>
-    </resultMap>
 
     <!-- 根据日期和所属局查询客运计划列表 -->
 	<select id="findRunPlan" parameterType="map" resultType="map">
@@ -108,15 +73,20 @@
         UPDATE PLAN_TRAIN PT SET PT.CHECK_LEV1_TYPE = #{lev1Type}, PT.CHECK_LEV1_BUREAU = #{lev1Bureau}, PT.CHECK_LEV2_TYPE = #{lev2Type}, PT.CHECK_LEV2_BUREAU = #{lev2Bureau} WHERE PT.PLAN_TRAIN_ID = #{planId}
     </update>
 
-    <insert id="addRunPlan" parameterMap="runPlan">
-        INSERT INTO DAILYPLAN_CHECK(PLAN_TRAIN_ID, PLAN_TRAIN_SIGN,PLAN_CROSS_ID,PRE_TRAIN_ID,NEXT_TRAIN_ID,RUN_DATE,TRAIN_NBR,START_TIME,END_TIME,
-        START_BUREAU,START_BUREAU_FULL,START_STN,END_BUREAU,END_BUREAU_FULL,END_STN,PASS_BUREAU,TRAIN_TYPE_ID,HIGHLINE_FLAG,BASE_CHART_ID,BASE_TRAIN_ID,
+    <insert id="addRunPlan" parameterType="org.railway.com.trainplan.entity.RunPlan">
+        INSERT INTO PLAN_TRAIN(PLAN_TRAIN_ID, PLAN_TRAIN_SIGN,PLAN_CROSS_ID,PRE_TRAIN_ID,NEXT_TRAIN_ID,RUN_DATE,TRAIN_NBR,START_TIME,END_TIME,
+        START_BUREAU,START_BUREAU_FULL,START_STN,END_BUREAU,END_BUREAU_FULL,END_STN,PASS_BUREAU,TRAIN_SCOPE,TRAIN_TYPE_ID,HIGHLINE_FLAG,BASE_CHART_ID,BASE_TRAIN_ID,
         HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,APPOINT_DAY,DAY_GAP,SPARE_FLAG,SPARE_APPLY_FLAG,CREAT_TYPE,CREAT_TIME,CHECK_LEV1_TYPE,CHECK_LEV2_TYPE,
         DAILYPLAN_TIMES) VALUES(
-            #{planTrainId}, #{planTrainSign}, #{planCrossId}, #{preTrainId}, #{nextTrainId}, #{runDate}, #{trainNbr}, #{startDateTime}, #{endDateTime},
-            #{startBureauShortName}, #{startBureauFullName}, #{startStn}, #{endBureauShortName}, #{endBureauFullName}, #{endStn}, #{passBureau}, #{trainScope},
-            #{trainTypeId}, #{highLineFlag}, #{baseChartId}, #{baseTrainId}, #{hightLineRule}, #{commonLineRule}, #{appointWeek}, #{appointDay}, #{dayGap},
-            #{spareFlag}, #{spareApplyFlag}, #{createType}, #{createDateTime}, #{checkLev1Type}, #{checkLev2Type}, #{dailyPlanTimes}
+            #{planTrainId, jdbcType=VARCHAR}, #{planTrainSign, jdbcType=VARCHAR}, #{planCrossId, jdbcType=VARCHAR}, #{preTrainId, jdbcType=VARCHAR},
+            #{nextTrainId, jdbcType=VARCHAR}, #{runDate, jdbcType=VARCHAR}, #{trainNbr, jdbcType=VARCHAR}, #{startDateTime, jdbcType=DATE},
+            #{endDateTime, jdbcType=DATE},#{startBureauShortName, jdbcType=VARCHAR}, #{startBureauFullName, jdbcType=VARCHAR}, #{startStn, jdbcType=VARCHAR},
+            #{endBureauShortName, jdbcType=VARCHAR},#{endBureauFullName, jdbcType=VARCHAR}, #{endStn, jdbcType=VARCHAR}, #{passBureau, jdbcType=VARCHAR},
+            #{trainScope, jdbcType=NUMERIC},#{trainTypeId, jdbcType=VARCHAR}, #{highLineFlag, jdbcType=NUMERIC}, #{baseChartId, jdbcType=VARCHAR},
+            #{baseTrainId, jdbcType=VARCHAR},#{hightLineRule, jdbcType=NUMERIC}, #{commonLineRule, jdbcType=NUMERIC}, #{appointWeek, jdbcType=VARCHAR},
+            #{appointDay, jdbcType=VARCHAR},#{dayGap, jdbcType=NUMERIC},#{spareFlag, jdbcType=NUMERIC}, #{spareApplyFlag, jdbcType=NUMERIC},
+            #{createType, jdbcType=NUMERIC}, #{createDateTime, jdbcType=DATE}, #{checkLev1Type, jdbcType=NUMERIC}, #{checkLev2Type, jdbcType=NUMERIC},
+            #{dailyPlanTimes, jdbcType=NUMERIC}
         )
     </insert>
 
