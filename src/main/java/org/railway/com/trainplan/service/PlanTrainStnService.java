@@ -54,6 +54,9 @@ public class PlanTrainStnService {
     @Autowired
     private CrossService crossService;
     
+    @Autowired
+    private RunPlanService runPlanService;
+    
     /**
 	 * 更新数据表plan_train中字段daylyplan_flag,的值
 	 * @param base_train_id
@@ -168,16 +171,12 @@ public class PlanTrainStnService {
 		}
 		//添加数据到表plan_cross
 		int count = crossService.addPlanCrossInfo(listPlanCross);
-		//查询表unit_cross
+		//做交路计划，第一个参数传null,表示全部交路都做
+		int crossCount = runPlanService.generateRunPlan(null, startDate, Integer.valueOf(dayCount));
+		//全部处理完了，推送一条消息到页面
+		quoteService.sendQuotes("", 0, 0, "plan.end");
 		
-		//DaytaskDto reqDto = new DaytaskDto();
-		//reqDto.setChartId(schemeId);
-		//reqDto.setOperation("客运");
-		//reqDto.setRunDate(startDate);
-		//treadService.actionDayWork(reqDto, Integer.valueOf(dayCount));
-		
-		
-		return count;
+		return crossCount;
 	}
 
 	

@@ -42,6 +42,7 @@ function importPlanDayEnd(message) {
  * @param message
  */
 function importPlanEnd(message) {
+	commonJsScreenUnLock();//屏幕解锁
 	 console.log('~~~~~~~~~~~ 收到计划全部结束消息:'+JSON.parse(message));
 	_PlanViewPage.finishPlan();
 }
