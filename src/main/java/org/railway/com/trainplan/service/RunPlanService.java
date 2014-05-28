@@ -287,6 +287,13 @@ public class RunPlanService {
         return null;
     }
 
+    /**
+     *
+     * @param planCrossIdList
+     * @param startDate yyyy-MM-dd
+     * @param days 比如:30
+     * @return
+     */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
         ExecutorService executorService = Executors.newFixedThreadPool(20);
         List<PlanCross> planCrossList = null;
@@ -320,6 +327,8 @@ public class RunPlanService {
         private int days;
 
         private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        private SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm:ss");
 
         RunPlanGenerator(PlanCross planCross, RunPlanDao runPlanDao,
                          BaseTrainDao baseTrainDao, String startDate,
@@ -361,6 +370,10 @@ public class RunPlanService {
                             if(unitCrossTrain.getBaseTrainId().equals(runPlan.getBaseTrainId())) {
                                 LocalDate trainStartDate;
                                 runPlan.setPlanTrainId(UUID.randomUUID().toString());
+                                runPlan.setGroupSerialNbr(unitCrossTrain.getGroupSerialNbr());
+                                runPlan.setMarshallingName(unitCrossTrain.getMarshallingName());
+                                runPlan.setTrainSort(unitCrossTrain.getTrainSort());
+                                runPlan.setBaseChartId(planCross.getBaseChartId());
                                 // 如果不是每组车的第一趟车，就取上一趟车作为前序车
                                 if(m > 0) {
                                     RunPlan preRunPlan = resultRunPlanList.get(resultRunPlanList.size() - 1);
@@ -382,8 +395,10 @@ public class RunPlanService {
 
                                 }
                                 runPlan.setRunDate(trainStartDate.toString("yyyyMMdd"));
+
+                                runPlan.setPlanTrainSign(runPlan.getRunDate() + "-" + runPlan.getTrainNbr() + "-" + runPlan.getStartStn() + "-" + runPlan.getStartTimeStr());
                                 try {
-                                    runPlan.setStartDateTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.toString() + " " + runPlan.getEndTimeStr()).getTime()));
+                                    runPlan.setStartDateTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.toString() + " " + runPlan.getStartTimeStr()).getTime()));
                                 } catch (ParseException e) {
                                     logger.error("set runPlan start time error:::::", e);
                                 }

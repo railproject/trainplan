@@ -11,6 +11,9 @@ public class RunPlan {
     private String planTrainId;
     private String planTrainSign;
     private String planCrossId;
+    private String marshallingName;
+    private int groupSerialNbr;
+    private int trainSort;
     private String preTrainId;
     private String nextTrainId;
     private String runDate;
@@ -331,5 +334,29 @@ public class RunPlan {
 
     public void setEndTimeStr(String endTimeStr) {
         this.endTimeStr = endTimeStr;
+    }
+
+    public String getMarshallingName() {
+        return marshallingName;
+    }
+
+    public void setMarshallingName(String marshallingName) {
+        this.marshallingName = marshallingName;
+    }
+
+    public int getGroupSerialNbr() {
+        return groupSerialNbr;
+    }
+
+    public void setGroupSerialNbr(int groupSerialNbr) {
+        this.groupSerialNbr = groupSerialNbr;
+    }
+
+    public int getTrainSort() {
+        return trainSort;
+    }
+
+    public void setTrainSort(int trainSort) {
+        this.trainSort = trainSort;
     }
 }

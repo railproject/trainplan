@@ -11,7 +11,15 @@ public class PlanCross {
 
     private String unitCrossId;
 
+    private String baseChartId;
+
     private int groupTotalNbr;
+
+    private int groupSerialNbr;
+
+    private String marshallingName;
+
+    private int trainSort;
 
     private List<UnitCrossTrain> unitCrossTrainList;
 
@@ -45,5 +53,37 @@ public class PlanCross {
 
     public void setUnitCrossTrainList(List<UnitCrossTrain> unitCrossTrainList) {
         this.unitCrossTrainList = unitCrossTrainList;
+    }
+
+    public int getGroupSerialNbr() {
+        return groupSerialNbr;
+    }
+
+    public void setGroupSerialNbr(int groupSerialNbr) {
+        this.groupSerialNbr = groupSerialNbr;
+    }
+
+    public String getMarshallingName() {
+        return marshallingName;
+    }
+
+    public void setMarshallingName(String marshallingName) {
+        this.marshallingName = marshallingName;
+    }
+
+    public int getTrainSort() {
+        return trainSort;
+    }
+
+    public void setTrainSort(int trainSort) {
+        this.trainSort = trainSort;
+    }
+
+    public String getBaseChartId() {
+        return baseChartId;
+    }
+
+    public void setBaseChartId(String baseChartId) {
+        this.baseChartId = baseChartId;
     }
 }
