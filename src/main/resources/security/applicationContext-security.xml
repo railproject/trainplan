@@ -29,7 +29,7 @@
                 /logout = logout
                 /assets/** = anon
                 /audit = authc
-                /audit/** = anon
+                /audit/** = authc
                 /user/** = anon
                 / = anon
                 /index = anon
