@@ -42,7 +42,7 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
-import org.railway.com.trainplan.entity.PlanCross;
+import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.BaseCrossDto;
@@ -88,7 +88,7 @@ public class CrossService{
 	 * @param list
 	 * @return
 	 */
-	public int addPlanCrossInfo(List<PlanCross> list){
+	public int addPlanCrossInfo(List<PlanCrossInfo> list){
 		Map<String,Object> reqMap = new HashMap<String,Object>();
 		reqMap.put("trainCrossList",list );
 		int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_PLAN_CROSS_INFO, reqMap);

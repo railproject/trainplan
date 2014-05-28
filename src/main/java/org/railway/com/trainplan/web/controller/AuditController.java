@@ -7,6 +7,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.railway.com.trainplan.entity.PlanCross;
+import org.railway.com.trainplan.entity.RunPlan;
+import org.railway.com.trainplan.entity.UnitCross;
 import org.railway.com.trainplan.service.ChartService;
 import org.railway.com.trainplan.service.PlanLineService;
 import org.railway.com.trainplan.service.RunPlanService;
@@ -149,5 +152,27 @@ public class AuditController {
         chart3.setCount(MapUtils.getIntValue(result, "UNKNOWN", 0));
         charts.add(chart3);
         return new ResponseEntity(charts, httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "plancross/test", method = RequestMethod.GET)
+    public ResponseEntity<List<PlanCross>> getUnitCross() {
+        List<PlanCross> result = runPlanService.findPlanCross();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<List<PlanCross>>(result, httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "runplan/test", method = RequestMethod.GET)
+    public ResponseEntity<List<RunPlan>> getRunPlan() {
+        List<RunPlan> result = runPlanService.findRunPlan();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<List<RunPlan>>(result, httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "runplan/generate/{date}/{days}")
+    public ResponseEntity generateRunplan(@PathVariable String date, @PathVariable int days) {
+        int i = runPlanService.generateRunPlan(null, date, days);
+        return new ResponseEntity(i, HttpStatus.OK);
     }
 }

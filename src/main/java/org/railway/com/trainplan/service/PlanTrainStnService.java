@@ -13,7 +13,7 @@ import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.CrossInfo;
-import org.railway.com.trainplan.entity.PlanCross;
+import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.PlanTrain;
 import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
@@ -149,11 +149,11 @@ public class PlanTrainStnService {
 		//调用后台接口之前推送一条消息到页面
 		quoteService.sendQuotes("", 0, 0, "plan.getInfo.begin");
 		
-		List<PlanCross> listPlanCross = new ArrayList<PlanCross>();
+		List<PlanCrossInfo> listPlanCross = new ArrayList<PlanCrossInfo>();
 		List<CrossInfo> listCross = crossService.getUnitCrossInfoForChartId(schemeId);
 		if(listCross != null && listCross.size() > 0){
 			for(CrossInfo cross : listCross){
-				PlanCross planCross = new PlanCross();
+				PlanCrossInfo planCross = new PlanCrossInfo();
 				BeanUtils.copyProperties(planCross, cross);
 				//单独设置属性名不一样的字段
 				planCross.setPlanCrossId(UUID.randomUUID().toString());

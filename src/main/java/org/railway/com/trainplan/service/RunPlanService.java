@@ -1,19 +1,29 @@
 package org.railway.com.trainplan.service;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
-import org.railway.com.trainplan.entity.LevelCheck;
+import org.joda.time.DateTimeUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.railway.com.trainplan.entity.*;
 import org.railway.com.trainplan.exceptions.*;
-import org.railway.com.trainplan.repository.mybatis.BaseDao;
-import org.railway.com.trainplan.repository.mybatis.RunPlanDao;
+import org.railway.com.trainplan.repository.mybatis.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by star on 5/12/14.
@@ -29,7 +39,13 @@ public class RunPlanService {
     private RunPlanDao runPlanDao;
 
     @Autowired
-    private BaseDao baseDao;
+    private RunPlanStnDao runPlanStnDao;
+
+    @Autowired
+    private UnitCrossDao unitCrossDao;
+
+    @Autowired
+    private BaseTrainDao baseTrainDao;
 
     public List<Map<String, Object>> findRunPlan(String date, String bureau, int type) {
         logger.debug("findRunPlan::::");
@@ -251,4 +267,174 @@ public class RunPlanService {
         return true;
     }
 
+
+    public List<PlanCross> findPlanCross() {
+        try {
+            return unitCrossDao.findPlanCross();
+        } catch (Exception e) {
+            logger.error("findUnitCross:::::", e);
+        }
+        return null;
+    }
+
+
+    public List<RunPlan> findRunPlan() {
+        try {
+            return baseTrainDao.findBaseTrainByPlanCrossid(null);
+        } catch (Exception e) {
+            logger.error("findUnitCross:::::", e);
+        }
+        return null;
+    }
+
+    public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        List<PlanCross> planCrossList = null;
+        try{
+            planCrossList = unitCrossDao.findPlanCross();
+            for(PlanCross planCross: planCrossList) {
+                executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
+            }
+        } finally {
+            executorService.shutdown();
+        }
+        return planCrossList.size();
+    }
+
+
+    class RunPlanGenerator implements Runnable {
+
+        // 传入参数
+        private PlanCross planCross;
+
+        // 保存客运计划用
+        private RunPlanDao runPlanDao;
+
+        private RunPlanStnDao runPlanStnDao;
+
+        // 查询基本图数据用
+        private BaseTrainDao baseTrainDao;
+
+        private String startDate;
+
+        private int days;
+
+        private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        RunPlanGenerator(PlanCross planCross, RunPlanDao runPlanDao,
+                         BaseTrainDao baseTrainDao, String startDate,
+                         RunPlanStnDao runPlanStnDao, int days) {
+            this.planCross = planCross;
+            this.runPlanDao = runPlanDao;
+            this.baseTrainDao = baseTrainDao;
+            this.runPlanStnDao = runPlanStnDao;
+            this.startDate = startDate;
+            this.days = days;
+        }
+
+        @Override
+        @Transactional
+        @Monitored
+        public void run() {
+            List<UnitCrossTrain> unitCrossTrainList = this.planCross.getUnitCrossTrainList();
+            String planCrossId = planCross.getPlanCrossId();
+            Map<String, Object> params = Maps.newHashMap();
+            params.put("planCrossId", planCrossId);
+            List<RunPlan> runPlanList = baseTrainDao.findBaseTrainByPlanCrossid(params);
+            List<RunPlan> resultRunPlanList = Lists.newArrayList();
+            // 计算循环次数
+            int times = this.days / this.planCross.getGroupTotalNbr() + this.days % this.planCross.getGroupTotalNbr() > 0? 1:0;
+            LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(this.startDate);
+            // times循环一次就是生成一组unit_cross_train的计划
+            for(int i = 0; i < times; i ++) {
+                start = start.plusDays(this.planCross.getGroupTotalNbr() * i);
+
+                // 每次循环生成一组车底的计划
+                for(int n = 0; n < this.planCross.getGroupTotalNbr(); n ++ ) {
+                    // 每组车的第一趟车的开始日期
+                    LocalDate startDate = start.plusDays(n);
+                    // 计算每组有多少车
+                    int trainNbr = unitCrossTrainList.size() / this.planCross.getGroupTotalNbr();
+                    for(int m = 0; m < trainNbr; m++) {
+                        UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(n * trainNbr + m);
+                        for(RunPlan runPlan: runPlanList) {
+                            if(unitCrossTrain.getBaseTrainId().equals(runPlan.getBaseTrainId())) {
+                                LocalDate trainStartDate;
+                                runPlan.setPlanTrainId(UUID.randomUUID().toString());
+                                // 如果不是每组车的第一趟车，就取上一趟车作为前序车
+                                if(m > 0) {
+                                    RunPlan preRunPlan = resultRunPlanList.get(resultRunPlanList.size() - 1);
+                                    // 前后续车都有了，互基
+                                    preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
+                                    runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
+                                    trainStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime())).plusDays(preRunPlan.getDayGap());
+                                } else {
+                                    // 每组车的第一趟车，取上一次循环中相同组数的最后一辆车作为前序车
+                                    // 处理到后续车的时候再去设置前序车的后续车字段
+                                    if(resultRunPlanList.size() > 0) {
+                                        // 找出前序车
+                                        RunPlan preRunPlan = resultRunPlanList.get(resultRunPlanList.size() - 1);
+                                        // 前后续车都有了，互基
+                                        preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
+                                        runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
+                                    }
+                                    trainStartDate = startDate.plusDays(m);
+
+                                }
+                                runPlan.setRunDate(trainStartDate.toString("yyyyMMdd"));
+                                try {
+                                    runPlan.setStartDateTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.toString() + " " + runPlan.getEndTimeStr()).getTime()));
+                                } catch (ParseException e) {
+                                    logger.error("set runPlan start time error:::::", e);
+                                }
+                                List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
+                                // 计算计划主表信息
+                                runPlan.setPlanCrossId(planCrossId);
+
+                                // unitcross里的信息
+                                runPlan.setTrainNbr(unitCrossTrain.getTrainNbr());
+                                runPlan.setDayGap(unitCrossTrain.getDayGap());
+                                runPlan.setSpareFlag(unitCrossTrain.getSpareFlag());
+                                runPlan.setSpareApplyFlag(unitCrossTrain.getSpareApplyFlag());
+                                runPlan.setHighLineFlag(unitCrossTrain.getHighLineFlag());
+                                runPlan.setHightLineRule(unitCrossTrain.getHighLineFlag());
+                                runPlan.setCommonLineRule(unitCrossTrain.getCommonLineRule());
+                                runPlan.setAppointWeek(unitCrossTrain.getAppointWeek());
+                                runPlan.setAppointDay(unitCrossTrain.getAppointDay());
+                                // 计算计划从表信息
+                                for(RunPlanStn runPlanStn: runPlanStnList) {
+                                    runPlanStn.setPlanTrainId(runPlan.getPlanTrainId());
+                                    runPlanStn.setPlanTrainStnId(UUID.randomUUID().toString());
+                                    try {
+                                        runPlanStn.setArrTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
+                                        runPlanStn.setDptTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
+                                    } catch (ParseException e) {
+                                        logger.error("date parse error: ", e);
+                                    }
+                                    runPlanStn.setBaseArrTime(runPlanStn.getArrTime());
+                                    runPlanStn.setBaseDptTime(runPlanStn.getDptTime());
+                                }
+                                // 最后一个站的到站时间就是列车终到时间
+                                RunPlanStn lastRunPlanStn = runPlan.getRunPlanStnList().get(runPlan.getRunPlanStnList().size() - 1);
+                                runPlan.setEndDateTime(new java.sql.Date(lastRunPlanStn.getArrTime().getTime()));
+                                // 处理完了加到结果列表里
+                                resultRunPlanList.add(runPlan);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            for(RunPlan runPlan: resultRunPlanList) {
+                try {
+                    List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
+                    runPlanStnDao.addRunPlanStn(runPlanStnList);
+                    runPlanDao.addRunPlan(runPlan);
+                } catch (Exception e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
 }
