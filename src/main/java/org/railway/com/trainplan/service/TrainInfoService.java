@@ -78,6 +78,7 @@ public class TrainInfoService {
 					}else{
 						//System.err.println("~~~~最后一个站" + subDto.getIndex() + "@@@@" + subDto.getName());
 						//System.err.println("~~~~ stationList.size()==" + stationList.size());
+						dto = setTrainlineTemplateDto(map,dto,runDate,chartId);
 						subDto = setTrainlineTemplateSubDto(map,subDto,runDate);
 						subDto.setPlanTrainId(dto.getPlanTrainId());//设置经由
 						stationList.add(subDto);
@@ -105,7 +106,6 @@ public class TrainInfoService {
 				
 			}
 		}
-		
 		
 		return returnList;
 	}

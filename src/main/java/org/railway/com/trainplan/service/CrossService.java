@@ -235,7 +235,7 @@ public class CrossService{
 		
 	}
 	/**
-	 * 根据unitCrossid查询trainNbr,以逗号分隔组成一个字符串
+	 * 根据unitCrossid查询trainNbr
 	 * @param unitCrossId
 	 * @return 以逗号分隔的trainNbr的字符串
 	 */

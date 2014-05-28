@@ -589,27 +589,28 @@ public class CrossController {
 	@RequestMapping(value = "/updateUnitCrossId", method = RequestMethod.POST)
 	public Result updateUnitCrossId(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
-		String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
-		logger.info("updateUnitCrossId----unitCrossIds=="+unitCrossIds);
+		String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
+		logger.info("updateUnitCrossId----crossIds=="+crossIds);
 		try{
-			if(unitCrossIds != null){
-				String[] unitcrossArray = unitCrossIds.split(",");
-				for(String unitCrossId :unitcrossArray){
-					List<Map<String,String>> listMap = crossService.getTrainNbrFromUnitCrossId(unitCrossId);
-					if(listMap !=null && listMap.size() > 0){
+			if(crossIds != null){
+				String[] crossArray = crossIds.split(",");
+				for(String crossId :crossArray){
+					List<CrossTrainInfo> listTrainInfo = crossService.getCrossTrainInfoForCrossid(crossId);
+					if(listTrainInfo !=null && listTrainInfo.size() > 0){
 						
 						//方案id
 						String baseChartId="";
-						int size = listMap.size();
+						int size = listTrainInfo.size();
 						List<String> trainNbrs = new ArrayList<String>();
 						for(int i = 0;i<size;i++){
-							String trainNbr = listMap.get(i).get("TRAIN_NBR");
-							baseChartId = listMap.get(i).get("BASE_CHART_ID");
-							trainNbrs.add(trainNbr);
+							//TODO 由于表结构发生变化，需要修改
+							//String trainNbr = listMap.get(i).get("TRAIN_NBR");
+							///baseChartId = listMap.get(i).get("BASE_CHART_ID");
+							//trainNbrs.add(trainNbr);
 							
 						}
 						//调用后台接口
-						remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrs);
+						remoteService.updateUnitCrossId(baseChartId, crossId, trainNbrs);
 					}
 					
 				}
