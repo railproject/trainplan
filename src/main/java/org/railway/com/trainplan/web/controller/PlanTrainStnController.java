@@ -361,14 +361,7 @@ public class PlanTrainStnController {
 		   return result;
 		}
 		try{
-			//先删除历史数据
-			//String startRundate = DateUtil.format(DateUtil.parse(startDate),"yyyyMMdd");
-			//String endRundate = DateUtil.getDateByDay(startDate, -(Integer.valueOf(dayCount)-1));
-			//endRundate = DateUtil.format(DateUtil.parse(endRundate),"yyyyMMdd");
-			//删除子表数据
-			//planTrainCheckService.deletePlanTrainStnHistoryDate(startRundate, endRundate);
-			//删除父表数据
-			//planTrainCheckService.deletePlanTrainHistoryDate(startRundate, endRundate);
+			
 			//调入后台导入数据
 			planTrainStnService.importTainPlan(schemeId, startDate, dayCount);	
 			
