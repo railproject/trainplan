@@ -31,7 +31,8 @@
                 /audit = authc
                 /audit/** = authc
                 /user/** = anon
-                /index = user
+                / = anon
+                /index = anon
                 /cross/** = anon
                 /plan/** = anon
                 /message/** = anon
