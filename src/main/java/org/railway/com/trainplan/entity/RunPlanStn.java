@@ -16,7 +16,9 @@ public class RunPlanStn {
     private String arrTrainNbr;
     private String dptTrainNbr;
     private Date arrTime;
+    private String arrTimeStr;
     private Date dptTime;
+    private String dptTimeStr;
     private Date baseArrTime;
     private Date baseDptTime;
     private String upDown;
@@ -204,5 +206,21 @@ public class RunPlanStn {
 
     public void setRunDays(int runDays) {
         this.runDays = runDays;
+    }
+
+    public String getArrTimeStr() {
+        return arrTimeStr;
+    }
+
+    public void setArrTimeStr(String arrTimeStr) {
+        this.arrTimeStr = arrTimeStr;
+    }
+
+    public String getDptTimeStr() {
+        return dptTimeStr;
+    }
+
+    public void setDptTimeStr(String dptTimeStr) {
+        this.dptTimeStr = dptTimeStr;
     }
 }

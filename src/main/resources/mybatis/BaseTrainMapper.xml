@@ -21,8 +21,8 @@
         <result column="ENDBUREAUFULL" property="endBureauFullName"/>
         <result column="ENDBUREAU" property="endBureauShortName"/>
         <result column="ENDSTN" property="endStn"/>
-        <result column="STARTTIME" property="startDateTime"/>
-        <result column="ENDTIME" property="endDateTime"/>
+        <result column="STARTTIME" property="startTimeStr"/>
+        <result column="ENDTIME" property="endTimeStr"/>
         <result column="PASSBUREAU" property="passBureau"/>
         <result column="TRAINSCOPE" property="trainScope"/>
         <result column="TRAINTYPEID" property="trainTypeId"/>
@@ -35,8 +35,8 @@
         <result column="STNNAME" property="stnName"/>
         <result column="STNBUREAU" property="stnBureauShortName"/>
         <result column="STNBUREAUFULL" property="stnBureauFullName"/>
-        <result column="ARRTIME" property="arrTime"/>
-        <result column="DPTTIME" property="dptTime"/>
+        <result column="ARRTIME" property="arrTimeStr"/>
+        <result column="DPTTIME" property="dptTimeStr"/>
         <result column="rundays" property="runDays"/>
         <result column="TRACKNAME" property="trackName"/>
     </resultMap>
@@ -60,8 +60,8 @@
         t.target_bureau_name        ENDBUREAUFULL,
         t.target_bureau_shortname   ENDBUREAU,
         t.target_node_name          ENDSTN,
-        T.Source_Time               STARTTIME,
-        t.target_time               ENDTIME,
+        TO_CHAR(T.Source_Time, 'hh24:mi:SS')  STARTTIME,
+        TO_CHAR(t.target_time, 'hh24:mi:SS')  ENDTIME,
         t.route_bureau_shortnames   PASSBUREAU,
         CASE WHEN t.route_bureau_shortnames IS NULL OR LENGTH(t.route_bureau_shortnames)=1 THEN 0 ELSE 1 END    TRAINSCOPE,
         t.relative_target_time_day  runDaysAll,
@@ -78,7 +78,6 @@
         ) O
         WHERE t.ID = O.BASE_TRAIN_ID
         ) M,
-
         (
         select T1.BASE_TRAIN_ID BASETRAINID,
         T1.ID,
@@ -97,8 +96,8 @@
         T.NAME           STN_NAME,
         T.Bureau_Shortname STN_BUREAU,
         T.Bureau_Name    STN_BUREAU_FULL,
-        T.TIME           ARR_TIME,
-        T.TIME           DPT_TIME,
+        TO_CHAR(T.TIME, 'hh24:mi:SS')  ARR_TIME,
+        TO_CHAR(T.TIME, 'hh24:mi:SS')  DPT_TIME,
         0                run_days,
         T.TRACK_NAME
         FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_SITEM T,
@@ -117,8 +116,8 @@
         T.NAME           STN_NAME,
         T.Bureau_Shortname STN_BUREAU,
         T.Bureau_Name      STN_BUREAU_FULL,
-        T.SOURCE_TIME ARR_TIME,
-        T.TARGET_TIME DPT_TIME,
+        TO_CHAR(T.SOURCE_TIME, 'hh24:mi:SS') ARR_TIME,
+        TO_CHAR(T.TARGET_TIME, 'hh24:mi:SS') DPT_TIME,
         t.relative_source_time_day run_days,
         T.TRACK_NAME
         FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_RITEM T,
@@ -137,8 +136,8 @@
         T.NAME           STN_NAME,
         T.Bureau_Shortname STN_BUREAU,
         T.Bureau_Name    STN_BUREAU_FULL,
-        T.TIME  ARR_TIME,
-        T.TIME  DPT_TIME,
+        TO_CHAR(T.TIME, 'hh24:mi:SS')  ARR_TIME,
+        TO_CHAR(T.TIME, 'hh24:mi:SS')  DPT_TIME,
         t.relative_time_day run_days,
         T.TRACK_NAME
         FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_TITEM T,

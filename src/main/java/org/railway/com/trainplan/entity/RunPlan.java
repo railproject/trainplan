@@ -15,7 +15,9 @@ public class RunPlan {
     private String nextTrainId;
     private String runDate;
     private String trainNbr;
+    private String startTimeStr;
     private Date startDateTime;
+    private String endTimeStr;
     private Date endDateTime;
     private String startBureauShortName;
     private String startBureauFullName;
@@ -313,5 +315,21 @@ public class RunPlan {
 
     public void setRunPlanStnList(List<RunPlanStn> runPlanStnList) {
         this.runPlanStnList = runPlanStnList;
+    }
+
+    public String getStartTimeStr() {
+        return startTimeStr;
+    }
+
+    public void setStartTimeStr(String startTimeStr) {
+        this.startTimeStr = startTimeStr;
+    }
+
+    public String getEndTimeStr() {
+        return endTimeStr;
+    }
+
+    public void setEndTimeStr(String endTimeStr) {
+        this.endTimeStr = endTimeStr;
     }
 }
