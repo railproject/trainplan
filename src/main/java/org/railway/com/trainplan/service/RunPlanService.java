@@ -288,7 +288,7 @@ public class RunPlanService {
     }
 
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross();
@@ -435,17 +435,6 @@ public class RunPlanService {
                     logger.error(e);
                 }
             }
-        }
-    }
-
-    public static void main(String[] args) {
-        String time = "2014-05-30 20:13:00";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            Date now = simpleDateFormat.parse(time);
-            System.out.println(now.toLocaleString());
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 }
