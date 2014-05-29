@@ -17,6 +17,8 @@
         <result column="MARSHALLING_NAME" property="marshallingName"/>
         <result column="TRAIN_SORT" property="trainSort"/>
         <result column="BASE_CHART_ID" property="baseChartId"/>
+        <result column="CROSS_START_DATE" property="crossStartDate"/>
+        <result column="CROSS_END_DATE" property="crossEndDate"/>
         <collection property="unitCrossTrainList" resultMap="org.railway.com.trainplan.repository.mybatis.UnitCrossTrainDao.unitCrossTrain"/>
     </resultMap>
 
@@ -74,8 +76,11 @@
         UCT.HIGHLINE_RULE AS HIGHLINE_RULE,
         UCT.COMMONLINE_RULE AS COMMONLINE_RULE,
         UCT.APPOINT_WEEK AS APPOINT_WEEK,
-        UCT.APPOINT_DAY AS APPOINT_DAY
+        UCT.APPOINT_DAY AS APPOINT_DAY,
+        UC.CROSS_START_DATE AS CROSS_START_DATE,
+        UC.CROSS_END_DATE AS CROSS_END_DATE
         FROM PLAN_CROSS PC INNER JOIN UNIT_CROSS_TRAIN UCT ON PC.UNIT_CROSS_ID = UCT.UNIT_CROSS_ID
+        INNER JOIN UNIT_CROSS UC ON UC.UNIT_CROSS_ID = UCT.UNIT_CROSS_ID
         WHERE UCT.BASE_TRAIN_ID IS NOT NULL
         ORDER BY PC.PLAN_CROSS_ID, UCT.GROUP_SERIAL_NBR, UCT.TRAIN_SORT
     </select>
