@@ -338,7 +338,7 @@ public class RunPlanService {
      * @return
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross();
@@ -397,18 +397,17 @@ public class RunPlanService {
             // 计算循环次数
             int times = this.days / this.planCross.getGroupTotalNbr() + this.days % this.planCross.getGroupTotalNbr() > 0? 1:0;
             LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(this.startDate);
+            // 计算每组有多少车
+            int trainNbr = unitCrossTrainList.size() / this.planCross.getGroupTotalNbr();
             // times循环一次就是生成一组unit_cross_train的计划
             for(int i = 0; i < times; i ++) {
                 start = start.plusDays(this.planCross.getGroupTotalNbr() * i);
-
-                // 每次循环生成一组车底的计划
+                // 每次循环生成unit_cross_train中的一组车底的计划
                 for(int n = 0; n < this.planCross.getGroupTotalNbr(); n ++ ) {
                     // 每组车的第一趟车的开始日期
                     LocalDate startDate = start.plusDays(n);
-                    // 计算每组有多少车
-                    int trainNbr = unitCrossTrainList.size() / this.planCross.getGroupTotalNbr();
-                    for(int m = 0; m < trainNbr; m++) {
-                        UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(n * trainNbr + m);
+                    for(int m = n * trainNbr; m < trainNbr * (n + 1); m++) {
+                        UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(m);
                         for(RunPlan runPlan: runPlanList) {
                             if(unitCrossTrain.getBaseTrainId().equals(runPlan.getBaseTrainId())) {
                                 LocalDate trainStartDate;
