@@ -276,7 +276,7 @@ function CrossModel() {
 			}); 
 	};
 
-	self.crossRows = new PageModle(20, self.loadCrosseForPage);
+	self.crossRows = new PageModle(200, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() { 
 		alert(self.currentCross().tokenVehBureau())
@@ -294,12 +294,12 @@ function CrossModel() {
 	};
 	
 	self.showCrossMapDlg = function(){ 
-		if(self.currentCross().crossId == ''){
+		if(self.currentCross().unitCrossId == ''){
 			return;
 		}
-		var crossId = self.currentCross().crossId; 
+		var unitCrossId = self.currentCross().unitCrossId; 
 		if(self.searchModle().showCrossMap() == 0){
-			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideCrossChartData?crossId=" + crossId);
+			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + unitCrossId);
 			$("#cross_map_dlg").dialog("open");
 		};
 	};  
