@@ -14,16 +14,15 @@ Object grid =  request.getAttribute("gridData");
 <title>交路单元</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 </head>
-<body>
+<body >
 <!--分栏框开始-->
-<div class="row">
-  <div style="float:left; width:100%;">
+<div class="row" > 
     <!--分栏框开始-->
     <div class="panel panel-default">
       <!--panle-heading-->
-      <div class="panel-body">
-        <div class="table-responsive" style="overflow: auto;">
-        	<canvas id="unit_cross_canvas"></canvas>
+      <div class="panel-body" style="width:100%;height:100%">
+        <div class="table-responsive" style="overflow: auto;width:100%;height:100%">
+        	<canvas id="unit_cross_canvas" style="width:100%;height:100%"></canvas>
         </div>
         
       </div>
@@ -31,10 +30,7 @@ Object grid =  request.getAttribute("gridData");
     </div>
     <!--分栏框结束--> 
     <!--分栏框开始-->
-    <!--分栏框结束--> 
-  </div>
-  
-  
+    <!--分栏框结束-->  
 </div>
 
 

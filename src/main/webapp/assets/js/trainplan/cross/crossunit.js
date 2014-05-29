@@ -1,10 +1,4 @@
-$(function() {
-	$("#file_upload_dlg").dialog("close"); 
-	$("#cross_train_time_dlg").dialog("close");
-	$("#cross_map_dlg").dialog("close"); 
-	$("#cross_train_dlg").dialog("close");
-	$("#cross_train_time_dlg").dialog("close");
-	
+$(function() { 
 	
 	var cross = new CrossModel();
 	ko.applyBindings(cross); 
@@ -91,7 +85,7 @@ function CrossModel() {
 	self.setCurrentCross = function(cross){
 		self.currentCross(cross);
 		if(self.searchModle().showCrossMap() == 1){
-			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideCrossChartData?crossId=" + cross.crossId);
+			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + self.currentCross().unitCrossId);
 		}
 	};
 	
@@ -241,7 +235,17 @@ function CrossModel() {
 		//self.gloabBureaus = [{"shortName": "上", "code": "S"}, {"shortName": "京", "code": "B"}, {"shortName": "广", "code": "G"}];
 		//self.searchModle().loadBureau(self.gloabBureaus); 
 		//self.searchModle().loadChats([{"name":"方案1", "chartId": "1234"},{"name":"方案2", "chartId": "1235"}])
-		  
+		$("#cross_map_dlg").dialog({
+		    onClose:function(){
+		    		self.searchModle().showCrossMap(0);
+		       }
+		   });
+		
+		$("#file_upload_dlg").dialog("close"); 
+		$("#cross_train_time_dlg").dialog("close");
+		$("#cross_map_dlg").dialog("close"); 
+		$("#cross_train_dlg").dialog("close");
+		$("#cross_train_time_dlg").dialog("close");
 		//获取当期系统日期 
 		 $.ajax({
 				url : "../plan/getSchemeList",
@@ -505,8 +509,7 @@ function CrossModel() {
 		
 	};  
 	
-	self.checkCrossInfo = function(){
-		commonJsScreenLock();
+	self.checkCrossInfo = function(){ 
 		var crossIds = "";
 		var updateCrosses = [];
 		var crosses = self.crossRows.rows();
@@ -522,7 +525,8 @@ function CrossModel() {
 				return;
 			}
 		} 
-		 $.ajax({
+		commonJsScreenLock();
+		$.ajax({
 				url : "../cross/checkUnitCorssInfo",
 				cache : false,
 				type : "POST",

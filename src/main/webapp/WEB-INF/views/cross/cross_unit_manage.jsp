@@ -529,13 +529,10 @@ var basePath = "<%=basePath %>";
 										class="btn btn-success" data-toggle="modal" data-target="#"
 										id="cross_train_save" data-bind="click: showCrossTrainDlg"> 修改</a> <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">删除</a>
+										id="cross_train_delete">删除</a> 
 										 <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">时刻表</a>
-										 <a type="button"
-										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">详点</a> 
+										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">时刻表</a> 
 								</div>
 								<table class="table table-bordered table-striped table-hover"
 									id="cross_trainInfo">
@@ -596,8 +593,8 @@ var basePath = "<%=basePath %>";
 	 <!--交路图--> 
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
-		style="width: 800px; height: 600px; padding: 10px">
-		 <iframe style="width: 100%; height: 100%px;border: 0" src=""></iframe>
+		style="width: 800px; height: 400px; padding: 10px">
+		 <iframe style="width: 100%; height: 100%;border: 0" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 
@@ -609,9 +606,9 @@ var basePath = "<%=basePath %>";
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 600px; height: 500px; padding: 10px"> 
+		style="width: 700px; height: 500px; padding: 10px"> 
 			      <!--panle-heading-->
-			      <div class="panel-body" style="padding:10px;margin-right:10px">
+			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 			      	<div class="table-responsive" > 
 			          <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 					        <thead>
