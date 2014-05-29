@@ -322,7 +322,8 @@ function CrossModel() {
 	self.loadCrosses = function(){
 		self.crossRows.loadRows();
 	};
-	self.loadCrosseForPage = function(startIndex, endIndex) {  
+	self.loadCrosseForPage = function(startIndex, endIndex) { 
+		self.crossAllcheckBox(0);
 		commonJsScreenLock();
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
@@ -511,8 +512,7 @@ function CrossModel() {
 			}); 
 	};
 	
-	self.checkCrossInfo = function(){
-		commonJsScreenLock();
+	self.checkCrossInfo = function(){  
 		var crossIds = "";
 		var updateCrosses = [];
 		var crosses = self.crossRows.rows();
@@ -525,6 +525,11 @@ function CrossModel() {
 				crosses[i].selected(0);
 			}
 		} 
+		if(crossIds == ""){
+			showErrorDialog("没有可审核的");
+			return;
+		}
+		commonJsScreenLock();
 		 $.ajax({
 				url : "cross/checkCorssInfo",
 				cache : false,

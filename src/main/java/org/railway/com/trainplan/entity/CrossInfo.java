@@ -34,7 +34,7 @@ public class CrossInfo {
 	private String alterNateTranNbr;
 	private String crossName;
 	private String crossSpareName;
-	private String highlineFlag; 
+	private String highlineFlag = "0"; 
 	private String throughline;
 	private String appointWeek;
 	private String appointDay;

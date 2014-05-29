@@ -795,10 +795,10 @@ ORDER BY M.groupSerialNbr,M.TRAINSORT,N.BASETRAINID1, N.STNSORT
             AND check_time is not null
         </if>
         <if test="unitCreateFlag == 0 ">
-            AND CREAT_UNIT_TIME is null
+            AND CREAT_CROSS_TIME is null
         </if>
         <if test="unitCreateFlag == 1 ">
-            AND CREAT_UNIT_TIME is not null
+            AND CREAT_CROSS_TIME is not null
         </if>
     </select>
 
@@ -812,7 +812,8 @@ ORDER BY M.groupSerialNbr,M.TRAINSORT,N.BASETRAINID1, N.STNSORT
         HIGHLINE_FLAG as highlineFlag,
         CROSS_NAME as crossName,
         BASE_CROSS_ID as crossId,
-        case when check_time is not null  then '1' else '0' end as checkFlag
+        case when check_time is not null  then '1' else '0' end as checkFlag,
+        case when CREAT_CROSS_TIME is not null  then '1' else '0' end as unitCreateFlag
         from UNIT_CROSS
         where 1=1
         <if test="tokenVehBureau != null">
@@ -837,10 +838,10 @@ ORDER BY M.groupSerialNbr,M.TRAINSORT,N.BASETRAINID1, N.STNSORT
             AND check_time is not null
         </if>
         <if test="unitCreateFlag == 0 ">
-            AND CREAT_UNIT_TIME is null
+            AND CREAT_CROSS_TIME is null
         </if>
         <if test="unitCreateFlag == 1 ">
-            AND CREAT_UNIT_TIME is not null
+            AND CREAT_CROSS_TIME is not null
         </if>
         order by  CROSS_NAME) m )  where num >=#{rownumstart} AND num &lt;=#{rownumend}
 

@@ -95,8 +95,10 @@ function PageModle(pageSize, fun, jg){
 	};
 	self.loadPageRows = function(totalCount, rows){
 		self.addRows(rows);
-		self.totalCount(totalCount);  
-		self.endIndex(self.currentIndex()%self.pageSize()==0 ? ((self.totalCount() == 0) ? 0 : ((self.totalCount() < self.pageSize()) ? self.totalCount() : (self.currentIndex() + self.pageSize()))) : self.currentIndex() + self.currentIndex()%self.pageSize());
+		self.totalCount(totalCount); 
+		console.log(self.currentIndex());
+		
+		self.endIndex(self.currentIndex() + self.pageSize() < totalCount ? self.currentIndex() + self.pageSize() : self.currentIndex() + totalCount%self.pageSize());
 		self.pageCount((self.totalCount() + (self.pageSize() - self.totalCount()% self.pageSize()))/self.pageSize());
 	}; 
 	
