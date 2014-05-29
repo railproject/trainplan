@@ -27,6 +27,8 @@ function CrossModel() {
 	
 	self.currentTrain = ko.observable();
 	
+	self.times = ko.observableArray();
+	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
 	
@@ -45,9 +47,43 @@ function CrossModel() {
 		self.searchModle().filterTrainNbr(event.target.value.toUpperCase());
 	};
 	
-	self.setCurrentTrain = function(train){
-		console.log(train)
-		self.currentTrain(train); 
+	self.setCurrentTrain = function(row){
+		self.currentTrain(row);
+		self.times.remove(function(item){
+			return true;
+		});
+		if(row.times().length > 0){ 
+			$.each(row.times(), function(i, n){
+				self.times.push(n); 
+			}) ;
+			 
+		}else{
+			$.ajax({
+				url : "jbtcx/queryTrainTimes",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({   
+					trainId : row.baseTrainId
+				}),
+				success : function(result) {  
+					console.log(result);
+					if (result != null && result != "undefind" && result.code == "0") {  
+						row.loadTimes(result.data);  
+						$.each(row.times(), function(i, n){
+							self.times.push(n); 
+						});
+					}  
+				},
+				error : function() {
+					 
+				},
+				complete : function(){
+					 
+				}
+			}); 
+		}
 	};
 	
 	self.setCurrentCross = function(cross){
@@ -280,7 +316,7 @@ function CrossModel() {
 	    });
 		
 		
-	};  
+	};   
 	
 	self.loadCrosses = function(){
 		self.crossRows.loadRows();
@@ -332,8 +368,7 @@ function CrossModel() {
 								rows.push(new CrossRow(crossInfo));  
 							});   
 							self.crossRows.loadPageRows(result.data.totalRecord, rows);
-						} 
-						
+						}  
 						// $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
@@ -376,7 +411,7 @@ function CrossModel() {
 		if(self.searchModle().showCrossMap() == 0){
 			
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
-			$('#cross_map_dlg').dialog({ title: self.currentCross().crossName(), autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true })
+			$('#cross_map_dlg').dialog({ title: "基本交路图     交路名:" + self.currentCross().crossName(), autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true })
 		};
 	};  
 	
@@ -386,7 +421,7 @@ function CrossModel() {
 	
 	self.showCrossTrainTimeDlg = function(){
 		
-		$("#cross_train_time_dlg").dialog("open");
+		$("#cross_train_time_dlg").dialog({title: "详情时刻表     车次:" + self.currentTrain().trainNbr,draggable: true, resizable:true});
 	};
 	
 	self.deleteCrosses = function(){  
@@ -518,8 +553,7 @@ function CrossModel() {
 		
 	};
 	
-	self.showTrains = function(row) {  
-		commonJsScreenLock();
+	self.showTrains = function(row) {   
 		self.trains.remove(function(item) {
 			return true;
 		});   
@@ -551,10 +585,7 @@ function CrossModel() {
 				},
 				error : function() {
 					showErrorDialog("接口调用失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
+				} 
 			}); 
 		
 	};  
@@ -719,6 +750,13 @@ function TrainRow(data) {
 	self.runDate = data.runDate;
 	self.endDate = data.endDate;
 	
+	self.times = ko.observableArray();  
+	self.loadTimes = function(times){
+		$.each(times, function(i, n){ 
+			self.times.push(new TrainTimeRow(n));
+		});
+	}; 
+	
 	//self.startBureau = data.startBureau;//START_BUREAU 
 	self.startBureau = ko.computed(function(){
 		for(var i = 0; i < gloabBureaus.length; i++){
@@ -816,6 +854,58 @@ function TrainRow(data) {
 
 } ;
 
+function filterValue(value){
+	return value == null || value == "null" ? "--" : value;
+}
+
+function GetDateDiff(data)
+{ 
+	if(data.childIndex == 0)
+		return "";
+	else if(data.dptTime == '-'){
+		return "";
+	} 
+	var startTime = new Date("1977-7-7 " + data.arrTime);
+	var endTime = new Date("1977-7-7 " + data.dptTime);  
+	var result = "";
+	
+	var date3=endTime.getTime()-startTime.getTime(); //时间差的毫秒数 
+	
+	//计算出相差天数
+	var days=Math.floor(date3/(24*3600*1000));
+	
+	result += days > 0 ? days + "天" : "";  
+	//计算出小时数
+	var leave1=date3%(24*3600*1000);     //计算天数后剩余的毫秒数
+	var hours=Math.floor(leave1/(3600*1000));
+	
+	result += hours > 0 ? hours + "小时" : ""; 
+	
+	//计算相差分钟数
+	var leave2=leave1%(3600*1000);        //计算小时数后剩余的毫秒数
+	var minutes=Math.floor(leave2/(60*1000));
+	
+	result += minutes > 0 ? minutes + "分" : "";
+	//计算相差秒数
+	var leave3=leave2%(60*1000);          //计算分钟数后剩余的毫秒数
+	var seconds=Math.round(leave3/1000);
+	
+	result += seconds > 0 ? seconds + "秒" : "";  
+	 
+	return result == "" ? "" : result; 
+};
+function TrainTimeRow(data) { 
+	var self = this; 
+	self.index = data.childIndex + 1;
+	self.stnName = filterValue(data.stnName);
+	self.bureauShortName = filterValue(data.bureauShortName);
+	self.sourceTime = filterValue(data.arrTime);
+	self.targetTime = filterValue(data.dptTime);
+	self.stepStr = GetDateDiff(data); 
+	self.trackName = filterValue(data.trackName);  
+	self.runDays = data.runDays;
+	 
+}; 
 
 function openLogin() {
 	$("#file_upload_dlg").dialog("open");

@@ -77,12 +77,12 @@ var basePath = "<%=basePath %>"
 							<div class="row">
 									<div class="form-group"
 										style="float: left; margin-left: 0px; margin-top: 0px;width: 100%"> 
-									  <div class="row" style="width: 100%;">
+									  <div class="row" style="width: 100%;" >
 											<label for="exampleInputEmail3" class="control-label pull-left">
 															方案:&nbsp;</label> 
 											<div class="pull-left">
-												<select style="width: 273px" id="input_cross_chart_id"
-													class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+												<select style="width: 260px" id="input_cross_chart_id"
+													class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name'">
 												</select>
 											</div>   
 									   </div> 
@@ -92,8 +92,8 @@ var basePath = "<%=basePath %>"
 											<div class="pull-left" style="margin-left: 5px;">
 												<select style="width:60px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' "></select>
 											</div>
-											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
-												发局:</label>
+											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 40px;">
+												始发路局:</label>
 											<div class="pull-left" style="margin-left: 5px; ">
 											<select style="width: 60px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
 											</div> 
@@ -104,8 +104,8 @@ var basePath = "<%=basePath %>"
 											<div class="pull-left" style="margin-left: 5px;">
 											    <select  style="width:60px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
 											</div>
-											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
-												 审核:</label>
+											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 40px;">
+												 审核状态:</label>
 											<div class="pull-left" style="margin-left: 5px;">
 												<select style="width:60px" id="input_cross_sure_flag"
 													class="form-control" data-bind="options: searchModle().checkFlags, value: searchModle().checkFlag, optionsText: 'text' , optionsCaption: ''">
@@ -119,22 +119,25 @@ var basePath = "<%=basePath %>"
 												车次:&nbsp;</label>
 											<div class="pull-left">
 												<input type="text" class="form-control" style="width: 100px;"
-													placeholder="车次" id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
+											 		 id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
 											</div> 
-											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;" >
-												生成:</label>
+											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 40px;" >
+												生成状态:</label>
 											<div class="pull-left" style="margin-left: 5px;">
 												<select style="width:60px" id="input_cross_sure_flag"
 													class="form-control" data-bind="options: searchModle().unitCreateFlags, value: searchModle().unitCreateFlag, optionsText: 'text' , optionsCaption: '' ">
 												</select>
 											</div>
-											<div class="pull-left" style="margin-left: 16px;">
-												<a type="button" class="btn btn-success" data-toggle="modal"
-													data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a>
-												<a type="button" class="btn btn-success" data-toggle="modal"
-													data-target="#" id="btn_cross_search"  data-bind="click: showUploadDlg">导入</a> 
-													 
-											</div> 
+											
+										</div>
+										<div class="row"  style="margin-top: 5px;">
+											<div class="pull-left" style="margin-left: 20px;">
+													<a type="button" class="btn btn-success" data-toggle="modal"
+														data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a>
+													<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;"
+														data-target="#" id="btn_cross_search"  data-bind="click: showUploadDlg">导入</a> 
+														 
+												</div> 
 										</div>
 										<hr style="margin-top: 8px;margin-bottom: 8px">
 										<div>
@@ -607,7 +610,7 @@ var basePath = "<%=basePath %>"
 		  
 	</div>  
     <!--导入弹窗--> 
-	<div id="file_upload_dlg" class="easyui-dialog" title="上传对数文件"
+	<div id="file_upload_dlg" class="easyui-dialog" title="导入对数表文件"
 		data-options="iconCls:'icon-save'"
 		style="width: 400px; height: 200px; padding: 10px">
 		<img id="loading" src="assets/images/loading.gif" style="display:none;">
@@ -622,16 +625,16 @@ var basePath = "<%=basePath %>"
 					</select>
 				</div>   
 		   </div> 
-			 <div class="row" style="margin: 5px 0 5px 0;">
+			 <div class="row" style="margin: 10px 0 5px 0;">
 				<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
 		        <div class="pull-left">
 		           <input class="form-control" id="cross_start_day" style="width:150px;" placeholder="" data-bind="value: searchModle().startDay">
 		        </div> 
 		   </div>
-			<div class="row" style="width: 100%; margin-top: 5px;">
+			<div class="row" style="width: 100%; margin-top: 10px;">
 				<input id="fileToUpload" type="file" size="45" name="fileToUpload"  name="fileName" />
 			</div>
-			<div>
+			<div  class="row" style="width: 100%; margin-top: 10px;">
 			     <a type="button" id="btn_fileToUpload"
 					class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: uploadCrossFile">上传</a>
 				<!-- <input type="submit"  value="上传" data-bind=/> -->
@@ -640,34 +643,40 @@ var basePath = "<%=basePath %>"
 	</div>  
 	</div> 
 	<!--详情时刻表--> 
-	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
+	<div id="cross_train_time_dlg" class="easyui-dialog" title="详情时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 600px; height: 500px; padding: 10px">
-			<div id="cross_train_time_info">  
-		          <div class="panel-body">
-				    <div class="table-responsive"> 
-						<table class="table table-bordered table-striped table-hover"
-								data-options="singleSelect:true,collapsible:true,url:'datagrid_data1.json',method:'get'"
-								title="Basic DataGrid" id="cross_train_timeInfo">
-								<thead>
-									<tr>
-										<th style="width: 25px">序号</th>
-										<th style="width: 60px">站名</th>
-										<th data-options="field:'index',width:80"
-											style="width: 60px">发点</th>
-										<th data-options="field:'index',width:80"  
-											style="width: 60px">到点</th>
-										<th data-options="field:'index',width:80"
-											style="width: 60px">股道</th>
-									</tr>
-								</thead>
-								<tbody>
-								 
-								</tbody>
-							</table> 
-					  </div> 
-				</div>
-			</div>
+		style="width: 600px; height: 500px; padding: 10px"> 
+			      <!--panle-heading-->
+			      <div class="panel-body" style="padding:10px;;margin-right:10px;">
+			      	<div class="table-responsive" > 
+			          <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
+					        <thead>
+					        <tr >
+					          <th style="width:5%">序号</th>
+			                  <th style="width:20%">站名</th>
+			                  <th style="width:5%">路局</th>
+			                  <th style="width:15%">到达时间</th>
+			                  <th style="width:15%">出发时间</th>
+			                  <th style="width:15%">停留时间</th>
+			                   <th style="width:10%">天数</th> 
+			                  <th style="width:15%">股道</th> 
+			                 </tr>
+					        </thead>
+					        <tbody data-bind="foreach: times">
+					           <tr>  
+								<td align="center" data-bind=" text: $index"></td>
+								<td data-bind="text: stnName, attr:{title: stnName}"></td>
+								<td align="center" data-bind="text: bureauShortName"></td>
+								<td align="center" data-bind="text: sourceTime"></td>
+								<td align="center" data-bind="text: targetTime"></td>
+								<td align="center" data-bind="text: stepStr"></td>
+								<td align="center" data-bind="text: runDays"></td>
+								<td align="center" data-bind="text: trackName"></td>
+					        	</tr>
+					        </tbody>
+					      </table>
+			        </div>   
+      		</div>
 	   </div>
 
 </body>  
