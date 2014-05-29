@@ -26,6 +26,8 @@
         <result column="COMMONLINE_RULE" property="commonLineRule"/>
         <result column="APPOINT_WEEK" property="appointWeek"/>
         <result column="APPOINT_DAY" property="appointDay"/>
+        <result column="RUN_DATE" property="runDate"/>
+        <result column="END_DATE" property="endDate"/>
         <!--<association property="unitCross" resultMap="org.railway.com.trainplan.repository.mybatis.UnitCrossDao.unitCross"/>-->
     </resultMap>
 </mapper> 
