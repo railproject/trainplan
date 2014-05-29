@@ -430,7 +430,7 @@ public class RunPlanService {
                                     // 前后续车都有了，互基
                                     preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
                                     runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
-                                    trainStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime())).plusDays(preRunPlan.getDayGap());
+                                    trainStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime())).plusDays(runPlan.getDayGap());
                                 } else {
                                     // 每组车的第一趟车，取上一次循环中相同组数的最后一辆车作为前序车
                                     // 处理到后续车的时候再去设置前序车的后续车字段
@@ -440,8 +440,10 @@ public class RunPlanService {
                                         // 前后续车都有了，互基
                                         preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
                                         runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
+                                        trainStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime())).plusDays(preRunPlan.getDayGap());
+                                    } else {
+                                        trainStartDate = startDate;
                                     }
-                                    trainStartDate = startDate.plusDays(m);
 
                                 }
                                 runPlan.setRunDate(trainStartDate.toString("yyyyMMdd"));
