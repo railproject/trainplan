@@ -85,6 +85,7 @@ function PageModle(pageSize, fun, jg){
 	self.loadRows = function(){ 
 		self.clear();
 		self.currentPage(0); 
+		self.currentIndex(0); 
 		self.loadFunc(self.currentIndex(), self.currentIndex() + self.pageSize()); 
 	};  
 	
