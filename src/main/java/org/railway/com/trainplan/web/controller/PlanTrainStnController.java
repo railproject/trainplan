@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.BaseCrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
@@ -178,9 +179,14 @@ public class PlanTrainStnController {
 		
 		
 		//fortest
-		String unitCrossId = StringUtil.objToStr(reqMap.get("unitCrossId"));
+		/*String unitCrossId = StringUtil.objToStr(reqMap.get("unitCrossId"));
 		System.err.println("unitCrossId==" +unitCrossId );
 		List<UnitCrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
+		result.setData(list);*/
+		
+		
+		String baseCrossId = StringUtil.objToStr(reqMap.get("baseCrossId"));
+		List<BaseCrossTrainInfo>  list = crossService.getCrossTrainInfoForCrossId(baseCrossId);
 		result.setData(list);
 		return result;
 	}

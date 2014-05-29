@@ -130,6 +130,8 @@ public class Constants {
     public static final String CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID = "crossDao.getTrainNbrWithBaseCrossId";
     //通过corssid在表unit_cross中查询unitcrossInfo信息
     public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_CROSSID = "crossDao.getUnitCrossInfoForCrossId";
+    //通过cross查询交路基本信息和经由始发和终到信息 
+    public static final String CROSSDAO_GET_CROSS_TRAININFO_FOR_CROSSID = "crossDao.getCrossTrainInfoForCrossId";
     //更新base_cross的check_time   
     public static final String CROSSDAO_UPDATE_CROSS_CHECKTIME = "crossDao.updateCrossCheckTime";
     //更新base_cross的creat_time  
