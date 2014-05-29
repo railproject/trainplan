@@ -54,10 +54,10 @@ var PlanReViewAllPage = function(){
 						var startTotal_Td = 0;//图定始发总合计
 						var startTotal_Lk = 0;//临客始发总合计
 						$.each(result.data,function(n,trainObj){
-							if (trainObj.TDSFXJ !="" && trainObj.TDSFXJ!=" "  && trainObj.TDSFXJ!="undefine") {
+							if (!isNaN(parseInt(trainObj.TDSFXJ))) {
 								startTotal_Td += parseInt(trainObj.TDSFXJ);
 							}
-							if (trainObj.TDSFXJX !="" && trainObj.TDSFXJX!=" "  && trainObj.TDSFXJX!="undefine") {
+							if (!isNaN(parseInt(trainObj.TDSFXJX))) {
 								startTotal_Tdsfx += parseInt(trainObj.TDSFXJX);
 							}
 							
@@ -110,7 +110,6 @@ var PlanReViewAllPage = function(){
 
 						
 						//////////////////////////////////////////////////////
-						console.log("//////////////////////// 总合计 :    图定始发总合计= "+startTotal_Td+"临客始发总合计= "+startTotal_Lk);
 						//总合计
 						startTotal = startTotal_Td+startTotal_Lk;//始发总合计 = 图定始发总合计 + 临客始发总合计
 						if (startTotal ==0) {
