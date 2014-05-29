@@ -1,5 +1,4 @@
 $(function() { 
-	
 	var cross = new CrossModel();
 	ko.applyBindings(cross); 
 	 
@@ -256,6 +255,7 @@ function CrossModel() {
 		$("#cross_train_dlg").dialog("close");
 		$("#cross_train_time_dlg").dialog("close"); 
 		$("#cross_start_day").datepicker();
+		  
 		//获取当期系统日期 
 		 $.ajax({
 				url : "../plan/getSchemeList",
@@ -519,7 +519,8 @@ function CrossModel() {
 		
 	};  
 	
-	self.checkCrossInfo = function(){ 
+	self.checkCrossInfo = function(){
+		commonJsScreenLock();
 		var crossIds = "";
 		var updateCrosses = [];
 		var crosses = self.crossRows.rows();
@@ -535,8 +536,7 @@ function CrossModel() {
 				return;
 			}
 		} 
-		commonJsScreenLock();
-		$.ajax({
+		 $.ajax({
 				url : "../cross/checkUnitCorssInfo",
 				cache : false,
 				type : "POST",

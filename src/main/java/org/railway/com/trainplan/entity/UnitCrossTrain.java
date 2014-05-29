@@ -26,6 +26,8 @@ public class UnitCrossTrain {
     private int commonLineRule;
     private String appointWeek;
     private String appointDay;
+    private String runDate;
+    private String endDate;
 //    private UnitCross unitCross;
 
     public String getUnitCrossTrainId() {
@@ -195,7 +197,23 @@ public class UnitCrossTrain {
     public void setAppointDay(String appointDay) {
         this.appointDay = appointDay;
     }
-/*
+
+    public String getRunDate() {
+        return runDate;
+    }
+
+    public void setRunDate(String runDate) {
+        this.runDate = runDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+    /*
     public UnitCross getUnitCross() {
         return unitCross;
     }
