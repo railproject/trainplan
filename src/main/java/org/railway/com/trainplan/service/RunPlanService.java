@@ -2,6 +2,7 @@ package org.railway.com.trainplan.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
- 
+
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.text.ParseException; 
 import java.text.SimpleDateFormat;
@@ -338,7 +340,7 @@ public class RunPlanService {
      * @return
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross();
@@ -371,8 +373,6 @@ public class RunPlanService {
 
         private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        private SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm:ss");
-
         RunPlanGenerator(PlanCross planCross, RunPlanDao runPlanDao,
                          BaseTrainDao baseTrainDao, String startDate,
                          RunPlanStnDao runPlanStnDao, int days) {
@@ -395,10 +395,10 @@ public class RunPlanService {
             List<RunPlan> runPlanList = baseTrainDao.findBaseTrainByPlanCrossid(params);
             List<RunPlan> resultRunPlanList = Lists.newArrayList();
             // 计算循环次数
-            int times = this.days / this.planCross.getGroupTotalNbr() + this.days % this.planCross.getGroupTotalNbr() > 0? 1:0;
+            int times = (this.days / this.planCross.getGroupTotalNbr()) + (this.days % this.planCross.getGroupTotalNbr() > 0? 1:0);
             LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(this.startDate);
             // 计算每组有多少车
-            int trainNbr = unitCrossTrainList.size() / this.planCross.getGroupTotalNbr();
+            int trainNbr = (unitCrossTrainList.size() / this.planCross.getGroupTotalNbr()) + (unitCrossTrainList.size() % this.planCross.getGroupTotalNbr() > 0? 1: 0);
             // times循环一次就是生成一组unit_cross_train的计划
             for(int i = 0; i < times; i ++) {
                 start = start.plusDays(this.planCross.getGroupTotalNbr() * i);
@@ -406,10 +406,18 @@ public class RunPlanService {
                 for(int n = 0; n < this.planCross.getGroupTotalNbr(); n ++ ) {
                     // 每组车的第一趟车的开始日期
                     LocalDate startDate = start.plusDays(n);
-                    for(int m = n * trainNbr; m < trainNbr * (n + 1); m++) {
+                    for(int m = n * trainNbr; m < trainNbr * (n + 1) && m < unitCrossTrainList.size(); m++) {
                         UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(m);
-                        for(RunPlan runPlan: runPlanList) {
-                            if(unitCrossTrain.getBaseTrainId().equals(runPlan.getBaseTrainId())) {
+                        for(RunPlan baseRunPlan: runPlanList) {
+                            if(unitCrossTrain.getBaseTrainId().equals(baseRunPlan.getBaseTrainId())) {
+                                RunPlan runPlan;
+                                try {
+                                    runPlan = (RunPlan) BeanUtils.cloneBean(baseRunPlan);
+                                    runPlan.setRunPlanStnList(new ArrayList<RunPlanStn>());
+                                } catch (Exception e) {
+                                    logger.error(e);
+                                    break;
+                                }
                                 LocalDate trainStartDate;
                                 runPlan.setPlanTrainId(UUID.randomUUID().toString());
                                 runPlan.setGroupSerialNbr(unitCrossTrain.getGroupSerialNbr());
@@ -417,7 +425,7 @@ public class RunPlanService {
                                 runPlan.setTrainSort(unitCrossTrain.getTrainSort());
                                 runPlan.setBaseChartId(planCross.getBaseChartId());
                                 // 如果不是每组车的第一趟车，就取上一趟车作为前序车
-                                if(m > 0) {
+                                if(m > n * trainNbr) {
                                     RunPlan preRunPlan = resultRunPlanList.get(resultRunPlanList.size() - 1);
                                     // 前后续车都有了，互基
                                     preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
@@ -426,9 +434,9 @@ public class RunPlanService {
                                 } else {
                                     // 每组车的第一趟车，取上一次循环中相同组数的最后一辆车作为前序车
                                     // 处理到后续车的时候再去设置前序车的后续车字段
-                                    if(resultRunPlanList.size() > 0) {
+                                    if(resultRunPlanList.size() > unitCrossTrainList.size()) {
                                         // 找出前序车
-                                        RunPlan preRunPlan = resultRunPlanList.get(resultRunPlanList.size() - 1);
+                                        RunPlan preRunPlan = resultRunPlanList.get(resultRunPlanList.size() - unitCrossTrainList.size());
                                         // 前后续车都有了，互基
                                         preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
                                         runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
@@ -444,7 +452,7 @@ public class RunPlanService {
                                 } catch (ParseException e) {
                                     logger.error("set runPlan start time error:::::", e);
                                 }
-                                List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
+                                List<RunPlanStn> runPlanStnList = baseRunPlan.getRunPlanStnList();
                                 // 计算计划主表信息
                                 runPlan.setPlanCrossId(planCrossId);
 
@@ -459,7 +467,15 @@ public class RunPlanService {
                                 runPlan.setAppointWeek(unitCrossTrain.getAppointWeek());
                                 runPlan.setAppointDay(unitCrossTrain.getAppointDay());
                                 // 计算计划从表信息
-                                for(RunPlanStn runPlanStn: runPlanStnList) {
+                                for(RunPlanStn baseRunPlanStn: runPlanStnList) {
+                                    RunPlanStn runPlanStn;
+                                    try {
+                                        runPlanStn = (RunPlanStn) BeanUtils.cloneBean(baseRunPlanStn);
+                                        runPlan.getRunPlanStnList().add(runPlanStn);
+                                    } catch (Exception e) {
+                                        logger.error(e);
+                                        break;
+                                    }
                                     runPlanStn.setPlanTrainId(runPlan.getPlanTrainId());
                                     runPlanStn.setPlanTrainStnId(UUID.randomUUID().toString());
                                     try {
