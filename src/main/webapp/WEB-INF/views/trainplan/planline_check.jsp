@@ -87,12 +87,12 @@
                                 <table id="plan_table" class="table table-bordered table-striped table-hover tableradius" data-bind="with: tableModel">
                                     <thead>
                                     <tr>
-                                        <shiro:hasAnyRoles name="局客运调度">
+                                        <shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
                                             <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev1"/></th>
-                                        </shiro:hasAnyRoles>
-                                        <shiro:hasAnyRoles name="局值班主任">
+                                        </shiro:hasPermission>
+                                       <shiro:hasPermission name="JHPT.RJH.ZBZRSP"><!-- 值班主任审批权限 -->
                                             <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev2"/></th>
-                                        </shiro:hasAnyRoles>
+                                        </shiro:hasPermission>
                                         <th rowspan="2" class="text-center">序号</th>
                                         <th rowspan="2" class="text-center">车次</th>
                                         <th rowspan="2" class="text-center">来源</th>
@@ -113,12 +113,12 @@
                                     </thead>
                                     <tbody data-bind="foreach: planList">
                                     <tr>
-                                        <shiro:hasRole name="局客运调度">
+                                        <shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
                                             <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="enable: needLev1, checked: isSelected"/></td>
-                                        </shiro:hasRole>
-                                        <shiro:hasRole name="局值班主任">
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="JHPT.RJH.ZBZRSP"><!-- 值班主任审批权限 -->
                                             <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="enable: needLev2, checked: isSelected"/></td>
-                                        </shiro:hasRole>
+                                        </shiro:hasPermission>
                                         <td class="text-center" data-bind="text: $index() + 1"></td>
                                         <td class="text-center"><a href="#" data-bind="text: name"></a></td>
                                         <td class="text-center" data-bind="text: sourceType"></td>
