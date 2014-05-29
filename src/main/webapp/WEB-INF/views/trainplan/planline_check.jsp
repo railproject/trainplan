@@ -47,14 +47,14 @@
                             <form class="form-inline" role="form">
                                 <div class="input-group">
                                     <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
-                                    <shiro:hasRole name="局客运调度">
+                                   	<shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: autoCheck, enable: canCheckLev1">校验</button>
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1, enable: canCheckLev1">客调审核</button>
-                                    </shiro:hasRole>
-                                    <shiro:hasRole name="局值班主任">
+                                    </shiro:hasPermission>
+                                    
+                                    <shiro:hasPermission name="JHPT.RJH.ZBZRSP"><!-- 值班主任审批权限 -->
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev2, enable: canCheckLev2">值班主任审核</button>
-                                    </shiro:hasRole>
-
+									</shiro:hasPermission>
                                 </div>
                             </form>
                         </div>
