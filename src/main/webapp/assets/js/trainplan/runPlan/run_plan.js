@@ -421,7 +421,7 @@ function CrossModel() {
 		var initFlag = 0;
 		//获取当期系统日期 
 		 $.ajax({
-				url : "plan/getSchemeList",
+				url : "jbtcx/querySchemes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
