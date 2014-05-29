@@ -597,7 +597,7 @@ var basePath = "<%=basePath %>";
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 600px; padding: 10px">
-		 <iframe style="width: 100%; height: 100%px;border: 0" src=""></iframe>
+		 <iframe style="width: 100%; height: 100%;border: 0" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 
