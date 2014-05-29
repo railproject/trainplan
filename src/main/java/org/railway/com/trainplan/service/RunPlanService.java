@@ -7,7 +7,8 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
-  
+
+import org.joda.time.Days;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.entity.CrossRunPlanInfo;
 import org.railway.com.trainplan.entity.LevelCheck;
@@ -340,7 +341,7 @@ public class RunPlanService {
      * @return
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross();
@@ -393,16 +394,20 @@ public class RunPlanService {
             Map<String, Object> params = Maps.newHashMap();
             params.put("planCrossId", planCrossId);
             List<RunPlan> runPlanList = baseTrainDao.findBaseTrainByPlanCrossid(params);
-            List<RunPlan> resultRunPlanList = Lists.newArrayList();
+            List<RunPlan> resultRunPlanList = new Vector<RunPlan>();
+            // 就算unit_cross跨度
+            LocalDate crossStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.planCross.getCrossStartDate());
+            LocalDate crossEndDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.planCross.getCrossEndDate());
+            int interval = Days.daysBetween(crossStartDate, crossEndDate).getDays();
             // 计算循环次数
-            int times = (this.days / this.planCross.getGroupTotalNbr()) + (this.days % this.planCross.getGroupTotalNbr() > 0? 1:0);
+            int times = (this.days / interval) + (this.days % interval > 0? 1:0);
             LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(this.startDate);
             // 计算每组有多少车
             int trainNbr = (unitCrossTrainList.size() / this.planCross.getGroupTotalNbr()) + (unitCrossTrainList.size() % this.planCross.getGroupTotalNbr() > 0? 1: 0);
             // times循环一次就是生成一组unit_cross_train的计划
             for(int i = 0; i < times; i ++) {
-                start = start.plusDays(this.planCross.getGroupTotalNbr() * i);
-                // 每次循环生成unit_cross_train中的一组车底的计划
+                start = start.plusDays(interval * i);
+                // 循环生成unit_cross_train中的一组车底的计划
                 for(int n = 0; n < this.planCross.getGroupTotalNbr(); n ++ ) {
                     // 每组车的第一趟车的开始日期
                     LocalDate startDate = start.plusDays(n);
@@ -430,7 +435,7 @@ public class RunPlanService {
                                     // 前后续车都有了，互基
                                     preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
                                     runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
-                                    trainStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime())).plusDays(preRunPlan.getDayGap());
+                                    trainStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime())).plusDays(runPlan.getDayGap());
                                 } else {
                                     // 每组车的第一趟车，取上一次循环中相同组数的最后一辆车作为前序车
                                     // 处理到后续车的时候再去设置前序车的后续车字段
@@ -440,15 +445,17 @@ public class RunPlanService {
                                         // 前后续车都有了，互基
                                         preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
                                         runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
+                                        trainStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime())).plusDays(runPlan.getDayGap());
+                                    } else {
+                                        trainStartDate = startDate;
                                     }
-                                    trainStartDate = startDate.plusDays(m);
 
                                 }
                                 runPlan.setRunDate(trainStartDate.toString("yyyyMMdd"));
 
                                 runPlan.setPlanTrainSign(runPlan.getRunDate() + "-" + runPlan.getTrainNbr() + "-" + runPlan.getStartStn() + "-" + runPlan.getStartTimeStr());
                                 try {
-                                    runPlan.setStartDateTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.toString() + " " + runPlan.getStartTimeStr()).getTime()));
+                                    runPlan.setStartDateTime(new Timestamp(simpleDateFormat.parse(trainStartDate.toString() + " " + runPlan.getStartTimeStr()).getTime()));
                                 } catch (ParseException e) {
                                     logger.error("set runPlan start time error:::::", e);
                                 }
@@ -479,8 +486,8 @@ public class RunPlanService {
                                     runPlanStn.setPlanTrainId(runPlan.getPlanTrainId());
                                     runPlanStn.setPlanTrainStnId(UUID.randomUUID().toString());
                                     try {
-                                        runPlanStn.setArrTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
-                                        runPlanStn.setDptTime(new java.sql.Date(simpleDateFormat.parse(trainStartDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
+                                        runPlanStn.setArrTime(new Timestamp(simpleDateFormat.parse(trainStartDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
+                                        runPlanStn.setDptTime(new Timestamp(simpleDateFormat.parse(trainStartDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
                                     } catch (ParseException e) {
                                         logger.error("date parse error: ", e);
                                     }
@@ -489,7 +496,7 @@ public class RunPlanService {
                                 }
                                 // 最后一个站的到站时间就是列车终到时间
                                 RunPlanStn lastRunPlanStn = runPlan.getRunPlanStnList().get(runPlan.getRunPlanStnList().size() - 1);
-                                runPlan.setEndDateTime(new java.sql.Date(lastRunPlanStn.getArrTime().getTime()));
+                                runPlan.setEndDateTime(new Timestamp(lastRunPlanStn.getArrTime().getTime()));
                                 // 处理完了加到结果列表里
                                 resultRunPlanList.add(runPlan);
                                 break;

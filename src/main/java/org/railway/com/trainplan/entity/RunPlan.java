@@ -1,6 +1,7 @@
 package org.railway.com.trainplan.entity;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -19,9 +20,9 @@ public class RunPlan {
     private String runDate;
     private String trainNbr;
     private String startTimeStr;
-    private Date startDateTime;
+    private Timestamp startDateTime;
     private String endTimeStr;
-    private Date endDateTime;
+    private Timestamp endDateTime;
     private String startBureauShortName;
     private String startBureauFullName;
     private String startStn;
@@ -104,19 +105,19 @@ public class RunPlan {
         this.trainNbr = trainNbr;
     }
 
-    public Date getStartDateTime() {
+    public Timestamp getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(Timestamp startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Date getEndDateTime() {
+    public Timestamp getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(Date endDateTime) {
+    public void setEndDateTime(Timestamp endDateTime) {
         this.endDateTime = endDateTime;
     }
 

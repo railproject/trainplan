@@ -21,6 +21,10 @@ public class PlanCross {
 
     private int trainSort;
 
+    private String crossStartDate;
+
+    private String crossEndDate;
+
     private List<UnitCrossTrain> unitCrossTrainList;
 
     public String getPlanCrossId() {
@@ -85,5 +89,21 @@ public class PlanCross {
 
     public void setBaseChartId(String baseChartId) {
         this.baseChartId = baseChartId;
+    }
+
+    public String getCrossStartDate() {
+        return crossStartDate;
+    }
+
+    public void setCrossStartDate(String crossStartDate) {
+        this.crossStartDate = crossStartDate;
+    }
+
+    public String getCrossEndDate() {
+        return crossEndDate;
+    }
+
+    public void setCrossEndDate(String crossEndDate) {
+        this.crossEndDate = crossEndDate;
     }
 }
