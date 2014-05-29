@@ -39,6 +39,7 @@ import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.BaseCrossTrainInfo;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
@@ -555,7 +556,7 @@ public class CrossService{
 	}
 	
 	/**
-	 * 通过crossid查询crosstrainInfo信息
+	 * 通过unitcrossid查询crosstrainInfo信息
 	 * @param unitCrossId
 	 * @return
 	 */
@@ -563,6 +564,17 @@ public class CrossService{
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("unitCrossId", unitCrossId);
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
+	}
+	
+	/**
+	 * 通过crossid查询crosstrainInfo信息
+	 * @param unitCrossId
+	 * @return
+	 */
+	public List<BaseCrossTrainInfo> getCrossTrainInfoForCrossId(String crossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("baseCrossId", crossId);
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_TRAININFO_FOR_CROSSID, paramMap);
 	}
 	
 	/**

@@ -25,10 +25,6 @@ function CrossModel() {
 	
 	self.gloabBureaus = [];  
 	
-	self.currentTrain =  ko.observable();
-	
-	self.times = ko.observableArray();
-	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
 	
@@ -41,45 +37,6 @@ function CrossModel() {
 				crossRow.selected(1); 
 			} 
 		}); 
-	};
-	
-	self.setCurrentTrain = function(row){
-		self.currentTrain(row);
-		self.times.remove(function(item){
-			return true;
-		});
-		if(row.times().length > 0){ 
-			$.each(row.times(), function(i, n){
-				self.times.push(n); 
-			}) ;
-			 
-		}else{
-			$.ajax({
-				url : "../jbtcx/queryTrainTimes",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({   
-					trainId : row.baseTrainId
-				}),
-				success : function(result) {  
-					console.log(result);
-					if (result != null && result != "undefind" && result.code == "0") {  
-						row.loadTimes(result.data);  
-						$.each(row.times(), function(i, n){
-							self.times.push(n); 
-						});
-					}  
-				},
-				error : function() {
-				 
-				},
-				complete : function(){
-					 
-				}
-			}); 
-		}
 	};
 	
 	self.setCurrentCross = function(cross){
@@ -175,50 +132,6 @@ function CrossModel() {
 		"createPeople":"", 
 		"createPeopleOrg":"",  
 		"createTime":""})); 
-	
-	self.showTrainTimes = function(row) {
-		console.log(row);
-		self.currentTrain(row);
-		self.runPlanCanvasPage.reDrawByTrainNbr(row.trainNbr);
-		self.stns.remove(function(item){
-			return true;
-		});
-		if(row.times().length > 0){ 
-			$.each(row.times(), function(i, n){
-				self.stns.push(n); 
-			}) ;
-			 
-		}else{
-			$.ajax({
-				url : "../jbtcx/queryTrainTimes",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({   
-					trainId : row.baseTrainId
-				}),
-				success : function(result) {  
-					console.log(result) 
-					if (result != null && result != "undefind" && result.code == "0") {  
-						row.loadTimes(result.data);  
-						$.each(row.times(), function(i, n){
-							self.stns.push(n); 
-						});
-					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-					};
-				},
-				error : function() {
-					showErrorDialog("接口调用失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-			}); 
-		}
-		
-	};  
 	 
 	//currentIndex 
 	self.currdate =function(){
@@ -305,7 +218,6 @@ function CrossModel() {
 		self.crossRows.loadRows();
 	};
 	self.loadCrosseForPage = function(startIndex, endIndex) {   
-		self.crossAllcheckBox(0);
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -368,7 +280,7 @@ function CrossModel() {
 			}); 
 	};
 
-	self.crossRows = new PageModle(200, self.loadCrosseForPage);
+	self.crossRows = new PageModle(20, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() { 
 		alert(self.currentCross().tokenVehBureau())
@@ -386,13 +298,13 @@ function CrossModel() {
 	};
 	
 	self.showCrossMapDlg = function(){ 
-		if(self.currentCross().unitCrossId == ''){
+		if(self.currentCross().crossId == ''){
 			return;
 		}
-		var unitCrossId = self.currentCross().unitCrossId; 
+		var crossId = self.currentCross().crossId; 
 		if(self.searchModle().showCrossMap() == 0){
-			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + unitCrossId);
-			$("#cross_map_dlg").dialog({title: "交路单元图     交路名:" + self.currentCross().crossName(),draggable: true, resizable:true});
+			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideCrossChartData?crossId=" + crossId);
+			$("#cross_map_dlg").dialog("open");
 		};
 	};  
 	
@@ -402,7 +314,7 @@ function CrossModel() {
 	
 	self.showCrossTrainTimeDlg = function(){
 		
-		$("#cross_train_time_dlg").dialog({title: "详情时刻表     车次:" + self.currentTrain().trainNbr,draggable: true, resizable:true});
+		$("#cross_train_time_dlg").dialog("open");
 	};
 	
 	self.deleteCrosses = function(){
@@ -712,14 +624,6 @@ function TrainRow(data) {
 	self.startStn = data.startStn;//START_STN
 	self.groupSerialNbr = data.groupSerialNbr;//GROUP_SERIAL_NBR
 	self.marshallingName = data.marshallingName;
-	
-	self.times = ko.observableArray();  
-	self.loadTimes = function(times){
-		$.each(times, function(i, n){ 
-			self.times.push(new TrainTimeRow(n));
-		});
-	}; 
-	
 	//self.startBureau = data.startBureau;//START_BUREAU 
 	self.startBureau = ko.computed(function(){
 		for(var i = 0; i < gloabBureaus.length; i++){
@@ -817,59 +721,6 @@ function TrainRow(data) {
 
 } ;
 
-
-function filterValue(value){
-	return value == null || value == "null" ? "--" : value;
-}
-
-function GetDateDiff(data)
-{ 
-	if(data.childIndex == 0)
-		return "";
-	else if(data.dptTime == '-'){
-		return "";
-	} 
-	var startTime = new Date("1977-7-7 " + data.arrTime);
-	var endTime = new Date("1977-7-7 " + data.dptTime);  
-	var result = "";
-	
-	var date3=endTime.getTime()-startTime.getTime(); //时间差的毫秒数 
-	
-	//计算出相差天数
-	var days=Math.floor(date3/(24*3600*1000));
-	
-	result += days > 0 ? days + "天" : "";  
-	//计算出小时数
-	var leave1=date3%(24*3600*1000);     //计算天数后剩余的毫秒数
-	var hours=Math.floor(leave1/(3600*1000));
-	
-	result += hours > 0 ? hours + "小时" : ""; 
-	
-	//计算相差分钟数
-	var leave2=leave1%(3600*1000);        //计算小时数后剩余的毫秒数
-	var minutes=Math.floor(leave2/(60*1000));
-	
-	result += minutes > 0 ? minutes + "分" : "";
-	//计算相差秒数
-	var leave3=leave2%(60*1000);          //计算分钟数后剩余的毫秒数
-	var seconds=Math.round(leave3/1000);
-	
-	result += seconds > 0 ? seconds + "秒" : "";  
-	 
-	return result == "" ? "" : result; 
-};
-function TrainTimeRow(data) { 
-	var self = this; 
-	self.index = data.childIndex + 1;
-	self.stnName = filterValue(data.stnName);
-	self.bureauShortName = filterValue(data.bureauShortName);
-	self.sourceTime = filterValue(data.arrTime);
-	self.targetTime = filterValue(data.dptTime);
-	self.stepStr = GetDateDiff(data); 
-	self.trackName = filterValue(data.trackName);  
-	self.runDays = data.runDays;
-	 
-};
 
 function openLogin() {
 	$("#file_upload_dlg").dialog("open");
