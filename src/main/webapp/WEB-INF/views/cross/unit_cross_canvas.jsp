@@ -17,12 +17,12 @@ Object grid =  request.getAttribute("gridData");
 <body>
 <!--分栏框开始-->
 <div class="row">
-  <div style="float:left; width:100%;">
+  <div style="float:left; width:100%;height:100%">
     <!--分栏框开始-->
     <div class="panel panel-default">
       <!--panle-heading-->
       <div class="panel-body">
-        <div class="table-responsive" style="overflow: auto;">
+        <div class="table-responsive" style="overflow: auto;width:100%;height:100%">
         	<canvas id="unit_cross_canvas"></canvas>
         </div>
         

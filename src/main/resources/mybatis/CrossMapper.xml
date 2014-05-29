@@ -15,8 +15,8 @@
         <id column="baseTrainId" property="baseTrainId"/>
         <result column="DAYGAP" property="dayGap"/>
         <result column="TRAINNBR" property="trainNbr"/>
-	        <result column="rundate" property="runDate"/>
-	        <result column="enddate" property="endDate"/>
+	        <result column="arrTime1" property="runDate"/>
+	        <result column="dptTime1" property="endDate"/>
         <result column="BASETRAINID" property="baseTrainId"/>
         <result column="STARTSTN" property="startStn"/>
         <result column="STARTBUREAU" property="startBureau"/>
@@ -30,8 +30,8 @@
 	        <id column="id" property="id"/>
 	        <result column="stnName" property="stnName"/>
 	        <result column="stnSort" property="stnSort"/>
-	        <result column="arrTime1" property="arrTime"/>
-	        <result column="dptTime1" property="dptTime"/>
+	        <result column="arrTime" property="arrTime"/>
+	        <result column="dptTime" property="dptTime"/>
 	        <result column="runDays" property="runDays"/>
 	        <result column="trackName" property="trackName"/>
 	       
@@ -444,7 +444,7 @@ ORDER BY A.BASE_CROSS_ID,B.TRAIN_SORT,C.STN_SORT
   </select>
  
     <select id="getUnitCrossTrainInfoForUnitCrossid" parameterType="map" resultMap="unitCrossTrain">
-   SELECT 
+    SELECT 
 TO_CHAR(TO_DATE(M.runDate,'yyyy-mm-dd'),'yyyy-mm-dd') || ' '||
 (SELECT TO_CHAR(T.TIME, 'hh24:mi:ss') FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_SITEM T WHERE T.NAME = M.STARTSTN AND T.PARENT_ID = M.BASETRAINID) ARRTIME1,
 TO_CHAR(TO_DATE(M.endDate,'yyyy-mm-dd'),'yyyy-mm-dd') || ' '||
@@ -514,15 +514,12 @@ select T1.BASE_TRAIN_ID BASETRAINID1,
                T.NAME           STN_NAME,
                T.Bureau_Shortname STN_BUREAU,
                T.Bureau_Name    STN_BUREAU_FULL,
-               TO_CHAR(T.TIME, 'hh24:mi:SS')  ARR_TIME,
-               TO_CHAR(T.TIME, 'hh24:mi:SS')  DPT_TIME,
+				O.RUN_DATE || ' ' ||TO_CHAR(T.TIME, 'hh24:mi:SS') ARR_TIME,
+				O.RUN_DATE || ' ' ||TO_CHAR(T.TIME, 'hh24:mi:SS') DPT_TIME,
                0                run_days,
                T.TRACK_NAME     
           FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_SITEM T,
-              (select A.BASE_TRAIN_ID
-               from unit_cross_train A where  A.BASE_TRAIN_ID is not null and A.UNIT_CROSS_ID=#{unitCrossId}
-               GROUP BY A.BASE_TRAIN_ID
-              ) O
+              (select A.BASE_TRAIN_ID, TO_CHAR(TO_DATE(MAX(A.RUN_DATE),'yyyy-mm-dd'),'yyyy-mm-dd') RUN_DATE from unit_cross_train A WHERE A.UNIT_CROSS_ID =#{unitCrossId} GROUP BY A.BASE_TRAIN_ID) O
         WHERE t.parent_id = O.BASE_TRAIN_ID
         UNION ALL
         SELECT t.parent_id      BASE_TRAIN_ID,
@@ -532,21 +529,19 @@ select T1.BASE_TRAIN_ID BASETRAINID1,
                T.NAME           STN_NAME,
                T.Bureau_Shortname STN_BUREAU,
                T.Bureau_Name    STN_BUREAU_FULL,
-               TO_CHAR(T.TIME, 'hh24:mi:SS')  ARR_TIME,
-               TO_CHAR(T.TIME, 'hh24:mi:SS')  DPT_TIME,
+				 O.END_DATE || ' ' ||TO_CHAR(T.TIME, 'hh24:mi:SS')  ARR_TIME,
+				 O.END_DATE || ' ' ||TO_CHAR(T.TIME, 'hh24:mi:SS')  DPT_TIME,
                t.relative_time_day run_days,
                T.TRACK_NAME     
           FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_TITEM T,
-              (select A.BASE_TRAIN_ID
-               from unit_cross_train A where  A.BASE_TRAIN_ID is not null and A.UNIT_CROSS_ID=#{unitCrossId}
-               GROUP BY A.BASE_TRAIN_ID
-              ) O
+              (select A.BASE_TRAIN_ID, TO_CHAR(TO_DATE(MAX(A.END_DATE),'yyyy-mm-dd'),'yyyy-mm-dd') END_DATE from unit_cross_train A WHERE A.UNIT_CROSS_ID =#{unitCrossId} GROUP BY A.BASE_TRAIN_ID) O
         WHERE t.parent_id = O.BASE_TRAIN_ID
           
           ) T1
 ) N
 WHERE M.BASETRAINID = N.BASETRAINID1
 ORDER BY M.groupSerialNbr,M.TRAINSORT,N.BASETRAINID1, N.STNSORT
+
 
 
    </select>

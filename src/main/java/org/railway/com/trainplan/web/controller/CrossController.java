@@ -270,9 +270,15 @@ public class CrossController {
 						 if(i == 0 && j == 0){
 							 //取第一组交路单元的第一个列车的始发日期作为横坐标的开始
 							 crossStartDate = subInfo.getRunDate();
+							 if(crossStartDate != null){
+								 crossStartDate = crossStartDate.substring(0,10);
+							 }
 						 }else if(i == size-1 && j == sizeStation - 1){
 							 //取最后一组交路单元的最后一个列车的终到日期作为横坐标的结束
 							 crossEndDate = subInfo.getEndDate();
+							 if(crossEndDate != null ){
+								 crossEndDate = crossEndDate.substring(0,10);
+							 }
 						 }	
 						//合并始发站和终到站
 						 if(!stationList.contains(subInfo.getStartStn())){
@@ -302,10 +308,10 @@ public class CrossController {
 		 String myJlData = objectMapper.writeValueAsString(dataList);
 			//图形数据
 			result.addObject("myJlData",myJlData);
-			logger.debug("myJlData==" + myJlData);
+			System.err.println("myJlData==" + myJlData);
 			
 			String gridStr = objectMapper.writeValueAsString(grid);
-			logger.debug("gridStr==" + gridStr);
+			System.err.println("gridStr==" + gridStr);
 			result.addObject("gridData",gridStr);
 			
 		
@@ -692,8 +698,8 @@ public class CrossController {
 	/**
 	 * 组装坐标轴数据
 	 * @param stationsInfo 经由站信息对象
-	 * @param crossStartDate 交路开始日期，格式yyyyMMdd
-	 * @param crossEndDate 交路终到日期，格式yyyyMMdd
+	 * @param crossStartDate 交路开始日期，格式yyyy-MM-dd
+	 * @param crossEndDate 交路终到日期，格式yyyy-MM-dd
 	 * @return 坐标轴对象
 	 */
 	private PlanLineGrid getPlanLineGrid(List<String> stationsInfo,String crossStartDate,String crossEndDate){
