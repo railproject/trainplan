@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.entity;
 
+import java.util.List;
+
 public class UnitCrossTrainSubInfo {
 
 	private int trainSort;
@@ -12,8 +14,16 @@ public class UnitCrossTrainSubInfo {
 	private String endStn;
 	private String endBureau;
 	
+	private List<UnitCrossTrainSubInfoTime> stationTimeList ;
 	
 	
+	
+	public List<UnitCrossTrainSubInfoTime> getStationTimeList() {
+		return stationTimeList;
+	}
+	public void setStationTimeList(List<UnitCrossTrainSubInfoTime> stationTimeList) {
+		this.stationTimeList = stationTimeList;
+	}
 	public String getUnitCrossTrainId() {
 		return unitCrossTrainId;
 	}
