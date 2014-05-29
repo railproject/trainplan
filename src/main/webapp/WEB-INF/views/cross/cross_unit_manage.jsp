@@ -10,7 +10,7 @@ System.out.println(basePath);
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>核查编制图定开行</title>
+<title>基本交路单元管理</title>
 <!-- Bootstrap core CSS -->
 <link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
@@ -61,11 +61,11 @@ var basePath = "<%=basePath %>";
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">基本交路单元管理</a></li>
 	</ol> 
-        
+    <div id="plan_view_div_palnDayDetail" class="panel panel-default">
+	<div class="row" style="margin: 10px 10px 10px 10px;">     
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 28%;">
-		<!--分栏框开始-->
-		<div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
+		<!--分栏框开始--> 
 			<div class="row" style="margin: 10px 10px 10px 10px;">
 			    <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
@@ -161,39 +161,49 @@ var basePath = "<%=basePath %>";
 											<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;"
 												data-target="#" id="btn_cross_createCrossUnit" data-bind="click: createUnitCrossInfo">生成基本交路</a>
 											
-										</div> 
+										</div>
 										<table class="table table-bordered table-striped table-hover" 
-											id="cross_table_crossInfo">
-											<thead>
-												<tr style="height: 25px">
-													<th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
-													<th style="width: 8%" align="center">序号</th>
-													<th style="width: 54%" align="center">车底交路名</th>
-													<th style="width: 8%" align="center">审核</th>
-													<th style="width: 8%" align="center">生成</th>
-												</tr>
-											</thead>
-											<tbody data-bind="foreach: crossRows.rows">
-												<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().unitCrossId == unitCrossId ? 'red':''}" >
-												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
-													<td data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
-													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
-													<td  align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
-													<td  align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
-												</tr> 
-											</tbody>  					 
-										</table>
+												id="cross_table_crossInfo">
+												<thead>
+													<tr style="height: 25px">
+														<th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
+														<th style="width: 8%" align="center">序号</th>
+														<th style="width: 59%" align="center">车底交路名</th>
+														<th style="width: 8%" align="center">审核</th>
+														<th style="width: 15%" align="center" colspan="2">生成</th> 
+													</tr>
+												</thead>
+												<tbody style="padding:0">
+													 <tr style="padding:0">
+													   <td colspan="6" style="padding:0">
+															 <div style="height: 450px; overflow-y:auto;"> 
+																<table class="table table-bordered table-striped table-hover" >
+																	<tbody data-bind="foreach: crossRows.rows">
+																		<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().unitCrossId == unitCrossId ? 'blue':''}" >
+																			<td  align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
+																			<td style="width: 10%" data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
+																			<td style="width: 58%" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
+																			<td  style="width:10%"  align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
+																			<td  style="width: 11%" align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
+																		</tr> 
+																	</tbody> 
+																</table> 
+														 	</div>
+														</td>
+													</tr>
+												</tbody>				 
+											</table>  	 
 										<div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }"></div>
 									</div>
 								</div> 
 						</form>
 					 </div>
 			   </section>
-			</div>
-		</div>
+			</div> 
 	</div>
-	<div class="pull-right" style="width: 70%;">
-		<div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
+	
+	<div class="pull-right" style="width: 72%;">
+		 
 			<div class="row" style="margin: 10px 10px 10px 10px;">
 			   <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>交路信息</div>
@@ -578,14 +588,14 @@ var basePath = "<%=basePath %>";
 					</div>
 					<!-- <div class="pull-right" style="width: 28%;margin: 0px 10px 10px 10px;"> -->
 				
-				</div>
+				 
 				</div>
 			</div>  
 	 <!--交路图--> 
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 600px; padding: 10px">
-		 <iframe style="margin:0;border: 0" src=""></iframe>
+		 <iframe style="width: 100%; height: 100%px;border: 0" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 
@@ -624,7 +634,8 @@ var basePath = "<%=basePath %>";
 				</div>
 			</div>
 	   </div>
-
+ </div>
+</div>
 </body>  
  <script type="text/html" id="tablefooter-short-template"> 
   <table style="width:100%;height:20px;">

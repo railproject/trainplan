@@ -52,6 +52,9 @@ function CrossModel() {
 	
 	self.setCurrentCross = function(cross){
 		self.currentCross(cross);
+		if(self.currentCross().crossId == ''){
+			return;
+		} 
 		if(self.searchModle().showCrossMap() == 1){
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
 		}
@@ -331,7 +334,7 @@ function CrossModel() {
 							self.crossRows.loadPageRows(result.data.totalRecord, rows);
 						} 
 						
-						 $("#cross_table_crossInfo").freezeHeader(); 
+						// $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
@@ -346,7 +349,7 @@ function CrossModel() {
 			}); 
 	};
 
-	self.crossRows = new PageModle(50, self.loadCrosseForPage);
+	self.crossRows = new PageModle(200, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() { 
 		alert(self.currentCross().tokenVehBureau());

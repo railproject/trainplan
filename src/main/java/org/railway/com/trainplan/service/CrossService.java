@@ -806,6 +806,52 @@ public class CrossService{
 		 }catch(Exception e){
 			 
 		 }
+	}
+	
+	private void setStartAndEndTime(LinkedList<CrossTrainInfo> crossTrains, CrossInfo cross){
+		 try{
+			 //设置交路的终到日期
+			 int dayGapForCross = 0;
+			 String crossStartDate = cross.getCrossStartDate();
+			 
+			 for(int i = 0; i <  crossTrains.size(); i++){
+				 CrossTrainInfo crosstrain = crossTrains.get(i);
+				 if(i == 0){
+					 crosstrain.setRunDate(cross.getCrossStartDate());
+					 System.err.println("----------------------------" + crosstrain.getTrainNbr());
+					 
+					 System.err.println("----------------------------" + crosstrain.getRunDate());
+					
+					 Date date = dateFormat.parse(crossStartDate);   
+					 Calendar calendar = new GregorianCalendar();
+					 calendar.setTime(date);
+					 calendar.add(Calendar.DATE, crosstrain.getRunDay());
+					 crosstrain.setEndDate(dateFormat.format(calendar.getTime()));
+					 
+					 dayGapForCross += crosstrain.getRunDay();
+				 }else{
+					 //第二个车+前面的车的总天数 + daygap
+					 Date date = dateFormat.parse(crossStartDate);   
+					 Calendar calendar = new GregorianCalendar();
+					 calendar.setTime(date);
+					 calendar.add(Calendar.DATE, dayGapForCross + crosstrain.getDayGap()); 
+					 
+					 crosstrain.setRunDate(dateFormat.format(calendar.getTime())); 
+					 
+					 dayGapForCross += crosstrain.getRunDay() + crosstrain.getDayGap(); 
+					 
+					 //设置结束时间
+					 calendar.add(Calendar.DATE, crosstrain.getRunDay());
+					 crosstrain.setEndDate(dateFormat.format(calendar.getTime())); 
+					 System.err.println("------------1----------------" + crosstrain.getTrainNbr());
+					 
+					 System.err.println("--------------1--------------" + crosstrain.getRunDate());
+					 System.err.println("--------------1--------------" + crosstrain.getEndDate());
+				 } 
+			 }  
+		 }catch(Exception e){
+			 
+		 }
 	} 
 	 
 	/**
@@ -1143,30 +1189,24 @@ public class CrossService{
 					train.setTrainSort(i + 1);
 					train.setTrainNbr(crossSpareNames[i]); 
 					train.setSpareApplyFlage(1);  
+					train.setSpareFlag(2); 
 					//
-					if(alertNateTrains != null){
-						 train.setAlertNateTrainNbr(alertNateTrains[i]);
-					}
-					//
-					if(alertNateDate != null){
+					if(alertNateDate != null ){
 						if(alertNateDate.length == 1){
-							Date date = dateFormat.parse(alertNateDate[0]);   
-							Calendar calendar = new GregorianCalendar();
-							calendar.setTime(date);
-							calendar.add(Calendar.DATE, i);
-							train.setAlertNateTime(dateFormat.format(calendar.getTime()));
-						}else{
-							train.setAlertNateTime(alertNateDate[i]);
+							train.setAlertNateTime(alertNateDate[0] + " 02:00:00"); 
+						}else{ 
+							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
 						}  
-					}
-					//
-					if(spareFlag != null){
-						if(spareFlag.length == 1){
-							train.setSpareFlag(Integer.parseInt(spareFlag[0]));
-						}else{
-							train.setSpareFlag(Integer.parseInt(spareFlag[i]));
-						}
-					}  
+					} 
+
+					if(highlineFlag != null ){
+						if(highlineFlag.length == 1){ 
+							train.setHighlineFlag(Integer.parseInt(highlineFlag[0]));
+						}else{ 
+							train.setHighlineFlag(Integer.parseInt(highlineFlag[i])); 
+						}  
+					} 
+					 
 				}catch(Exception e){
 					logger.error("创建列车信息出错:" , e);
 				}
@@ -1190,7 +1230,10 @@ public class CrossService{
 		   }
 		   service.shutdown();
 			 
-		   setDayGapForTrains(crossSpareTrains);
+		   setDayGapForTrains(crossSpareTrains); 
+		    
+		   //设置车次的开始和结束日期
+		   setStartAndEndTime(crossSpareTrains, cross); 
 			
 		   crossTrains.addAll(crossSpareTrains);
 		}

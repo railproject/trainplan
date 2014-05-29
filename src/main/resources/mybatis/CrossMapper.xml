@@ -356,10 +356,9 @@
 	     COMMONLINE_RULE AS commonLineRule,
 	     APPOINT_WEEK AS appointWeek, 
 	     APPOINT_DAY AS appointDay,
-	     MARSHALLING_NAME AS marshallingName
-	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId} and BASE_TRAIN_ID is not null order by GROUP_SERIAL_NBR, TRAIN_SORT
-	     APPOINT_DAY AS appointDay
-	     from unit_cross_train where  BASE_TRAIN_ID is not null and UNIT_CROSS_ID=#{unitCrossId} order by GROUP_SERIAL_NBR,TRAIN_SORT
+	     MARSHALLING_NAME AS marshallingName 
+	     from unit_cross_train where UNIT_CROSS_ID=#{unitCrossId} and BASE_TRAIN_ID is not null order by SPARE_FLAG, GROUP_SERIAL_NBR, TRAIN_SORT 
+	     
    </select>
    
    
@@ -390,7 +389,7 @@
 	     A.MARSHALLING_NAME AS marshallingName
          from 
          unit_cross_train A 
-         where  A.UNIT_CROSS_ID = #{crossId} order by A.GROUP_SERIAL_NBR ,A.train_sort
+         where  A.UNIT_CROSS_ID = #{crossId} order by A.SPARE_FLAG, A.GROUP_SERIAL_NBR ,A.train_sort
    </select>
   
     <insert id="addUnitCrossInfo"  parameterType="java.util.List" >
@@ -604,6 +603,9 @@
 		 <if test="checkFlag == 0 ">
 		AND check_time is null
 		</if>
+		<if test="trainNbr != null">
+		AND CROSS_NAME like '%' || #{trainNbr} || '%'
+		</if>
 		 <if test="checkFlag == 1 ">
 		AND check_time is not null
 		</if>
@@ -639,6 +641,9 @@
 		</if>
 		<if test="highlineFlag != null">
 		AND HIGHLINE_FLAG = #{highlineFlag}
+		</if>
+		<if test="trainNbr != null">
+		AND CROSS_NAME like '%' || #{trainNbr} || '%'
 		</if>
 		 <if test="checkFlag == 0 ">
 		AND check_time is null

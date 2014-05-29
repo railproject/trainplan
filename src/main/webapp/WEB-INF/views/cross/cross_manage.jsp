@@ -10,7 +10,7 @@ System.out.println(basePath);
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>核查编制图定开行</title>
+<title>对数表管理</title>
 <!-- Bootstrap core CSS -->
 <link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
@@ -52,6 +52,7 @@ var basePath = "<%=basePath %>"
 	border: 1px solid #dddddd;
 	margin-left: -1px;
 }
+.dropdown-menu.datepicker { max-width:220px; z-index: 10000 }
  </style>
 
  
@@ -67,42 +68,25 @@ var basePath = "<%=basePath %>"
 	
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 28%;">
-		<!--分栏框开始--> 
+		<!--分栏框开始-->  
 			<div class="row" style="margin: 10px 10px 10px 10px;">
-			    <section class="panel panel-default">
-			        <div class="panel-heading"><i class="fa fa-table"></i>导入对数表</div>
-			        <div class="panel-body">
-			        <form class="form-horizontal" role="form">    
-				        <div class="row" style="width: 100%">
-								<label for="exampleInputEmail3" class="control-label pull-left">
-												方案:&nbsp;</label> 
-								<div class="pull-left">
-									<select style="width: 273px" id="input_cross_chart_id"
-										class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
-									</select>
-								</div>  
-						   </div> 
-						   <div class="row" style="margin: 5px 0 5px 0;">
-								<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
-						        <div class="pull-left">
-						           <input class="form-control" id="cross_start_day" style="width:150px;" placeholder="" data-bind="value: searchModle().startDay">
-						        </div>
-						        <button class="btn btn-primary" type="button" style="margin-left: 18px;"
-								id="btn_cross_upload" data-bind="click: showUploadDlg">导入EXCEL</button>
-						   </div>
-					</form>
-			        </div>
-			   </section> 
-			</div>
-			<div class="row" style="margin: 5px 10px 10px 10px;">
 			    <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
 			        <div class="panel-body">
-						<form class="form-horizontal" role="form"> 
-							<div class="row" style="margin-top: 5px;">
+						<form class="form-horizontal" role="form">  
+							<div class="row">
 									<div class="form-group"
 										style="float: left; margin-left: 0px; margin-top: 0px;width: 100%"> 
-										<div class="row"  >
+									  <div class="row" style="width: 100%;">
+											<label for="exampleInputEmail3" class="control-label pull-left">
+															方案:&nbsp;</label> 
+											<div class="pull-left">
+												<select style="width: 273px" id="input_cross_chart_id"
+													class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+												</select>
+											</div>   
+									   </div> 
+										<div class="row"  style="width: 100%; margin-top: 5px;">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												车辆担当局:</label>
 											<div class="pull-left" style="margin-left: 5px;">
@@ -147,6 +131,9 @@ var basePath = "<%=basePath %>"
 											<div class="pull-left" style="margin-left: 16px;">
 												<a type="button" class="btn btn-success" data-toggle="modal"
 													data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a>
+												<a type="button" class="btn btn-success" data-toggle="modal"
+													data-target="#" id="btn_cross_search"  data-bind="click: showUploadDlg">导入</a> 
+													 
 											</div> 
 										</div>
 										<hr style="margin-top: 8px;margin-bottom: 8px">
@@ -182,27 +169,37 @@ var basePath = "<%=basePath %>"
 											
 										</div> 
 										<table class="table table-bordered table-striped table-hover" 
-											id="cross_table_crossInfo">
-											<thead>
-												<tr style="height: 25px">
-													<th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
-													<th style="width: 8%" align="center">序号</th>
-													<th style="width: 54%" align="center">车底交路名</th>
-													<th style="width: 8%" align="center">审核</th>
-													<th style="width: 8%" align="center">生成</th>
-												</tr>
-											</thead>
-											<tbody data-bind="foreach: crossRows.rows">
-												<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}" >
-												    <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
-													<td data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
-													<td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
-													<td align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
-													<td align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
-												</tr> 
-											</tbody>  					 
-										</table>
-										<div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }"></div>
+												id="cross_table_crossInfo">
+												<thead>
+													<tr style="height: 25px"> 
+														<th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
+														<th style="width: 8%" align="center">序号</th>
+														<th style="width: 59%" align="center">车底交路名</th>
+														<th style="width: 8%" align="center">审核</th>
+														<th style="width: 15%" align="center" colspan="2">生成</th> 
+													</tr>
+												</thead>
+												<tbody style="padding:0">
+													 <tr style="padding:0">
+													   <td colspan="6" style="padding:0">
+															 <div style="height: 450px; overflow-y:auto;"> 
+																<table class="table table-bordered table-striped table-hover" >
+																	<tbody data-bind="foreach: crossRows.rows">
+																		<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}" >
+																		    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
+																			<td style="width: 10%" data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
+																			<td style="width: 58%" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
+																			<td style="width: 10%" align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
+																			<td style="width: 11%" align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
+																		</tr> 
+																	</tbody> 
+																</table> 
+														 	</div>
+														</td>
+													</tr>
+												</tbody>				 
+											</table>
+										<div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }" style="margin-bottom: 5px"></div>
 									</div>
 								</div> 
 						</form>
@@ -616,7 +613,22 @@ var basePath = "<%=basePath %>"
 		<img id="loading" src="assets/images/loading.gif" style="display:none;">
 		<form id="file_upload_id" name="file_upload_name" action="cross/fileUpload"
 			method="post" enctype="multipart/form-data"> 
-			<div>
+			 <div class="row" style="width: 100%; margin-top: 5px;">
+				<label for="exampleInputEmail3" class="control-label pull-left">
+								方案:&nbsp;</label> 
+				<div class="pull-left">
+					<select style="width: 273px" id="input_cross_chart_id"
+						class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+					</select>
+				</div>   
+		   </div> 
+			 <div class="row" style="margin: 5px 0 5px 0;">
+				<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
+		        <div class="pull-left">
+		           <input class="form-control" id="cross_start_day" style="width:150px;" placeholder="" data-bind="value: searchModle().startDay">
+		        </div> 
+		   </div>
+			<div class="row" style="width: 100%; margin-top: 5px;">
 				<input id="fileToUpload" type="file" size="45" name="fileToUpload"  name="fileName" />
 			</div>
 			<div>
