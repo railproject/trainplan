@@ -6,6 +6,8 @@ package org.railway.com.trainplan.entity;
 public class Permission {
 
     private int id;
+    
+    private String key;	//权限缩写
 
     private String name;
 
@@ -15,7 +17,20 @@ public class Permission {
         return id;
     }
 
-    public void setId(int id) {
+    
+    public String getKey() {
+		return key;
+	}
+
+
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+
+
+	public void setId(int id) {
         this.id = id;
     }
 

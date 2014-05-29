@@ -24,6 +24,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -47,6 +49,7 @@ import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.BaseCrossDto;
 import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.Client;
@@ -62,6 +65,10 @@ public class CrossService{
 
 	@Autowired
 	private CommonService commonService;
+	
+	//TODO 取不出来
+	@Value("#{restConfig['SERVICE_URL']}")
+    private String restUrl;
 	
 	@Autowired
 	private BaseDao baseDao;
@@ -816,6 +823,45 @@ public class CrossService{
 		 }catch(Exception e){
 			 
 		 }
+	}
+	
+	private void setStartAndEndTime(LinkedList<CrossTrainInfo> crossTrains, CrossInfo cross){
+		 try{
+			 //设置交路的终到日期
+			 int dayGapForCross = 0;
+			 String crossStartDate = cross.getCrossStartDate();
+			 
+			 for(int i = 0; i <  crossTrains.size(); i++){
+				 CrossTrainInfo crosstrain = crossTrains.get(i);
+				 if(i == 0){
+					 crosstrain.setRunDate(cross.getCrossStartDate());
+					 Date date = dateFormat.parse(crossStartDate);   
+					 Calendar calendar = new GregorianCalendar();
+					 calendar.setTime(date);
+					 calendar.add(Calendar.DATE, crosstrain.getRunDay());
+					 crosstrain.setEndDate(dateFormat.format(calendar.getTime()));
+					 
+					 dayGapForCross += crosstrain.getRunDay();
+				 }else{
+					 //第二个车+前面的车的总天数 + daygap
+					 Date date = dateFormat.parse(crossStartDate);   
+					 Calendar calendar = new GregorianCalendar();
+					 calendar.setTime(date);
+					 calendar.add(Calendar.DATE, dayGapForCross + crosstrain.getDayGap()); 
+					 
+					 crosstrain.setRunDate(dateFormat.format(calendar.getTime())); 
+					 
+					 dayGapForCross += crosstrain.getRunDay() + crosstrain.getDayGap(); 
+					 
+					 //设置结束时间
+					 calendar.add(Calendar.DATE, crosstrain.getRunDay());
+					 crosstrain.setEndDate(dateFormat.format(calendar.getTime())); 
+					 
+				 } 
+			 }  
+		 }catch(Exception e){
+			 
+		 }
 	} 
 	 
 	/**
@@ -879,15 +925,18 @@ public class CrossService{
 					
 					client.setConnectTimeout(60*1000);
 					String trainNbr = train.getTrainNbr();
-					String stn = null;
-					if(trainNbr.indexOf("(") >= 0){
-						trainNbr = trainNbr.substring(0, trainNbr.indexOf("(")).trim();
-						
-						
-						
-						stn = trainNbr.substring(trainNbr.indexOf("(") + 1, trainNbr.indexOf(")")).trim();
-					}
-					WebResource webResource = client.resource("http://10.1.191.135:7003/rail/template/TrainlineTemplates?name=" + trainNbr); 
+					String stn = null; 
+					
+					String regex = "^(.+?)[\\(（](.+?)[\\)）]";
+				    Pattern pattern = Pattern.compile(regex);
+				    Matcher matcher = pattern.matcher(trainNbr); 
+			       
+			        if(matcher.find()) { 
+			        	trainNbr = matcher.group(1);
+			        	stn =  matcher.group(2); 
+			        }
+					
+					WebResource webResource = client.resource(restUrl +"/rail/template/TrainlineTemplates?name=" + trainNbr); 
 					
 //					webResource.method(this.method, GenericType)
 					
@@ -1010,7 +1059,7 @@ public class CrossService{
 			
 			 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO, crossList); 
 			 
-			System.err.println(this.cross.getCrossName() + " ===crossTrains===" + crossTrains.size());
+			logger.debug(this.cross.getCrossName() + " ===crossTrains===" + crossTrains.size());
         	//保存列车
 			if(crossTrains != null && crossTrains.size() > 0 ){
 				 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
@@ -1020,7 +1069,6 @@ public class CrossService{
 		}
 		
 		private LinkedList<CrossTrainInfo> createTrainsForCross(CrossInfo cross){
-			logger.debug("");
 			String crossName = cross.getCrossName();
 			String[] crossSpareNames =StringUtils.isEmpty( cross.getCrossSpareName()) ? null : cross.getCrossSpareName().split("-");
 			String[] alertNateTrains = StringUtils.isEmpty(cross.getAlterNateTranNbr()) ? null : cross.getAlterNateTranNbr().split("-");
@@ -1153,30 +1201,24 @@ public class CrossService{
 					train.setTrainSort(i + 1);
 					train.setTrainNbr(crossSpareNames[i]); 
 					train.setSpareApplyFlage(1);  
+					train.setSpareFlag(2); 
 					//
-					if(alertNateTrains != null){
-						 train.setAlertNateTrainNbr(alertNateTrains[i]);
-					}
-					//
-					if(alertNateDate != null){
+					if(alertNateDate != null ){
 						if(alertNateDate.length == 1){
-							Date date = dateFormat.parse(alertNateDate[0]);   
-							Calendar calendar = new GregorianCalendar();
-							calendar.setTime(date);
-							calendar.add(Calendar.DATE, i);
-							train.setAlertNateTime(dateFormat.format(calendar.getTime()));
-						}else{
-							train.setAlertNateTime(alertNateDate[i]);
+							train.setAlertNateTime(alertNateDate[0] + " 02:00:00"); 
+						}else{ 
+							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
 						}  
-					}
-					//
-					if(spareFlag != null){
-						if(spareFlag.length == 1){
-							train.setSpareFlag(Integer.parseInt(spareFlag[0]));
-						}else{
-							train.setSpareFlag(Integer.parseInt(spareFlag[i]));
-						}
-					}  
+					} 
+
+					if(highlineFlag != null ){
+						if(highlineFlag.length == 1){ 
+							train.setHighlineFlag(Integer.parseInt(highlineFlag[0]));
+						}else{ 
+							train.setHighlineFlag(Integer.parseInt(highlineFlag[i])); 
+						}  
+					} 
+					 
 				}catch(Exception e){
 					logger.error("创建列车信息出错:" , e);
 				}
@@ -1200,7 +1242,10 @@ public class CrossService{
 		   }
 		   service.shutdown();
 			 
-		   setDayGapForTrains(crossSpareTrains);
+		   setDayGapForTrains(crossSpareTrains); 
+		    
+		   //设置车次的开始和结束日期
+		   setStartAndEndTime(crossSpareTrains, cross); 
 			
 		   crossTrains.addAll(crossSpareTrains);
 		}

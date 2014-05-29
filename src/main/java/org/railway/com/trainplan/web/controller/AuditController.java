@@ -6,6 +6,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.railway.com.trainplan.entity.PlanCross;
 import org.railway.com.trainplan.entity.RunPlan;
@@ -75,7 +76,7 @@ public class AuditController {
 
 
     @RequestMapping(value = "plan/checklev1/{checkType}", method = RequestMethod.POST)
-    @RequiresRoles("局客运调度")
+    @RequiresPermissions("JHPT.RJH.KDSP")//局客运调度权限
     public Response checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
         logger.debug("data::::" + data);
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
@@ -84,7 +85,7 @@ public class AuditController {
     }
 
     @RequestMapping(value = "plan/checklev2/{checkType}", method = RequestMethod.POST)
-    @RequiresRoles("局值班主任")
+    @RequiresPermissions("JHPT.RJH.KDSP")//局值班主任
     public Response checkLev2(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
         logger.debug("data::::" + data);
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();

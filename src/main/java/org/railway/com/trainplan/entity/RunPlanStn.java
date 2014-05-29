@@ -1,6 +1,7 @@
 package org.railway.com.trainplan.entity;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by speeder on 2014/5/28.
@@ -15,12 +16,12 @@ public class RunPlanStn {
     private String stnBureauFullName;
     private String arrTrainNbr;
     private String dptTrainNbr;
-    private Date arrTime;
+    private Timestamp arrTime;
     private String arrTimeStr;
-    private Date dptTime;
+    private Timestamp dptTime;
     private String dptTimeStr;
-    private Date baseArrTime;
-    private Date baseDptTime;
+    private Timestamp baseArrTime;
+    private Timestamp baseDptTime;
     private String upDown;
     private String trackNbr;
     private String trackName;
@@ -96,35 +97,35 @@ public class RunPlanStn {
         this.dptTrainNbr = dptTrainNbr;
     }
 
-    public Date getArrTime() {
+    public Timestamp getArrTime() {
         return arrTime;
     }
 
-    public void setArrTime(Date arrTime) {
+    public void setArrTime(Timestamp arrTime) {
         this.arrTime = arrTime;
     }
 
-    public Date getDptTime() {
+    public Timestamp getDptTime() {
         return dptTime;
     }
 
-    public void setDptTime(Date dptTime) {
+    public void setDptTime(Timestamp dptTime) {
         this.dptTime = dptTime;
     }
 
-    public Date getBaseArrTime() {
+    public Timestamp getBaseArrTime() {
         return baseArrTime;
     }
 
-    public void setBaseArrTime(Date baseArrTime) {
+    public void setBaseArrTime(Timestamp baseArrTime) {
         this.baseArrTime = baseArrTime;
     }
 
-    public Date getBaseDptTime() {
+    public Timestamp getBaseDptTime() {
         return baseDptTime;
     }
 
-    public void setBaseDptTime(Date baseDptTime) {
+    public void setBaseDptTime(Timestamp baseDptTime) {
         this.baseDptTime = baseDptTime;
     }
 

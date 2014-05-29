@@ -7,6 +7,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.railway.com.trainplan.entity.Permission;
 import org.railway.com.trainplan.entity.Role;
 import org.railway.com.trainplan.entity.User;
 import org.railway.com.trainplan.repository.mybatis.RoleDao;
@@ -55,10 +56,23 @@ public class ShiroRealm extends AuthorizingRealm {
                 List<Role> roleList = roleDao.getRoleByAccId(accId);
                 if(roleList != null && !roleList.isEmpty()) {
                     SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+                    StringBuffer roleIdSbf = new StringBuffer();	//保存角色Id
                     for(Role role: roleList) {
                         info.addRole(role.getName());
+                        roleIdSbf.append(role.getId()).append(",");
                         logger.debug("添加角色::" + role.getName() + " TO 用户:::" + shiroUser.getName());
                     }
+                    
+                    Map<String, String> queryMap = new HashMap<String, String>();
+                    queryMap.put("roleIds", roleIdSbf.substring(0, roleIdSbf.lastIndexOf(",")));
+                    List<Permission> permissionList = roleDao.getPermissionByRoleIds(queryMap);
+                    if(permissionList != null && !permissionList.isEmpty()) {
+                    	for(Permission permission: permissionList) {
+                    		info.addStringPermission(permission.getKey());
+                    		logger.debug("添加权限::" + permission.getKey() + " TO 用户:::" + shiroUser.getName());
+                        }
+                    }
+                    
                     return info;
                 }
             }

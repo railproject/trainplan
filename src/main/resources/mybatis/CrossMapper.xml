@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="crossDao">
-	<resultMap id="unitCrossTrain" type="org.railway.com.trainplan.entity.UnitCrossTrainInfo">
-	        <id column="GROUPSERIALNBR" property="groupSerialNbr"/>
-	        <result column="UNITCROSSTRAINID" property="unitCrossTrainId"/>
-	        <result column="UNITCROSSID" property="unitCrossId"/>
-	       
-	        <collection property="trainInfoList" resultMap="unitCrossSubTrain"/>
-	    </resultMap>
-	
-	    <resultMap id="unitCrossSubTrain" type="org.railway.com.trainplan.entity.UnitCrossTrainSubInfo">
-	        <id column="baseTrainId" property="baseTrainId"/>
-	        <result column="DAYGAP" property="dayGap"/>
-	        <result column="TRAINNBR" property="trainNbr"/>
+    <resultMap id="unitCrossTrain" type="org.railway.com.trainplan.entity.UnitCrossTrainInfo">
+        <id column="GROUPSERIALNBR" property="groupSerialNbr"/>
+        <result column="UNITCROSSTRAINID" property="unitCrossTrainId"/>
+        <result column="UNITCROSSID" property="unitCrossId"/>
+
+        <collection property="trainInfoList" resultMap="unitCrossSubTrain"/>
+    </resultMap>
+
+    <resultMap id="unitCrossSubTrain" type="org.railway.com.trainplan.entity.UnitCrossTrainSubInfo">
+        <id column="baseTrainId" property="baseTrainId"/>
+        <result column="DAYGAP" property="dayGap"/>
+        <result column="TRAINNBR" property="trainNbr"/>
 	        <result column="rundate" property="runDate"/>
 	        <result column="enddate" property="endDate"/>
-	        <result column="BASETRAINID" property="baseTrainId"/>
-	        <result column="STARTSTN" property="startStn"/>
-	        <result column="STARTBUREAU" property="startBureau"/>
-	        <result column="ENDSTN" property="endStn"/>
-	        <result column="ENDBUREAU" property="endBureau"/>
-	        <result column="TRAINSORT" property="trainSort"/> 
-	        <collection property="stationTimeList" resultMap="unitCrossSubTrainTime"/>
+        <result column="BASETRAINID" property="baseTrainId"/>
+        <result column="STARTSTN" property="startStn"/>
+        <result column="STARTBUREAU" property="startBureau"/>
+        <result column="ENDSTN" property="endStn"/>
+        <result column="ENDBUREAU" property="endBureau"/>
+        <result column="TRAINSORT" property="trainSort"/>
+        <collection property="stationTimeList" resultMap="unitCrossSubTrainTime"/>
     </resultMap>
-    
+
     <resultMap id="unitCrossSubTrainTime" type="org.railway.com.trainplan.entity.UnitCrossTrainSubInfoTime">
 	        <id column="id" property="id"/>
 	        <result column="stnName" property="stnName"/>
@@ -37,122 +37,122 @@
 	       
     </resultMap>
 
-    
-   <select id="getCrossTrainInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
-     select 
-	     BASE_CROSS_ID AS crossId,
-	     TRAIN_SORT AS trainSort,
-	     RUN_DATE AS runDate,
-	      END_DATE AS endDate,
-	     TRAIN_NBR AS trainNbr,
-	     BASE_TRAIN_ID AS baseTrainId ,
-	     START_STN AS startStn,
-	     START_BUREAU AS startBureau,
-	     END_STN AS endStn,
-	     END_BUREAU AS endBureau,
-	     DAY_GAP AS dayGap ,
-	     ALTERNATE_TRAIN_NBR AS alertNateTrainNbr,
-	     ALTERNATE_TIME AS alertNateTime ,
-	     SPARE_FLAG AS spareFlag,
-	     SPARE_APPLY_FLAG AS spareApplyFlage,
-	     HIGHLINE_FLAG AS highlineFlag,
-	     HIGHLINE_RULE AS highlineRule,
-	     COMMONLINE_RULE AS commonLineRule,
-	     APPOINT_WEEK AS appointWeek,
-	     APPOINT_DAY AS appointDay
-	     from base_cross_train where BASE_CROSS_ID=#{crossId}    order by spareApplyFlage,trainSort
-   </select>
-   
-   <select id="getUnitCrossInfoForChartId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
-   select 
+
+    <select id="getCrossTrainInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
+        select
+        BASE_CROSS_ID AS crossId,
+        TRAIN_SORT AS trainSort,
+        RUN_DATE AS runDate,
+        END_DATE AS endDate,
+        TRAIN_NBR AS trainNbr,
+        BASE_TRAIN_ID AS baseTrainId ,
+        START_STN AS startStn,
+        START_BUREAU AS startBureau,
+        END_STN AS endStn,
+        END_BUREAU AS endBureau,
+        DAY_GAP AS dayGap ,
+        ALTERNATE_TRAIN_NBR AS alertNateTrainNbr,
+        ALTERNATE_TIME AS alertNateTime ,
+        SPARE_FLAG AS spareFlag,
+        SPARE_APPLY_FLAG AS spareApplyFlage,
+        HIGHLINE_FLAG AS highlineFlag,
+        HIGHLINE_RULE AS highlineRule,
+        COMMONLINE_RULE AS commonLineRule,
+        APPOINT_WEEK AS appointWeek,
+        APPOINT_DAY AS appointDay
+        from base_cross_train where BASE_CROSS_ID=#{crossId}    order by spareApplyFlage,trainSort
+    </select>
+
+    <select id="getUnitCrossInfoForChartId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
+        select
         UNIT_CROSS_ID as unitCrossId,
         BASE_CROSS_ID as baseCrossId,
         BASE_CHART_ID as chartId,
         BASE_CHART_NAME as chartName,
         CROSS_START_DATE as crossStartDate,
         CROSS_END_DATE as crossEndDate,
-        
+
         CROSS_NAME as crossName,
         CROSS_SPARE_NAME as crossSpareName,
         ALTERNATE_DATE as alterNateDate,
         ALTERNATE_TRAIN_NBR as alterNateTranNbr,
-        
+
         SPARE_FLAG as spareFlag ,
         CUT_OLD as  cutOld,
         GROUP_TOTAL_NBR as groupTotalNbr ,
-        PAIR_NBR as pairNbr , 
-        
+        PAIR_NBR as pairNbr ,
+
         HIGHLINE_FLAG as  highlineFlag,
         HIGHLINE_RULE as  highlineRule,
         COMMONLINE_RULE as  commonlineRule,
         APPOINT_WEEK as appointWeek ,
-        
+
         APPOINT_DAY  as  appointDay,
         CROSS_SECTION  as crossSection ,
         THROUGH_LINE  as  throughline,
         START_BUREAU  as startBureau ,
-        
-		TOKEN_VEH_BUREAU  as tokenVehBureau ,
-		TOKEN_VEH_DEPT  as  tokenVehDept,
-		TOKEN_VEH_DEPOT  as tokenVehDepot ,
-		TOKEN_PSG_BUREAU  as tokenPsgBureau ,
-		
-		TOKEN_PSG_DEPT  as tokenPsgDept ,	
-		LOCO_TYPE  as locoType ,
-		CRH_TYPE  as crhType ,
-		ELEC_SUPPLY  as elecSupply ,
-		
-		DEJ_COLLECT  as dejCollect ,
-		AIR_CONDITION  as airCondition ,
-		NOTE  as  note,
-		CREAT_PEOPLE  as createPeople ,
-		CREAT_PEOPLE_ORG  as createPeopleOrg ,
-		CREAT_TIME  as  createTime
+
+        TOKEN_VEH_BUREAU  as tokenVehBureau ,
+        TOKEN_VEH_DEPT  as  tokenVehDept,
+        TOKEN_VEH_DEPOT  as tokenVehDepot ,
+        TOKEN_PSG_BUREAU  as tokenPsgBureau ,
+
+        TOKEN_PSG_DEPT  as tokenPsgDept ,
+        LOCO_TYPE  as locoType ,
+        CRH_TYPE  as crhType ,
+        ELEC_SUPPLY  as elecSupply ,
+
+        DEJ_COLLECT  as dejCollect ,
+        AIR_CONDITION  as airCondition ,
+        NOTE  as  note,
+        CREAT_PEOPLE  as createPeople ,
+        CREAT_PEOPLE_ORG  as createPeopleOrg ,
+        CREAT_TIME  as  createTime
         from unit_cross where base_chart_id=#{chartId}
-   
-   </select>
-   
-   <insert id="addPlanCrossInfo"  parameterType="java.util.Map">
-	
-		insert into plan_cross
-		(
-		PLAN_CROSS_ID,
-		UNIT_CROSS_ID,
-		BASE_CROSS_ID,
-		BASE_CHART_ID,
-		BASE_CHART_NAME,
-		CROSS_START_DATE,
-		CROSS_END_DATE,
-		CROSS_NAME,
-		CROSS_SPARE_NAME,
-		SPARE_FLAG,
-		GROUP_TOTAL_NBR,
-		PAIR_NBR,
-		HIGHLINE_FLAG,
-		HIGHLINE_RULE,
-		COMMONLINE_RULE,
-		APPOINT_WEEK,
-		APPOINT_DAY,
-		CROSS_SECTION,
-		THROUGH_LINE,
-		START_BUREAU,
-		TOKEN_VEH_BUREAU,
-		TOKEN_VEH_DEPT,
-		TOKEN_VEH_DEPOT,
-		TOKEN_PSG_BUREAU,
-		TOKEN_PSG_DEPT,
-		LOCO_TYPE,
-		CRH_TYPE,
-		ELEC_SUPPLY,
-		DEJ_COLLECT,
-		AIR_CONDITION,
-		NOTE,
-		CREAT_TIME
-		)
-		 (
-		 
-		 <foreach collection="trainCrossList" item="item" index="index"
-            separator="UNION ALL">
+
+    </select>
+
+    <insert id="addPlanCrossInfo"  parameterType="java.util.Map">
+
+        insert into plan_cross
+        (
+        PLAN_CROSS_ID,
+        UNIT_CROSS_ID,
+        BASE_CROSS_ID,
+        BASE_CHART_ID,
+        BASE_CHART_NAME,
+        CROSS_START_DATE,
+        CROSS_END_DATE,
+        CROSS_NAME,
+        CROSS_SPARE_NAME,
+        SPARE_FLAG,
+        GROUP_TOTAL_NBR,
+        PAIR_NBR,
+        HIGHLINE_FLAG,
+        HIGHLINE_RULE,
+        COMMONLINE_RULE,
+        APPOINT_WEEK,
+        APPOINT_DAY,
+        CROSS_SECTION,
+        THROUGH_LINE,
+        START_BUREAU,
+        TOKEN_VEH_BUREAU,
+        TOKEN_VEH_DEPT,
+        TOKEN_VEH_DEPOT,
+        TOKEN_PSG_BUREAU,
+        TOKEN_PSG_DEPT,
+        LOCO_TYPE,
+        CRH_TYPE,
+        ELEC_SUPPLY,
+        DEJ_COLLECT,
+        AIR_CONDITION,
+        NOTE,
+        CREAT_TIME
+        )
+        (
+
+        <foreach collection="trainCrossList" item="item" index="index"
+                 separator="UNION ALL">
             <![CDATA[
 	       SELECT
 	       #{item.planCrossId,jdbcType=VARCHAR},
@@ -190,159 +190,157 @@
 	      
 	       from dual
 	         ]]>
-	      </foreach>
-	    
-	     ) 
-	     
-	</insert>
-	
-	
-   <select id="getCrossInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
-      select 
+        </foreach>
+
+        )
+
+    </insert>
+
+
+    <select id="getCrossInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
+        select
         BASE_CROSS_ID as crossId,
         BASE_CHART_ID as chartId,
         BASE_CHART_NAME as chartName,
         CROSS_START_DATE as crossStartDate,
         CROSS_END_DATE as crossEndDate,
-        
-        CROSS_NAME as crossName,
-        CROSS_SPARE_NAME as crossSpareName,
-        ALTERNATE_DATE as alterNateDate,
-        ALTERNATE_TRAIN_NBR as alterNateTranNbr,
-        
-        SPARE_FLAG as spareFlag ,
-        CUT_OLD as  cutOld,
-        GROUP_TOTAL_NBR as groupTotalNbr ,
-        PAIR_NBR as pairNbr , 
-        
-        HIGHLINE_FLAG as  highlineFlag,
-        HIGHLINE_RULE as  highlineRule,
-        COMMONLINE_RULE as  commonlineRule,
-        APPOINT_WEEK as appointWeek ,
-        
-        APPOINT_DAY  as  appointDay,
-        CROSS_SECTION  as crossSection ,
-        THROUGH_LINE  as  throughline,
-        START_BUREAU  as startBureau ,
-        
-		TOKEN_VEH_BUREAU  as tokenVehBureau ,
-		TOKEN_VEH_DEPT  as  tokenVehDept,
-		TOKEN_VEH_DEPOT  as tokenVehDepot ,
-		TOKEN_PSG_BUREAU  as tokenPsgBureau ,
-		
-		TOKEN_PSG_DEPT  as tokenPsgDept ,	
-		LOCO_TYPE  as locoType ,
-		CRH_TYPE  as crhType ,
-		ELEC_SUPPLY  as elecSupply ,
-		
-		DEJ_COLLECT  as dejCollect ,
-		AIR_CONDITION  as airCondition ,
-		NOTE  as  note,
-		CREAT_PEOPLE  as createPeople ,
-		CREAT_PEOPLE_ORG  as createPeopleOrg ,
-		CREAT_TIME  as  createTime
-  
-      from base_cross where BASE_CROSS_ID=#{crossId}
-   </select>
 
-  <select id="getUnitCrossInfoForCrossId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
-  select 
-        UNIT_CROSS_ID as unitCrossId, 
-        BASE_CHART_ID as chartId,
-        BASE_CHART_NAME as chartName,
-        CROSS_START_DATE as crossStartDate,
-        CROSS_END_DATE as crossEndDate,
-        
         CROSS_NAME as crossName,
         CROSS_SPARE_NAME as crossSpareName,
         ALTERNATE_DATE as alterNateDate,
         ALTERNATE_TRAIN_NBR as alterNateTranNbr,
-        
+
         SPARE_FLAG as spareFlag ,
         CUT_OLD as  cutOld,
         GROUP_TOTAL_NBR as groupTotalNbr ,
-        PAIR_NBR as pairNbr , 
-        
+        PAIR_NBR as pairNbr ,
+
         HIGHLINE_FLAG as  highlineFlag,
         HIGHLINE_RULE as  highlineRule,
         COMMONLINE_RULE as  commonlineRule,
         APPOINT_WEEK as appointWeek ,
-        
+
         APPOINT_DAY  as  appointDay,
         CROSS_SECTION  as crossSection ,
         THROUGH_LINE  as  throughline,
         START_BUREAU  as startBureau ,
-        
-		TOKEN_VEH_BUREAU  as tokenVehBureau ,
-		TOKEN_VEH_DEPT  as  tokenVehDept,
-		TOKEN_VEH_DEPOT  as tokenVehDepot ,
-		TOKEN_PSG_BUREAU  as tokenPsgBureau ,
-		
-		TOKEN_PSG_DEPT  as tokenPsgDept ,	
-		LOCO_TYPE  as locoType ,
-		CRH_TYPE  as crhType ,
-		ELEC_SUPPLY  as elecSupply ,
-		
-		DEJ_COLLECT  as dejCollect ,
-		AIR_CONDITION  as airCondition ,
-		NOTE  as  note,
-		CREAT_PEOPLE  as createPeople ,
-		CREAT_PEOPLE_ORG  as createPeopleOrg ,
-		CREAT_TIME  as  createTime
-        from unit_cross where unit_cross_id=#{crossId}
-  
-  </select> 
-  
-   <select id="getUnitCrossInfoForUnitCrossid" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossInfo">
-      select 
+
+        TOKEN_VEH_BUREAU  as tokenVehBureau ,
+        TOKEN_VEH_DEPT  as  tokenVehDept,
+        TOKEN_VEH_DEPOT  as tokenVehDepot ,
+        TOKEN_PSG_BUREAU  as tokenPsgBureau ,
+
+        TOKEN_PSG_DEPT  as tokenPsgDept ,
+        LOCO_TYPE  as locoType ,
+        CRH_TYPE  as crhType ,
+        ELEC_SUPPLY  as elecSupply ,
+
+        DEJ_COLLECT  as dejCollect ,
+        AIR_CONDITION  as airCondition ,
+        NOTE  as  note,
+        CREAT_PEOPLE  as createPeople ,
+        CREAT_PEOPLE_ORG  as createPeopleOrg ,
+        CREAT_TIME  as  createTime
+
+        from base_cross where BASE_CROSS_ID=#{crossId}
+    </select>
+
+    <select id="getUnitCrossInfoForCrossId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
+        select
         UNIT_CROSS_ID as unitCrossId,
-        BASE_CROSS_ID as crossId, 
         BASE_CHART_ID as chartId,
         BASE_CHART_NAME as chartName,
         CROSS_START_DATE as crossStartDate,
         CROSS_END_DATE as crossEndDate,
-        
+
         CROSS_NAME as crossName,
         CROSS_SPARE_NAME as crossSpareName,
         ALTERNATE_DATE as alterNateDate,
         ALTERNATE_TRAIN_NBR as alterNateTranNbr,
-        
+
         SPARE_FLAG as spareFlag ,
         CUT_OLD as  cutOld,
         GROUP_TOTAL_NBR as groupTotalNbr ,
-        PAIR_NBR as pairNbr , 
-        
+        PAIR_NBR as pairNbr ,
+
         HIGHLINE_FLAG as  highlineFlag,
         HIGHLINE_RULE as  highlineRule,
         COMMONLINE_RULE as  commonlineRule,
         APPOINT_WEEK as appointWeek ,
-        
+
         APPOINT_DAY  as  appointDay,
         CROSS_SECTION  as crossSection ,
         THROUGH_LINE  as  throughline,
         START_BUREAU  as startBureau ,
-        
-		TOKEN_VEH_BUREAU  as tokenVehBureau ,
-		TOKEN_VEH_DEPT  as  tokenVehDept,
-		TOKEN_VEH_DEPOT  as tokenVehDepot ,
-		TOKEN_PSG_BUREAU  as tokenPsgBureau ,
-		
-		TOKEN_PSG_DEPT  as tokenPsgDept ,	
-		LOCO_TYPE  as locoType ,
-		CRH_TYPE  as crhType ,
-		ELEC_SUPPLY  as elecSupply ,
-		
-		DEJ_COLLECT  as dejCollect ,
-		AIR_CONDITION  as airCondition ,
-		NOTE  as  note,
-		CREAT_PEOPLE  as createPeople ,
-		CREAT_PEOPLE_ORG  as createPeopleOrg ,
-		CREAT_TIME  as  createTime
-  
-      from unit_cross where UNIT_CROSS_ID=#{unitCrossId} 
-   </select>
-   
-   
+
+        TOKEN_VEH_BUREAU  as tokenVehBureau ,
+        TOKEN_VEH_DEPT  as  tokenVehDept,
+        TOKEN_VEH_DEPOT  as tokenVehDepot ,
+        TOKEN_PSG_BUREAU  as tokenPsgBureau ,
+
+        TOKEN_PSG_DEPT  as tokenPsgDept ,
+        LOCO_TYPE  as locoType ,
+        CRH_TYPE  as crhType ,
+        ELEC_SUPPLY  as elecSupply ,
+
+        DEJ_COLLECT  as dejCollect ,
+        AIR_CONDITION  as airCondition ,
+        NOTE  as  note,
+        CREAT_PEOPLE  as createPeople ,
+        CREAT_PEOPLE_ORG  as createPeopleOrg ,
+        CREAT_TIME  as  createTime
+        from unit_cross where unit_cross_id=#{crossId}
+
+    </select>
+
+    <select id="getUnitCrossInfoForUnitCrossid" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossInfo">
+        select
+        UNIT_CROSS_ID as unitCrossId,
+        BASE_CROSS_ID as crossId,
+        BASE_CHART_ID as chartId,
+        BASE_CHART_NAME as chartName,
+        CROSS_START_DATE as crossStartDate,
+        CROSS_END_DATE as crossEndDate,
+
+        CROSS_NAME as crossName,
+        CROSS_SPARE_NAME as crossSpareName,
+        ALTERNATE_DATE as alterNateDate,
+        ALTERNATE_TRAIN_NBR as alterNateTranNbr,
+
+        SPARE_FLAG as spareFlag ,
+        CUT_OLD as  cutOld,
+        GROUP_TOTAL_NBR as groupTotalNbr ,
+        PAIR_NBR as pairNbr ,
+
+        HIGHLINE_FLAG as  highlineFlag,
+        HIGHLINE_RULE as  highlineRule,
+        COMMONLINE_RULE as  commonlineRule,
+        APPOINT_WEEK as appointWeek ,
+
+        APPOINT_DAY  as  appointDay,
+        CROSS_SECTION  as crossSection ,
+        THROUGH_LINE  as  throughline,
+        START_BUREAU  as startBureau ,
+
+        TOKEN_VEH_BUREAU  as tokenVehBureau ,
+        TOKEN_VEH_DEPT  as  tokenVehDept,
+        TOKEN_VEH_DEPOT  as tokenVehDepot ,
+        TOKEN_PSG_BUREAU  as tokenPsgBureau ,
+
+        TOKEN_PSG_DEPT  as tokenPsgDept ,
+        LOCO_TYPE  as locoType ,
+        CRH_TYPE  as crhType ,
+        ELEC_SUPPLY  as elecSupply ,
+
+        DEJ_COLLECT  as dejCollect ,
+        AIR_CONDITION  as airCondition ,
+        NOTE  as  note,
+        CREAT_PEOPLE  as createPeople ,
+        CREAT_PEOPLE_ORG  as createPeopleOrg ,
+        CREAT_TIME  as  createTime
+
+        from unit_cross where UNIT_CROSS_ID=#{unitCrossId}
+    </select>
    	<resultMap id="crossTrain" type="org.railway.com.trainplan.entity.BaseCrossTrainInfo">
 	        <id column="base_cross_id" property="baseCrossId"/>
 	        <result column="cross_start_date" property="crossStartDate"/>
@@ -445,9 +443,6 @@ ORDER BY A.BASE_CROSS_ID,B.TRAIN_SORT,C.STN_SORT
   
   </select>
  
-    
-    
-    
     <select id="getUnitCrossTrainInfoForUnitCrossid" parameterType="map" resultMap="unitCrossTrain">
    SELECT 
 TO_CHAR(TO_DATE(M.runDate,'yyyy-mm-dd'),'yyyy-mm-dd') || ' '||
@@ -586,325 +581,331 @@ ORDER BY M.groupSerialNbr,M.TRAINSORT,N.BASETRAINID1, N.STNSORT
          unit_cross_train A 
          where  A.UNIT_CROSS_ID = #{crossId} order by A.GROUP_SERIAL_NBR ,A.train_sort
    </select>
-  
+
     <insert id="addUnitCrossInfo"  parameterType="java.util.List" >
 
-		insert into unit_cross
-		(UNIT_CROSS_ID,  
-		BASE_CROSS_ID,
-		BASE_CHART_ID,BASE_CHART_NAME,CROSS_START_DATE,CROSS_END_DATE,
-		CROSS_NAME,CROSS_SPARE_NAME,ALTERNATE_DATE,ALTERNATE_TRAIN_NBR,
-		SPARE_FLAG,CUT_OLD,GROUP_TOTAL_NBR,PAIR_NBR,
-		HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,
-		APPOINT_DAY,CROSS_SECTION,THROUGH_LINE,START_BUREAU,
-		TOKEN_VEH_BUREAU,TOKEN_VEH_DEPT,TOKEN_VEH_DEPOT,TOKEN_PSG_BUREAU,
-		TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
-		DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
-		CREAT_PEOPLE_ORG,CREAT_TIME)
-		(<foreach collection="list" item="item" index="index"
-            separator="UNION">
-            SELECT
-            #{item.unitCrossId,jdbcType=VARCHAR},  
-            #{item.crossId,jdbcType=VARCHAR},
-            #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
-            #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
-            #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
-            #{item.highlineFlag,jdbcType=VARCHAR}, #{item.highlineRule,jdbcType=VARCHAR},#{item.commonlineRule,jdbcType=VARCHAR},#{item.appointWeek,jdbcType=VARCHAR},
-            #{item.appointDay,jdbcType=VARCHAR},#{item.crossSection,jdbcType=VARCHAR},#{item.throughline,jdbcType=VARCHAR},#{item.startBureau,jdbcType=VARCHAR},
-            #{item.tokenVehBureau,jdbcType=VARCHAR},#{item.tokenVehDept,jdbcType=VARCHAR},#{item.tokenVehDepot,jdbcType=VARCHAR},#{item.tokenPsgBureau,jdbcType=VARCHAR},
-            #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
-            #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
-            #{item.createPeopleOrg,jdbcType=VARCHAR},
-            sysdate
-            from dual 
-             </foreach>
-        ) 
-	</insert>
-	
-	<insert id="addUnitCrossTrainInfo" parameterType="java.util.List">
-     insert into unit_cross_train
-     (UNIT_CROSS_TRAIN_ID,
-     MARSHALLING_NAME,
-     RUN_DATE,
-     END_DATE,
-     GROUP_SERIAL_NBR,
-     UNIT_CROSS_ID,
-     TRAIN_SORT,TRAIN_NBR,BASE_TRAIN_ID,
-     START_STN,START_BUREAU,END_STN,END_BUREAU,
-     DAY_GAP,ALTERNATE_TRAIN_NBR,ALTERNATE_TIME,SPARE_FLAG,
-     SPARE_APPLY_FLAG,HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,
-     APPOINT_WEEK,APPOINT_DAY)
-     (<foreach collection="list" item="item" index="index"
-           separator="UNION">
-       SELECT
-       #{item.unitCrossTrainId,jdbcType=VARCHAR},
-       #{item.marshallingName,jdbcType=VARCHAR},
-       #{item.runDate,jdbcType=VARCHAR},
-       #{item.endDate,jdbcType=VARCHAR},
-       #{item.groupSerialNbr,jdbcType=NUMERIC},
-       #{item.unitCrossId,jdbcType=VARCHAR},#{item.trainSort,jdbcType=NUMERIC},#{item.trainNbr,jdbcType=VARCHAR},#{item.baseTrainId,jdbcType=VARCHAR},
-       #{item.startStn,jdbcType=VARCHAR}, #{item.startBureau,jdbcType=VARCHAR},#{item.endStn,jdbcType=VARCHAR},#{item.endBureau,jdbcType=VARCHAR},
-       #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
-       #{item.spareApplyFlage,jdbcType=NUMERIC}, #{item.highlineFlag,jdbcType=NUMERIC},#{item.highlineRule,jdbcType=VARCHAR},#{item.commonLineRule,jdbcType=VARCHAR},
-       #{item.appointWeek,jdbcType=VARCHAR},#{item.appointDay,jdbcType=VARCHAR}
-       from dual
-       
-      </foreach>
-     ) 
-	</insert>
-	
-	
-	<insert id="addCrossInfo"  parameterType="java.util.List" >
+        insert into unit_cross
+        (UNIT_CROSS_ID,
+        BASE_CROSS_ID,
+        BASE_CHART_ID,BASE_CHART_NAME,CROSS_START_DATE,CROSS_END_DATE,
+        CROSS_NAME,CROSS_SPARE_NAME,ALTERNATE_DATE,ALTERNATE_TRAIN_NBR,
+        SPARE_FLAG,CUT_OLD,GROUP_TOTAL_NBR,PAIR_NBR,
+        HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,
+        APPOINT_DAY,CROSS_SECTION,THROUGH_LINE,START_BUREAU,
+        TOKEN_VEH_BUREAU,TOKEN_VEH_DEPT,TOKEN_VEH_DEPOT,TOKEN_PSG_BUREAU,
+        TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
+        DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
+        CREAT_PEOPLE_ORG,CREAT_TIME)
+        (<foreach collection="list" item="item" index="index"
+                  separator="UNION">
+        SELECT
+        #{item.unitCrossId,jdbcType=VARCHAR},
+        #{item.crossId,jdbcType=VARCHAR},
+        #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
+        #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
+        #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
+        #{item.highlineFlag,jdbcType=VARCHAR}, #{item.highlineRule,jdbcType=VARCHAR},#{item.commonlineRule,jdbcType=VARCHAR},#{item.appointWeek,jdbcType=VARCHAR},
+        #{item.appointDay,jdbcType=VARCHAR},#{item.crossSection,jdbcType=VARCHAR},#{item.throughline,jdbcType=VARCHAR},#{item.startBureau,jdbcType=VARCHAR},
+        #{item.tokenVehBureau,jdbcType=VARCHAR},#{item.tokenVehDept,jdbcType=VARCHAR},#{item.tokenVehDepot,jdbcType=VARCHAR},#{item.tokenPsgBureau,jdbcType=VARCHAR},
+        #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
+        #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
+        #{item.createPeopleOrg,jdbcType=VARCHAR},
+        sysdate
+        from dual
+    </foreach>
+        )
+    </insert>
 
-		insert into base_cross
-		(BASE_CROSS_ID,
-		BASE_CHART_ID,BASE_CHART_NAME,CROSS_START_DATE,CROSS_END_DATE,
-		CROSS_NAME,CROSS_SPARE_NAME,ALTERNATE_DATE,ALTERNATE_TRAIN_NBR,
-		SPARE_FLAG,CUT_OLD,GROUP_TOTAL_NBR,PAIR_NBR,
-		HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,
-		APPOINT_DAY,CROSS_SECTION,THROUGH_LINE,START_BUREAU,
-		TOKEN_VEH_BUREAU,TOKEN_VEH_DEPT,TOKEN_VEH_DEPOT,TOKEN_PSG_BUREAU,
-		TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
-		DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
-		CREAT_PEOPLE_ORG,CREAT_TIME)
-		(<foreach collection="list" item="item" index="index"
-            separator="UNION">
-            SELECT
-            #{item.crossId,jdbcType=VARCHAR},
-            #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
-            #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
-            #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
-            #{item.highlineFlag,jdbcType=VARCHAR}, #{item.highlineRule,jdbcType=VARCHAR},#{item.commonlineRule,jdbcType=VARCHAR},#{item.appointWeek,jdbcType=VARCHAR},
-            #{item.appointDay,jdbcType=VARCHAR},#{item.crossSection,jdbcType=VARCHAR},#{item.throughline,jdbcType=VARCHAR},#{item.startBureau,jdbcType=VARCHAR},
-            #{item.tokenVehBureau,jdbcType=VARCHAR},#{item.tokenVehDept,jdbcType=VARCHAR},#{item.tokenVehDepot,jdbcType=VARCHAR},#{item.tokenPsgBureau,jdbcType=VARCHAR},
-            #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
-            #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
-            #{item.createPeopleOrg,jdbcType=VARCHAR},
-            sysdate
-            from dual 
-             </foreach>
-        ) 
-	</insert>
+    <insert id="addUnitCrossTrainInfo" parameterType="java.util.List">
+        insert into unit_cross_train
+        (UNIT_CROSS_TRAIN_ID,
+        MARSHALLING_NAME,
+        RUN_DATE,
+        END_DATE,
+        GROUP_SERIAL_NBR,
+        UNIT_CROSS_ID,
+        TRAIN_SORT,TRAIN_NBR,BASE_TRAIN_ID,
+        START_STN,START_BUREAU,END_STN,END_BUREAU,
+        DAY_GAP,ALTERNATE_TRAIN_NBR,ALTERNATE_TIME,SPARE_FLAG,
+        SPARE_APPLY_FLAG,HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,
+        APPOINT_WEEK,APPOINT_DAY)
+        (<foreach collection="list" item="item" index="index"
+                  separator="UNION">
+        SELECT
+        #{item.unitCrossTrainId,jdbcType=VARCHAR},
+        #{item.marshallingName,jdbcType=VARCHAR},
+        #{item.runDate,jdbcType=VARCHAR},
+        #{item.endDate,jdbcType=VARCHAR},
+        #{item.groupSerialNbr,jdbcType=NUMERIC},
+        #{item.unitCrossId,jdbcType=VARCHAR},#{item.trainSort,jdbcType=NUMERIC},#{item.trainNbr,jdbcType=VARCHAR},#{item.baseTrainId,jdbcType=VARCHAR},
+        #{item.startStn,jdbcType=VARCHAR}, #{item.startBureau,jdbcType=VARCHAR},#{item.endStn,jdbcType=VARCHAR},#{item.endBureau,jdbcType=VARCHAR},
+        #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyy-MM-dd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
+        #{item.spareApplyFlage,jdbcType=NUMERIC}, #{item.highlineFlag,jdbcType=NUMERIC},#{item.highlineRule,jdbcType=VARCHAR},#{item.commonLineRule,jdbcType=VARCHAR},
+        #{item.appointWeek,jdbcType=VARCHAR},#{item.appointDay,jdbcType=VARCHAR}
+        from dual
 
-	<insert id="addCrossTrainInfo" parameterType="java.util.List">
-	     insert into base_cross_train
-	     (BASE_CROSS_TRAIN_ID,
-	     RUN_DATE,
-	     END_DATE,
-	     BASE_CROSS_ID,TRAIN_SORT,TRAIN_NBR,BASE_TRAIN_ID,
-	     START_STN,START_BUREAU,END_STN,END_BUREAU,
-	     DAY_GAP,ALTERNATE_TRAIN_NBR,ALTERNATE_TIME,SPARE_FLAG,
-	     SPARE_APPLY_FLAG,HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,
-	     APPOINT_WEEK,APPOINT_DAY)
-	     (<foreach collection="list" item="item" index="index"
-            separator="UNION">
-	       SELECT
-	       #{item.crossTainId,jdbcType=VARCHAR},
-	       #{item.runDate,jdbcType=VARCHAR}, 
-           #{item.endDate,jdbcType=VARCHAR},
-	       #{item.crossId,jdbcType=VARCHAR},#{item.trainSort,jdbcType=NUMERIC},#{item.trainNbr,jdbcType=VARCHAR},#{item.baseTrainId,jdbcType=VARCHAR},
-	       #{item.startStn,jdbcType=VARCHAR}, #{item.startBureau,jdbcType=VARCHAR},#{item.endStn,jdbcType=VARCHAR},#{item.endBureau,jdbcType=VARCHAR},
-	       #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyyMMdd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
-	       #{item.spareApplyFlage,jdbcType=NUMERIC}, #{item.highlineFlag,jdbcType=NUMERIC},#{item.highlineRule,jdbcType=NUMERIC},#{item.commonLineRule,jdbcType=NUMERIC},
-	       #{item.appointWeek,jdbcType=VARCHAR},#{item.appointDay,jdbcType=VARCHAR}
-	       from dual
-	       
-	      </foreach>
-	     ) 
-	</insert>
-	
-	<select id="getCrossInfoTotalCount" parameterType="map" resultType="map">
-	  select count(*) as count from BASE_CROSS where 1=1
-	  <if test="tokenVehBureau != null">
-			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
-		</if>
-		<if test="startBureau != null">
-		   AND START_BUREAU = #{startBureau}
-		</if>
-		<if test="highlineFlag != null">
-		AND HIGHLINE_FLAG = #{highlineFlag}
-		</if> 
-		 <if test="checkFlag == 0 ">
-		AND check_time is null
-		</if>
-		 <if test="checkFlag == 1 ">
-		AND check_time is not null
-		</if>
-	   <if test="unitCreateFlag == 0 ">
-		AND CREAT_UNIT_TIME is null
-		</if>
-		<if test="trainNbr != null">
-			AND cross_name like '%' || #{trainNbr} || '%'
-		</if>
-		 <if test="unitCreateFlag == 1 ">
-		AND CREAT_UNIT_TIME is not null
-		</if>
-	</select>
-	
-	<select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
-	    select * from (select ROWNUM AS num, m.*  from  (select 
-	    BASE_CHART_ID as chartId,
-		BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag,creat_time as createTime,
-	    case when CREAT_UNIT_TIME is not null  then '1' else '0' end as unitCreateFlag,
+    </foreach>
+        )
+    </insert>
+
+
+    <insert id="addCrossInfo"  parameterType="java.util.List" >
+
+        insert into base_cross
+        (BASE_CROSS_ID,
+        BASE_CHART_ID,BASE_CHART_NAME,CROSS_START_DATE,CROSS_END_DATE,
+        CROSS_NAME,CROSS_SPARE_NAME,ALTERNATE_DATE,ALTERNATE_TRAIN_NBR,
+        SPARE_FLAG,CUT_OLD,GROUP_TOTAL_NBR,PAIR_NBR,
+        HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,
+        APPOINT_DAY,CROSS_SECTION,THROUGH_LINE,START_BUREAU,
+        TOKEN_VEH_BUREAU,TOKEN_VEH_DEPT,TOKEN_VEH_DEPOT,TOKEN_PSG_BUREAU,
+        TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
+        DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
+        CREAT_PEOPLE_ORG,CREAT_TIME)
+        (<foreach collection="list" item="item" index="index"
+                  separator="UNION">
+        SELECT
+        #{item.crossId,jdbcType=VARCHAR},
+        #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
+        #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
+        #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
+        #{item.highlineFlag,jdbcType=VARCHAR}, #{item.highlineRule,jdbcType=VARCHAR},#{item.commonlineRule,jdbcType=VARCHAR},#{item.appointWeek,jdbcType=VARCHAR},
+        #{item.appointDay,jdbcType=VARCHAR},#{item.crossSection,jdbcType=VARCHAR},#{item.throughline,jdbcType=VARCHAR},#{item.startBureau,jdbcType=VARCHAR},
+        #{item.tokenVehBureau,jdbcType=VARCHAR},#{item.tokenVehDept,jdbcType=VARCHAR},#{item.tokenVehDepot,jdbcType=VARCHAR},#{item.tokenPsgBureau,jdbcType=VARCHAR},
+        #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
+        #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
+        #{item.createPeopleOrg,jdbcType=VARCHAR},
+        sysdate
+        from dual
+    </foreach>
+        )
+    </insert>
+
+    <insert id="addCrossTrainInfo" parameterType="java.util.List">
+        insert into base_cross_train
+        (BASE_CROSS_TRAIN_ID,
+        RUN_DATE,
+        END_DATE,
+        BASE_CROSS_ID,TRAIN_SORT,TRAIN_NBR,BASE_TRAIN_ID,
+        START_STN,START_BUREAU,END_STN,END_BUREAU,
+        DAY_GAP,ALTERNATE_TRAIN_NBR,ALTERNATE_TIME,SPARE_FLAG,
+        SPARE_APPLY_FLAG,HIGHLINE_FLAG,HIGHLINE_RULE,COMMONLINE_RULE,
+        APPOINT_WEEK,APPOINT_DAY)
+        (<foreach collection="list" item="item" index="index"
+                  separator="UNION">
+        SELECT
+        #{item.crossTainId,jdbcType=VARCHAR},
+        #{item.runDate,jdbcType=VARCHAR},
+        #{item.endDate,jdbcType=VARCHAR},
+        #{item.crossId,jdbcType=VARCHAR},#{item.trainSort,jdbcType=NUMERIC},#{item.trainNbr,jdbcType=VARCHAR},#{item.baseTrainId,jdbcType=VARCHAR},
+        #{item.startStn,jdbcType=VARCHAR}, #{item.startBureau,jdbcType=VARCHAR},#{item.endStn,jdbcType=VARCHAR},#{item.endBureau,jdbcType=VARCHAR},
+        #{item.dayGap,jdbcType=NUMERIC},#{item.alertNateTrainNbr,jdbcType=VARCHAR},to_date(#{item.alertNateTime,jdbcType=VARCHAR},'yyyyMMdd hh24:mi:ss'), #{item.spareFlag,jdbcType=NUMERIC},
+        #{item.spareApplyFlage,jdbcType=NUMERIC}, #{item.highlineFlag,jdbcType=NUMERIC},#{item.highlineRule,jdbcType=NUMERIC},#{item.commonLineRule,jdbcType=NUMERIC},
+        #{item.appointWeek,jdbcType=VARCHAR},#{item.appointDay,jdbcType=VARCHAR}
+        from dual
+
+    </foreach>
+        )
+    </insert>
+
+    <select id="getCrossInfoTotalCount" parameterType="map" resultType="map">
+        select count(*) as count from BASE_CROSS where 1=1
+        <if test="tokenVehBureau != null">
+            AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+        </if>
+        <if test="startBureau != null">
+            AND START_BUREAU = #{startBureau}
+        </if>
+        <if test="highlineFlag != null">
+            AND HIGHLINE_FLAG = #{highlineFlag}
+        </if>
+        <if test="checkFlag == 0 ">
+            AND check_time is null
+        </if>
+        <if test="checkFlag == 1 ">
+            AND check_time is not null
+        </if>
+        <if test="unitCreateFlag == 0 ">
+            AND CREAT_UNIT_TIME is null
+        </if>
+        <if test="trainNbr != null">
+            AND cross_name like '%' || #{trainNbr} || '%'
+        </if>
+        <if test="unitCreateFlag == 1 ">
+            AND CREAT_UNIT_TIME is not null
+        </if>
+    </select>
+
+    <select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
+        select * from (select ROWNUM AS num, m.*  from  (select
+        BASE_CHART_ID as chartId,
+        BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag,creat_time as createTime,
+        case when CREAT_UNIT_TIME is not null  then '1' else '0' end as unitCreateFlag,
         case when check_time is not null  then '1' else '0' end as checkFlag
-		 from BASE_CROSS
-		where 1=1 
-		<if test="chartId != null">
-			AND BASE_CHART_ID= #{chartId}
-		</if>
-		<if test="tokenVehBureau != null">
-			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
-		</if>
-		<if test="trainNbr != null">
-			AND cross_name like '%' || #{trainNbr} || '%'
-		</if>
-		<if test="startBureau != null">
-		   AND START_BUREAU = #{startBureau}
-		</if>
-		<if test="highlineFlag != null">
-		AND HIGHLINE_FLAG = #{highlineFlag}
-		</if>
-	    <if test="checkFlag == 0 ">
-		AND check_time is null
-		</if>
-		 <if test="checkFlag == 1 ">
-		AND check_time is not null
-		</if>
-	   <if test="unitCreateFlag == 0 ">
-		AND CREAT_UNIT_TIME is null
-		</if>
-		 <if test="unitCreateFlag == 1 ">
-		AND CREAT_UNIT_TIME is not null
-		</if>
-		
-		 order by crossName ) m  ) where num >=#{rownumstart} AND num &lt;=#{rownumend} 
-		
-	</select>
+        from BASE_CROSS
+        where 1=1
+        <if test="chartId != null">
+            AND BASE_CHART_ID= #{chartId}
+        </if>
+        <if test="tokenVehBureau != null">
+            AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+        </if>
+        <if test="trainNbr != null">
+            AND cross_name like '%' || #{trainNbr} || '%'
+        </if>
+        <if test="startBureau != null">
+            AND START_BUREAU = #{startBureau}
+        </if>
+        <if test="highlineFlag != null">
+            AND HIGHLINE_FLAG = #{highlineFlag}
+        </if>
+        <if test="checkFlag == 0 ">
+            AND check_time is null
+        </if>
+        <if test="checkFlag == 1 ">
+            AND check_time is not null
+        </if>
+        <if test="unitCreateFlag == 0 ">
+            AND CREAT_UNIT_TIME is null
+        </if>
+        <if test="unitCreateFlag == 1 ">
+            AND CREAT_UNIT_TIME is not null
+        </if>
 
-  <select id="getUnitCrossInfoCount"  parameterType="map" resultType="map">
-     select count(*) as  count from UNIT_CROSS where 1=1  
-     <if test="tokenVehBureau != null">
-			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
-		</if>
-		<if test="chartId != null">
-			AND BASE_CHART_ID= #{chartId}
-		</if>
-		<if test="startBureau != null">
-		   AND START_BUREAU = #{startBureau}
-		</if>
-		<if test="highlineFlag != null">
-		AND HIGHLINE_FLAG = #{highlineFlag}
-		</if>
-		 <if test="checkFlag == 0 ">
-		AND check_time is null
-		</if>
-		 <if test="checkFlag == 1 ">
-		AND check_time is not null
-		</if>
-	   <if test="unitCreateFlag == 0 ">
-		AND CREAT_UNIT_TIME is null
-		</if>
-		 <if test="unitCreateFlag == 1 ">
-		AND CREAT_UNIT_TIME is not null
-		</if>
-  </select>
-  
-  
-  
-   <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
-	  select * from (select ROWNUM AS num,m.*  from  (select 
-		UNIT_CROSS_ID as unitCrossId, 
-		TOKEN_VEH_BUREAU as tokenVehBureau ,
-		START_BUREAU as startBureau,
-		HIGHLINE_FLAG as highlineFlag,
-		CROSS_NAME as crossName,
-		BASE_CROSS_ID as crossId,  
+        order by crossName ) m  ) where num >=#{rownumstart} AND num &lt;=#{rownumend}
+
+    </select>
+
+    <select id="getUnitCrossInfoCount"  parameterType="map" resultType="map">
+        select count(*) as  count from UNIT_CROSS where 1=1
+        <if test="tokenVehBureau != null">
+            AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+        </if>
+        <if test="chartId != null">
+            AND BASE_CHART_ID= #{chartId}
+        </if>
+        <if test="startBureau != null">
+            AND START_BUREAU = #{startBureau}
+        </if>
+        <if test="highlineFlag != null">
+            AND HIGHLINE_FLAG = #{highlineFlag}
+        </if>
+        <if test="checkFlag == 0 ">
+            AND check_time is null
+        </if>
+        <if test="trainNbr != null">
+            AND CROSS_NAME like '%' || #{trainNbr} || '%'
+        </if>
+        <if test="checkFlag == 1 ">
+            AND check_time is not null
+        </if>
+        <if test="unitCreateFlag == 0 ">
+            AND CREAT_UNIT_TIME is null
+        </if>
+        <if test="unitCreateFlag == 1 ">
+            AND CREAT_UNIT_TIME is not null
+        </if>
+    </select>
+
+
+
+    <select id="getUnitCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
+        select * from (select ROWNUM AS num,m.*  from  (select
+        UNIT_CROSS_ID as unitCrossId,
+        TOKEN_VEH_BUREAU as tokenVehBureau ,
+        START_BUREAU as startBureau,
+        HIGHLINE_FLAG as highlineFlag,
+        CROSS_NAME as crossName,
+        BASE_CROSS_ID as crossId,
         case when check_time is not null  then '1' else '0' end as checkFlag
-		from UNIT_CROSS
-		where 1=1 
-		<if test="tokenVehBureau != null">
-			AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
-		</if>
-		<if test="startBureau != null">
-		   AND START_BUREAU = #{startBureau}
-		</if>
-		<if test="chartId != null">
-			AND BASE_CHART_ID= #{chartId}
-		</if>
-		<if test="highlineFlag != null">
-		AND HIGHLINE_FLAG = #{highlineFlag}
-		</if>
-		 <if test="checkFlag == 0 ">
-		AND check_time is null
-		</if>
-		 <if test="checkFlag == 1 ">
-		AND check_time is not null
-		</if>
-	   <if test="unitCreateFlag == 0 ">
-		AND CREAT_UNIT_TIME is null
-		</if>
-		 <if test="unitCreateFlag == 1 ">
-		AND CREAT_UNIT_TIME is not null
-		</if>
-		order by  CROSS_NAME) m )  where num >=#{rownumstart} AND num &lt;=#{rownumend} 
-		
-	</select>
-	
-	<select id="getTrainNbrFromUnitCross" parameterType="String" resultType="map">
-		select DISTINCT(B.TRAIN_NBR),A.BASE_CHART_ID from unit_cross A ,base_cross_train B 
+        from UNIT_CROSS
+        where 1=1
+        <if test="tokenVehBureau != null">
+            AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+        </if>
+        <if test="startBureau != null">
+            AND START_BUREAU = #{startBureau}
+        </if>
+        <if test="chartId != null">
+            AND BASE_CHART_ID= #{chartId}
+        </if>
+        <if test="highlineFlag != null">
+            AND HIGHLINE_FLAG = #{highlineFlag}
+        </if>
+        <if test="trainNbr != null">
+            AND CROSS_NAME like '%' || #{trainNbr} || '%'
+        </if>
+        <if test="checkFlag == 0 ">
+            AND check_time is null
+        </if>
+        <if test="checkFlag == 1 ">
+            AND check_time is not null
+        </if>
+        <if test="unitCreateFlag == 0 ">
+            AND CREAT_UNIT_TIME is null
+        </if>
+        <if test="unitCreateFlag == 1 ">
+            AND CREAT_UNIT_TIME is not null
+        </if>
+        order by  CROSS_NAME) m )  where num >=#{rownumstart} AND num &lt;=#{rownumend}
+
+    </select>
+
+    <select id="getTrainNbrFromUnitCross" parameterType="String" resultType="map">
+        select DISTINCT(B.TRAIN_NBR),A.BASE_CHART_ID from unit_cross A ,base_cross_train B
         where A.BASE_CROSS_ID = B.BASE_CROSS_ID AND A.UNIT_CROSS_ID=#{unitCrossId}
-	</select>
+    </select>
 
 
     <select id="getCrossNameWithBaseCrossId" parameterType="String" resultType="map">
-     select cross_name,cross_start_date,cross_end_date from base_cross where base_cross_id=#{baseCrossId}
+        select cross_name,cross_start_date,cross_end_date from base_cross where base_cross_id=#{baseCrossId}
     </select>
 
-   <select id="getTrainNbrWithBaseCrossId" parameterType="String" resultType="map">
-   select  BASE_TRAIN_ID ,train_nbr,train_sort,day_gap  from base_cross_train where base_cross_id=#{baseCrossId} order by train_sort
-   
-   </select>
-   
+    <select id="getTrainNbrWithBaseCrossId" parameterType="String" resultType="map">
+        select  BASE_TRAIN_ID ,train_nbr,train_sort,day_gap  from base_cross_train where base_cross_id=#{baseCrossId} order by train_sort
+
+    </select>
+
     <select id="getCrossRunPlans" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossInfo">
-     
-   </select>
 
- <update id="updateCrossCheckTime" parameterType="map">
-		 update base_cross set check_time = sysdate where base_cross_id in (${baseCrossIds})
+    </select>
 
-	</update>
-	
-	<update id="updateUnitCrossCheckTime" parameterType="map">
-		 update unit_cross set check_time = sysdate where unit_cross_id in (${baseCrossIds})
+    <update id="updateCrossCheckTime" parameterType="map">
+        update base_cross set check_time = sysdate where base_cross_id in (${baseCrossIds})
 
-	</update>
- 
- 
-   <update id="updateCrossUnitCreateTime" parameterType="map">
-		 update base_cross set creat_unit_time = sysdate where base_cross_id in (${baseCrossIds})
+    </update>
 
-  </update>
-	
-  <delete id="deleteCrossInfoForCrossIds" parameterType="map">
-      delete from base_cross where BASE_CROSS_ID in (${baseCrossIds})
-  </delete>
-  
-  <delete id="deleteCrossInfoTrainForCrossIds" parameterType="map">
-     delete from base_cross_train where BASE_CROSS_ID in (${baseCrossIds})
-  </delete>
-  
-   <delete id="deleteUnitCrossInfoTrainForCrossIds" parameterType="map">
-    delete from unit_cross_train where unit_cross_id in (${baseCrossIds})
+    <update id="updateUnitCrossCheckTime" parameterType="map">
+        update unit_cross set check_time = sysdate where unit_cross_id in (${baseCrossIds})
 
-  </delete>
-  
-   <delete id="deleteUnitCrossInfoForCrossIds" parameterType="map">
-       delete from unit_cross where unit_cross_id in (${baseCrossIds})
-  </delete>
-  
- 
+    </update>
 
-  
-  
-  
+
+    <update id="updateCrossUnitCreateTime" parameterType="map">
+        update base_cross set creat_unit_time = sysdate where base_cross_id in (${baseCrossIds})
+
+    </update>
+
+    <delete id="deleteCrossInfoForCrossIds" parameterType="map">
+        delete from base_cross where BASE_CROSS_ID in (${baseCrossIds})
+    </delete>
+
+    <delete id="deleteCrossInfoTrainForCrossIds" parameterType="map">
+        delete from base_cross_train where BASE_CROSS_ID in (${baseCrossIds})
+    </delete>
+
+    <delete id="deleteUnitCrossInfoTrainForCrossIds" parameterType="map">
+        delete from unit_cross_train where unit_cross_id in (${baseCrossIds})
+
+    </delete>
+
+    <delete id="deleteUnitCrossInfoForCrossIds" parameterType="map">
+        delete from unit_cross where unit_cross_id in (${baseCrossIds})
+    </delete>
+
+
+
+
+
+
 </mapper>
