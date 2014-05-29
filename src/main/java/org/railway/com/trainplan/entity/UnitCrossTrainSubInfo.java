@@ -8,16 +8,30 @@ public class UnitCrossTrainSubInfo {
 	private int dayGap;
 	private String unitCrossTrainId;
 	private String trainNbr;
+	private String runDate;
+	private String endDate;
 	private String baseTrainId;
-	private String startStn;
 	private String startBureau;
 	private String endStn;
+	private String startStn;
 	private String endBureau;
 	
 	private List<UnitCrossTrainSubInfoTime> stationTimeList ;
 	
 	
 	
+	public String getRunDate() {
+		return runDate;
+	}
+	public void setRunDate(String runDate) {
+		this.runDate = runDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
 	public List<UnitCrossTrainSubInfoTime> getStationTimeList() {
 		return stationTimeList;
 	}

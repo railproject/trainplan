@@ -24,6 +24,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -33,12 +35,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.ExcelUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.BaseCrossTrainInfo;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
@@ -48,6 +49,7 @@ import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.BaseCrossDto;
 import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.Client;
@@ -63,6 +65,10 @@ public class CrossService{
 
 	@Autowired
 	private CommonService commonService;
+	
+	//TODO 取不出来
+	@Value("#{restConfig['SERVICE_URL']}")
+    private String restUrl;
 	
 	@Autowired
 	private BaseDao baseDao;
@@ -550,7 +556,7 @@ public class CrossService{
 	}
 	
 	/**
-	 * 通过crossid查询crosstrainInfo信息
+	 * 通过unitcrossid查询crosstrainInfo信息
 	 * @param unitCrossId
 	 * @return
 	 */
@@ -558,6 +564,17 @@ public class CrossService{
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("unitCrossId", unitCrossId);
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
+	}
+	
+	/**
+	 * 通过crossid查询crosstrainInfo信息
+	 * @param unitCrossId
+	 * @return
+	 */
+	public List<BaseCrossTrainInfo> getCrossTrainInfoForCrossId(String crossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("baseCrossId", crossId);
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_TRAININFO_FOR_CROSSID, paramMap);
 	}
 	
 	/**
@@ -818,10 +835,6 @@ public class CrossService{
 				 CrossTrainInfo crosstrain = crossTrains.get(i);
 				 if(i == 0){
 					 crosstrain.setRunDate(cross.getCrossStartDate());
-					 System.err.println("----------------------------" + crosstrain.getTrainNbr());
-					 
-					 System.err.println("----------------------------" + crosstrain.getRunDate());
-					
 					 Date date = dateFormat.parse(crossStartDate);   
 					 Calendar calendar = new GregorianCalendar();
 					 calendar.setTime(date);
@@ -843,10 +856,7 @@ public class CrossService{
 					 //设置结束时间
 					 calendar.add(Calendar.DATE, crosstrain.getRunDay());
 					 crosstrain.setEndDate(dateFormat.format(calendar.getTime())); 
-					 System.err.println("------------1----------------" + crosstrain.getTrainNbr());
 					 
-					 System.err.println("--------------1--------------" + crosstrain.getRunDate());
-					 System.err.println("--------------1--------------" + crosstrain.getEndDate());
 				 } 
 			 }  
 		 }catch(Exception e){
@@ -915,15 +925,18 @@ public class CrossService{
 					
 					client.setConnectTimeout(60*1000);
 					String trainNbr = train.getTrainNbr();
-					String stn = null;
-					if(trainNbr.indexOf("(") >= 0){
-						trainNbr = trainNbr.substring(0, trainNbr.indexOf("(")).trim();
-						
-						
-						
-						stn = trainNbr.substring(trainNbr.indexOf("(") + 1, trainNbr.indexOf(")")).trim();
-					}
-					WebResource webResource = client.resource("http://10.1.191.135:7003/rail/template/TrainlineTemplates?name=" + trainNbr); 
+					String stn = null; 
+					
+					String regex = "^(.+?)[\\(（](.+?)[\\)）]";
+				    Pattern pattern = Pattern.compile(regex);
+				    Matcher matcher = pattern.matcher(trainNbr); 
+			       
+			        if(matcher.find()) { 
+			        	trainNbr = matcher.group(1);
+			        	stn =  matcher.group(2); 
+			        }
+					
+					WebResource webResource = client.resource(restUrl +"/rail/template/TrainlineTemplates?name=" + trainNbr); 
 					
 //					webResource.method(this.method, GenericType)
 					
@@ -1046,7 +1059,7 @@ public class CrossService{
 			
 			 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO, crossList); 
 			 
-			System.err.println(this.cross.getCrossName() + " ===crossTrains===" + crossTrains.size());
+			logger.debug(this.cross.getCrossName() + " ===crossTrains===" + crossTrains.size());
         	//保存列车
 			if(crossTrains != null && crossTrains.size() > 0 ){
 				 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
@@ -1056,7 +1069,6 @@ public class CrossService{
 		}
 		
 		private LinkedList<CrossTrainInfo> createTrainsForCross(CrossInfo cross){
-			logger.debug("");
 			String crossName = cross.getCrossName();
 			String[] crossSpareNames =StringUtils.isEmpty( cross.getCrossSpareName()) ? null : cross.getCrossSpareName().split("-");
 			String[] alertNateTrains = StringUtils.isEmpty(cross.getAlterNateTranNbr()) ? null : cross.getAlterNateTranNbr().split("-");

@@ -76,7 +76,7 @@ var basePath = "<%=basePath %>";
 														<label for="exampleInputEmail3" class="control-label pull-left">
 																		方案:&nbsp;</label> 
 														<div class="pull-left">
-															<select style="width: 273px" id="input_cross_chart_id"
+															<select style="width: 250px" id="input_cross_chart_id"
 																class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
 															</select>
 														</div>  
@@ -158,7 +158,7 @@ var basePath = "<%=basePath %>";
 							                  <input type="text" class="form-control" style="width:120px;" placeholder="" id="canvas_runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate()" />
 								              <button class="btn btn-primary" type="button" id="canvas_event_btnQuery"><i class="fa fa-search"></i>查询</button>
 							              </div>
-							              <div class="row" style="margin:5px 0 10px 200px;">
+							              <div class="row" style="margin:5px 0 10px 150px;">
 							                  <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
