@@ -16,13 +16,13 @@
     <rabbit:admin connection-factory="connectionFactory" />
     <!-- 定义队列 -->
   
-    <!-- <rabbit:queue id="web-reply-Queue" />  -->
+    <rabbit:queue id="web-reply-Queue" />  
     <rabbit:queue id="freightTransport-reply-Queue" />
     <!-- create myExchange and bind myAnonymousQueue with my.routingkey.1 to the TUTORIAL-EXCHANGE-->
     <rabbit:topic-exchange id="myExchange" name="CREC-EVENT-EXCHANGE">
         <rabbit:bindings>
         	<!-- 绑定自己的routing到对应的消息队列 -->
-          <!--   <rabbit:binding queue="web-reply-Queue" pattern="crec.reply.trainlineEvent"></rabbit:binding>  -->
+           <rabbit:binding queue="web-reply-Queue" pattern="crec.reply.trainlineEvent"></rabbit:binding>  
              <rabbit:binding queue="freightTransport-reply-Queue" pattern="crec.reply.createFreightTransportEvent"></rabbit:binding> 
         </rabbit:bindings>
     </rabbit:topic-exchange>
@@ -33,9 +33,9 @@
     
     <!--绑定监听类到指定的队列上-->
     
-    <!--  <rabbit:listener-container id="replyListenerContainer" connection-factory="connectionFactory">
+     <rabbit:listener-container id="replyListenerContainer" connection-factory="connectionFactory">
         <rabbit:listener ref="eventListener" queues="web-reply-Queue" />
-    </rabbit:listener-container>  -->
+    </rabbit:listener-container>  
       <rabbit:listener-container id="freightTransportContainer" connection-factory="connectionFactory">
         <rabbit:listener ref="freightTransportListener" queues="freightTransport-reply-Queue" />
     </rabbit:listener-container> 
