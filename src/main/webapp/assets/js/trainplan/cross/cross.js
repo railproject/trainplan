@@ -464,7 +464,7 @@ function CrossModel() {
 	};
 	
 	self.createUnitCrossInfo = function(){ 
-		commonJsScreenLock();
+		
 		var crossIds = "";
 		var delCrosses = [];
 		var crosses = self.crossRows.rows();
@@ -479,11 +479,16 @@ function CrossModel() {
 				commonJsScreenUnLock();
 				return;
 			}else if(crosses[i].unitCreateFlag() == 1 && crosses[i].selected() == 1){
-				showErrorDialog("不能重复审核");
+				showErrorDialog("不能重复生成");
 				commonJsScreenUnLock();
 				return;
 			};
 		} 
+		if(crossIds == ""){
+			showErrorDialog("没有选中数据");
+			return;
+		}
+		commonJsScreenLock();
 		 $.ajax({
 				url : "cross/completeUnitCrossInfo",
 				cache : false,

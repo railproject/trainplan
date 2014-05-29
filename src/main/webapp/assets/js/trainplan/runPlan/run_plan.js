@@ -1002,6 +1002,13 @@ function TrainRow(data) {
 	self.baseTrainId = data.baseTrainId;
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
+	
+	self.times = ko.observableArray(); 
+	self.loadTimes = function(times){
+		$.each(times, function(i, n){ 
+			self.times.push(new TrainTimeRow(n));
+		});
+	}; 
 	//self.startBureau = data.startBureau;//START_BUREAU  
 } ;
 function filterValue(value){

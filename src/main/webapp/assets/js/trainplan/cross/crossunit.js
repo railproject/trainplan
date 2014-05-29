@@ -450,14 +450,36 @@ function CrossModel() {
 	};
 	
 	self.createUnitCrossInfo = function(){ 
+//		var crossIds = "";
+//		var crosses = self.crossRows.rows();
+//		for(var i = 0; i < crosses.length; i++){ 
+//			if(crosses[i].selected() == 1){ 
+//				crossIds += (crossIds == "" ? "" : ",");
+//				crossIds += crosses[i].crossId;
+//			}
+//		} 
 		var crossIds = "";
+		var delCrosses = [];
 		var crosses = self.crossRows.rows();
-		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1){ 
+		for(var i = 0; i < crosses.length; i++){
+			console.log(crosses[i].checkFlag());
+			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].crossId;
-			}
+				crossIds += crosses[i].unitCrossId;
+				delCrosses.push( crosses[i]);
+			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
+				showErrorDialog("你选择了未审核的记录，请先审核");
+				return;
+			}else if(crosses[i].unitCreateFlag() == 1 && crosses[i].selected() == 1){
+				showErrorDialog("不能重复生成");
+				return;
+			};
 		} 
+		if(crossIds == ""){
+			showErrorDialog("没有选中数据");
+			return;
+		}
+		commonJsScreenLock();
 		 $.ajax({
 				url : "../cross/updateUnitCrossId",
 				cache : false,
@@ -469,10 +491,19 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){
+						$.each(delCrosses, function(i, n){ 
+							n.unitCreateFlag("1");
+						});
 						showSuccessDialog("更新成功");
 					}else{
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					}
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
 				}
 			}); 
 	};
@@ -520,22 +551,24 @@ function CrossModel() {
 	};  
 	
 	self.checkCrossInfo = function(){
-		commonJsScreenLock();
+		
 		var crossIds = "";
 		var updateCrosses = [];
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){ 
-			console.log(crosses[i].checkFlag());
-			if(crosses[i].selected() == 1 && crosses[i].checkFlag() == 0){ 
+			if(crosses[i].selected() == 1 && crosses[i].checkFlag()){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].unitCrossId;
 				updateCrosses.push(crosses[i]);
 			}else{
-				showErrorDialog("你选择了未审核的记录，请先审核");
-				commonJsScreenUnLock();
-				return;
+				crosses[i].selected(0);
 			}
 		} 
+		if(crossIds == ""){
+			showErrorDialog("没有可审核的");
+			return;
+		}
+		commonJsScreenLock(); 
 		 $.ajax({
 				url : "../cross/checkUnitCorssInfo",
 				cache : false,
