@@ -215,12 +215,8 @@ public class CrossController {
 		 PlanLineGrid grid = null;
 		 
 		 System.err.println("unitCrossId---unit=="+ unitCrossId);
-		
-		 //通过unitCrossId获取unitCross列表信息
-		 CrossInfo unitCross = crossService.getUnitCrossInfoForUnitCrossid(unitCrossId);
-		 //通过unit_cross_id在表unit_cross_train中查询数据，根据组数和列车顺序排序
+		//通过unitCrossId获取unitCross列表信息
 		 List<UnitCrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
-		 
 		 
 		 
 		 /*if(listUnitCross != null){
