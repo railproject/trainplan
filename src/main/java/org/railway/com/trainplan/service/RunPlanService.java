@@ -341,7 +341,7 @@ public class RunPlanService {
      * @return
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        ExecutorService executorService = Executors.newFixedThreadPool(50);
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross();
@@ -448,10 +448,7 @@ public class RunPlanService {
                                     // 前后续车都有了，互基
                                     preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
                                     runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
-
-                                    LocalDate preRunPlanStartDate = LocalDate.fromDateFields(new Date(preRunPlan.getStartDateTime().getTime()));
                                     LocalDate preRunPlanEndDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime()));
-                                    int preInterval = Days.daysBetween(preRunPlanStartDate, preRunPlanEndDate).getDays();
 
                                     runPlan.setRunDate(preRunPlanEndDate.plusDays(runPlan.getDayGap()).toString("yyyyMMdd"));
                                     runPlan.setStartDateTime(new Timestamp(simpleDateFormat.parse(preRunPlanEndDate.plusDays((runPlan.getDayGap())).toString("yyyy-MM-dd") + " " + runPlan.getStartTimeStr()).getTime()));
