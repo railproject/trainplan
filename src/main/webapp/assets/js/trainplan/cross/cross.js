@@ -521,15 +521,17 @@ function CrossModel() {
 		var crossIds = "";
 		var updateCrosses = [];
 		var crosses = self.crossRows.rows();
-		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1 && crosses[i].checkFlag()){ 
+		for(var i = 0; i < crosses.length; i++){
+			console.log(crosses[i].checkFlag());
+			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){  
+				showErrorDialog("不能重复审核"); 
+				return;
+			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].crossId;
-				updateCrosses.push(crosses[i]);
-			}else{
-				crosses[i].selected(0);
-			}
-		} 
+				updateCrosses.push(crosses[i]); 
+			} 
+		}  
 		if(crossIds == ""){
 			showErrorDialog("没有可审核的");
 			return;
