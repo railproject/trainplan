@@ -301,6 +301,7 @@ function CrossModel() {
 		self.crossRows.loadRows();
 	};
 	self.loadCrosseForPage = function(startIndex, endIndex) {   
+		self.crossAllcheckBox(0);
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);

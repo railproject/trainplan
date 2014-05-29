@@ -322,6 +322,7 @@ function CrossModel() {
 		self.crossRows.loadRows();
 	};
 	self.loadCrosseForPage = function(startIndex, endIndex) {  
+		self.crossAllcheckBox(0);
 		commonJsScreenLock();
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
@@ -411,7 +412,7 @@ function CrossModel() {
 		if(self.searchModle().showCrossMap() == 0){
 			
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
-			$('#cross_map_dlg').dialog({ title: "基本交路图     交路名:" + self.currentCross().crossName(), autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true })
+			$('#cross_map_dlg').dialog({ title: "基本交路图     交路名:" + self.currentCross().crossName(), autoOpen: true, modal: false, draggable: true, resizable:true })
 		};
 	};  
 	
