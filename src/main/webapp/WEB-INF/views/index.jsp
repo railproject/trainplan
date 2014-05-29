@@ -123,18 +123,16 @@
 	            </li>
 	            <li><a target="contentFrame" class="menu_one"><i class="fa fa-road"></i>客运列车<i class="fa fa-caret-down pull-right"></i> </a>
 	                <ul>
-	                    <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-alt"></i>开行计划汇总</a></li>
-	                    <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>核查编制图定开行</a></li>
-	                    <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>批量上图</a></li>
-	                    <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>新图初始化</a></li>
-	                    
-	                    
+	                	<li><a href="http://10.1.191.154/WebReport/ReportServer?reportlet=JHPT%2FJHPT_JBT%2Fjbt_kxlstj.cpt" target="contentFrame"><i class="fa fa-bar-chart-o"></i>基本图汇总统计</a></li>
+	                    <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图明细查询</a></li>
 	                    <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表管理</a></li>
 	                    <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>基本交路单元管理</a></li>
-	                    <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-eye"></i>日计划审核</a></li>
-	                    <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图明细查询</a></li>
-	                    <li><a href="http://10.1.191.154/WebReport/ReportServer?reportlet=JHPT%2FJHPT_JBT%2Fjbt_kxlstj.cpt" target="contentFrame"><i class="fa fa-bar-chart-o"></i>基本图信息汇总</a></li>
-	                	<li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-list-alt"></i>客运计划管理</a></li>
+	                    <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>新图初始化</a></li>
+	                    <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-list-alt"></i>客运计划管理</a></li>
+	                    <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-alt"></i>客运计划汇总统计</a></li>
+	                    <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>客运计划上图</a></li>
+	                    <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>客运计划批量上图</a></li>
+	                    <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-eye"></i>日历计划审核</a></li>
 	                    
 	                </ul>
 	            </li>

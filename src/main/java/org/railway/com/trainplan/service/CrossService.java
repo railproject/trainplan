@@ -45,6 +45,8 @@ import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
+import org.railway.com.trainplan.entity.UnitCrossTrainSubInfo;
+import org.railway.com.trainplan.entity.UnitCrossTrainSubInfoTime;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.BaseCrossDto;
 import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
@@ -563,7 +565,44 @@ public class CrossService{
 	public List<UnitCrossTrainInfo> getUnitCrossTrainInfoForUnitCrossid(String unitCrossId){
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("unitCrossId", unitCrossId);
-		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
+		List<UnitCrossTrainInfo> list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
+		if(list != null && list.size() > 0 ){
+			for(UnitCrossTrainInfo crossInfo : list ){
+				List<UnitCrossTrainSubInfo> trainList = crossInfo.getTrainInfoList();
+				if(trainList != null && trainList.size() > 0 ){
+					for(UnitCrossTrainSubInfo train :trainList){
+						String runDate = train.getRunDate();
+						String endDate = train.getEndDate();
+						String startStn = train.getStartStn();
+						String endStn = train.getEndStn();
+						//List<UnitCrossTrainSubInfoTime> tempList = train.getStationTimeList();
+						List<UnitCrossTrainSubInfoTime> tempList = new ArrayList<UnitCrossTrainSubInfoTime>();
+						List<UnitCrossTrainSubInfoTime> stationTimeList = train.getStationTimeList();	
+						
+						if(stationTimeList != null && stationTimeList.size() > 0 ){
+							for(int i = 0;i<stationTimeList.size();i++){
+								UnitCrossTrainSubInfoTime trainTime = stationTimeList.get(i);
+								String arrTime = trainTime.getArrTime();
+								String dptTime = trainTime.getDptTime();
+								String stnName = trainTime.getStnName();
+								if(startStn.equals(stnName)&& runDate.equals(dptTime)){
+									//tempList.remove(trainTime);//(trainTime);
+									tempList.add(trainTime);
+								}else if(endStn.equals(stnName) && endDate.equals(arrTime)){
+									tempList.add(trainTime);
+								}
+								/*if(endStn.equals(stnName) && !endDate.equals(arrTime)){
+									tempList.remove(trainTime);//trainTime
+								}*/
+							}
+						}
+						train.setStationTimeList(tempList);
+						
+					}
+				}
+			}
+		}
+		return  list;
 	}
 	
 	/**
