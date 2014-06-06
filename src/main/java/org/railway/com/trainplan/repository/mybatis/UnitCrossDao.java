@@ -10,7 +10,6 @@ import java.util.List;
  */
 @MyBatisRepository
 public interface UnitCrossDao {
-    List<UnitCross> findUnitCross();
 
-    List<PlanCross> findPlanCross();
+    List<PlanCross> findPlanCross(List<String> planCrossIds);
 }

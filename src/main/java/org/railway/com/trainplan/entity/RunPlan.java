@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
+ * Plan_Train对象
  * Created by speeder on 2014/5/28.
  */
 public class RunPlan {
@@ -46,6 +47,11 @@ public class RunPlan {
     private Date createDateTime;
     private int checkLev1Type;
     private int checkLev2Type;
+    // 上图标记
+    private int dailyPlanFlag;
+    // 上图时间
+    private Date dailyPlanTime;
+    // 上图次数
     private int dailyPlanTimes;
     private List<RunPlanStn> runPlanStnList;
 
@@ -359,5 +365,21 @@ public class RunPlan {
 
     public void setTrainSort(int trainSort) {
         this.trainSort = trainSort;
+    }
+
+    public int getDailyPlanFlag() {
+        return dailyPlanFlag;
+    }
+
+    public void setDailyPlanFlag(int dailyPlanFlag) {
+        this.dailyPlanFlag = dailyPlanFlag;
+    }
+
+    public Date getDailyPlanTime() {
+        return dailyPlanTime;
+    }
+
+    public void setDailyPlanTime(Date dailyPlanTime) {
+        this.dailyPlanTime = dailyPlanTime;
     }
 }
