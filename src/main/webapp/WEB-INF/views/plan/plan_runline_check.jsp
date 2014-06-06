@@ -173,7 +173,7 @@ var basePath = "<%=basePath %>";
 		        </thead>
 		        <tbody data-bind="foreach: trainLines">
 		           <tr>  
-					<td align="center" data-bind=" text: $index"></td>
+					<td align="center" data-bind=" text: $index() + 1"></td>
 					<td data-bind="text: stnName, attr:{title: stnName}"></td>
 					<td align="center" data-bind="text: bureauShortName"></td>
 					<td align="center" data-bind="text: sourceTime"></td>

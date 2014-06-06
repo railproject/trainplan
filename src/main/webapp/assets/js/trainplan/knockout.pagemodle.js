@@ -97,10 +97,9 @@ function PageModle(pageSize, fun, jg){
 	self.loadPageRows = function(totalCount, rows){
 		self.addRows(rows);
 		self.totalCount(totalCount); 
-		console.log(self.currentIndex());
 		
-		self.endIndex(self.currentIndex() + self.pageSize() < totalCount ? self.currentIndex() + self.pageSize() : self.currentIndex() + totalCount%self.pageSize());
-		self.pageCount((self.totalCount() + (self.pageSize() - self.totalCount()% self.pageSize()))/self.pageSize());
+		self.endIndex(self.currentIndex() + self.pageSize() <= totalCount ? self.currentIndex() + self.pageSize() : self.currentIndex() + totalCount%self.pageSize());
+		self.pageCount((self.totalCount() + (self.totalCount()% self.pageSize() == 0 ? 0 : (self.pageSize() - self.totalCount()% self.pageSize())))/self.pageSize());
 	}; 
 	
 	self.loadPage = function(pageIndex){  
@@ -108,7 +107,6 @@ function PageModle(pageSize, fun, jg){
 			return;
 		}   
 		self.clear();
-		console.log(pageIndex)
 		self.currentPage(pageIndex);
 		self.currentIndex(pageIndex * self.pageSize());
 		self.loadFunc(self.currentIndex() + 1, self.currentIndex() + self.pageSize());  
@@ -116,7 +114,22 @@ function PageModle(pageSize, fun, jg){
 	self.pageNbrChange = function(page, event){ 
 	    var keycode = (event.keyCode ? event.keyCode : event.which);  
 	    if(keycode == 13){ 
-	    	self.loadPage(parseInt(event.target.value) - 1);
+	    	if(/[1-9]+/.test(event.target.value)){
+	    		self.loadPage(parseInt(event.target.value) - 1);
+	    	}else{
+	    		$(event.target).val(self.currentPage() + 1);
+	    	} 
+	    } 
+	};
+	self.pageNbrChange = function(page, event){ 
+	    var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    var value = event.target.value;
+	    console.log(value);
+	    if(!(/[123456789]+/.test(value)) || (value < 0 || value > self.pageCount())){  
+	    	$(event.target).val(self.currentPage() + 1); 
+    	} 
+	    if(keycode == 13){  
+	    	self.loadPage(parseInt(event.target.value) - 1); 
 	    } 
 	};
 }

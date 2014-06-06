@@ -2,13 +2,13 @@ package org.railway.com.trainplan.entity;
 
 public class SchemeInfo {
 	
-	private String schemetId;
+	private String schemeId;
 	private String schemeName;
-	public String getSchemetId() {
-		return schemetId;
+	public String getSchemeId() {
+		return schemeId;
 	}
-	public void setSchemetId(String schemetId) {
-		this.schemetId = schemetId;
+	public void setSchemeId(String schemetId) {
+		this.schemeId = schemetId;
 	}
 	public String getSchemeName() {
 		return schemeName;

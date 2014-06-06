@@ -48,7 +48,8 @@ function CrossModel() {
 	};
 	
 	self.setCurrentTrain = function(row){
-		self.currentTrain(row);
+		self.currentTrain(row); 
+		$("#cross_train_time_dlg").dialog("setTitle", "详情时刻表     车次:" + self.currentTrain().trainNbr);
 		self.times.remove(function(item){
 			return true;
 		});
@@ -83,7 +84,7 @@ function CrossModel() {
 					 
 				}
 			}); 
-		}
+		} 
 	};
 	
 	self.setCurrentCross = function(cross){
@@ -91,9 +92,12 @@ function CrossModel() {
 		if(self.currentCross().crossId == ''){
 			return;
 		} 
-		if(self.searchModle().showCrossMap() == 1){
+		if(self.searchModle().showCrossMap() == 1){   
+			var positionOld = [$("#cross_map_dlg").offset().top, $("#cross_map_dlg").offset().left];
+			console.log(positionOld) ;
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
-			$("#cross_map_dlg").dialog({title: "基本交路图      交路名:" + self.currentCross().crossName(),draggable: true, resizable:true});
+//			$("#cross_map_dlg").dialog({title: "基本交路图      交路名:" + self.currentCross().crossName(),draggable: true, resizable:true,  position: [500,300]});
+			$('#cross_map_dlg').dialog("setTitle", "基本交路图     交路名:" + self.currentCross().crossName()); 
 		}
 	};
 	
@@ -410,10 +414,9 @@ function CrossModel() {
 			return;
 		}
 		var crossId = self.currentCross().crossId; 
-		if(self.searchModle().showCrossMap() == 0){
-			
+		if(self.searchModle().showCrossMap() == 0){ 
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
-			$('#cross_map_dlg').dialog({ title: "基本交路图     交路名:" + self.currentCross().crossName(), autoOpen: true, modal: false, draggable: true, resizable:true })
+			$('#cross_map_dlg').dialog({ title: "基本交路图     交路名:" + self.currentCross().crossName(), autoOpen: true, modal: false, draggable: true, resizable:true });
 		};
 	};  
 	
@@ -421,9 +424,9 @@ function CrossModel() {
 		$("#cross_train_dlg").dialog("open");
 	};
 	
-	self.showCrossTrainTimeDlg = function(){
-		
+	self.showCrossTrainTimeDlg = function(){   
 		$("#cross_train_time_dlg").dialog({title: "详情时刻表     车次:" + self.currentTrain().trainNbr,draggable: true, resizable:true});
+		  
 	};
 	
 	self.deleteCrosses = function(){  
@@ -663,7 +666,7 @@ function searchModle(){
 	
 	self.loadChats = function(charts){   
 		for ( var i = 0; i < charts.length; i++) {   
-			self.charts.push({"chartId": charts[i].schemetId, "name": charts[i].schemeName});  
+			self.charts.push({"chartId": charts[i].schemeId, "name": charts[i].schemeName});  
 		} 
 	}; 
 	
