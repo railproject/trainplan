@@ -12,18 +12,18 @@ System.out.println(basePath);
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>基本交路单元管理</title>
 <!-- Bootstrap core CSS -->
-<link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
+
 <!--font-awesome-->
 <link href="<%=basePath %>/assets/css/datepicker.css" rel="stylesheet">
 <link href="<%=basePath %>/assets/easyui/themes/default/easyui.css"
 	rel="stylesheet">
+<link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet"> 
 <link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
-<link type="text/css" rel="stylesheet" href="<%=basePath %>/assets/css/font-awesome.min.css" />
- 
+<link type="text/css" rel="stylesheet" href="<%=basePath %>/assets/css/font-awesome.min.css" /> 
 <!-- Custom styles for this template --> 
-<link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
-<link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
-
+ 
+<link href="<%=basePath %>/assets/css/style.css" rel="stylesheet"> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/html5.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/bootstrap.min.js"></script>
@@ -34,8 +34,8 @@ System.out.println(basePath);
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/cross/crossunit.js"></script>  
-<script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/datepicker.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/oldAssets/js/jquery.gritter.min.js"></script> 
+<script type="text/javascript" src="<%=basePath %>/assets/js/datepicker.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.gritter.min.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
@@ -54,6 +54,7 @@ System.out.println(basePath);
 var basePath = "<%=basePath %>";
 </script>
  
+
 </head>
 <body class="Iframe_body"  >
 	
@@ -605,7 +606,8 @@ var basePath = "<%=basePath %>";
 		data-options="iconCls:'icon-save'"
 		style="width: 400px; height: 500px; padding: 10px">
 		  
-	</div>   
+	</div> 
+	 
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
@@ -628,7 +630,7 @@ var basePath = "<%=basePath %>";
 					        </thead>
 					        <tbody data-bind="foreach: times">
 					           <tr>  
-								<td align="center" data-bind=" text: $index"></td>
+								<td align="center" data-bind=" text: $index() + 1"></td>
 								<td data-bind="text: stnName, attr:{title: stnName}"></td>
 								<td align="center" data-bind="text: bureauShortName"></td>
 								<td align="center" data-bind="text: sourceTime"></td>

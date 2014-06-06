@@ -298,7 +298,7 @@ function searchModle(){
 	
 	self.loadChats = function(charts){   
 		for ( var i = 0; i < charts.length; i++) {   
-			self.charts.push({"chartId": charts[i].schemetId, "name": charts[i].schemeName});  
+			self.charts.push({"chartId": charts[i].schemeId, "name": charts[i].schemeName});  
 		} 
 	}; 
 	
