@@ -91,7 +91,7 @@ public class PlanTrainStnService {
     	    paramMap.put("startBureauFull",startBureauFull );
     	    List<Map<String,Object>> mapList = baseDao.selectListBySql(Constants.TRAINPLANDAO_GET_TOTALTRAINS, paramMap);
     	    if(mapList != null && mapList.size() > 0){
-    	    	 System.err.println("mapList.size===" + mapList.size());
+    	    	 //System.err.println("mapList.size===" + mapList.size());
     	    	for(Map<String,Object> map :mapList ){
     	    		ParamDto dto = new ParamDto();
     	    		dto.setSourceEntityId(StringUtil.objToStr(map.get("BASE_TRAIN_ID")));
@@ -226,7 +226,7 @@ public class PlanTrainStnService {
 				   
 				   //获取列车时刻表信息
 				   List<TrainTimeInfo> subList = trainTimeService.getTrainTimes(trainId);
-				   System.err.println("subList.size==" + subList.size());
+				  // System.err.println("subList.size==" + subList.size());
 				   if(subList != null && subList.size() > 0){
 					   List<TrainlineTemplateSubDto> stationList = new ArrayList<TrainlineTemplateSubDto>();
 					   for(TrainTimeInfo subDto :subList ){
@@ -243,7 +243,7 @@ public class PlanTrainStnService {
 						   tempDto.setChildIndex(subDto.getChildIndex());
 						   stationList.add(tempDto);
 					   }
-					   System.err.println("stationList.size==" + stationList.size());
+					   //System.err.println("stationList.size==" + stationList.size());
 					   trainLineDto.setStationList(stationList);
 				   }
 			     }
@@ -251,7 +251,7 @@ public class PlanTrainStnService {
 			   }
 		   }
 		   long time2 = System.currentTimeMillis();
-		   System.err.println("所花时间：" +(time2-time1)/1000);
+		   logger.debug("所花时间：" +(time2-time1)/1000);
 		   return trainsList;
 	}
 	

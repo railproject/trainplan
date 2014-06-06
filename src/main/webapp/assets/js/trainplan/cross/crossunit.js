@@ -44,6 +44,9 @@ function CrossModel() {
 	
 	self.setCurrentTrain = function(row){
 		self.currentTrain(row);
+		console.log("------------------------------------------------------------------");
+		console.log(self.currentTrain().trainNbr);
+		$("#cross_train_time_dlg").dialog("setTitle", "详情时刻表     车次:" + self.currentTrain().trainNbr);
 		self.times.remove(function(item){
 			return true;
 		});
@@ -85,7 +88,7 @@ function CrossModel() {
 		self.currentCross(cross);
 		if(self.searchModle().showCrossMap() == 1){
 			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + cross.unitCrossId);
-			$("#cross_map_dlg").dialog({title: "交路单元图     交路名:" + self.currentCross().crossName(),draggable: true, resizable:true});
+			$("#cross_map_dlg").dialog("setTitle", "交路单元图     交路名:" + self.currentCross().crossName());
 		}
 	};
 	
@@ -476,7 +479,7 @@ function CrossModel() {
 			};
 		} 
 		if(crossIds == ""){
-			showErrorDialog("没有选中数据");
+			showErrorDialog("没有选中数据"); 
 			return;
 		}
 		commonJsScreenLock();
@@ -487,7 +490,7 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossIds : crossIds
+					unitCrossIds : crossIds
 				}),
 				success : function(result) {     
 					if(result.code == 0){
@@ -577,7 +580,7 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossIds : crossIds
+					unitCrossIds : crossIds
 				}),
 				success : function(result) {     
 					if(result.code == 0){

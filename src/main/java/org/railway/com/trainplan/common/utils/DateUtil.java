@@ -9,11 +9,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import org.hibernate.type.LocaleType;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 
 
 public class DateUtil {
@@ -235,16 +242,162 @@ public class DateUtil {
 		}
 		return format(date,defaultDatePattern1);
 	}
+	
+	
+	
 	public static void main(String[] args) {
-		//System.out.println(getDuration(1310067170,1390267170));
-		//System.out.println(System.currentTimeMillis()/1000);
-		// System.err.println(calcBetweenTwoTimes("2014-05-01 23:58:00","2014-05-01 23:58:00"));
-		//System.out.println(DateUtil.format(DateUtil.parse("20140501"), "yyyy-MM-dd"));
-		//DateTime dt = new DateTime();
-		//System.err.println( getDaysBetween("2014-02-27","2014-02-27"));
-//		LocalDate sourceDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate("20140519");
-//		System.err.println("" + sourceDate.toString("yyyy-MM-dd") );
-		System.out.println(DateUtil.getDateByDay("2014-05-15", -1));
+	
+		
+		/**
+		 * 1.构造一个时间
+		 */
+		//方法1：取系统时间
+		DateTime dt1 = new DateTime();
+		
+		//方法2：通过java.util.Date对象生成
+		DateTime dt2 = new DateTime(new Date());
+		
+		//方法3：通过Long (milliseconds，
+		//即距离 1970 年 1 月 1 日子时格林威治标准时间（也称为 epoch）以来的毫秒数)
+		DateTime dt3 = new DateTime(System.currentTimeMillis());
+		
+		//方法4：通过Calendar实例构建
+		DateTime dt4 = new DateTime(Calendar.getInstance());
+		
+		//方法5：指定年月日点分秒生成(参数依次是：年,月,日,时,分,秒,毫秒) 
+		DateTime dt5 = new DateTime(2014, 6, 03, 13, 14, 0, 0);
+		
+		//方法6：ISO8601形式生成  
+		DateTime dt6 = new DateTime("2012-05-20");  
+		DateTime dt7 = new DateTime("2012-05-20T13:14:00");
+		
+		//只需要年月日的时候  
+		LocalDate localDate = new LocalDate(2009, 9, 6);// September 6, 2009  
+		  
+		//只需要时分秒毫秒的时候  
+		LocalTime localTime = new LocalTime(13, 30, 26, 0);// 1:30:26PM 
+		
+	  
+		/**
+		 * 2.获取年月日点分秒
+		 */
+		DateTime dt = new DateTime();  
+		//年  
+		int year = dt.getYear();  
+		//月  
+		int month = dt.getMonthOfYear();  
+		//日  
+		int day = dt.getDayOfMonth();  
+		//星期  
+		int week = dt.getDayOfWeek();  
+		//点  
+		int hour = dt.getHourOfDay();  
+		//分  
+		int min = dt.getMinuteOfHour();  
+		//秒  
+		int sec = dt.getSecondOfMinute();  
+		//毫秒  
+		int msec = dt.getMillisOfSecond();  
+		
+		/**
+		 * 3.与JDK日期对象的转换
+		 */
+		DateTime dtime = new DateTime();  
+		//DateTime对象转换成java.util.Date对象
+		Date d1 = new Date(dtime.getMillis());
+		Date d2 = dtime.toDate();
+		//DateTime对象转换成java.util.Calendar对象 
+		Calendar c1 = Calendar.getInstance();  
+		c1.setTimeInMillis(dt.getMillis());  
+		Calendar c2 = dtime.toCalendar(Locale.getDefault());
+		
+		/**
+		 * 4.日期前后推算
+		 */
+		DateTime dateTime = new DateTime();  
+		  
+		//昨天  
+		DateTime yesterday = dateTime.minusDays(1);         
+		//明天  
+		DateTime tomorrow = dateTime.plusDays(1);       
+		//1个月前  
+		DateTime before1month = dateTime.minusMonths(1);        
+		//3个月后  
+		DateTime after3month = dateTime.plusMonths(3);          
+		//2年前  
+		DateTime before2year = dateTime.minusYears(2);          
+		//5年后  
+		DateTime after5year = dateTime.plusYears(5);
+		
+		/**
+		 * 5.特殊日期的计算
+		 */
+		
+		//月末日期    
+		DateTime lastday = dt.dayOfMonth().withMaximumValue();  
+		  
+		//90天后那周的周一  
+		DateTime firstday = dt.plusDays(90).dayOfWeek().withMinimumValue(); 
+	
+		/**
+		 * 6.时区
+		 */
+		//默认设置为日本时间  
+		DateTimeZone.setDefault(DateTimeZone.forID("Asia/Tokyo"));  
+		DateTime dt8 = new DateTime();  
+		  
+		//伦敦时间  
+		DateTime dt9 = new DateTime(DateTimeZone.forID("Europe/London")); 
+	   
+		/**
+		 * 7.区间计算
+		 */
+		DateTime begin = new DateTime("2012-02-01");  
+		DateTime end = new DateTime("2012-05-01");  
+		  
+		//计算区间毫秒数  
+		Duration d = new Duration(begin, end);  
+		long time = d.getMillis();  
+		  
+		//计算区间天数  
+		Period p = new Period(begin, end, PeriodType.days());  
+		int days = p.getDays();  
+		  
+		//计算特定日期是否在该区间内  
+		Interval i = new Interval(begin, end);  
+		boolean contained = i.contains(new DateTime("2012-03-01")); 
+	
+	   /**
+	    * 8.日期的比较
+	    */
+		DateTime d10 = new DateTime("2012-02-01");  
+		DateTime d11 = new DateTime("2012-05-01");  
+		  
+		//和系统时间比  
+		boolean b1 = d10.isAfterNow();  
+		boolean b2 = d10.isBeforeNow();  
+		boolean b3 = d10.isEqualNow();  
+		  
+		//和其他日期比  
+		boolean f1 = d10.isAfter(d11);  
+		boolean f2 = d10.isBefore(d11);  
+		boolean f3 = d10.isEqual(d11); 
+		
+		/**
+		 * 9.格式化输出
+		 * Joda的日期格式化提供了简单的API接口：toString()，如果你需要的话，
+		 * 也可以传一个ISO-8601或者一个JDK控制的字符串格式，来告诉API如何输出日期格式。
+		 * 方法有如下：
+		 * toString(DateTimeFormatter formatter)
+		 * toString(String pattern)
+		 * toString(String pattern,Local local)
+		 */
+		String s1 = dateTime.toString("yyyy/MM/dd hh:mm:ss.SSSa");  
+		String s2 = dateTime.toString("yyyy-MM-dd HH:mm:ss");  
+		String s3 = dateTime.toString("EEEE dd MMMM, yyyy HH:mm:ssa");  
+		String s4 = dateTime.toString("yyyy/MM/dd HH:mm ZZZZ");  
+		String s5 = dateTime.toString("yyyy/MM/dd HH:mm Z");  
+		String s6 = dateTime.toString("yyyy-MM-dd",Locale.CHINESE);
 	}
 		
 		

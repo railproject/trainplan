@@ -13,8 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
-import org.railway.com.trainplan.entity.BaseCrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
+import org.railway.com.trainplan.entity.SchemeInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.CommonService;
@@ -22,14 +22,13 @@ import org.railway.com.trainplan.service.CrossService;
 import org.railway.com.trainplan.service.PlanTrainCheckService;
 import org.railway.com.trainplan.service.PlanTrainStnService;
 import org.railway.com.trainplan.service.RemoteService;
+import org.railway.com.trainplan.service.SchemeService;
 import org.railway.com.trainplan.service.TrainInfoService;
 import org.railway.com.trainplan.service.TrainTimeService;
 import org.railway.com.trainplan.service.TreadService;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.service.dto.SchemeDto;
-import org.railway.com.trainplan.service.dto.TrainlineTemplateDto;
-import org.railway.com.trainplan.service.task.DaytaskDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +47,7 @@ public class PlanTrainStnController {
 	@Autowired
 	private PlanTrainStnService planTrainStnService;
 	
-	//@Autowired
-	//private QuoteService quoteService;
-
+	
 	@Autowired
 	private AmqpTemplate amqpTemplate;
 	
@@ -72,6 +69,9 @@ public class PlanTrainStnController {
 	
 	@Autowired
 	private TreadService treadService;
+	
+	@Autowired
+	private SchemeService schemeService;
 	//fortest
 	@Autowired
 	private BaseDao baseDao;
@@ -219,7 +219,7 @@ public class PlanTrainStnController {
 	@ResponseBody
 	@RequestMapping(value = "/plan/batchHandleTrainLines", method = RequestMethod.POST)
 	public Result batchHandleTrainLines(@RequestBody Map<String,Object> reqMap){
-		System.err.println("batchHandleTrainLines~~~~~~ reqMap="+reqMap);
+		logger.debug("batchHandleTrainLines~~~~~~ reqMap="+reqMap);
 		Result result  = new Result();
 		try{
 		String runDate = StringUtil.objToStr(reqMap.get("runDate"));
@@ -232,7 +232,7 @@ public class PlanTrainStnController {
 			tempDate = DateUtil.format(DateUtil.parse(tempDate), "yyyyMMdd");
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull);
 			String jsonStr = combinationMessage(listDto);
-			System.err.println("jsonStr====" + jsonStr);
+			logger.debug("jsonStr====" + jsonStr);
 			//向rabbit发送消息
 			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
 		}
@@ -258,7 +258,7 @@ public class PlanTrainStnController {
 		try{
 			
 			String runDate = DateUtil.format(DateUtil.parse(StringUtil.objToStr(reqMap.get("runDate"))), "yyyyMMdd");
-			System.err.println("runDate==" + runDate);
+			logger.debug("runDate==" + runDate);
 			//路局全称
 			String startBureauFull  = StringUtil.objToStr(reqMap.get("startBureauFull"));
 			
@@ -285,8 +285,8 @@ public class PlanTrainStnController {
 	public Result getSchemeList(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 	    try{
-	    	List<SchemeDto> dataList = remoteService.getSchemeList();
-	    	result.setData(dataList);
+	    	List<SchemeInfo> schemeInfos = schemeService.getSchemes();
+	    	result.setData(schemeInfos);
 	    }catch(Exception e){
 	    	logger.error("getSchemeList error==" + e.getMessage());
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
@@ -419,7 +419,7 @@ public class PlanTrainStnController {
 			head.put("user", "test");
 			json.put("head", head);
 			json.put("param", jsonArray);
-			System.err.println("size==" + listDto.size());
+			
 			return json.toString();
 	}
 	

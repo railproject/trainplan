@@ -8,46 +8,6 @@ String basePath = request.getContextPath();
 <head>
 <title>开行计划汇总</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
-<script type="text/javascript">
-$(function () {
-	jQuery('#growl-success').click(function(){
-		 jQuery.gritter.add({
-			title: 'This is a regular notice!',
-			text: 'This will fade out after a certain amount of time.',
-	      class_name: 'growl-success',
-	      image: '<%=basePath %>/assets/oldAssets/img/screen.png',
-			sticky: false,
-			time: ''
-		 });
-		 return false;
-	  });
-	jQuery('#growl-warning').click(function(){
-		 jQuery.gritter.add({
-			title: 'This is a regular notice!',
-			text: 'This will fade out after a certain amount of time.',
-	      class_name: 'growl-warning',
-	      image: '<%=basePath %>/assets/oldAssets/img/screen.png',
-			sticky: false,
-			time: ''
-		 });
-		 return false;
-	  });
-	  jQuery('#growl-danger').click(function(){
-		 jQuery.gritter.add({
-			title: 'This is a regular notice!',
-			text: 'This will fade out after a certain amount of time.',
-	      class_name: 'growl-danger',
-	      image: '<%=basePath %>/assets/oldAssets/img/screen.png',
-			sticky: false,
-			time: ''
-		 });
-		 return false;
-	  });
-});
-
-
-</script>
-
 </head>
 <body class="Iframe_body">
 <!--以上为必须要的-->

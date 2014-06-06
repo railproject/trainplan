@@ -222,21 +222,7 @@ public class TrainInfoService {
 					e.printStackTrace();
 					//logger.error("存表plan_train失败，plan_train_id["+trainId +"],runDate["+runDate+"]");
 				}
-				
-		
-		  /**
-		   *   #{item.planTrainId,jdbcType=VARCHAR},
-	       #{item.runDate,jdbcType=VARCHAR},
-	       #{item.trainNbr,jdbcType=VARCHAR},
-	       #{item.startStn,jdbcType=VARCHAR},
-	       #{item.endStn,jdbcType=VARCHAR},
-	       #{item.baseChartId,jdbcType=VARCHAR},
-	       #{item.baseTrainId,jdbcType=VARCHAR},
-	       #{item.startBureau,jdbcType=VARCHAR},
-	       #{item.endBureau,jdbcType=VARCHAR},
-	       #{item.trainType,jdbcType=VARCHAR},
-		   */
-					
+			
 	}
 		
 	
