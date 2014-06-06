@@ -10,7 +10,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.railway.com.trainplan.entity.PlanCross;
 import org.railway.com.trainplan.entity.RunPlan;
-import org.railway.com.trainplan.entity.UnitCross;
 import org.railway.com.trainplan.service.ChartService;
 import org.railway.com.trainplan.service.PlanLineService;
 import org.railway.com.trainplan.service.RunPlanService;
@@ -25,12 +24,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * 审核相关不涉及页面跳转rest接口
  * Created by star on 5/12/14.
  */
 @RestController
@@ -51,7 +50,7 @@ public class AuditController {
     @RequestMapping(value = "plan/runplan/{date}/{type}", method = RequestMethod.GET)
     public List<RunPlanDTO> getRunPlan(@PathVariable String date, @PathVariable int type) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-        logger.debug(String.format("-X GET plan/runplan/", new Object[]{date, type}));
+        logger.debug("-X GET plan/runplan/");
         List<RunPlanDTO> result = new ArrayList<RunPlanDTO>();
         List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureauShortName(), type);
         for(Map<String, Object> map: list) {
@@ -77,20 +76,20 @@ public class AuditController {
 
     @RequestMapping(value = "plan/checklev1/{checkType}", method = RequestMethod.POST)
     @RequiresPermissions("JHPT.RJH.KDSP")//局客运调度权限
-    public Response checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
+    public ResponseEntity<List<Map<String, Object>>> checkLev1(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
         logger.debug("data::::" + data);
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         List<Map<String, Object>> resp = runPlanService.checkLev1(data, user, checkType);
-        return Response.ok(resp).build();
+        return new ResponseEntity<List<Map<String, Object>>>(resp, HttpStatus.OK);
     }
 
     @RequestMapping(value = "plan/checklev2/{checkType}", method = RequestMethod.POST)
     @RequiresPermissions("JHPT.RJH.KDSP")//局值班主任
-    public Response checkLev2(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
+    public ResponseEntity<List<Map<String, Object>>> checkLev2(@PathVariable int checkType, @RequestBody List<Map<String, Object>> data) {
         logger.debug("data::::" + data);
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         List<Map<String, Object>> resp = runPlanService.checkLev2(data, user, checkType);
-        return Response.ok(resp).build();
+        return new ResponseEntity<List<Map<String, Object>>>(resp, HttpStatus.OK);
     }
 
 
@@ -124,7 +123,7 @@ public class AuditController {
         chart4.setName("未知");
         chart4.setCount(MapUtils.getIntValue(result, "UNKNOWN", 0));
         charts.add(chart4);
-        return new ResponseEntity(charts, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "plan/chart/planline/{date}", method = RequestMethod.GET)
@@ -152,7 +151,7 @@ public class AuditController {
         chart3.setName("未知");
         chart3.setCount(MapUtils.getIntValue(result, "UNKNOWN", 0));
         charts.add(chart3);
-        return new ResponseEntity(charts, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "plancross/test", method = RequestMethod.GET)
@@ -172,8 +171,8 @@ public class AuditController {
     }
 
     @RequestMapping(value = "runplan/generate/{date}/{days}")
-    public ResponseEntity generateRunplan(@PathVariable String date, @PathVariable int days) {
+    public ResponseEntity<Integer> generateRunPlan(@PathVariable String date, @PathVariable int days) {
         int i = runPlanService.generateRunPlan(null, date, days);
-        return new ResponseEntity(i, HttpStatus.OK);
+        return new ResponseEntity<Integer>(i, HttpStatus.OK);
     }
 }
