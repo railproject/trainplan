@@ -392,9 +392,10 @@ public class CrossController {
 					  //图形数据
 					  result.addObject("myJlData",myJlData);
 					  logger.debug("myJlData==" + myJlData);
-						
+					  System.err.println("myJlData==" + myJlData);
 					String gridStr = objectMapper.writeValueAsString(grid);
 					logger.debug("gridStr==" + gridStr);
+					System.err.println("gridStr==" + gridStr);
 					result.addObject("gridData",gridStr);
 
 				 }

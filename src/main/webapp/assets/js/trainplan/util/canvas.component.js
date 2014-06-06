@@ -644,6 +644,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			return "up";//up
 		} else if(_stnArray[_len-1].stnName == stnName) {
 			return "down";//down
+		} else {
+			return "down";//down
 		}
 		return "";
 	};
