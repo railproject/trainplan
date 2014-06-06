@@ -4,6 +4,6 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="schemeDao"> 
    <select id="getSchemeInfo" parameterType="map" resultType="org.railway.com.trainplan.entity.SchemeInfo">
-        select t.id as schemetId, t.name as schemeName from jhpt_rjh.m_templatescheme t order by t.publish_time desc
+        select t.id as schemeId, t.name as schemeName from jhpt_rjh.m_templatescheme t order by t.publish_time desc
    </select> 
 </mapper>

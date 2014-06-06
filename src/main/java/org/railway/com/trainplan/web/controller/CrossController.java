@@ -22,6 +22,7 @@ import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.BaseCrossTrainSubInfo;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
+import org.railway.com.trainplan.entity.SubCrossInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainSubInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainSubInfoTime;
@@ -194,10 +195,10 @@ public class CrossController {
 	public Result checkUnitCorssInfo(@RequestBody Map<String,Object> reqMap) {
 		 Result result = new Result();
 		 try{
-			 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
-			 if(crossIds != null){
-				String[] crossIdsArray = crossIds.split(",");
-				int count = crossService.updateUnitCorssCheckTime(crossIdsArray);
+			 String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
+			 if(unitCrossIds != null){
+				String[] unitCrossIdsArray = unitCrossIds.split(",");
+				int count = crossService.updateUnitCorssCheckTime(unitCrossIdsArray);
 				logger.debug("update--count==" + count);
 			 } 
 		 }catch(Exception e){
@@ -725,28 +726,38 @@ public class CrossController {
 	@RequestMapping(value = "/updateUnitCrossId", method = RequestMethod.POST)
 	public Result updateUnitCrossId(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
-		String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
-		logger.info("updateUnitCrossId----crossIds=="+crossIds);
+		String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
+		logger.info("updateUnitCrossId----unitCrossIds=="+unitCrossIds);
 		try{
-			if(crossIds != null){
-				String[] crossArray = crossIds.split(",");
-				for(String crossId :crossArray){
-					List<CrossTrainInfo> listTrainInfo = crossService.getCrossTrainInfoForCrossid(crossId);
+			if(unitCrossIds != null){
+				String[] crossArray = unitCrossIds.split(",");
+				//取一条unit_cross_id查询出方案id
+				String unitCrossid = crossArray[0];
+				CrossInfo unitCrossInfo = crossService.getUnitCrossInfoForUnitCrossid(unitCrossid);
+				//方案id
+				String baseChartId= unitCrossInfo.getChartId() ;
+				
+				for(String unitCrossId :crossArray){
+					//List<CrossTrainInfo> listTrainInfo = crossService.getCrossTrainInfoForCrossid(unitCrossId);
+					List<CrossTrainInfo> listTrainInfo = crossService.getUnitCrossTrainInfoForUnitCrossId(unitCrossId);
 					if(listTrainInfo !=null && listTrainInfo.size() > 0){
 						
-						//方案id
-						String baseChartId="";
-						int size = listTrainInfo.size();
+						
+						
 						List<String> trainNbrs = new ArrayList<String>();
-						for(int i = 0;i<size;i++){
-							//TODO 由于表结构发生变化，需要修改
-							//String trainNbr = listMap.get(i).get("TRAIN_NBR");
-							///baseChartId = listMap.get(i).get("BASE_CHART_ID");
-							//trainNbrs.add(trainNbr);
+						for(CrossTrainInfo trainInfo :listTrainInfo ){
+							
+							String trainNbr = trainInfo.getTrainNbr();
+							trainNbrs.add(trainNbr);
+							
 							
 						}
 						//调用后台接口
-						remoteService.updateUnitCrossId(baseChartId, crossId, trainNbrs);
+						String response = remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrs);
+						if(response.equals(Constants.REMOTE_SERVICE_SUCCESS)){
+							//调用后台接口成功，更新本地数据表unit_cross中字段CREAT_CROSS_TIME
+							crossService.updateUnitCrossUnitCreateTime(crossArray);
+						}
 					}
 					
 				}
@@ -768,7 +779,7 @@ public class CrossController {
 	@RequestMapping(value = "/getUnitCrossInfo", method = RequestMethod.POST)
 	public Result getUnitCrossInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
-		List<CrossInfo> list = null;
+		List<SubCrossInfo> list = null;
 	    try{
 	    	list = crossService.getUnitCrossInfo(reqMap);
 	    	PagingResult page = new PagingResult(crossService.getUnitCrossInfoCount(reqMap),list);
@@ -816,13 +827,13 @@ public class CrossController {
 	@RequestMapping(value = "/getUnitCrossTrainInfo", method = RequestMethod.POST)
 	public Result getUnitCrossTrainInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
-		String crossId = (String)reqMap.get("crossId");
-		logger.debug("crossId==" + crossId);
+		String unitCrossId = (String)reqMap.get("unitCrossId");
+		logger.debug("unitCrossId==" + unitCrossId);
 		 try{
 		    	//先获取unitcross基本信息
-			 CrossInfo crossinfo = crossService.getUnitCrossInfoForUnitCrossid(crossId);
+			 CrossInfo crossinfo = crossService.getUnitCrossInfoForUnitCrossid(unitCrossId);
 			 //再获取unitcrosstrainInfo信息
-			 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForCrossid(crossId);
+			 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossId(unitCrossId);
 		     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 		     Map<String,Object> dataMap = new HashMap<String,Object>();
 		     dataMap.put("crossinfo", crossinfo);
@@ -889,7 +900,7 @@ public class CrossController {
 					//根据crossid生成交路单元
 					crossService.completeUnitCrossInfo(crossid);
 				}
-				//生成交路单元完成后，更改表base_cross中的creat_time字段的值
+				//生成交路单元完成后，更改表base_cross中的creat_unit_time字段的值
 				crossService.updateCrossUnitCreateTime(crossIds);
 			}
 		}catch(Exception e){

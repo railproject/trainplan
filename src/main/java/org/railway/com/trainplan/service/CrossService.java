@@ -44,6 +44,7 @@ import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
+import org.railway.com.trainplan.entity.SubCrossInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainSubInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainSubInfoTime;
@@ -130,6 +131,29 @@ public class CrossService{
 		
 		
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_CROSS_CREATETIME, reqMap);
+	}
+	
+	/**
+	 * 更新unit_cross中的creat_unit_time字段的值
+	 * @param unitCrossIds
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateUnitCrossUnitCreateTime(String[] unitCrossIds) throws Exception {
+		
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = unitCrossIds.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(unitCrossIds[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("unitCrossIds", bf.toString());
+		
+		
+		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_Unit_CROSS_CREATETIME, reqMap);
 	}
 	
 	/**
@@ -249,25 +273,25 @@ public class CrossService{
 	}
 	
 	/**
-	 * 更新base_cross中的check_time字段的值
+	 * 更新unit_cross中的check_time字段的值
 	 * @param crossIds
 	 * @return
 	 * @throws Exception
 	 */
-	public int updateUnitCorssCheckTime(String[] crossIds) throws Exception{
+	public int updateUnitCorssCheckTime(String[] unitCrossIds) throws Exception{
 		//组装字符串
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = crossIds.length;
+		int size = unitCrossIds.length;
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(crossIds[i]).append("'");
+			bf.append("'").append(unitCrossIds[i]).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
 		}
-		reqMap.put("baseCrossIds", bf.toString());
+		reqMap.put("unitCrossIds", bf.toString());
 		
-		
+		logger.info("unitCrossIds==" + bf.toString());
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_UNIT_CROSS_CHECKTIME, reqMap);
 		
 	}
@@ -294,9 +318,9 @@ public class CrossService{
 			//取第一辆列车的始发站
 			crossInfo.setStartStn(listCrossTrainInfo.get(0).getStartStn());
 		}
-		System.err.println("listCrossTrainInfo.size==" + listCrossTrainInfo.size());
+		logger.info("listCrossTrainInfo.size==" + listCrossTrainInfo.size());
 		List<CrossInfo> list = prepareUnitCrossInfo(crossInfo);
-		System.err.println("list.size==" + list.size());
+		logger.info("list.size==" + list.size());
 		
 		///前面的规则没变这个地方直接使用前面的结果，如果前面的规则计算错误这里会有影响 
 		List<CrossInfo> result = new ArrayList<CrossInfo>();
@@ -471,8 +495,8 @@ public class CrossService{
 	 * @param reqMap
 	 * @return
 	 */
-	public List<CrossInfo>  getUnitCrossInfo(Map<String,Object> reqMap){
-		List<CrossInfo>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO, reqMap);
+	public List<SubCrossInfo>  getUnitCrossInfo(Map<String,Object> reqMap){
+		List<SubCrossInfo>  list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_INFO, reqMap);
 		return list;
 	}
 	
@@ -523,14 +547,14 @@ public class CrossService{
 	
 	
 	/**
-	 * 通过crossid查询crosstrainInfo信息
+	 * 通过unitCrossId查询unit_cross_trainInfo信息
 	 * @param crossId
 	 * @return
 	 */
-	public List<CrossTrainInfo> getUnitCrossTrainInfoForCrossid(String crossId){
+	public List<CrossTrainInfo> getUnitCrossTrainInfoForUnitCrossId(String unitCrossId){
 		Map<String,String> paramMap = new HashMap<String,String>();
-		paramMap.put("crossId", crossId);
-		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSSTRAIN_INFO_FOR_CROSSID, paramMap);
+		paramMap.put("unitCrossId", unitCrossId);
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSSTRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
 	}
 	
 	

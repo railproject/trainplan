@@ -546,7 +546,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
    </select>
    
    
-     <select id="getUnitCrossTrainInfoForCrossid" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
+     <select id="getUnitCrossTrainInfoForUnitCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
          select 
           A.UNIT_CROSS_TRAIN_ID as unitCrossTrainId,
          A.UNIT_CROSS_ID as unitCrossId,
@@ -573,7 +573,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
 	     A.MARSHALLING_NAME AS marshallingName
          from 
          unit_cross_train A 
-         where  A.UNIT_CROSS_ID = #{crossId} order by A.GROUP_SERIAL_NBR ,A.train_sort
+         where  A.UNIT_CROSS_ID = #{unitCrossId} order by A.GROUP_SERIAL_NBR ,A.train_sort
    </select>
 
     <insert id="addUnitCrossInfo"  parameterType="java.util.List" >
@@ -871,7 +871,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
     </update>
 
     <update id="updateUnitCrossCheckTime" parameterType="map">
-        update unit_cross set check_time = sysdate where unit_cross_id in (${baseCrossIds})
+        update unit_cross set check_time = sysdate where unit_cross_id in (${unitCrossIds})
 
     </update>
 
@@ -881,6 +881,11 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
 
     </update>
 
+    <update id="updateUnitCrossUnitCreateTime" parameterType="map">
+        update unit_cross set CREAT_CROSS_TIME = sysdate where unit_cross_id in (${unitCrossIds})
+
+    </update>
+    
     <delete id="deleteCrossInfoForCrossIds" parameterType="map">
         delete from base_cross where BASE_CROSS_ID in (${baseCrossIds})
     </delete>

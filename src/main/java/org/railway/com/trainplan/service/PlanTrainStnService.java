@@ -151,7 +151,6 @@ public class PlanTrainStnService {
 			 String startDate,  String dayCount) throws Exception {
 		//调用后台接口之前推送一条消息到页面
 		quoteService.sendQuotes("", 0, 0, "plan.getInfo.begin");
-		
 		List<PlanCrossInfo> listPlanCross = new ArrayList<PlanCrossInfo>();
 		List<CrossInfo> listCross = crossService.getUnitCrossInfoForChartId(schemeId);
 		if(listCross != null && listCross.size() > 0){

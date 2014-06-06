@@ -122,6 +122,7 @@ public class RemoteService {
 	 * @return
 	 */
 	public String updateUnitCrossId(String schemeId,String vehicleCycleId,List<String> trainNbrs)  throws Exception{
+		String result = "";
 		Map<String,Object> request = new HashMap<String,Object>();
 		request.put("schemeId",schemeId);
 		request.put("vehicleCycleId", vehicleCycleId);
@@ -133,7 +134,11 @@ public class RemoteService {
 		//		+ Constants.UPDATE_UNIT_CROSS_ID, request, Map.class);
 		String response = remoteRestPost(restUrl+ Constants.UPDATE_UNIT_CROSS_ID,request);
 		logger.info("updateUnitCrossId---response==" + response);
-		return "";
+		JSONObject obj = JSONObject.fromObject(response);
+		if(obj != null){
+			result = obj.get("code") == null?"" : obj.get("code").toString();
+		}
+		return result;
 	}
 	
 	

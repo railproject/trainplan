@@ -17,6 +17,7 @@ public class Constants {
 	public static final int CONNECT_TIME_OUT = 30 * 1000;
 	public static final String DATE_FORMAT_1 = "yyyyMMddHHmm";	
 	public static final String DATE_FORMAT_2 = "yyyy-MM-dd HH:mm:ss";
+	public static final String REMOTE_SERVICE_SUCCESS = "200";
 	//TODO:后台服务地址，以后要改为配置文件
 	//后台接口地址
 	//TODO 从配置文件中获取不到值
@@ -119,7 +120,7 @@ public class Constants {
 	public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_UNIT_CROSSID="crossDao.getUnitCrossInfoForUnitCrossid";
     public static final String CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID = "crossDao.getUnitCrossTrainInfoForUnitCrossid";
     //getUnitCrossTrainInfoForCrossid
-    public static final String CROSSDAO_GET_UNIT_CROSSTRAIN_INFO_FOR_CROSSID = "crossDao.getUnitCrossTrainInfoForCrossid";
+    public static final String CROSSDAO_GET_UNIT_CROSSTRAIN_INFO_FOR_UNIT_CROSSID = "crossDao.getUnitCrossTrainInfoForUnitCrossId";
     //分页查询表unit_cross  getUnitCrossInfo
     public static final String CROSSDAO_GET_UNIT_CROSS_INFO = "crossDao.getUnitCrossInfo";
     //分页查询的总条数 
@@ -134,8 +135,10 @@ public class Constants {
     public static final String CROSSDAO_GET_CROSS_TRAININFO_FOR_CROSSID = "crossDao.getCrossTrainInfoForCrossId";
     //更新base_cross的check_time   
     public static final String CROSSDAO_UPDATE_CROSS_CHECKTIME = "crossDao.updateCrossCheckTime";
-    //更新base_cross的creat_time  
+    //更新base_cross的creat_unit_time  
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossUnitCreateTime";
+    public static final String CROSSDAO_UPDATE_Unit_CROSS_CREATETIME = "crossDao.updateUnitCrossUnitCreateTime";
+    
     
     //更新base_cross的check_time   
     public static final String CROSSDAO_UPDATE_UNIT_CROSS_CHECKTIME = "crossDao.updateUnitCrossCheckTime";
