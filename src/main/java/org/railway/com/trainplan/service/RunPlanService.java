@@ -424,7 +424,7 @@ public class RunPlanService {
             List<RunPlan> resultList = Lists.newArrayList();
             // 计算结束时间
             LocalDate lastDate = startDate.plusDays(days);
-            //
+            // 开始生成
             generate: {
                 for(int i = 0; true; i ++) {
                     UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(i % unitCrossTrainList.size());
@@ -445,6 +445,7 @@ public class RunPlanService {
                                 runPlan.setPlanCrossId(planCrossId);
                                 runPlan.setBaseChartId(baseRunPlan.getBaseChartId());
                                 runPlan.setBaseTrainId(baseRunPlan.getBaseTrainId());
+                                runPlan.setDailyPlanFlag(1);
 
                                 // unitcross里的信息
                                 runPlan.setGroupSerialNbr(unitCrossTrain.getGroupSerialNbr());
@@ -465,12 +466,18 @@ public class RunPlanService {
                                     RunPlan preRunPlan = resultList.get(resultList.size() - unitCrossTrainList.size());
                                     LocalDate preRunDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(preRunPlan.getRunDate());
                                     runPlan.setRunDate(preRunDate.plusDays(interval).plusDays(unitCrossTrain.getDayGap()).toString("yyyyMMdd"));
+
+                                    // 前后车互基
+                                    runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
+                                    preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
                                 } else {
                                     LocalDate unitCrossTrainStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
                                     int initInterval = Days.daysBetween(unitCrossTrainStartDate, startDate).getDays();
                                     runPlan.setRunDate(unitCrossTrainStartDate.plusDays(initInterval).plusDays(unitCrossTrain.getGroupGap()).toString("yyyyMMdd"));
                                 }
 
+                                runPlan.setStartDateTime(new Timestamp(simpleDateFormat.parse(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate()).toString("yyyy-MM-dd") + " " + runPlan.getStartTimeStr()).getTime()));
+                                runPlan.setEndDateTime(new Timestamp(simpleDateFormat.parse(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate()).toString("yyyy-MM-dd") + " " + runPlan.getEndTimeStr()).getTime()));
                                 runPlan.setPlanTrainSign(runPlan.getRunDate() + "-" + runPlan.getTrainNbr() + "-" + runPlan.getStartStn() + "-" + runPlan.getStartTimeStr());
 
                                 LocalDate runPlanDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate());
