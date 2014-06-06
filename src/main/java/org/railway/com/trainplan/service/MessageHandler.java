@@ -23,8 +23,8 @@ public class MessageHandler implements MessageListener{
 	@Override
 	public void onMessage(Message message) {
 		
-		System.out.println("----------------------------------------------");
-		System.out.println("response==" + new String(message.getBody()));
+		logger.debug("----------------------------------------------");
+		logger.debug("response==" + new String(message.getBody()));
 		//JSONObject json = new JSONObject();
 		//JSONObject map = json.fromObject(object)
 		ObjectMapper mapper = new ObjectMapper();
@@ -32,7 +32,7 @@ public class MessageHandler implements MessageListener{
 		try {
 			 msg= mapper.readValue(message.getBody(), Map.class);
 			 logger.debug("msg======" + msg);
-			 System.err.println("msg======" + msg);
+			
 			 if(msg != null && msg.size()>0){
 				 Map<String,Object> result = ((Map<String,Object>)msg.get("result"));
 				 String resultString = (String)result.get("result");
@@ -59,7 +59,7 @@ public class MessageHandler implements MessageListener{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("----------------------------------------------");
+		logger.debug("----------------------------------------------");
 		
 	}
 

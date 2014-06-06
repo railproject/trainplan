@@ -68,7 +68,6 @@ public class CrossService{
 	@Autowired
 	private CommonService commonService;
 	
-	//TODO 取不出来
 	@Value("#{restConfig['SERVICE_URL']}")
     private String restUrl;
 	
@@ -86,7 +85,7 @@ public class CrossService{
 		calendar.setTime(date);
 		calendar.add(Calendar.DATE, 4 - 1);
 	 
-		System.out.println(dateFormat.format(calendar.getTime()));
+		//System.out.println(dateFormat.format(calendar.getTime()));
 //		a.actionExcel(is); 
 //		System.out.println("G11(".substring(0,"G11(".indexOf('(')));
 	}
@@ -129,7 +128,6 @@ public class CrossService{
 		}
 		reqMap.put("baseCrossIds", bf.toString());
 		
-		System.err.println("bf.toString()==" +  bf.toString());
 		
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_CROSS_CREATETIME, reqMap);
 	}
@@ -153,7 +151,6 @@ public class CrossService{
 		}
 		reqMap.put("baseCrossIds", bf.toString());
 		
-		System.err.println("bf.toString()==" +  bf.toString());
 		
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNIT_CROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap);
 	}
@@ -177,7 +174,6 @@ public class CrossService{
 		}
 		reqMap.put("baseCrossIds", bf.toString());
 		
-		System.err.println("bf.toString()==" +  bf.toString());
 		
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNIT_CROSS_INFO_FOR_CROSSIDS, reqMap);
 	}
@@ -201,7 +197,6 @@ public class CrossService{
 		}
 		reqMap.put("baseCrossIds", bf.toString());
 		
-		System.err.println("bf.toString()==" +  bf.toString());
 		
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap);
 	}
@@ -226,7 +221,6 @@ public class CrossService{
 		}
 		reqMap.put("baseCrossIds", bf.toString());
 		
-		System.err.println("bf.toString()==" +  bf.toString());
 		
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSS_INFO_FOR_CROSSIDS, reqMap);
 	}
@@ -249,7 +243,6 @@ public class CrossService{
 		}
 		reqMap.put("baseCrossIds", bf.toString());
 		
-		System.err.println("bf.toString()==" +  bf.toString());
 		
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_CROSS_CHECKTIME, reqMap);
 		
@@ -274,7 +267,6 @@ public class CrossService{
 		}
 		reqMap.put("baseCrossIds", bf.toString());
 		
-		System.err.println("bf.toString()==" +  bf.toString());
 		
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_UNIT_CROSS_CHECKTIME, reqMap);
 		
@@ -318,12 +310,12 @@ public class CrossService{
 		  
 		if(list !=null && list.size() > 0){
 			List<CrossTrainInfo> listCrossTrain = prepareUnitCrossTrainInfo(listCrossTrainInfo, list, resultCorssInfo.getUnitCrossId());
-			System.err.println("listCrossTrain.size===" + listCrossTrain.size());
-			int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_INFO, result);
-			System.err.println("count=====" + count);
+			
+			 baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_INFO, result);
+			
 			if(listCrossTrain !=null && listCrossTrain.size() > 0){
-				int trainCount = baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_TRAIN_INFO, listCrossTrain);
-				System.err.println("trainCount=====" + trainCount);		
+			 baseDao.insertBySql(Constants.CROSSDAO_ADD_UNIT_CROSS_TRAIN_INFO, listCrossTrain);
+					
 			}
 			
 		}
@@ -352,19 +344,17 @@ public class CrossService{
 					    Calendar calendar = new GregorianCalendar();
 					    calendar.setTime(date);
 					    calendar.add(Calendar.DATE, crossInfo.getGroupSerialNbr() - 1);
-					    System.err.println((crossInfo.getGroupSerialNbr() - 1 ) + "==------------------------------" + crossTrainInfo.getRunDate());
-					    temp.setRunDate(dateFormat.format(calendar.getTime()));
-					    System.err.println((crossInfo.getGroupSerialNbr() - 1 ) + "==------------------------------" + temp.getRunDate());
 					   
+					    temp.setRunDate(dateFormat.format(calendar.getTime()));
+					    
 					    date = dateFormat.parse(crossTrainInfo.getEndDate());   
-					    System.err.println((crossInfo.getGroupSerialNbr() - 1 ) + "==------------------------------" + crossTrainInfo.getEndDate());
+					    
 					    calendar = new GregorianCalendar();
 					    calendar.setTime(date);
 					    calendar.add(Calendar.DATE, crossInfo.getGroupSerialNbr() - 1);
 					    
 					    temp.setEndDate(dateFormat.format(calendar.getTime())); 
 					    
-					    System.err.println((crossInfo.getGroupSerialNbr() - 1 ) + "==------------------------------" + temp.getEndDate());
 					   
 						//设置主键
 						temp.setUnitCrossTrainId(UUID.randomUUID().toString());
@@ -374,7 +364,7 @@ public class CrossService{
 				
 			}
 		}
-		System.err.println("CrossTrainInfo_list=====" + list);
+		
 		return list;
 	}
 	/**
@@ -575,7 +565,7 @@ public class CrossService{
 						String endDate = train.getEndDate();
 						String startStn = train.getStartStn();
 						String endStn = train.getEndStn();
-						//List<UnitCrossTrainSubInfoTime> tempList = train.getStationTimeList();
+						
 						List<UnitCrossTrainSubInfoTime> tempList = new ArrayList<UnitCrossTrainSubInfoTime>();
 						List<UnitCrossTrainSubInfoTime> stationTimeList = train.getStationTimeList();	
 						
@@ -586,14 +576,12 @@ public class CrossService{
 								String dptTime = trainTime.getDptTime();
 								String stnName = trainTime.getStnName();
 								if(startStn.equals(stnName)&& runDate.equals(dptTime)){
-									//tempList.remove(trainTime);//(trainTime);
+									
 									tempList.add(trainTime);
 								}else if(endStn.equals(stnName) && endDate.equals(arrTime)){
 									tempList.add(trainTime);
 								}
-								/*if(endStn.equals(stnName) && !endDate.equals(arrTime)){
-									tempList.remove(trainTime);//trainTime
-								}*/
+								
 							}
 						}
 						train.setStationTimeList(tempList);
@@ -640,43 +628,7 @@ public class CrossService{
 	public List<Map<String,Object>> getTrainNbrWithBaseCrossId(String baseCrossId){
 		return baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID, baseCrossId);
 	}
-	
-/*	*//**
-	 *  通过unitCorssId分别查询数据并组合
-	 * @param unitCorssId
-	 * @return
-	 *//*
-	public BaseCrossDto  getUnitCrossDtoWithUnitCrossId(String unitCorssId){
-		BaseCrossDto baseCrossDto = new BaseCrossDto();
-		
-		CrossInfo crossInfo = getUnitCrossInfoForUnitCrossid(unitCorssId);
-		System.err.println("getUnitCrossDtoWithUnitCrossId---crossid==" + crossInfo.getCrossId());
-		baseCrossDto.setBaseCrossId(crossInfo.getCrossId());
-		baseCrossDto.setCrossName(crossInfo.getMarshallingName());
-		baseCrossDto.setCrossStartDate(crossInfo.getCrossStartDate());
-		baseCrossDto.setCrossEndDate(crossInfo.getCrossEndDate());
-		List<BaseCrossTrainDto> subList = new ArrayList<BaseCrossTrainDto>();
-		*//**
-		 * unitCrossTrain信息以train_sort升序排列
-		 *//*
-		List<CrossTrainInfo> trainInfoList = getUnitCrossTrainInfoForUnitCrossid(unitCorssId);
-		if(trainInfoList != null && trainInfoList.size() > 0){
-			System.err.println("trainInfoList.size()==" + trainInfoList.size());
-			for(CrossTrainInfo trainInfo :trainInfoList){
-				BaseCrossTrainDto dto = new BaseCrossTrainDto();
-				String trainId = trainInfo.getBaseTrainId();
-				if(!"".equals(trainId)&&trainId != null && !"null".equals(trainId)){
-					dto.setBaseTrainId(trainId);
-					dto.setDayGap(trainInfo.getDayGap());
-					dto.setTrainSort(trainInfo.getTrainSort());
-					dto.setTrainNbr(trainInfo.getTrainNbr());
-					subList.add(dto);
-				}
-			}
-			baseCrossDto.setListBaseCrossTrain(subList);
-		}
-		return baseCrossDto;
-	}*/
+
 	/**
 	 * 通过baseCrossId分别查询数据并组合
 	 * @param baseCrossId
@@ -755,7 +707,7 @@ public class CrossService{
 				tokenPsgDeptValuesMap.put(dto.getLjpym(), dto.getLjjc());
 			}
 		}
-		System.err.println("tokenPsgDeptValuesMap==" + tokenPsgDeptValuesMap);
+		//System.err.println("tokenPsgDeptValuesMap==" + tokenPsgDeptValuesMap);
 		valuesMap.put("tokenPsgBureau", tokenPsgDeptValuesMap); 
 		valuesMap.put("tokenVehBureau", tokenPsgDeptValuesMap);  
 		

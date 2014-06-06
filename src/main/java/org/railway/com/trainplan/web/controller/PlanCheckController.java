@@ -47,7 +47,7 @@ public class PlanCheckController {
 	@RequestMapping(value = "/deletePlanTrainWithRunDate", method = RequestMethod.POST)
 	public Result deletePlanTrainWithRunDate(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
-		System.err.println("deletePlanTrainWithRunDate~~reqMap="+reqMap);
+		logger.debug("deletePlanTrainWithRunDate~~reqMap="+reqMap);
 		 String deleteKey = StringUtil.objToStr(reqMap.get("deleteKey"));
 		 if(deleteKey != null && !"".equals(deleteKey)){
 			 String[] keys = deleteKey.split("#"); 
@@ -83,7 +83,7 @@ public class PlanCheckController {
 	@RequestMapping(value = "/findPlanTrainWithPeriodRunDate", method = RequestMethod.POST)
 	public Result findPlanTrainWithPeriodRunDate(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
-		System.err.println("getFullStationTrains~~reqMap="+reqMap);
+		logger.debug("getFullStationTrains~~reqMap="+reqMap);
 		try{
 			int currentPage = StringUtil.strToInteger(StringUtil.objToStr(reqMap.get("currentPage")));
 			int pageSize =  StringUtil.strToInteger(StringUtil.objToStr(reqMap.get("pageSize")));
@@ -123,7 +123,7 @@ public class PlanCheckController {
 	public Result getFullStationTrains(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			System.err.println("getFullStationTrains~~reqMap="+reqMap);
+			logger.debug("getFullStationTrains~~reqMap="+reqMap);
 			String runDate="";
 			String tempRunDate = StringUtil.objToStr(reqMap.get("runDate"));
 			if(reqMap.get("runDate") ==null || "".equals(reqMap.get("runDate").toString())) {
@@ -188,7 +188,7 @@ public class PlanCheckController {
 					}
 				}
 			}
-			System.err.println("全路局统计ListMap==" +listMap );
+			//System.err.println("全路局统计ListMap==" +listMap );
 			result.setData(listMap);
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);
@@ -207,7 +207,7 @@ public class PlanCheckController {
 	public Result getOneStationTrains(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			System.err.println("getOneStationTrains~~reqMap="+reqMap);
+			logger.debug("getOneStationTrains~~reqMap="+reqMap);
 			String runDate="";
 			if(reqMap.get("runDate") ==null || "".equals(reqMap.get("runDate").toString())) {
 				runDate = DateUtil.format(new Date(), "yyyyMMdd");
@@ -264,7 +264,7 @@ public class PlanCheckController {
 	public Result findPlanTrainByStartBureauAndRundate(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try {
-			System.err.println("~~~~~~~~~~~~~~~~~ reqMap="+reqMap);
+			logger.debug("~~~~~~~~~~~~~~~~~ reqMap="+reqMap);
 			String runDate;
 			if(reqMap.get("runDate") ==null || "".equals(reqMap.get("runDate").toString())) {
 				runDate = DateUtil.format(new Date(), "yyyyMMdd");
@@ -310,11 +310,9 @@ public class PlanCheckController {
 	public Result showTrainTimeDetail(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try {
-			System.err.println("~~~~~~~~~~~~~~~~~ reqMap="+reqMap);
+			logger.debug("~~~~~~~~~~~~~~~~~ reqMap="+reqMap);
 			String runDate = DateUtil.format(DateUtil.parse(StringUtil.objToStr(reqMap.get("runDate"))), "yyyyMMdd");
 			String trainNbr = StringUtil.objToStr(reqMap.get("trainNbr"));
-			
-			
 			result.setData(planTrainCheckService.getTrainTimeDetail(runDate, trainNbr));
 		} catch (Exception e) {
 	    	logger.error(e.getMessage(), e);

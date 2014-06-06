@@ -184,9 +184,7 @@ public class PlanTrainCheckService {
 			}
 			
 		}
-		//long totalRecord, long pageSize, Object data
-		System.err.println("returnDaysList==" + returnDaysList);
-		System.err.println("totalCount==" + totalCount);
+	
 		return new PagingResult(Long.valueOf(totalCount),Long.valueOf(pageSize),returnDaysList);
 	}
 	
@@ -215,7 +213,7 @@ public class PlanTrainCheckService {
 		}
 		
 		List<PlanTrain> list = baseDao.selectListBySql(Constants.TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU, paramMap);
-		System.err.println("list==="+list);
+		
 		if(list != null && list.size() > 0){
 			//查询总的条数
 			List<Map<String,Object>> listTotalCount = baseDao.selectListBySql(Constants.TRAINPLANDAO_FIND_PLANTRAIN_BY_START_BUREAU_COUNT, paramMap);

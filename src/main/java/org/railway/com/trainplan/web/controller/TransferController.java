@@ -54,10 +54,6 @@ public class TransferController {
 	@RequestMapping(value = "/plan/planView", method = RequestMethod.POST)
 	public ModelAndView planReviews(HttpServletRequest request){
 		ModelAndView model = new ModelAndView("plan/plan_view");
-		System.err.println("startDate==" + request.getParameter("startDate"));
-		System.err.println("days==" + request.getParameter("days"));
-		System.err.println("scheme==" + request.getParameter("schemeVal"));
-		System.err.println("scheme==" + request.getParameter("schemeText"));
 		
 		model.addObject("schemeVal", request.getParameter("schemeVal"));
 		model.addObject("schemeText", request.getParameter("schemeText"));
