@@ -8,6 +8,7 @@ public class UnitCrossTrain {
     private String unitCrossTrainId;
     private String unitCrossId;
     private int groupSerialNbr;
+    private int groupGap;
     private String marshallingName;
     private int trainSort;
     private String trainNbr;
@@ -213,6 +214,15 @@ public class UnitCrossTrain {
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
+
+    public int getGroupGap() {
+        return groupGap;
+    }
+
+    public void setGroupGap(int groupGap) {
+        this.groupGap = groupGap;
+    }
+
     /*
     public UnitCross getUnitCross() {
         return unitCross;

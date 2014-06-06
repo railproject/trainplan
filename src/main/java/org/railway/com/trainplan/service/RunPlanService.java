@@ -2,43 +2,30 @@ package org.railway.com.trainplan.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListenableFutureTask;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
-
 import org.joda.time.Days;
-import org.railway.com.trainplan.common.constants.Constants;
-import org.railway.com.trainplan.entity.CrossRunPlanInfo;
-import org.railway.com.trainplan.entity.LevelCheck;
-import org.railway.com.trainplan.exceptions.DailyPlanCheckException;
-import org.railway.com.trainplan.exceptions.UnknownCheckTypeException;
-import org.railway.com.trainplan.exceptions.WrongBureauCheckException;
-import org.railway.com.trainplan.exceptions.WrongDataException;
-import org.railway.com.trainplan.repository.mybatis.BaseDao;
-import org.railway.com.trainplan.repository.mybatis.RunPlanDao;
-import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
-import org.railway.com.trainplan.service.dto.TrainRunDto;
- 
-import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.entity.*;
 import org.railway.com.trainplan.exceptions.*;
-import org.railway.com.trainplan.repository.mybatis.*; 
+import org.railway.com.trainplan.repository.mybatis.*;
+import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.lang.reflect.InvocationTargetException;
-import java.sql.*;
-import java.text.ParseException; 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Date;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,8 +38,7 @@ import java.util.concurrent.Executors;
 public class RunPlanService {
 
     private static final Log logger = LogFactory.getLog(RunPlanService.class);
-    
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+
     @Autowired
     private RunPlanDao runPlanDao;
 
@@ -221,9 +207,9 @@ public class RunPlanService {
 
     /**
      * 路局审核了需要修改已审核路局局码字段
-     * @param base
-     * @param split
-     * @return
+     * @param base 已有局
+     * @param split 新增局
+     * @return 最终字符
      */
     private String addBureauCode(String base, String split) throws WrongDataException {
         StringBuilder result = new StringBuilder(base);
@@ -236,7 +222,7 @@ public class RunPlanService {
     }
 
     private int newLev1Type(int current, String passBureau, String currentChecked, String split) throws DailyPlanCheckException {
-        int result = 0;
+        int result;
         if(!passBureau.contains(split)) {
             throw new WrongBureauCheckException("计划不属于审核局");
         }
@@ -266,9 +252,9 @@ public class RunPlanService {
 
     /**
      * 判断是否所有路局都审核完毕
-     * @param standard
-     * @param token
-     * @return
+     * @param standard 判断标准
+     * @param token 需要判断的字符
+     * @return 是否全部包含
      */
     private boolean isAllChecked(String standard, String token) throws WrongDataException {
         StringBuilder tStandard = new StringBuilder(standard);
@@ -316,9 +302,9 @@ public class RunPlanService {
 
     public List<PlanCross> findPlanCross() {
         try {
-            return unitCrossDao.findPlanCross();
+            return unitCrossDao.findPlanCross(null);
         } catch (Exception e) {
-            logger.error("findUnitCross:::::", e);
+            logger.error("findPlanCross:::::", e);
         }
         return null;
     }
@@ -328,23 +314,23 @@ public class RunPlanService {
         try {
             return baseTrainDao.findBaseTrainByPlanCrossid(null);
         } catch (Exception e) {
-            logger.error("findUnitCross:::::", e);
+            logger.error("findRunPlan:::::", e);
         }
         return null;
     }
 
     /**
      *
-     * @param planCrossIdList
+     * @param planCrossIdList 指定生成plancross计划
      * @param startDate yyyy-MM-dd
      * @param days 比如:30
-     * @return
+     * @return 生成了多少个plancross的计划
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
         ExecutorService executorService = Executors.newFixedThreadPool(50);
         List<PlanCross> planCrossList = null;
         try{
-            planCrossList = unitCrossDao.findPlanCross();
+            planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
             for(PlanCross planCross: planCrossList) {
                 executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
             }
@@ -352,6 +338,28 @@ public class RunPlanService {
             executorService.shutdown();
         }
         return planCrossList.size();
+    }
+
+    public List<String> generateRunPlan(List<String> planCrossIdList, String startDate, int days, Map<String, Object> callBackParams) {
+        ExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
+        List<String> planCrossIds = Lists.newArrayList();
+        try{
+            List<PlanCross> planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
+            for(PlanCross planCross: planCrossList) {
+//                executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
+//                ListenableFuture futureTask = executorService.submit(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
+//                futureTask.addListener(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                    }
+//                }, executorService);
+                planCrossIds.add(planCross.getPlanCrossId());
+            }
+        } finally {
+            executorService.shutdown();
+        }
+        return planCrossIds;
     }
 
 
@@ -377,6 +385,7 @@ public class RunPlanService {
         RunPlanGenerator(PlanCross planCross, RunPlanDao runPlanDao,
                          BaseTrainDao baseTrainDao, String startDate,
                          RunPlanStnDao runPlanStnDao, int days) {
+
             this.planCross = planCross;
             this.runPlanDao = runPlanDao;
             this.baseTrainDao = baseTrainDao;
@@ -393,18 +402,11 @@ public class RunPlanService {
             String planCrossId = planCross.getPlanCrossId();
             Map<String, Object> params = Maps.newHashMap();
             params.put("planCrossId", planCrossId);
-            List<RunPlan> runPlanList = baseTrainDao.findBaseTrainByPlanCrossid(params);
+            List<RunPlan> baseRunPlanList = baseTrainDao.findBaseTrainByPlanCrossid(params);
             List<RunPlan> resultRunPlanList = Lists.newArrayList();
             LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(startDate);
-            LocalDate unitCrossStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.planCross.getUnitCrossTrainList().get(0).getRunDate());
-            LocalDate unitCrossEndDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.planCross.getUnitCrossTrainList().get(this.planCross.getUnitCrossTrainList().size() - 1).getRunDate());
-            int unitCrossInterval = Days.daysBetween(unitCrossStartDate, unitCrossEndDate).getDays();
-            int groups = this.planCross.getGroupTotalNbr();
-            int times = (this.days / unitCrossInterval) + (unitCrossInterval >0 ? (this.days % unitCrossInterval > 0? 1: 0) : 0);
-            int trainNbr = (unitCrossTrainList.size() / groups) + (unitCrossTrainList.size() % groups > 0? 1: 0);
-            for(int i = 0; i < groups; i++) {
-                resultRunPlanList.addAll(getRunPlanList(start.plusDays(i), unitCrossTrainList.subList(i * trainNbr, (i + 1) * trainNbr), runPlanList, planCrossId, times));
-            }
+
+            resultRunPlanList.addAll(generateRunPlan(start, unitCrossTrainList, baseRunPlanList, planCrossId, this.days));
 
             for(RunPlan runPlan: resultRunPlanList) {
                 try {
@@ -417,46 +419,37 @@ public class RunPlanService {
             }
         }
 
-        private List<RunPlan> getRunPlanList(LocalDate startDate, List<UnitCrossTrain> unitCrossTrainList,
-                                             List<RunPlan> baseRunPlanList, String planCrossId, int times) {
-            List<RunPlan> resultList = new ArrayList<RunPlan>();
-            for(int i = 0; i < times; i++) {
-                for(int m = 0; m < unitCrossTrainList.size(); m++) {
-                    UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(m);
-                    LocalDate unitCrossTrainStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
-                    LocalDate unitCrossTrainEndDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getEndDate());
-                    int interval = Days.daysBetween(unitCrossTrainStartDate, unitCrossTrainEndDate).getDays();
+        private List<RunPlan> generateRunPlan(LocalDate startDate, List<UnitCrossTrain> unitCrossTrainList,
+                                              List<RunPlan> baseRunPlanList, String planCrossId, int days) {
+            List<RunPlan> resultList = Lists.newArrayList();
+            // 计算结束时间
+            LocalDate lastDate = startDate.plusDays(days);
+            //
+            generate: {
+                for(int i = 0; true; i ++) {
+                    UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(i % unitCrossTrainList.size());
+                    LocalDate runDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
+                    LocalDate endDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getEndDate());
+                    int interval = Days.daysBetween(runDate, endDate).getDays();
+
                     for(RunPlan baseRunPlan: baseRunPlanList) {
-                        if(unitCrossTrain.getBaseTrainId().equals(baseRunPlan.getBaseTrainId())) {
+                        if (unitCrossTrain.getBaseTrainId().equals(baseRunPlan.getBaseTrainId())) {
                             try {
                                 RunPlan runPlan = (RunPlan) BeanUtils.cloneBean(baseRunPlan);
+                                // 克隆的对象里，列表没有克隆，重新new一个列表
                                 runPlan.setRunPlanStnList(new ArrayList<RunPlanStn>());
+                                resultList.add(runPlan);
 
+                                // 基本信息
                                 runPlan.setPlanTrainId(UUID.randomUUID().toString());
                                 runPlan.setPlanCrossId(planCrossId);
+                                runPlan.setBaseChartId(baseRunPlan.getBaseChartId());
+                                runPlan.setBaseTrainId(baseRunPlan.getBaseTrainId());
+
+                                // unitcross里的信息
                                 runPlan.setGroupSerialNbr(unitCrossTrain.getGroupSerialNbr());
                                 runPlan.setTrainSort(unitCrossTrain.getTrainSort());
                                 runPlan.setMarshallingName(unitCrossTrain.getMarshallingName());
-                                runPlan.setBaseChartId(baseRunPlan.getBaseChartId());
-                                runPlan.setBaseTrainId(baseRunPlan.getBaseTrainId());
-                                if(resultList.size() == 0) {
-                                    runPlan.setRunDate(startDate.toString("yyyyMMdd"));
-                                    runPlan.setStartDateTime(new Timestamp(simpleDateFormat.parse(startDate.toString("yyyy-MM-dd") + " " + runPlan.getStartTimeStr()).getTime()));
-                                    runPlan.setEndDateTime(new Timestamp(simpleDateFormat.parse(startDate.plusDays(interval).toString() + " " + runPlan.getEndTimeStr()).getTime()));
-                                } else {
-                                    RunPlan preRunPlan = resultList.get(resultList.size() - 1);
-                                    // 前后续车都有了，互基
-                                    preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
-                                    runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
-                                    LocalDate preRunPlanEndDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime()));
-
-                                    runPlan.setRunDate(preRunPlanEndDate.plusDays(runPlan.getDayGap()).toString("yyyyMMdd"));
-                                    runPlan.setStartDateTime(new Timestamp(simpleDateFormat.parse(preRunPlanEndDate.plusDays((runPlan.getDayGap())).toString("yyyy-MM-dd") + " " + runPlan.getStartTimeStr()).getTime()));
-                                    runPlan.setEndDateTime(new Timestamp(simpleDateFormat.parse(preRunPlanEndDate.plusDays((runPlan.getDayGap())).plusDays(interval).toString() + " " + runPlan.getEndTimeStr()).getTime()));
-
-                                }
-                                runPlan.setPlanTrainSign(runPlan.getRunDate() + "-" + runPlan.getTrainNbr() + "-" + runPlan.getStartStn() + "-" + runPlan.getStartTimeStr());
-                                // unitcross里的信息
                                 runPlan.setTrainNbr(unitCrossTrain.getTrainNbr());
                                 runPlan.setDayGap(unitCrossTrain.getDayGap());
                                 runPlan.setSpareFlag(unitCrossTrain.getSpareFlag());
@@ -467,7 +460,20 @@ public class RunPlanService {
                                 runPlan.setAppointWeek(unitCrossTrain.getAppointWeek());
                                 runPlan.setAppointDay(unitCrossTrain.getAppointDay());
 
+                                // 如果有前车，需要设置接续关系
+                                if(resultList.size() > unitCrossTrainList.size()) {
+                                    RunPlan preRunPlan = resultList.get(resultList.size() - unitCrossTrainList.size());
+                                    LocalDate preRunDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(preRunPlan.getRunDate());
+                                    runPlan.setRunDate(preRunDate.plusDays(interval).plusDays(unitCrossTrain.getDayGap()).toString("yyyyMMdd"));
+                                } else {
+                                    LocalDate unitCrossTrainStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
+                                    int initInterval = Days.daysBetween(unitCrossTrainStartDate, startDate).getDays();
+                                    runPlan.setRunDate(unitCrossTrainStartDate.plusDays(initInterval).plusDays(unitCrossTrain.getGroupGap()).toString("yyyyMMdd"));
+                                }
 
+                                runPlan.setPlanTrainSign(runPlan.getRunDate() + "-" + runPlan.getTrainNbr() + "-" + runPlan.getStartStn() + "-" + runPlan.getStartTimeStr());
+
+                                LocalDate runPlanDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate());
                                 // 计算计划从表信息
                                 List<RunPlanStn> runPlanStnList = baseRunPlan.getRunPlanStnList();
                                 for(RunPlanStn baseRunPlanStn: runPlanStnList) {
@@ -475,18 +481,23 @@ public class RunPlanService {
                                     runPlan.getRunPlanStnList().add(runPlanStn);
                                     runPlanStn.setPlanTrainId(runPlan.getPlanTrainId());
                                     runPlanStn.setPlanTrainStnId(UUID.randomUUID().toString());
-                                    runPlanStn.setArrTime(new Timestamp(simpleDateFormat.parse(startDate.plusDays(i * (interval + runPlan.getDayGap())).plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
-                                    runPlanStn.setDptTime(new Timestamp(simpleDateFormat.parse(startDate.plusDays(i * (interval + runPlan.getDayGap())).plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
+                                    runPlanStn.setArrTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
+                                    runPlanStn.setDptTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
                                     runPlanStn.setBaseArrTime(runPlanStn.getArrTime());
                                     runPlanStn.setBaseDptTime(runPlanStn.getDptTime());
                                 }
-                                resultList.add(runPlan);
+
+                                // 如果有一组车的开始日期到了计划最后日期，就停止生成
+                                if(lastDate.equals(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate()))) {
+                                    break generate;
+                                }
                                 break;
                             } catch (Exception e) {
-                                logger.error(e);
+                                logger.error("生成客运计划出错", e);
                             }
                         }
                     }
+
                 }
             }
             return resultList;
