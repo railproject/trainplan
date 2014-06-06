@@ -17,8 +17,8 @@ String basePath = request.getContextPath();
 
 
 function showMessage(message){
-	showErrorDialog("消息服务异常： 未知错误。");
-	alert(message);
+	showSuccessDialog(message);
+	//alert(message);
 };
 </script> 
 </head>

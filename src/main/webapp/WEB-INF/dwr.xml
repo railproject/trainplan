@@ -6,7 +6,10 @@
 	<allow>
 		 <create creator="new" javascript="PushMsg">  
                 <param name="class">org.railway.com.trainplan.service.message.SendMsgService</param>  
-         </create>  
+         </create>
+         <create creator="new" javascript="MsgConnection">  
+                <param name="class">org.railway.com.trainplan.service.message.MsgConnectionService</param>  
+         </create>
 	</allow>
 
 </dwr>

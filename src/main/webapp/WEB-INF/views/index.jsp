@@ -145,6 +145,15 @@
 	            <li><a href="${ctx}/default/transfer/planConstruction" class="menu_one" target="contentFrame"><i class="fa fa-truck"></i>货运列车 </a></li>
 	            <li><a href="http://10.1.191.135:7003/sgdd" target="_blank" class="menu_one"><i class="fa fa-gavel"></i>施工维修 </a></li>
 	            
+	            
+	            <!-- 消息测试  发布时需要注释 -->
+	            <li><a target="contentFrame" class="menu_one"><i class="fa fa-road"></i>消息测试<i class="fa fa-caret-down pull-right"></i> </a>
+	                <ul>
+	                    <li><a href="${ctx}/message/send" target="contentFrame"><i class="fa fa-pencil"></i>消息发送</a></li>
+	                    <li><a href="${ctx}/message/receive" target="contentFrame"><i class="fa fa-retweet"></i>接收消息</a></li>
+	                </ul>
+	            </li>
+	            
             </shiro:authenticated>
         </ul>
     </nav>

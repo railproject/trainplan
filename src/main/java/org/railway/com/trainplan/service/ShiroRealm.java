@@ -14,6 +14,7 @@ import org.railway.com.trainplan.repository.mybatis.RoleDao;
 import org.railway.com.trainplan.repository.mybatis.UserDao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +53,8 @@ public class ShiroRealm extends AuthorizingRealm {
         logger.info("Authorization::::" + shiroUser.getUsername());
         try {
             if(shiroUser != null){
-                int accId = shiroUser.getAccId();
-                List<Role> roleList = roleDao.getRoleByAccId(accId);
+            	List<Role> roleList = shiroUser.getRoleList();
+            	List<String> permissionList = shiroUser.getPermissionList();
                 if(roleList != null && !roleList.isEmpty()) {
                     SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
                     StringBuffer roleIdSbf = new StringBuffer();	//保存角色Id
@@ -63,13 +64,10 @@ public class ShiroRealm extends AuthorizingRealm {
                         logger.debug("添加角色::" + role.getName() + " TO 用户:::" + shiroUser.getName());
                     }
                     
-                    Map<String, String> queryMap = new HashMap<String, String>();
-                    queryMap.put("roleIds", roleIdSbf.substring(0, roleIdSbf.lastIndexOf(",")));
-                    List<Permission> permissionList = roleDao.getPermissionByRoleIds(queryMap);
                     if(permissionList != null && !permissionList.isEmpty()) {
-                    	for(Permission permission: permissionList) {
-                    		info.addStringPermission(permission.getKey());
-                    		logger.debug("添加权限::" + permission.getKey() + " TO 用户:::" + shiroUser.getName());
+                    	for(String permissionStr: permissionList) {
+                    		info.addStringPermission(permissionStr);
+                    		logger.debug("添加权限::" + permissionStr + " TO 用户:::" + shiroUser.getName());
                         }
                     }
                     
@@ -98,8 +96,34 @@ public class ShiroRealm extends AuthorizingRealm {
                 if (0 == user.getId() || "".equals(user.getUsername()) || "".equals(user.getName())) {
                     throw new DisabledAccountException();
                 }
-
+                
                 ShiroUser shiroUser = new ShiroUser(user.getUsername(), user.getName(), Integer.parseInt(logininfo[1]), user.getLjpym(), user.getLjjc(), user.getLjqc(), user.getDeptname());
+                
+                //添加角色列表
+                List<Role> roleList = roleDao.getRoleByAccId(shiroUser.getAccId());
+                shiroUser.setRoleList(roleList);
+                String roleIds = "";
+                StringBuffer roleIdSbf = new StringBuffer("");	//保存角色Id
+                for(Role role: roleList) {
+                    roleIdSbf.append(role.getId()).append(",");
+                }
+                if (roleIdSbf.indexOf(",") > -1) {
+                	roleIds = roleIdSbf.substring(0, roleIdSbf.lastIndexOf(","));
+                }
+                
+                //添加权限列表
+                List<String> permissionKeyList = new ArrayList<String>();
+                Map<String, String> queryMap = new HashMap<String, String>();
+                queryMap.put("roleIds", roleIds);
+                List<Permission> permissionList = roleDao.getPermissionByRoleIds(queryMap);
+                if(permissionList != null && !permissionList.isEmpty()) {
+                	for(Permission permission: permissionList) {
+                		permissionKeyList.add(permission.getKey());
+                    }
+                }
+                shiroUser.setPermissionList(permissionKeyList);
+                logger.info("权限列表::"+shiroUser.getPermissionList());
+                
                 return new SimpleAuthenticationInfo(shiroUser, user.getPassword(), getName());
             }
         }catch(Exception e) {
@@ -123,6 +147,10 @@ public class ShiroRealm extends AuthorizingRealm {
         private String bureauShortName;
 
         private String bureauFullName;
+        
+        private List<Role> roleList;
+        
+        private List<String> permissionList;
 
         public String getUsername() {
             return username;
@@ -179,8 +207,26 @@ public class ShiroRealm extends AuthorizingRealm {
         public void setDeptName(String deptName) {
             this.deptName = deptName;
         }
+        
 
-        public ShiroUser(String username, String name, int accId) {
+        public List<Role> getRoleList() {
+			return roleList;
+		}
+
+		public void setRoleList(List<Role> roleList) {
+			this.roleList = roleList;
+		}
+		
+
+		public List<String> getPermissionList() {
+			return permissionList;
+		}
+
+		public void setPermissionList(List<String> permissionList) {
+			this.permissionList = permissionList;
+		}
+
+		public ShiroUser(String username, String name, int accId) {
             this.username = username;
             this.name = name;
             this.accId = accId;

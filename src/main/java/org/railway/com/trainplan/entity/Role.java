@@ -1,9 +1,11 @@
 package org.railway.com.trainplan.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by star on 5/15/14.
  */
-public class Role {
+public class Role  implements Serializable{
 
     private int id;
 
