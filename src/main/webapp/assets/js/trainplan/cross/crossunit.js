@@ -11,7 +11,12 @@ var unitCreateFlags = [{"value": "1", "text": "已"},{"value": 0, "text": "未"}
 var highlingrules = [{"value": 1, "text": "平日"},{"value": 2, "text": "周末"},{"value": 3, "text": "高峰"}];
 var commonlinerules = [{"value": 1, "text": "每日"},{"value": 2, "text": "隔日"}];
  
+var _cross_role_key_pre = "JHPT.KYJH.JHBZ.";
 
+function hasActiveRole(bureau){
+	var roleKey = _cross_role_key_pre + bureau;
+	return all_role.indexOf(roleKey) > -1; 
+}
 
 var gloabBureaus = [];
 
@@ -466,22 +471,22 @@ function CrossModel() {
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){
 			console.log(crosses[i].checkFlag());
-			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){ 
-				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].unitCrossId;
-				delCrosses.push( crosses[i]);
-			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
+			if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
 				showErrorDialog("你选择了未审核的记录，请先审核");
 				return;
 			}else if(crosses[i].unitCreateFlag() == 1 && crosses[i].selected() == 1){
 				showErrorDialog("不能重复生成");
 				return;
+			}else if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += crosses[i].unitCrossId;
+				delCrosses.push( crosses[i]);
 			};
 		} 
 		if(crossIds == ""){
 			showErrorDialog("没有选中数据"); 
 			return;
-		}
+		} 
 		commonJsScreenLock();
 		 $.ajax({
 				url : "../cross/updateUnitCrossId",
@@ -490,7 +495,7 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					unitCrossIds : crossIds
+					unitCrossIds : crossIds 
 				}),
 				success : function(result) {     
 					if(result.code == 0){
@@ -509,6 +514,14 @@ function CrossModel() {
 					commonJsScreenUnLock();
 				}
 			}); 
+	};
+	
+	self.bureauChange = function(){
+		if(hasActiveRole(self.searchModle().bureau())){
+			self.searchModle().activeFlag(1);
+		}else{
+			self.searchModle().activeFlag(0);
+		}
 	};
 	
 	self.showTrains = function(row) {  
@@ -618,6 +631,9 @@ function CrossModel() {
 
 function searchModle(){
 	self = this;  
+	
+	self.activeFlag = ko.observable(0);
+	
 	self.bureaus = ko.observableArray();  
 	self.startBureaus = ko.observableArray();
 	

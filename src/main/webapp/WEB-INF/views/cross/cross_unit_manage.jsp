@@ -1,8 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<%@ page import="org.apache.shiro.SecurityUtils,org.railway.com.trainplan.service.ShiroRealm,java.util.List" %>
 <% 
-String basePath = request.getContextPath();
-System.out.println(basePath);
+	ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal(); 
+	List<String> permissionList = user.getPermissionList();
+	String userRolesString = "";
+	for(String p : permissionList){
+		userRolesString += userRolesString.equals("") ? p : "," + p;
+	} 
+	String basePath = request.getContextPath();
+	System.out.println(basePath);
 %>
 <!DOCTYPE HTML>
 <html lang="en">
@@ -52,6 +59,8 @@ System.out.println(basePath);
  </style>
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
+var all_role = "<%=userRolesString %>";
+console.log(all_role);
 </script>
  
 
@@ -88,7 +97,7 @@ var basePath = "<%=basePath %>";
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												车辆担当局:</label>
 											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width:60px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' "></select>
+												<select style="width:60px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
 											</div>
 											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 40px;">
 												始发路局:</label>
@@ -158,11 +167,11 @@ var basePath = "<%=basePath %>";
 										<div class="form-group"
 											style="margin-left: 20px;">
 											<a type="button" class="btn btn-success" data-toggle="modal"
-												data-target="#" id="btn_cross_sure" data-bind="click: checkCrossInfo">审核</a>
+												data-target="#" id="btn_cross_sure" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: checkCrossInfo">审核</a>
 											<a type="button" class="btn btn-success" data-toggle="modal"
-												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="click: deleteCrosses">删除</a>
+												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
 											<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;"
-												data-target="#" id="btn_cross_createCrossUnit" data-bind="click: createUnitCrossInfo">生成基本交路</a>
+												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成基本交路</a>
 											
 										</div>
 										<table class="table table-bordered table-striped table-hover" 
@@ -611,9 +620,9 @@ var basePath = "<%=basePath %>";
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 600px; height: 500px; padding: 10px"> 
+		style="width: 600px; height: 500px; padding: 10px;"> 
 			      <!--panle-heading-->
-			      <div class="panel-body" style="padding:10px;margin-right:10px">
+			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 			      	<div class="table-responsive" > 
 			          <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 					        <thead>

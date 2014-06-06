@@ -16,7 +16,15 @@ var commonlinerules = [{"value": "1", "text": "每日"},{"value": "2", "text": "
 
 var gloabBureaus = [];
 
+var _cross_role_key_pre = "JHPT.KYJH.JHBZ.";
+
+function hasActiveRole(bureau){
+	var roleKey = _cross_role_key_pre + bureau;
+	return all_role.indexOf(roleKey) > -1; 
+}
+
 function CrossModel() {
+	
 	var self = this;
 		//列车列表
 	self.trains = ko.observableArray();
@@ -107,7 +115,6 @@ function CrossModel() {
 		if(row.selected() == 0){
 			self.crossAllcheckBox(1);
 			$.each(self.crossRows.rows(), function(i, crossRow){ 
-				console.log("==="+ crossRow.selected());
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
 					return false;
@@ -181,7 +188,7 @@ function CrossModel() {
                 	$("#btn_fileToUpload").removeAttr("disabled");
                 },
                 error: function(result){
-                	showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+                	showErrorDialog("上传失败");
                 	$("#loading").hide();
                 	$("#btn_fileToUpload").removeAttr("disabled");
                 }
@@ -275,11 +282,11 @@ function CrossModel() {
 							self.searchModle().loadChats(result.data); 
 						} 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取方案列表失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取方案列表失败");
 				},
 				complete : function(){
 					initFlag++;
@@ -306,11 +313,11 @@ function CrossModel() {
 						});
 					} 
 				} else {
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					showErrorDialog("获取路局列表失败");
 				} 
 			},
 			error : function() {
-				showErrorDialog("接口调用失败");
+				showErrorDialog("获取路局列表失败");
 			},
 			complete : function(){
 				initFlag++;
@@ -465,19 +472,20 @@ function CrossModel() {
 		});
 		
 	};
-	
+	self.bureauChange = function(){ 
+		if(hasActiveRole(self.searchModle().bureau())){
+			self.searchModle().activeFlag(1);
+		}else{
+			self.searchModle().activeFlag(0);
+		}
+	};
 	self.createUnitCrossInfo = function(){ 
 		
 		var crossIds = "";
 		var delCrosses = [];
 		var crosses = self.crossRows.rows();
-		for(var i = 0; i < crosses.length; i++){
-			console.log(crosses[i].checkFlag());
-			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){ 
-				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].crossId;
-				delCrosses.push( crosses[i]);
-			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
+		for(var i = 0; i < crosses.length; i++){  
+			if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
 				showErrorDialog("你选择了未审核的记录，请先审核");
 				commonJsScreenUnLock();
 				return;
@@ -485,6 +493,10 @@ function CrossModel() {
 				showErrorDialog("不能重复生成");
 				commonJsScreenUnLock();
 				return;
+			}else if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){ 
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += crosses[i].crossId;
+				delCrosses.push( crosses[i]); 
 			};
 		} 
 		if(crossIds == ""){
@@ -622,8 +634,14 @@ function CrossModel() {
 
 function searchModle(){
 	self = this;  
+	/**
+	 * 权限控制
+	 */
+	self.activeFlag = ko.observable(0);
+	
 	self.bureaus = ko.observableArray();  
 	self.startBureaus = ko.observableArray();
+	
 	
 	self.charts = ko.observableArray();
 	 
