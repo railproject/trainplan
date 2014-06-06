@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Monitored
 public class RemoteService {
 	private static final Logger logger = Logger.getLogger(RemoteService.class);
-	//TODO 取不出来
+
 	@Value("#{restConfig['SERVICE_URL']}")
     private String restUrl;
 	@Autowired
@@ -42,7 +42,7 @@ public class RemoteService {
 
 		List<SchemeDto> list = new ArrayList<SchemeDto>();
 		Map response = null;
-		System.err.println("restUrl==" + restUrl);
+		
 		response = RestClientUtils.post(restUrl
 				+ Constants.GET_SCHEME_LIST, new HashMap(), Map.class);
 		logger.info("getSchemeLis--response= " + response);
@@ -84,7 +84,7 @@ public class RemoteService {
 		// 访问后台接口
 		Map response = RestClientUtils.post(restUrl
 				+ Constants.GET_TRAINLINE_TEMPLATES, request, Map.class);
-		System.err.println("访问接口所有时间：" + (System.currentTimeMillis() - starttime)/1000);
+		logger.debug("访问接口所有时间：" + (System.currentTimeMillis() - starttime)/1000);
 		//System.err.println("response==" +response );
 		logger.info("getTrainLineInfoFromSchemeId--response--code==" + response.get("code"));
 		logger.info("getTrainLineInfoFromSchemeId--response--dataSize==" + response.get("dataSize"));
@@ -207,11 +207,11 @@ public class RemoteService {
 		request.put("code",code);
 		request.put("sourceTime",sourceTime );
 		request.put("targetTime", targetTime);
-		System.err.println("getTrainLinesWithDay---request==" + request);
+		logger.debug("getTrainLinesWithDay---request==" + request);
 		//调用后台的接口
 		Map response = RestClientUtils.post(restUrl
 				+ Constants.GET_TRAINLINS, request, Map.class);
-		System.err.println("getTrainLinesWithDay---response==" + response);
+		logger.debug("getTrainLinesWithDay---response==" + response);
 		//解析后台报文
 		if (response != null && response.size() > 0){
 			String codeMessage = StringUtil.objToStr(response.get("code"));
@@ -234,16 +234,7 @@ public class RemoteService {
 				    		List<Map<String,Object>> listDtos =  (List<Map<String,Object>>)stationMap.get("planBureauTsDtos");
 				    		if(listDtos != null && listDtos.size() > 0){
 				    			for(Map<String,Object> subMap : listDtos){
-				    				/**
-				    				 * 后台返回的数据
-				    				 *  {
-                                         "id": "客运图定",
-                                         "sourceTargetTrainlineCounts": 0,
-                                         "sourceSurrenderTrainlineCounts": 0,
-                                         "accessTargetTrainlineCounts": 0,
-                                         "accessSurrenderTrainlineCounts": 0
-                                        }
-				    				 */
+				    				
 				    				String id = StringUtil.objToStr(subMap.get("id"));
 				    				if("客运图定".equals(id)){
 				    					PlanBureauTsDto subDto = new PlanBureauTsDto();
@@ -261,7 +252,7 @@ public class RemoteService {
 				}
 			}
 		}
-		System.err.println("getTrainLinesWithDay---returnList==="+returnList);
+		logger.debug("getTrainLinesWithDay---returnList==="+returnList);
 		return returnList ;
 	}
 	
@@ -388,10 +379,7 @@ public class RemoteService {
 	private TrainlineTemplateSubDto setSubDtoValue(Map<String, Object> map,
 			String stationType) {
 		TrainlineTemplateSubDto subDto = new TrainlineTemplateSubDto();
-		/**
-		 * String bureauName = StringUtil.objToStr(targetItemMap.get("bureauName"));
-								dto.setEndBureauFull(bureauName ==null? "":bureauName);
-		 */
+	
 		subDto.setName(StringUtil.objToStr(map.get("name")));
 		
 		

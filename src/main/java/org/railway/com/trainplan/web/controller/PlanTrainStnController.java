@@ -219,7 +219,7 @@ public class PlanTrainStnController {
 	@ResponseBody
 	@RequestMapping(value = "/plan/batchHandleTrainLines", method = RequestMethod.POST)
 	public Result batchHandleTrainLines(@RequestBody Map<String,Object> reqMap){
-		System.err.println("batchHandleTrainLines~~~~~~ reqMap="+reqMap);
+		logger.debug("batchHandleTrainLines~~~~~~ reqMap="+reqMap);
 		Result result  = new Result();
 		try{
 		String runDate = StringUtil.objToStr(reqMap.get("runDate"));
@@ -232,7 +232,7 @@ public class PlanTrainStnController {
 			tempDate = DateUtil.format(DateUtil.parse(tempDate), "yyyyMMdd");
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull);
 			String jsonStr = combinationMessage(listDto);
-			System.err.println("jsonStr====" + jsonStr);
+			logger.debug("jsonStr====" + jsonStr);
 			//向rabbit发送消息
 			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
 		}
@@ -258,7 +258,7 @@ public class PlanTrainStnController {
 		try{
 			
 			String runDate = DateUtil.format(DateUtil.parse(StringUtil.objToStr(reqMap.get("runDate"))), "yyyyMMdd");
-			System.err.println("runDate==" + runDate);
+			logger.debug("runDate==" + runDate);
 			//路局全称
 			String startBureauFull  = StringUtil.objToStr(reqMap.get("startBureauFull"));
 			
@@ -419,7 +419,7 @@ public class PlanTrainStnController {
 			head.put("user", "test");
 			json.put("head", head);
 			json.put("param", jsonArray);
-			System.err.println("size==" + listDto.size());
+			
 			return json.toString();
 	}
 	
