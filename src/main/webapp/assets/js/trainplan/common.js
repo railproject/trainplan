@@ -325,11 +325,18 @@ function showErrorDialog(errorMessage) {
 
 
 function showSuccessDialog(successMessage) {
-//	$("#common_successModalMessage_text").text(successMessage);
-//	$("#btn_common_successMessageModal").click();
-
 	_common_div_success_message_text = successMessage;
 	$("#common_div_success_message").click();
+};
+
+
+/**
+ * 显示警告消息提示框
+ * @param warningMessage
+ */
+function showWarningDialog(warningMessage) {
+	_common_div_warning_message_text = warningMessage;
+	$("#common_div_warning_message").click();
 };
 
 

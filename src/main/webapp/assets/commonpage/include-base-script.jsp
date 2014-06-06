@@ -22,7 +22,7 @@ String basePath = request.getContextPath();
 <!-- ================ 		项目公用js		======================== -->
 <!-- common.security.js 提供1.禁止直接访问非index页面功能 2.js获取项目路径 -->
 <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script>
-<!-- 提供 消息提示框方法 -->
+<!-- 提供 消息提示框方法   依赖于jquery.gritter.min.js -->
 <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/util.js"></script>
 
