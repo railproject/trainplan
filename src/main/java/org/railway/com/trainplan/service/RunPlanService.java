@@ -406,30 +406,37 @@ public class RunPlanService {
             List<RunPlan> resultRunPlanList = Lists.newArrayList();
             LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(startDate);
 
-            LocalDate crossStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.planCross.getCrossStartDate());
-            LocalDate crossEndDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.planCross.getCrossEndDate());
-            int crossInterval = Days.daysBetween(crossStartDate, crossEndDate).getDays();
+            try {
+                resultRunPlanList.addAll(generateRunPlan(start, unitCrossTrainList, baseRunPlanList, planCrossId, this.planCross.getGroupTotalNbr(), this.days));
 
-            resultRunPlanList.addAll(generateRunPlan(start, unitCrossTrainList, baseRunPlanList, planCrossId, crossInterval, this.days));
-
-            for(RunPlan runPlan: resultRunPlanList) {
-                try {
-                    List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
-                    runPlanStnDao.addRunPlanStn(runPlanStnList);
-                    runPlanDao.addRunPlan(runPlan);
-                } catch (Exception e) {
-                    logger.error(e);
+                for(RunPlan runPlan: resultRunPlanList) {
+                    try {
+                        List<RunPlanStn> runPlanStnList = runPlan.getRunPlanStnList();
+                        runPlanStnDao.addRunPlanStn(runPlanStnList);
+                        runPlanDao.addRunPlan(runPlan);
+                    } catch (Exception e) {
+                        logger.error(e);
+                    }
                 }
+            } catch (WrongDataException e) {
+                logger.error("数据错误：plancross_id = " + this.planCross.getPlanCrossId(), e);
             }
         }
 
         private List<RunPlan> generateRunPlan(LocalDate startDate, List<UnitCrossTrain> unitCrossTrainList,
-                                              List<RunPlan> baseRunPlanList, String planCrossId, int crossIntervel, int days) {
+                                              List<RunPlan> baseRunPlanList, String planCrossId, int totalGroupNbr, int days) throws WrongDataException {
+            // 按组别保存最后一个计划
             Map<Integer, RunPlan> lastRunPlans = Maps.newHashMap();
+            // 用来保存最后一个交路起点
+            RunPlan lastStartPoint;
+            // 计算每组有几个车次
+            if(unitCrossTrainList.size() % totalGroupNbr != 0) {
+                throw new WrongDataException("交路数据错误，每组车数量不一样");
+            }
+            int trainCount = unitCrossTrainList.size() / totalGroupNbr;
             List<RunPlan> resultList = Lists.newArrayList();
             // 计算结束时间
             LocalDate lastDate = startDate.plusDays(days);
-            int preGroup = 0;
             // 开始生成
             generate: {
                 for(int i = 0; true; i ++) {
@@ -503,12 +510,16 @@ public class RunPlanService {
                                     runPlanStn.setBaseDptTime(runPlanStn.getDptTime());
                                 }
 
+                                // 保存当前处理组的第一个车
+                                if(i % trainCount != 0) {
+                                    lastStartPoint = runPlan;
+                                }
                                 // 保存每组车的最后一个车
                                 lastRunPlans.put(runPlan.getGroupSerialNbr(), runPlan);
                                 resultList.add(runPlan);
 
-                                // 如果有一组车的开始日期到了计划最后日期，就停止生成
-                                if(lastDate.equals(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate()))) {
+                                // 如果有一组车的第一辆车的开始日期到了计划最后日期，就停止生成
+                                if(((i % trainCount) == (trainCount - 1)) && (lastDate.equals(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate())))) {
                                     break generate;
                                 }
                                 break;
