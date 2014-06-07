@@ -172,7 +172,9 @@ public class AuditController {
 
     @RequestMapping(value = "runplan/generate/{date}/{days}")
     public ResponseEntity<Integer> generateRunPlan(@PathVariable String date, @PathVariable int days) {
-        int i = runPlanService.generateRunPlan(null, date, days);
+        List<String> list = Lists.newArrayList();
+        list.add("00057123-ffbb-4483-8682-5d0693e8cd03");
+        int i = runPlanService.generateRunPlan(list, date, days);
         return new ResponseEntity<Integer>(i, HttpStatus.OK);
     }
 
