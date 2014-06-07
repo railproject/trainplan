@@ -462,7 +462,7 @@ public class RunPlanService {
                                 runPlan.setAppointDay(unitCrossTrain.getAppointDay());
 
                                 // 如果有前车，需要设置接续关系
-                                if(resultList.size() > unitCrossTrainList.size()) {
+                                if(resultList.size() > (unitCrossTrainList.size() + 1)) {
                                     RunPlan preRunPlan = resultList.get(resultList.size() - unitCrossTrainList.size());
                                     LocalDate preRunDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(preRunPlan.getRunDate());
                                     runPlan.setRunDate(preRunDate.plusDays(interval).plusDays(unitCrossTrain.getDayGap()).toString("yyyyMMdd"));
