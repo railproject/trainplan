@@ -45,6 +45,7 @@ import org.railway.com.trainplan.entity.CrossTrainInfo;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.SubCrossInfo;
+import org.railway.com.trainplan.entity.TrainLineInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainSubInfo;
 import org.railway.com.trainplan.entity.UnitCrossTrainSubInfoTime;
@@ -627,6 +628,27 @@ public class CrossService{
 		paramMap.put("baseCrossId", crossId);
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_CROSS_TRAININFO_FOR_CROSSID, paramMap);
 	}
+	
+	/**
+	 * 通过crossid查询crosstrainInfo信息
+	 * @param unitCrossId
+	 * @return
+	 */
+	public List<TrainLineInfo> getTrainPlanLineInfoForPlanCrossId(String planCrossId){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("planCrossId", planCrossId);
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINPLANLINE_INFO_FOR_PLANCROSSID, paramMap);
+	}
+	
+	/**
+	 * 通过planCrossId查询起始站
+	 * @param planCrossId
+	 * @return
+	 */
+	public List<String> getStationListForPlanCrossId(String planCrossId){
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_STATIONLIST_FOR_PLANCROSSID, planCrossId);
+	}
+	
 	
 	/**
 	 * 根据baseCrossid查询crossName等信息

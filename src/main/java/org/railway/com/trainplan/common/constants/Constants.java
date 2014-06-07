@@ -138,8 +138,10 @@ public class Constants {
     //更新base_cross的creat_unit_time  
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossUnitCreateTime";
     public static final String CROSSDAO_UPDATE_Unit_CROSS_CREATETIME = "crossDao.updateUnitCrossUnitCreateTime";
-    
-    
+    //根据plan_cross_id查询运行线
+    public static final String CROSSDAO_GET_TRAINPLANLINE_INFO_FOR_PLANCROSSID="crossDao.getTrainPlanLineInfoForPlanCrossId";
+    //通过plan_cross_id查询经由的始发站和终到站 getStationListForPlanCrossId
+    public static final String CROSSDAO_GET_STATIONLIST_FOR_PLANCROSSID = "crossDao.getStationListForPlanCrossId";
     //更新base_cross的check_time   
     public static final String CROSSDAO_UPDATE_UNIT_CROSS_CHECKTIME = "crossDao.updateUnitCrossCheckTime";
     //根据crossids批量删除base_cross表中数据

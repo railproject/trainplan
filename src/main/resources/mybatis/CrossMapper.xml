@@ -245,6 +245,16 @@
         from base_cross where BASE_CROSS_ID=#{crossId}
     </select>
 
+    <select id="getStationListForPlanCrossId" parameterType="String" resultType="String">
+    select b.START_STN STN from PLAN_TRAIN b,
+(select a.PLAN_TRAIN_ID from PLAN_TRAIN a where a.PLAN_CROSS_ID =#{planCrossId} group by a.PLAN_TRAIN_ID) a
+where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID
+UNION
+select b.END_STN STN from PLAN_TRAIN b,
+(select a.PLAN_TRAIN_ID from PLAN_TRAIN a where a.PLAN_CROSS_ID =#{planCrossId} group by a.PLAN_TRAIN_ID) a
+where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID
+    </select>
+    
     <select id="getUnitCrossInfoForCrossId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
         select
         UNIT_CROSS_ID as unitCrossId,
@@ -341,6 +351,7 @@
 
         from unit_cross where UNIT_CROSS_ID=#{unitCrossId}
     </select>
+    
    	<resultMap id="crossTrain" type="org.railway.com.trainplan.entity.BaseCrossTrainInfo">
 	        <id column="base_cross_id" property="baseCrossId"/>
 	        <result column="cross_start_date" property="crossStartDate"/>
@@ -438,10 +449,44 @@ BASE_CROSS_TRAIN B,
 BASE_CROSS A
 WHERE B.BASE_CROSS_ID = A.BASE_CROSS_ID AND B.BASE_TRAIN_ID = C.BASE_TRAIN_ID AND A.BASE_CROSS_ID =#{baseCrossId}
 ORDER BY A.BASE_CROSS_ID,B.TRAIN_SORT,C.STN_SORT
-  
-  
-  
+
   </select>
+
+	<resultMap id="trainPlanLine" type="org.railway.com.trainplan.entity.TrainLineInfo">
+	        <id column="groupSerialNbr" property="groupSerialNbr"/>  
+	        <collection property="trainSubInfoList" resultMap="trainSubInfo"/>
+	    </resultMap>
+	
+	    <resultMap id="trainSubInfo" type="org.railway.com.trainplan.entity.TrainLineSubInfo">
+	        <id column="planTrainId" property="planTrainId"/>
+	        <result column="trainNbr" property="trainNbr"/>
+	        <result column="trainSort" property="trainSort"/>
+	        <result column="startTime" property="startTime"/>
+	        <result column="endTime" property="endTime"/>
+	        <result column="startStn" property="startStn"/>
+	        <result column="endStn" property="endStn"/>
+    </resultMap>
+
+ <select id="getTrainPlanLineInfoForPlanCrossId"  parameterType="map" resultMap="trainPlanLine">
+ select plan_cross_id as planCrossId,
+
+group_serial_nbr as groupSerialNbr,
+train_nbr as trainNbr,
+
+train_sort as trainSort,
+to_char(start_time,'yyyy-MM-dd hh24:mi:SS') as startTime,
+to_char(end_time,'yyyy-MM-dd hh24:mi:SS') as endTime,
+start_stn as startStn,
+end_stn as endStn,
+a.plan_train_id as planTrainId,
+pre_train_id as preTrainId,
+next_train_id as nextTrainId
+from PLAN_TRAIN a
+where 1=1 start with a.ROWID in(select min(ROWID) startTime from PLAN_TRAIN b 
+where  b.plan_cross_id = #{planCrossId} group by b.GROUP_SERIAL_NBR) connect by prior a.PLAN_TRAIN_ID = a.PRE_TRAIN_ID
+ 
+ 
+ </select>
  
     <select id="getUnitCrossTrainInfoForUnitCrossid" parameterType="map" resultMap="unitCrossTrain">
    SELECT distinct

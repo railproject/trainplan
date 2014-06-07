@@ -10,12 +10,13 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.SchemeInfo;
-import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
+import org.railway.com.trainplan.entity.TrainLineInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.CrossService;
@@ -28,7 +29,6 @@ import org.railway.com.trainplan.service.TrainTimeService;
 import org.railway.com.trainplan.service.TreadService;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
-import org.railway.com.trainplan.service.dto.SchemeDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,9 +185,17 @@ public class PlanTrainStnController {
 		result.setData(list);*/
 		
 		
-		String unitCrossId = StringUtil.objToStr(reqMap.get("unitCrossId"));
+		/*String unitCrossId = StringUtil.objToStr(reqMap.get("unitCrossId"));
 		List<UnitCrossTrainInfo>  list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
+		result.setData(list);*/
+		
+		String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
+		List<TrainLineInfo>  list = crossService.getTrainPlanLineInfoForPlanCrossId(planCrossId);
 		result.setData(list);
+		
+		
+		//List<String> list = crossService.getStationListForPlanCrossId(planCrossId);
+		//result.setData(list);
 		return result;
 	}
 	
@@ -355,6 +363,7 @@ public class PlanTrainStnController {
 		
 		Result result = new Result();
 		 final String startDate = StringUtil.objToStr(reqMap.get("startDate"));
+		
 		 final String dayCount = StringUtil.objToStr(reqMap.get("dayCount"));
 		 final String schemeId = StringUtil.objToStr(reqMap.get("schemeId"));
 		logger.info("[importTainPlan],param[startDate=" + startDate + ",dayCount="+ dayCount +",schemeId=" + schemeId );
@@ -367,9 +376,9 @@ public class PlanTrainStnController {
 		   return result;
 		}
 		try{
-			
+			 DateTime dateTime = new DateTime(startDate);  
 			//调入后台导入数据
-			planTrainStnService.importTainPlan(schemeId, startDate, dayCount);	
+			planTrainStnService.importTainPlan(schemeId, dateTime.toString("yyyy-MM-dd"), dayCount);	
 			
 		}catch(Exception e){
 			e.printStackTrace();
