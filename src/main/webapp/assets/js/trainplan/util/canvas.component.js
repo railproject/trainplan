@@ -79,9 +79,11 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	
 	
 	/**
-	 * 获取站点y标高度 stepY倍数
+	 * 获取站点在经由站数组中的index
 	 * private
 	 * @param stnName 站点名称
+	 * 
+	 * return -1时表示经由站中不存在该站名
 	 */
 	function getStnArcYIndex(stnName) {
 		for(var i=0, _len=_stnArray.length; i <_len; i++) {
@@ -89,6 +91,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				return i;
 			}
 		}
+		
+		return -1;
 	};
 	
 	
@@ -631,7 +635,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	
 	
 	/**
-	 * 交路接续关系线、列车起止站标记  y坐标方向
+	 * 列车起止站标记  y坐标方向
 	 * 规则说明：当stnName = 交路经由站数组中第一个站时，y向上
 	 * 		当stnName = 交路经由站数组中最后一个站时，y向下
 	 * private
@@ -652,14 +656,61 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	
 	
 	/**
+	 * 交路接续关系线 y坐标方向
+	 * 
+	 * @param jxgxObj
+	 * 		{
+	 * 			fromStnName:"北京西",			//前车接续站
+	 * 			fromTime:"2014-05-11 21:07",//前车接续站到达时间
+	 * 			fromStartStnName:"成都",		//前车始发站
+	 * 			toStnName:"北京西",			//后车接续站
+	 * 			toTime:"2014-05-12 08:35",	//后车接续站出发时间
+	 * 			toEndStnName:"成都"			//后车终到站
+	 *		}
+	    	        
+	 * 规则说明：if当接续站 = 交路经由站数组中第一个站时，y向上
+	 * 		else if 当接续站 = 交路经由站数组中最后一个站时，y向下
+	 * 		else if 前车始发站在经由站数组中index <= 接续站在经由站数组中index && 后车终到站在经由站数组中index <= 接续站在经由站数组中index，y向下
+	 * 		else if 前车始发站在经由站数组中index > 接续站在经由站数组中index && 后车终到站在经由站数组中index > 接续站在经由站数组中index，y向上
+	 * 		else y向上
+	 * 
+	 * private
+	 */
+	function getDirectionYByJxgx(jxgxObj) {
+		var _len = _stnArray.length;
+		if (_len == 0) return "";	//经由站为空
+		
+		var jxzIndex = getStnArcYIndex(jxgxObj.fromStnName);				//接续站在经由数组中的index
+		var fromStartStnIndex = getStnArcYIndex(jxgxObj.fromStartStnName);	//前车始发站在经由站数组中index
+		var toEndStnIndex = getStnArcYIndex(jxgxObj.toEndStnName);			//后车终到站在经由站数组中index
+		
+
+		if(_stnArray[0].stnName == jxgxObj.fromStnName) {
+			return "up";//up
+		} else if(_stnArray[_len-1].stnName == jxgxObj.fromStnName) {
+			return "down";//down
+		} else if(fromStartStnIndex <= jxzIndex && toEndStnIndex<=jxzIndex){
+			return "down";//down
+		} else if(fromStartStnIndex > jxzIndex && toEndStnIndex > jxzIndex){
+			return "up";
+		} else if(fromStartStnIndex > jxzIndex && toEndStnIndex < jxzIndex){
+			return "up";
+		} else if(fromStartStnIndex < jxzIndex && toEndStnIndex > jxzIndex){
+			return "down";
+		}
+		return "";
+	};
+	
+	
+	/**
 	 * 绘制交路接续关系
 	 * public
 	 * @param color
 	 * @param 接续关系数组 
 	 * 			[
-	    	        {fromStnName:"北京西",fromRunDate:"20140511",fromTime:"21:07",toStnName:"北京西",toRunDate:"20140512",toTime:"08:35"},
-	    	        {fromStnName:"成都",fromRunDate:"20140513",fromTime:"12:30",toStnName:"成都",toRunDate:"20140513",toTime:"19:18"},
-	    	        {fromStnName:"北京西",fromRunDate:"20140514",fromTime:"21:07",toStnName:"北京西",toRunDate:"20140515",toTime:"08:35"}
+	    	        {fromStnName:"北京西",fromTime:"2014-05-11 21:07",fromStartStnName:"成都",toStnName:"北京西",toTime:"2014-05-12 08:35",toEndStnName:"成都"},
+	    	        {fromStnName:"成都",fromTime:"2014-05-13 12:30",fromStartStnName:"北京西",toStnName:"成都",toTime:"2014-05-13 19:18",toEndStnName:"北京西"},
+	    	        {fromStnName:"北京西",fromTime:"2014-05-13 21:07",fromStartStnName:"成都",toStnName:"北京西",toTime:"2014-05-14 08:35",toEndStnName:"成都"}
 				]
 	 */
 	this.drawJxgx = function(colorParam, jxgxArray) {
@@ -673,7 +724,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	    	_context.beginPath();
 			
 			var jxgxObj = jxgxArray[i];
-			var directionY = getDirectionY(jxgxObj.fromStnName);
+			var directionY = getDirectionYByJxgx(jxgxObj);
 			if ("up" == directionY) {
 				offsetY = -10;
 			} else if ("down" == directionY) {
