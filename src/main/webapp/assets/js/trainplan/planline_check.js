@@ -231,15 +231,15 @@ function ParamModel(tableModel) {
         autoclose: true,
         todayBtn: 'linked',
         language: 'zh-CN'}).on('changeDate', function (ev) {
-        tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
-        self.loadPies(moment(ev.date).format("YYYYMMDD"));
+            tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
+            self.loadPies(moment(ev.date).format("YYYYMMDD"));
     });;
     var date = $.url().param("date");
     if (date) {
         $("#date_selector").val(date);
     } else {
         $("#date_selector").datepicker('setValue', new Date());
-    }
+    };
 
     self.loadPies = function(date) {
         // 统计图
@@ -265,8 +265,6 @@ function ParamModel(tableModel) {
         }).always(function() {
 
         })
-
-
 
         $.ajax({
             url: "audit/plan/chart/planline/" + date,
@@ -339,6 +337,8 @@ function ParamModel(tableModel) {
             })
         }
     }
+
+    self.loadPies(moment($("#date_selector").val()).format("YYYYMMDD"));
 
 }
 
