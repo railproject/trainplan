@@ -175,4 +175,50 @@ public class AuditController {
         int i = runPlanService.generateRunPlan(null, date, days);
         return new ResponseEntity<Integer>(i, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "plan/chart/lev1check/{date}", method = RequestMethod.GET)
+    public ResponseEntity<List<ChartDto>> getLev1CheckPie(@PathVariable String date) {
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        Map<String, Object> params = Maps.newHashMap();
+        params.put("date", date);
+        params.put("bureau", user.getBureauShortName());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, Object> result = chartService.getLev1CheckCount(params);
+        List<ChartDto> charts = Lists.newArrayList();
+
+        ChartDto chart1 = new ChartDto();
+        chart1.setName("已审核");
+        chart1.setCount(MapUtils.getIntValue(result, "CHECKED", 0));
+        charts.add(chart1);
+
+        ChartDto chart2 = new ChartDto();
+        chart2.setName("未审核");
+        chart2.setCount(MapUtils.getIntValue(result, "UNCHECKED", 0));
+        charts.add(chart2);
+        return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "plan/chart/lev2check/{date}", method = RequestMethod.GET)
+    public ResponseEntity<List<ChartDto>> getLev2CheckPie(@PathVariable String date) {
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        Map<String, Object> params = Maps.newHashMap();
+        params.put("date", date);
+        params.put("bureau", user.getBureauShortName());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, Object> result = chartService.getLev2CheckCount(params);
+        List<ChartDto> charts = Lists.newArrayList();
+
+        ChartDto chart1 = new ChartDto();
+        chart1.setName("已审核");
+        chart1.setCount(MapUtils.getIntValue(result, "CHECKED", 0));
+        charts.add(chart1);
+
+        ChartDto chart2 = new ChartDto();
+        chart2.setName("未审核");
+        chart2.setCount(MapUtils.getIntValue(result, "UNCHECKED", 0));
+        charts.add(chart2);
+        return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
+    }
 }

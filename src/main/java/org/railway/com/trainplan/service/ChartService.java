@@ -32,4 +32,14 @@ public class ChartService {
         logger.debug("getPlanLineCount::");
         return chartDao.getPlanLineCount(map);
     }
+
+    public Map<String, Object> getLev1CheckCount(Map<String, Object> map) {
+        logger.debug("getPlanTypeChart::::");
+        return chartDao.getLev1CheckCount(map);
+    }
+
+    public Map<String, Object> getLev2CheckCount(Map<String, Object> map) {
+        logger.debug("getPlanLineCount::");
+        return chartDao.getLev2CheckCount(map);
+    }
 }
