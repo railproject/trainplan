@@ -21,6 +21,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
+import org.joda.time.format.DateTimeFormat;
 
 
 public class DateUtil {
@@ -398,6 +399,15 @@ public class DateUtil {
 		String s4 = dateTime.toString("yyyy/MM/dd HH:mm ZZZZ");  
 		String s5 = dateTime.toString("yyyy/MM/dd HH:mm Z");  
 		String s6 = dateTime.toString("yyyy-MM-dd",Locale.CHINESE);
+		
+//		DateTime dd = new DateTime("2014-06-07 10:20:30");
+		LocalDate da = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").parseLocalDate("2014-06-07 17:55:00");
+		
+		//System.err.println("" + da.toString("yyyy-MM-dd"));
+		
+		//System.err.println(format(parseDate("2014-06-07 10:20:30"),"yyyy-MM-dd"));
+		System.err.println(da.toString("yyyy-MM-dd"));
+		
 	}
 		
 		

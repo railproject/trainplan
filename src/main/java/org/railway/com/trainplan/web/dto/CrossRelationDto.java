@@ -15,6 +15,22 @@ public class CrossRelationDto {
 	private String fromTime;
 	private String toStnName;
 	private String toTime;
+	private String fromStartStnName;
+	private String toEndStnName;
+	
+	
+	public String getFromStartStnName() {
+		return fromStartStnName;
+	}
+	public void setFromStartStnName(String fromStartStnName) {
+		this.fromStartStnName = fromStartStnName;
+	}
+	public String getToEndStnName() {
+		return toEndStnName;
+	}
+	public void setToEndStnName(String toEndStnName) {
+		this.toEndStnName = toEndStnName;
+	}
 	public String getFromStnName() {
 		return fromStnName;
 	}
