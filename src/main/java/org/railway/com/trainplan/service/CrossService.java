@@ -152,7 +152,7 @@ public class CrossService{
 		}
 		reqMap.put("unitCrossIds", bf.toString());
 		
-		
+		logger.info("update unit createTime :" + reqMap);
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_Unit_CROSS_CREATETIME, reqMap);
 	}
 	
@@ -355,9 +355,12 @@ public class CrossService{
 	private List<CrossTrainInfo> prepareUnitCrossTrainInfo(List<CrossTrainInfo> crossTrainInfoList,List<CrossInfo> crossInfoList, String unitCrossId) throws Exception{
 		List<CrossTrainInfo> list = new ArrayList<CrossTrainInfo>();
 		if(crossTrainInfoList != null && crossTrainInfoList.size() > 0){
-			for(CrossTrainInfo crossTrainInfo : crossTrainInfoList){ 
+			for(int i = 0; i < crossTrainInfoList.size(); i++){ 
 				if(crossInfoList != null && crossInfoList.size() > 0){
-					for(CrossInfo crossInfo : crossInfoList){
+					for(int j = 0; j < crossInfoList.size(); j++){
+						CrossInfo crossInfo = crossInfoList.get(j);
+						CrossTrainInfo crossTrainInfo = crossTrainInfoList.get(i); 
+						
 						CrossTrainInfo temp = new CrossTrainInfo();
 						BeanUtils.copyProperties(temp, crossTrainInfo);
 						temp.setUnitCrossId(unitCrossId); 
@@ -366,20 +369,25 @@ public class CrossService{
 						
 						Date date = dateFormat.parse(crossTrainInfo.getRunDate());   
 					    Calendar calendar = new GregorianCalendar();
-					    calendar.setTime(date);
+					    calendar.setTime(date); 
+					    //以后必须要根据开行规律来生成这个时间
+					    //
 					    calendar.add(Calendar.DATE, crossInfo.getGroupSerialNbr() - 1);
 					   
 					    temp.setRunDate(dateFormat.format(calendar.getTime()));
 					    
-					    date = dateFormat.parse(crossTrainInfo.getEndDate());   
-					    
+					    date = dateFormat.parse(crossTrainInfo.getEndDate());  
 					    calendar = new GregorianCalendar();
 					    calendar.setTime(date);
 					    calendar.add(Calendar.DATE, crossInfo.getGroupSerialNbr() - 1);
 					    
-					    temp.setEndDate(dateFormat.format(calendar.getTime())); 
-					    
-					   
+					    temp.setEndDate(dateFormat.format(calendar.getTime()));  
+			    	    if(j == 0){ 
+				    		temp.setGroupGap(0); 
+					    }else{  
+				    		int groupGap = daysBetween(dateFormat.parse(getPreCrossInfo(crossInfoList, crossInfo).getCrossStartDate()), dateFormat.parse(crossInfo.getCrossStartDate()));
+							temp.setGroupGap(groupGap); 
+					    } 
 						//设置主键
 						temp.setUnitCrossTrainId(UUID.randomUUID().toString());
 						list.add(temp);
@@ -391,13 +399,22 @@ public class CrossService{
 		
 		return list;
 	}
+	
+	private CrossInfo getPreCrossInfo(List<CrossInfo> crossInfoList , CrossInfo currCross){ 
+		for(CrossInfo crossInfo : crossInfoList){
+			if(crossInfo.getGroupSerialNbr() == currCross.getGroupSerialNbr() - 1){
+				return crossInfo;
+			}
+		}
+		return null; 
+	}
 	/**
 	 * 准备unit_cross表中数据
 	 * @param crossInfo
 	 * @return
 	 */
 	private List<CrossInfo>  prepareUnitCrossInfo(CrossInfo crossInfo) throws Exception{
-		List<CrossInfo> list = new ArrayList<CrossInfo>();
+		List<CrossInfo> list = new LinkedList<CrossInfo>();
 		//组数（需几组车底担当）
 		int groupTotalNbr = crossInfo.getGroupTotalNbr(); 
 		
@@ -902,6 +919,24 @@ public class CrossService{
 		};
 		 
 	}
+	
+	 private static int daysBetween(Date date1,Date date2){  
+
+	        Calendar cal = Calendar.getInstance();  
+
+	        cal.setTime(date1);  
+
+	        long time1 = cal.getTimeInMillis();               
+
+	        cal.setTime(date2);  
+
+	        long time2 = cal.getTimeInMillis();       
+
+	        long between_days=(time2-time1)/(1000*3600*24);   
+
+	       return Integer.parseInt(String.valueOf(between_days));         
+
+	    }  
 	
 
 

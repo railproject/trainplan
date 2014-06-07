@@ -6,6 +6,7 @@ var currentRole = null;
 var _common_div_error_message_text = "";
 var _common_div_success_message_text = "";
 var _common_div_warning_message_text = "";
+var _common_div_confirm_message_text = "";
 
 var portal={
 	common:{
@@ -191,13 +192,13 @@ $(function(){
 		+ "</div>";
 	
 	$("body").append(common_login_div_str);
-	
+	 
 	var common_confirm_div_str = ""
-		+ "<div class='modal fade' id='_confirm_div' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>"
+		+ '<div class="modal fade" id="_confirm_div" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'
 		+ "	<div class='modal-dialog'>"
 		+ "		<div class='modal-content'>"
 		+ "			<div class='modal-header'>"
-		+ "				<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>"
+		+ "				<button type='button' class='close' id='_confirm_close_btn' data-dismiss='modal' aria-hidden='true'>&times;</button>"
 		+ "				<h4 class='modal-title' id='_confirm_title'></h4>"
 		+ "			</div>"
 		+ "		<div class='panel-body row'>"
@@ -205,7 +206,7 @@ $(function(){
 		+ "		</div>"
 		+ "		<div class='modal-footer'>"
 		+ "			<button type='button' class='btn btn-primary' data-dismiss='modal' id='_confirm_btn'>确定</button>"
-		+ "			<a type='button' class='btn btn-warning' data-dismiss='modal'>取消</a> </div>"
+		+ "			<a type='button' id='_confirm_cancel_btn' class='btn btn-warning' data-dismiss='modal'>取消</a> </div>"
 		+ "		</div>"
 		+ "	</div>"
 		+ "</div>";
@@ -220,10 +221,11 @@ $(function(){
 	//增加消息框按钮div
 	$("body").append("<a href='' class='btn btn-success' style='display:none;' id='common_div_success_message'></a>");
 	$("body").append("<a href='' class='btn btn-warning' style='display:none;' id='common_div_warning_message'></a>");
-	$("body").append("<a href='' class='btn btn-danger' style='display:none;' id='common_div_error_message'></a>");
+	$("body").append("<a href='' class='btn btn-danger' style='display:none;' id='common_div_error_message'></a>"); 
 	jQuery('#common_div_success_message').hide();
 	jQuery('#common_div_warning_message').hide();
 	jQuery('#common_div_error_message').hide();
+	jQuery('#common_div_confirm_message').hide();
 	//增加消息框按钮点击事件
 	jQuery('#common_div_error_message').click(function(){
 		jQuery.gritter.add({
@@ -235,7 +237,7 @@ $(function(){
 			time: ''
 		});
 		return false;
-	});
+	}); 
 	jQuery('#common_div_warning_message').click(function(){
 		jQuery.gritter.add({
 			title: '警告消息通知!',
@@ -327,9 +329,8 @@ function showErrorDialog(errorMessage) {
 function showSuccessDialog(successMessage) {
 	_common_div_success_message_text = successMessage;
 	$("#common_div_success_message").click();
-};
-
-
+}; 
+ 
 /**
  * 显示警告消息提示框
  * @param warningMessage
@@ -366,11 +367,29 @@ function showLoginDiv(current_role){
 	$("#login_popup_div").modal("show");
 }
 
-function showConfirmDiv(title,content){
+function showConfirmDiv(title,content, callback){
 	$("#_confirm_title").empty();
 	$("#_confirm_title").append(title);
 	$("#_confirm_content").empty();
-	$("#_confirm_content").append(content);
+	$("#_confirm_content").append(content); 
+	
+	$("#_confirm_btn").unbind("click"); 
+	$("#_confirm_btn").click(function(){
+		callback(true);
+		$("#_confirm_div").hide();
+	});
+	
+	$("#_confirm_cancel_btn").unbind("click");  
+	$("#_confirm_cancel_btn").click(function(){ 
+		callback(false);
+		$("#_confirm_div").hide();
+	});
+	
+	$("#_confirm_close_btn").unbind("click");  
+	$("#_confirm_close_btn").click(function(){
+		callback(false);
+		$("#_confirm_div").hide();
+	}); 
 	
 	$("#_confirm_div").modal('show');
 }

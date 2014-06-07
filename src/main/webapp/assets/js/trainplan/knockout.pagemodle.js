@@ -76,16 +76,26 @@ function PageModle(pageSize, fun, jg){
 		self.loadPage(parseInt(self.currentPage()) + 1);
 	};
 	
-	self.clear = function(){
+	self.clear = function(){ 
 		self.rows.remove(function(item) {
 			return true;
 		});
+		self.currentPage(0); 
+		self.currentIndex(0); 
+		self.endIndex(0);
+		self.pageCount(0);
+		self.totalCount(0);
 	};
 	
 	self.loadRows = function(){ 
-		self.clear();
-		self.currentPage(0); 
-		self.currentIndex(0); 
+		self.clear(); 
+		self.loadFunc(self.currentIndex(), self.currentIndex() + self.pageSize()); 
+	}; 
+	
+	self.reFresh = function(){  
+		self.rows.remove(function(item) {
+			return true;
+		});
 		self.loadFunc(self.currentIndex(), self.currentIndex() + self.pageSize()); 
 	};  
 	

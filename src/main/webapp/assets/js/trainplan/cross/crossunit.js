@@ -47,10 +47,56 @@ function CrossModel() {
 		}); 
 	};
 	
+	self.clearData = function(){
+		 self.crossRows.clear(); 
+		 self.currentCross(new CrossRow({"crossId":"",
+				"crossName":"", 
+				"chartId":"",
+				"chartName":"",
+				"crossStartDate":"",
+				"crossEndDate":"",
+				"crossSpareName":"",
+				"alterNateDate":"",
+				"alterNateTranNbr":"",
+				"spareFlag":"",
+				"cutOld":"",
+				"groupTotalNbr":"",
+				"pairNbr":"",
+				"highlineFlag":"",
+				"highlineRule":"",
+				"commonlineRule":"",
+				"appointWeek":"",
+				"appointDay":"",
+				"crossSection":"",
+				"throughline":"",
+				"startBureau":"",
+				"tokenVehBureau":"",
+				"tokenVehDept":"",
+				"tokenVehDepot":"",
+				"tokenPsgBureau":"",
+				"tokenPsgDept":"",
+				"tokenPsgDepot":"",
+				"locoType":"",
+				"crhType":"",
+				"elecSupply":"",
+				"dejCollect":"",
+				"airCondition":"",
+				"note":"", 
+				"createPeople":"", 
+				"createPeopleOrg":"",  
+				"createTime":""})); 
+		 self.times.remove(function(item){
+			return true;
+		 });
+		 
+		 self.trains.remove(function(item){
+			return true;
+		 });  
+		 self.currentTrain = ko.observable();
+	};
+	
 	self.setCurrentTrain = function(row){
 		self.currentTrain(row);
-		console.log("------------------------------------------------------------------");
-		console.log(self.currentTrain().trainNbr);
 		$("#cross_train_time_dlg").dialog("setTitle", "详情时刻表     车次:" + self.currentTrain().trainNbr);
 		self.times.remove(function(item){
 			return true;
@@ -71,7 +117,6 @@ function CrossModel() {
 					trainId : row.baseTrainId
 				}),
 				success : function(result) {  
-					console.log(result);
 					if (result != null && result != "undefind" && result.code == "0") {  
 						row.loadTimes(result.data);  
 						$.each(row.times(), function(i, n){
@@ -90,6 +135,11 @@ function CrossModel() {
 	};
 	
 	self.setCurrentCross = function(cross){
+		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
+			self.searchModle().activeFlag(1);  
+		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
+			self.searchModle().activeFlag(0); 
+		} 
 		self.currentCross(cross);
 		if(self.searchModle().showCrossMap() == 1){
 			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + cross.unitCrossId);
@@ -103,11 +153,9 @@ function CrossModel() {
 	
 	self.selectCross = function(row){
 //		self.crossAllcheckBox();
-		console.log(row.selected());
 		if(row.selected() == 0){
 			self.crossAllcheckBox(1);
 			$.each(self.crossRows.rows(), function(i, crossRow){ 
-				console.log("==="+ crossRow.selected());
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
 					return false;
@@ -185,7 +233,6 @@ function CrossModel() {
 		"createTime":""})); 
 	
 	self.showTrainTimes = function(row) {
-		console.log(row);
 		self.currentTrain(row);
 		self.runPlanCanvasPage.reDrawByTrainNbr(row.trainNbr);
 		self.stns.remove(function(item){
@@ -207,18 +254,17 @@ function CrossModel() {
 					trainId : row.baseTrainId
 				}),
 				success : function(result) {  
-					console.log(result) 
 					if (result != null && result != "undefind" && result.code == "0") {  
 						row.loadTimes(result.data);  
 						$.each(row.times(), function(i, n){
 							self.stns.push(n); 
 						});
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取列车详点失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取列车详点失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -278,11 +324,11 @@ function CrossModel() {
 							self.searchModle().loadChats(result.data); 
 						} 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取方案列表失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取方案列表失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -305,11 +351,11 @@ function CrossModel() {
 						});
 					} 
 				} else {
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					showErrorDialog("获取路局列表失败");
 				} 
 			},
 			error : function() {
-				showErrorDialog("接口调用失败");
+				showErrorDialog("获取路局列表失败");
 			},
 			complete : function(){
 				commonJsScreenUnLock();
@@ -374,11 +420,11 @@ function CrossModel() {
 						 $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取交路单元信息失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取交路单元信息失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -426,35 +472,38 @@ function CrossModel() {
 	self.deleteCrosses = function(){
 		var crossIds = "";
 		var crosses = self.crossRows.rows(); 
-		var delCrosses = [];
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].unitCrossId; 
-				delCrosses.push(crosses[i]); 
-			}  
-		}   
-		$.ajax({
-			url : "../cross/deleteUnitCorssInfo",
-			cache : false,
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json",
-			data :JSON.stringify({  
-				crossIds : crossIds
-			}),
-			success : function(result) {     
-				if(result.code == 0){
-					$.each(delCrosses, function(i, n){ 
-						self.crossRows.rows.remove(n); 
-					});
-					self.crossRows.loadRows();
-					showSuccessDialog("删除交路单元成功"); 
-				}else{
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-				}
-			}
-		}); 
+			}; 
+		} 
+		if(crossIds == ""){
+			showErrorDialog("没有可删除的记录");
+			return;
+		}
+		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
+	        if (r) { 
+				$.ajax({
+					url : "../cross/deleteUnitCorssInfo",
+					cache : false,
+					type : "POST",
+					dataType : "json",
+					contentType : "application/json",
+					data :JSON.stringify({  
+						unitCrossIds : crossIds
+					}),
+					success : function(result) {     
+						if(result.code == 0){ 
+							self.crossRows.reFresh();
+							showSuccessDialog("删除交路单元成功"); 
+						}else{
+							showErrorDialog("删除交路单元失败");
+						}
+					}
+				}); 
+	        }
+		});
 	};
 	
 	self.createUnitCrossInfo = function(){ 
@@ -470,7 +519,6 @@ function CrossModel() {
 		var delCrosses = [];
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){
-			console.log(crosses[i].checkFlag());
 			if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
 				showErrorDialog("你选择了未审核的记录，请先审核");
 				return;
@@ -498,14 +546,23 @@ function CrossModel() {
 					unitCrossIds : crossIds 
 				}),
 				success : function(result) {     
-					if(result.code == 0){
-						$.each(delCrosses, function(i, n){ 
-							n.unitCreateFlag("1");
-						});
-						showSuccessDialog("更新成功");
-					}else{
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-					}
+					if(result.code == 0){ 
+						for(var j = 0; j < result.data.length; j++){
+							for(var i = 0; i < delCrosses.length; i++){
+								if(result.data[j].unitCrossId == delCrosses[i].unitCrossId){
+									delCrosses[i].unitCreateFlag(result.data[j].flag);
+								 }
+							}
+						} 
+						if(result.data.length == 0){
+							showErrorDialog("更新失败");
+							return;
+						}else if(result.data.length < delCrosses.length)  
+						    showSuccessDialog("部分更新成功");  
+					   }else{
+						   showSuccessDialog("更新成功");  
+					   }
+					  
 				},
 				error : function() {
 					showErrorDialog("接口调用失败");
@@ -518,9 +575,11 @@ function CrossModel() {
 	
 	self.bureauChange = function(){
 		if(hasActiveRole(self.searchModle().bureau())){
-			self.searchModle().activeFlag(1);
-		}else{
+			self.searchModle().activeFlag(1); 
+			self.clearData();
+		}else if(self.searchModle().activeFlag() == 1){
 			self.searchModle().activeFlag(0);
+			self.clearData();
 		}
 	};
 	
@@ -535,14 +594,13 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossId : row.unitCrossId  
+					unitCrossId : row.unitCrossId  
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {  
 							self.setCurrentCross(new CrossRow(result.data[0].crossinfo));
 //							self.currentCross(new CrossRow(result.data[0].crossInfo));
-							console.log(result.data[0].unitCrossTrainInfo.length);
 							
 							if(result.data[0].unitCrossTrainInfo != null){
 								for(var i = 0; i < result.data[0].unitCrossTrainInfo.length; i++){
@@ -553,11 +611,11 @@ function CrossModel() {
 						}
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取列车信息失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取列车信息失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -602,11 +660,11 @@ function CrossModel() {
 						});
 						showSuccessDialog("审核成功");
 					}else{
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("审核失败");
 					}
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("审核失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -703,19 +761,18 @@ function CrossRow(data) {
 	self.shortNameFlag =  ko.observable(true);
 	
 	self.crossName = ko.observable(data.crossName);  
-	
+	 
 	self.shortName = ko.computed(function(){
 		if(data.crossName ==  null){
 			return "";
 		}
 		trainNbrs = data.crossName.split('-');
 		if(trainNbrs.length > 2){
-			return trainNbrs[0] + '...' + trainNbrs[trainNbrs.length-1];
+			return trainNbrs[0] + '-......-' + trainNbrs[trainNbrs.length-1];
 		}else{
 			return data.crossName;
 		}
 	});  
-	 
  
 	self.checkFlag = ko.observable(data.checkFlag);
 	
@@ -764,7 +821,6 @@ function TrainModel() {
 
 function TrainRow(data) {
 	var self = this; 
-	console.log(data);
 	self.crossTainId  = data.crossTainId;//BASE_CROSS_TRAIN_ID
 	self.crossId = data.crossId;//BASE_CROSS_ID
 	self.trainSort = data.trainSort;//TRAIN_SORT

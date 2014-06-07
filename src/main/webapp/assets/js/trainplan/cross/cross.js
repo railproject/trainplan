@@ -77,7 +77,6 @@ function CrossModel() {
 					trainId : row.baseTrainId
 				}),
 				success : function(result) {  
-					console.log(result);
 					if (result != null && result != "undefind" && result.code == "0") {  
 						row.loadTimes(result.data);  
 						$.each(row.times(), function(i, n){
@@ -96,13 +95,16 @@ function CrossModel() {
 	};
 	
 	self.setCurrentCross = function(cross){
+		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
+			self.searchModle().activeFlag(1);  
+		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
+			self.searchModle().activeFlag(0); 
+		} 
 		self.currentCross(cross);
 		if(self.currentCross().crossId == ''){
 			return;
 		} 
 		if(self.searchModle().showCrossMap() == 1){   
-			var positionOld = [$("#cross_map_dlg").offset().top, $("#cross_map_dlg").offset().left];
-			console.log(positionOld) ;
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
 //			$("#cross_map_dlg").dialog({title: "基本交路图      交路名:" + self.currentCross().crossName(),draggable: true, resizable:true,  position: [500,300]});
 			$('#cross_map_dlg').dialog("setTitle", "基本交路图     交路名:" + self.currentCross().crossName()); 
@@ -111,7 +113,6 @@ function CrossModel() {
 	
 	self.selectCross = function(row){
 //		self.crossAllcheckBox();
-		console.log(row.selected());
 		if(row.selected() == 0){
 			self.crossAllcheckBox(1);
 			$.each(self.crossRows.rows(), function(i, crossRow){ 
@@ -385,11 +386,11 @@ function CrossModel() {
 						// $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取交路基本信息失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取交路基本信息失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -416,7 +417,6 @@ function CrossModel() {
 	};
 	
 	self.showCrossMapDlg = function(){ 
-		console.log(self.currentCross().crossId);
 		if(!self.currentCross().crossId || self.currentCross().crossId == ''){
 			return;
 		}
@@ -437,46 +437,100 @@ function CrossModel() {
 	};
 	
 	self.deleteCrosses = function(){  
-		showSuccessDialogWithFunc(" 确定要执行删除操作?", function(){
-			var crossIds = "";
-			var crosses = self.crossRows.rows(); 
-			var delCrosses = [];
-			for(var i = 0; i < crosses.length; i++){ 
-				if(crosses[i].selected() == 1){ 
-					crossIds += (crossIds == "" ? "" : ",");
-					crossIds += crosses[i].crossId; 
-					delCrosses.push(crosses[i]); 
-				}; 
-			}   
-			$.ajax({
-				url : "cross/deleteCorssInfo",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({  
-					crossIds : crossIds
-				}),
-				success : function(result) {     
-					if(result.code == 0){
-						$.each(delCrosses, function(i, n){ 
-							self.crossRows.rows.remove(n); 
-						});
-						self.crossRows.loadRows();
-						showSuccessDialog("删除交路单元成功"); 
-					}else{
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-					}; 
-				}
-			}); 
+		var crossIds = "";
+		var crosses = self.crossRows.rows(); 
+		for(var i = 0; i < crosses.length; i++){ 
+			if(crosses[i].selected() == 1){ 
+				crossIds += (crossIds == "" ? "" : ",");
+				crossIds += crosses[i].crossId; 
+			}; 
+		} 
+		if(crossIds == ""){
+			showErrorDialog("没有可删除的记录");
+			return;
+		}
+		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
+	        if (r) { 
+				$.ajax({
+					url : "cross/deleteCorssInfo",
+					cache : false,
+					type : "POST",
+					dataType : "json",
+					contentType : "application/json",
+					data :JSON.stringify({  
+						crossIds : crossIds
+					}),
+					success : function(result) {     
+						if(result.code == 0){ 
+							self.crossRows.reFresh();
+							showSuccessDialog("删除交路成功"); 
+						}else{
+							showErrorDialog("删除交路失败");
+						}; 
+					}
+				}); 
+	        }
+	        
 		});
+//		showSuccessDialogWithFunc(" 确定要执行删除操作?", function(){
+//		
+//		});
 		
+	};
+	self.clearData = function(){
+		 self.crossRows.clear(); 
+		 self.currentCross(new CrossRow({"crossId":"",
+				"crossName":"", 
+				"chartId":"",
+				"chartName":"",
+				"crossStartDate":"",
+				"crossEndDate":"",
+				"crossSpareName":"",
+				"alterNateDate":"",
+				"alterNateTranNbr":"",
+				"spareFlag":"",
+				"cutOld":"",
+				"groupTotalNbr":"",
+				"pairNbr":"",
+				"highlineFlag":"",
+				"highlineRule":"",
+				"commonlineRule":"",
+				"appointWeek":"",
+				"appointDay":"",
+				"crossSection":"",
+				"throughline":"",
+				"startBureau":"",
+				"tokenVehBureau":"",
+				"tokenVehDept":"",
+				"tokenVehDepot":"",
+				"tokenPsgBureau":"",
+				"tokenPsgDept":"",
+				"tokenPsgDepot":"",
+				"locoType":"",
+				"crhType":"",
+				"elecSupply":"",
+				"dejCollect":"",
+				"airCondition":"",
+				"note":"", 
+				"createPeople":"", 
+				"createPeopleOrg":"",  
+				"createTime":""})); 
+		 self.times.remove(function(item){
+			return true;
+		 });
+		 
+		 self.trains.remove(function(item){
+			return true;
+		 });  
+		 self.currentTrain = ko.observable();
 	};
 	self.bureauChange = function(){ 
 		if(hasActiveRole(self.searchModle().bureau())){
-			self.searchModle().activeFlag(1);
-		}else{
+			self.searchModle().activeFlag(1); 
+			self.clearData();
+		}else if(self.searchModle().activeFlag() == 1){
 			self.searchModle().activeFlag(0);
+			self.clearData();
 		}
 	};
 	self.createUnitCrossInfo = function(){ 
@@ -520,11 +574,11 @@ function CrossModel() {
 						});
 						showSuccessDialog("生成交路单元成功");
 					}else{
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("生成交路单元失败");
 					}
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("生成交路单元失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -537,7 +591,6 @@ function CrossModel() {
 		var updateCrosses = [];
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){
-			console.log(crosses[i].checkFlag());
 			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){  
 				showErrorDialog("不能重复审核"); 
 				return;
@@ -545,7 +598,7 @@ function CrossModel() {
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].crossId;
 				updateCrosses.push(crosses[i]); 
-			} 
+			}; 
 		}  
 		if(crossIds == ""){
 			showErrorDialog("没有可审核的");
@@ -568,11 +621,11 @@ function CrossModel() {
 						});
 						showSuccessDialog("审核成功");
 					}else{
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("审核失败");
 					}
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("审核失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -608,11 +661,11 @@ function CrossModel() {
 						}
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取交路列车列表失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取交路列车列表失败");
 				} 
 			}); 
 		

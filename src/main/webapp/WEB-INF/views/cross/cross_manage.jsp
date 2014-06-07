@@ -21,14 +21,15 @@ String basePath = request.getContextPath();
 <link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
 <!--font-awesome-->
 <link href="<%=basePath %>/assets/css/datepicker.css" rel="stylesheet">
-<link href="<%=basePath %>/assets/easyui/themes/default/easyui.css"
-	rel="stylesheet">
-<link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
+
 <link type="text/css" rel="stylesheet" href="<%=basePath %>/assets/css/font-awesome.min.css" />
  
 <!-- Custom styles for this template --> 
 <link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
 <link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
+
+<link href="<%=basePath %>/assets/easyui/themes/default/easyui.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
 
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/html5.js"></script>
@@ -347,10 +348,7 @@ console.log(all_role);
 									<label for="exampleInputEmail2" style="margin-left: 23px;" class="control-label pull-left">对数:&nbsp;</label>
 									<div class="pull-left">
 										<input type="text" class="form-control" style="width: 40px;" data-bind="value: pairNbr">
-									</div> 
-									
-									
-										
+									</div>  
 									<div class="pull-left">
 										<input type="checkBox" class="pull-left" class="form-control"
 											value="1" data-bind="checked: cutOld"
@@ -359,6 +357,20 @@ console.log(all_role);
 									</div>
 									<label for="exampleInputEmail5" class="control-label pull-left">
 										截断原交路</label>
+									
+									<label for="exampleInputEmail5"  style="margin-left: 40px;" class="control-label pull-left">
+										开始日期:&nbsp;</label>
+									<div class="pull-left">
+										<input type="text" class="form-control" style="width: 140px;"
+											placeholder=""  data-bind="value: crossStartDate">
+									</div>
+									
+									<label for="exampleInputEmail5"  style="margin-left: 10px;" class="control-label pull-left">
+										结束日期:&nbsp;</label>
+									<div class="pull-left">
+										<input type="text" class="form-control" style="width: 140px;"
+											placeholder=""  data-bind="value: crossEndDate">
+									</div>
 									
 								</div>
 								<div class="row" style="margin: 5px 0 0px 0;">
@@ -519,7 +531,7 @@ console.log(all_role);
 									</div> 
 									  <a type="button" style="margin-left: 15px"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save" data-bind="click: $parent.saveCrossInfo"> 保存</a>
+										id="cross_train_save" data-bind="attr:{class: $parent.searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: $parent.saveCrossInfo"> 保存</a>
 								</div>  
 							</div>
 							<!--col-md-3 col-sm-4 col-xs-4-->
@@ -538,11 +550,11 @@ console.log(all_role);
 									style="margin-left: 10px; margin-top: 5px;">
 									  <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_add" data-bind="click: showCrossTrainDlg">添加</a> <a type="button"
+										id="cross_train_add" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'},click: showCrossTrainDlg">添加</a> <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save" data-bind="click: showCrossTrainDlg"> 修改</a> <a type="button"
+										id="cross_train_save" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: showCrossTrainDlg"> 修改</a> <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">删除</a> 
+										id="cross_train_delete" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}">删除</a> 
 										 <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
 										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">时刻表</a> 
@@ -682,8 +694,7 @@ console.log(all_role);
 					      </table>
 			        </div>   
       		</div>
-	   </div>
-
+	   </div> 
 </body>  
  <script type="text/html" id="tablefooter-short-template"> 
   <table style="width:100%;height:20px;">

@@ -8,9 +8,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.json.types.JsonArray;
+import org.directwebremoting.json.types.JsonObject;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.railway.com.trainplan.common.constants.Constants;
@@ -728,8 +734,10 @@ public class CrossController {
 		Result result = new Result(); 
 		String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
 		logger.info("updateUnitCrossId----unitCrossIds=="+unitCrossIds);
+		
 		try{
 			if(unitCrossIds != null){
+				JSONArray resultArr = new JSONArray();
 				String[] crossArray = unitCrossIds.split(",");
 				//取一条unit_cross_id查询出方案id
 				String unitCrossid = crossArray[0];
@@ -739,28 +747,32 @@ public class CrossController {
 				
 				for(String unitCrossId :crossArray){
 					//List<CrossTrainInfo> listTrainInfo = crossService.getCrossTrainInfoForCrossid(unitCrossId);
-					List<CrossTrainInfo> listTrainInfo = crossService.getUnitCrossTrainInfoForUnitCrossId(unitCrossId);
-					if(listTrainInfo !=null && listTrainInfo.size() > 0){
-						
-						
-						
-						List<String> trainNbrs = new ArrayList<String>();
-						for(CrossTrainInfo trainInfo :listTrainInfo ){
-							
-							String trainNbr = trainInfo.getTrainNbr();
-							trainNbrs.add(trainNbr);
-							
-							
-						}
-						//调用后台接口
-						String response = remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrs);
-						if(response.equals(Constants.REMOTE_SERVICE_SUCCESS)){
-							//调用后台接口成功，更新本地数据表unit_cross中字段CREAT_CROSS_TIME
-							crossService.updateUnitCrossUnitCreateTime(crossArray);
-						}
-					}
 					
+					try{
+						List<CrossTrainInfo> listTrainInfo = crossService.getUnitCrossTrainInfoForUnitCrossId(unitCrossId);
+						if(listTrainInfo !=null && listTrainInfo.size() > 0){ 
+							List<String> trainNbrs = new ArrayList<String>();
+							for(CrossTrainInfo trainInfo :listTrainInfo ){ 
+								String trainNbr = trainInfo.getTrainNbr();
+								trainNbrs.add(trainNbr); 
+							}
+							//调用后台接口
+							String response = remoteService.updateUnitCrossId(baseChartId, unitCrossId, trainNbrs);
+							
+							if(response.equals(Constants.REMOTE_SERVICE_SUCCESS)){
+								//调用后台接口成功，更新本地数据表unit_cross中字段CREAT_CROSS_TIME
+								crossService.updateUnitCrossUnitCreateTime(crossArray);
+								JSONObject subResult = new JSONObject();
+								subResult.put("unitCrossId", unitCrossId); 
+								subResult.put("flag", 1); 
+								resultArr.add(subResult); 
+							} 
+						}
+					}catch (Exception e) {
+						logger.error("updateUnitCrossId:[" + unitCrossId + "]error==" + e.getMessage());
+					}  
 				}
+				result.setData(resultArr);
 			}
 		}catch(Exception e){
 			logger.error("updateUnitCrossId error==" + e.getMessage());

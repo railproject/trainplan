@@ -38,6 +38,16 @@ public class CrossTrainInfo {
 	//组数序号,只有unit_cross表中有
 	private int groupSerialNbr;
 	
+	private int groupGap;
+	
+	
+	public int getGroupGap() {
+		return groupGap;
+	}
+	public void setGroupGap(int groupGap) {
+		this.groupGap = groupGap;
+	}
+	
 	
 	public String getRunDate() {
 		return runDate;

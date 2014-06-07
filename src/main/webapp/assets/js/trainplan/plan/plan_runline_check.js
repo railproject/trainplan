@@ -81,41 +81,41 @@ function ApplicationModel() {
 							self.searchModle().loadChats(result.data); 
 						} 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取方案失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取方案失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
 				}
 		    });
-	    $.ajax({
-			url : "plan/getFullStationInfo",
-			cache : false,
-			type : "GET",
-			dataType : "json",
-			contentType : "application/json", 
-			success : function(result) {    
-				if (result != null && result != "undefind" && result.code == "0") { 
-					self.searchModle().loadBureau(result.data); 
-					if (result.data !=null) { 
-						$.each(result.data,function(n, bureau){  
-							self.gloabBureaus.push({"shortName": bureau.ljjc, "code": bureau.ljpym}); 
-						});
-					} 
-				} else {
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-				} 
-			},
-			error : function() {
-				showErrorDialog("接口调用失败");
-			},
-			complete : function(){
-				commonJsScreenUnLock();
-			}
-	    });
+//	    $.ajax({
+//			url : "plan/getFullStationInfo",
+//			cache : false,
+//			type : "GET",
+//			dataType : "json",
+//			contentType : "application/json", 
+//			success : function(result) {    
+//				if (result != null && result != "undefind" && result.code == "0") { 
+//					self.searchModle().loadBureau(result.data); 
+//					if (result.data !=null) { 
+//						$.each(result.data,function(n, bureau){  
+//							self.gloabBureaus.push({"shortName": bureau.ljjc, "code": bureau.ljpym}); 
+//						});
+//					} 
+//				} else {
+//					showErrorDialog("");
+//				} 
+//			},
+//			error : function() {
+//				showErrorDialog("接口调用失败");
+//			},
+//			complete : function(){
+//				commonJsScreenUnLock();
+//			}
+//	    });
 		
 		
 	};  
@@ -194,11 +194,11 @@ function ApplicationModel() {
 						 
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取车底失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取车底失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -239,16 +239,15 @@ function ApplicationModel() {
 						$.each(row.times(), function(i, n){
 							self.trainLines.push(n);
 							if(i == row.times().length - 1){
-								console.log("------------")
 								$("#plan_runline_table_trainLine").freezeHeader(); 
 							}
 						});
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取列车时刻表失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取列车时刻表失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
