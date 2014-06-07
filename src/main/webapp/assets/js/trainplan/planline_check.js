@@ -225,7 +225,12 @@ function ParamModel(tableModel) {
     var self = this;
 
     // 初始化时间控件
-    $("#date_selector").datepicker({format: "yyyy-mm-dd"}).on('changeDate', function (ev) {
+    $("#date_selector").datepicker({
+        format: "yyyy-mm-dd",
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked',
+        language: 'zh-CN'}).on('changeDate', function (ev) {
         tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
         self.loadPies(moment(ev.date).format("YYYYMMDD"));
     });;
@@ -284,7 +289,55 @@ function ParamModel(tableModel) {
 
         }).always(function() {
 
-        })
+        });
+
+        if($("#chart_03").size() == 1) {
+            $.ajax({
+                url: "audit/plan/chart/lev1check/" + date,
+                method: "GET",
+                contentType: "application/json; charset=UTF-8"
+            }).done(function(resp) {
+                if(resp && resp.length) {
+                    var name = Array();
+                    var data = Array();
+                    var dataArrayFinal = Array();
+                    for(var i = 0; i < resp.length; i ++) {
+                        name[i] = resp[i].name;
+                        data[i] = resp[i].count;
+                        dataArrayFinal[i] = new Array(name[i],data[i]);
+                    }
+                    drawPie($("#chart_03"), '已审核/未审核', dataArrayFinal);
+                }
+
+            }).fail(function() {
+
+            }).always(function() {
+
+            })
+        } else if($("#chart_04").size() == 1) {
+            $.ajax({
+                url: "audit/plan/chart/lev2check/" + date,
+                method: "GET",
+                contentType: "application/json; charset=UTF-8"
+            }).done(function(resp) {
+                if(resp && resp.length) {
+                    var name = Array();
+                    var data = Array();
+                    var dataArrayFinal = Array();
+                    for(var i = 0; i < resp.length; i ++) {
+                        name[i] = resp[i].name;
+                        data[i] = resp[i].count;
+                        dataArrayFinal[i] = new Array(name[i],data[i]);
+                    }
+                    drawPie($("#chart_04"), '已审核/未审核', dataArrayFinal);
+                }
+
+            }).fail(function() {
+
+            }).always(function() {
+
+            })
+        }
     }
 
 }

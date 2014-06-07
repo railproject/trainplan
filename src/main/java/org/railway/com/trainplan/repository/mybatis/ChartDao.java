@@ -11,4 +11,8 @@ public interface ChartDao {
     Map<String, Object> getPlanTypeCount(Map<String, Object> map);
 
     Map<String, Object> getPlanLineCount(Map<String, Object> map);
+
+    Map<String, Object> getLev1CheckCount(Map<String, Object> map);
+
+    Map<String, Object> getLev2CheckCount(Map<String, Object> map);
 }
