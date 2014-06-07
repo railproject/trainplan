@@ -227,7 +227,7 @@ function ParamModel(tableModel) {
     // 初始化时间控件
     $("#date_selector").datepicker({
         format: "yyyy-mm-dd",
-        weekStart: 1,
+//        weekStart: 1,
         autoclose: true,
         todayBtn: 'linked',
         language: 'zh-CN'}).on('changeDate', function (ev) {
