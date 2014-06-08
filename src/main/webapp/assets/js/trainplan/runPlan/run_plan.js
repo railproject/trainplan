@@ -521,8 +521,13 @@ function CrossModel() {
 		 var planStartDate = $("#runplan_input_startDate").val();
 			
 		 var planEndDate =  $("#runplan_input_endDate").val();
-		console.log(planStartDate);
-		console.log(planEndDate);
+		 
+		 if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
+			self.searchModle().activeFlag(1);  
+		}else if(!hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 1){
+			self.searchModle().activeFlag(0); 
+		} 
+		 
 		
 //		if(chart == null){
 //			showErrorDialog("请选择方案!");
