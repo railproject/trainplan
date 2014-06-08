@@ -137,10 +137,10 @@
 	                    <li><a target="contentFrame"><i class="fa fa-pencil"></i>编制计划<i class="fa fa-caret-right pull-right"></i></a>
 	                    	<ul class="third-menu">
 	                    		
-			                    <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-list-alt"></i>客运计划管理</a></li>
+			                    <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-list-alt"></i>客运计划显示维护</a></li>
 			                    <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-ol"></i>客运计划汇总统计</a></li>
-			                    <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>客运计划上图</a></li>
-			                    <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>客运计划批量上图</a></li>
+			                    <li><a href="${ctx}/default/transfer/planReview" target="contentFrame"><i class="fa fa-eye"></i>客运计划单天上图</a></li>
+			                    <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>客运计划多天上图</a></li>
 	                    	</ul>
 	                    </li>
 	                    
