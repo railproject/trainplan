@@ -40,6 +40,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-home"></i>审核
+
+                    <span class="pull-right" data-bind="text: checkStatus"></span>
                 </div>
                 <div class="panel-body">
                     <div class="row">
