@@ -82,15 +82,41 @@
     <select id="getPlanCross" parameterType="map" resultType="org.railway.com.trainplan.service.dto.PlanCrossDto">
        select t.plan_cross_id planCrossId,
 			  t.base_cross_id baseCrossId,
-              t.cross_name planCrossName 
+              t.cross_name planCrossName  
       from plan_cross t
       where  t.base_chart_id=#{chartId} 
       <if test="trainNbr != null">
 			AND cross_name like '%' || #{trainNbr} || '%'
 	  </if>
+	   <if test="tokenVehBureau != null">
+            AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+        </if>
+        <if test="startBureau != null">
+            AND START_BUREAU = #{startBureau}
+        </if>
+        <if test="highlineFlag != null">
+            AND HIGHLINE_FLAG = #{highlineFlag}
+        </if>
+        <if test="checkFlag == 0 ">
+            AND check_time is null
+        </if>
+        <if test="checkFlag == 1 ">
+            AND check_time is not null
+        </if>
+     <!--    <if test="unitCreateFlag == 0 ">
+            AND CREAT_PLAN_TIME is null
+        </if> 
+        <if test="unitCreateFlag == 1 ">
+            AND CREAT_PLAN_TIME is not null
+        </if> -->
+        <if test="startTime != null ">
+            AND CROSS_START_DATE >= #{startTime}
+        </if>
+        <if test="endTime != null ">
+             AND CROSS_START_DATE &lt;= #{endTime}
+        </if>
        order by t.cross_name 
-    </select>
-    
+    </select> 
 
     <update id="updateCheckInfo" parameterType="map">
         UPDATE PLAN_TRAIN PT SET PT.CHECK_LEV1_TYPE = #{lev1Type}, PT.CHECK_LEV1_BUREAU = #{lev1Bureau}, PT.CHECK_LEV2_TYPE = #{lev2Type}, PT.CHECK_LEV2_BUREAU = #{lev2Bureau} WHERE PT.PLAN_TRAIN_ID = #{planId}

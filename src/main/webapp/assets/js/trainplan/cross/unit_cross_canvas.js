@@ -1,7 +1,6 @@
 var _MyCanvas = null;
 
 var MyCanvas = function(){
-	console.dir(canvasData);
 	this.drawGraph = function (contextParam) {
 		var booleanDrawJlStartAndEnd = true;	//是否绘制交路起止标记
 		var myCanvasComponent = new MyCanvasComponent(contextParam, canvasData.grid.days, canvasData.grid.crossStns);

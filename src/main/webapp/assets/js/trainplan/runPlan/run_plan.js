@@ -13,7 +13,11 @@ var unitCreateFlags = [{"value": "1", "text": "已"},{"value": "0", "text": "未
 var highlingrules = [{"value": "1", "text": "平日"},{"value": "2", "text": "周末"},{"value": "3", "text": "高峰"}];
 var commonlinerules = [{"value": "1", "text": "每日"},{"value": "2", "text": "隔日"}];
  
-
+var _cross_role_key_pre = "JHPT.KYJH.JHBZ.";
+function hasActiveRole(bureau){
+	var roleKey = _cross_role_key_pre + bureau;
+	return all_role.indexOf(roleKey) > -1; 
+}
 
 var gloabBureaus = [];
 
@@ -45,7 +49,7 @@ function CrossModel() {
 		var startDate = self.searchModle().planStartDate();
 		var endDate =  self.searchModle().planEndDate();
 		var currentTime = new Date(startDate);
-		var endTime = endDate.substring(5); 
+		var endTime = endDate.substring(5);  
 		self.planDays.remove(function(item) {
 			return true;
 		});   
@@ -75,7 +79,7 @@ function CrossModel() {
 						});
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取运行规律失败");
 					} 
 				},
 				error : function() {
@@ -128,6 +132,11 @@ function CrossModel() {
 	};
 	
 	self.setCurrentCross = function(cross){
+		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
+			self.searchModle().activeFlag(1);  
+		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
+			self.searchModle().activeFlag(0); 
+		} 
 		self.currentCross(cross); 
 	};
 	
@@ -412,7 +421,7 @@ function CrossModel() {
 		self.runPlanCanvasPage.initPage(); 
 		
 		self.searchModle().startDay(self.currdate()); 
-		
+//		
 		self.searchModle().planStartDate(self.currdate());
 		
 		self.searchModle().planEndDate(self.get40Date());
@@ -486,22 +495,40 @@ function CrossModel() {
 		self.loadCrosseForPage();
 	};
 	self.loadCrosseForPage = function(startIndex, endIndex) {  
+		/* $.each(crosses,function(n, crossInfo){
+			var row = new CrossRow(crossInfo);
+			self.crossRows.push(row);
+			rowLookup[row.crossName] = row;
+		});  */
 		commonJsScreenLock();
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
 			rowLookup[row.crossName] = row;
 		});  */
+		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag();
 		var trainNbr = self.searchModle().filterTrainNbr(); 
 		var checkFlag = self.searchModle().checkFlag();
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
 		var chart = self.searchModle().chart();
-
+		var startBureauCode = self.searchModle().startBureau();  
+//		var planStartDate = self.searchModle().planStartDate(); 
+//		var planEndDate = self.searchModle().planEndDate(); 
+		 var planStartDate = $("#canvas_runplan_input_startDate").val();
+			
+		 var planEndDate =  $("#canvas_runplan_input_endDate").val();
+		console.log(planStartDate);
+		console.log(planEndDate);
+		
 		if(chart == null){
 			showErrorDialog("请选择方案!");
-			//return;
-		} 
+			commonJsScreenUnLock();
+			return;
+		}
+		self.planCrossRows.remove(function(item) {
+			return true;
+		}); 
 		$.ajax({
 				url : "runPlan/getPlanCross",
 				cache : false,
@@ -509,8 +536,16 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					chartId : chart == null ? null: chart.chartId,
-					trainNbr : trainNbr
+					tokenVehBureau : bureauCode, 
+					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
+					checkFlag : checkFlag == null ? null : checkFlag.value,
+					startBureau : startBureauCode,
+					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
+							chartId : chart == null ? null: chart.chartId,
+					trainNbr : trainNbr,
+					startTime : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
+					endTime : (planEndDate != null ? planEndDate : self.get40Date()).replace(/-/g, '')
+					 
 //					,
 //					rownumstart : startIndex, 
 //					rownumend : endIndex
@@ -519,12 +554,11 @@ function CrossModel() {
  
 					if (result != null && result != "undefind" && result.code == "0") {
 						//var rows = [];
-						if(result.data != null){  
-							$.each(result.data,function(n, crossInfo){
-								
-								self.planCrossRows.push(new CrossRow(crossInfo));  
-							});   
+						if(result.data != null){ 
 							
+							$.each(result.data,function(n, crossInfo){ 
+								self.planCrossRows.push(new CrossRow(crossInfo));  
+							}); 
 							//self.crossRows.loadPageRows(result.data.totalRecord, rows);
 						} 
 						
@@ -635,7 +669,7 @@ function CrossModel() {
 	
 	self.deleteCrosses = function(){
 		
-		showConfirmDiv("提示", " 确定要执行删除操作?");
+		 
 		var crossIds = "";
 		var crosses = self.crossRows.rows(); 
 		var delCrosses = [];
@@ -708,6 +742,16 @@ function CrossModel() {
 			}); 
 	};
 	
+	self.bureauChange = function(){ 
+		if(hasActiveRole(self.searchModle().bureau())){
+			self.searchModle().activeFlag(1); 
+			self.clearData();
+		}else if(self.searchModle().activeFlag() == 1){
+			self.searchModle().activeFlag(0);
+			self.clearData();
+		}
+	};
+	
 	//审核
 	self.checkCrossInfo = function(){
 		commonJsScreenLock();
@@ -751,6 +795,15 @@ function CrossModel() {
 	};
 	
 	self.createCrossMap = function(row){ 
+		
+//		 var planStartDate = self.searchModle().planStartDate();
+//		
+//		 var planEndDate = self.searchModle().planEndDate();
+		 
+		 var planStartDate = $("#canvas_runplan_input_startDate").val();
+			
+		 var planEndDate =  $("#canvas_runplan_input_endDate").val();
+		 
 		 $.ajax({
 				url : "cross/createCrossMap",
 				cache : false,
@@ -758,7 +811,9 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossId : row.baseCrossId  
+					planCrossId : row.planCrossId(),  
+					startTime : planStartDate != null ? planStartDate : self.currdate(),
+					endTime : planEndDate != null ? planEndDate : self.self.get40Date()
 				}),
 				success : function(result) {    
 					console.log(result);
@@ -767,7 +822,7 @@ function CrossModel() {
 							canvasData = {
 									grid: $.parseJSON(result.data.gridData),
 									jlData: $.parseJSON(result.data.myJlData)
-							};
+							}; 
 							lineList = [];
 							jlList = [];
 							self.runPlanCanvasPage.drawChart({startX:60, yScale: 2}); 
@@ -787,7 +842,7 @@ function CrossModel() {
 	};
 	self.showTrains = function(row) {  
 		commonJsScreenLock();
-//		self.createCrossMap(row);
+		self.createCrossMap(row);
 		self.trains.remove(function(item) {
 			return true;
 		});
@@ -828,6 +883,7 @@ function CrossModel() {
 		
 	};  
 	
+	
 	self.filterCrosses = function(){
 		var filterCheckFlag = self.searchModle().filterCheckFlag();  
 		var filterUnitCreateFlag = self.searchModle().filterUnitCreateFlag(); 
@@ -844,6 +900,8 @@ function CrossModel() {
 
 function searchModle(){
 	self = this;  
+	 
+	self.activeFlag = ko.observable(0);
 	
 	self.planStartDate = ko.observable();
 	
