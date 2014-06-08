@@ -370,11 +370,14 @@ function CrossModel() {
 	};
 	self.loadCrosseForPage = function(startIndex, endIndex) {   
 		self.crossAllcheckBox(0);
+		commonJsScreenLock();
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
 			rowLookup[row.crossName] = row;
 		});  */
+		
+		
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag();
 		var trainNbr = self.searchModle().filterTrainNbr(); 
@@ -384,12 +387,18 @@ function CrossModel() {
 		
 		var chart = self.searchModle().chart(); 
 		
+		if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
+			self.searchModle().activeFlag(1);  
+		}else if(!hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 1){
+			self.searchModle().activeFlag(0); 
+		} 
+		
 		if(chart == null){
 			showErrorDialog("请选择方案!");
 			commonJsScreenUnLock();
 			return;
 		}
-		 
+		
 		$.ajax({
 				url : "../cross/getUnitCrossInfo",
 				cache : false,

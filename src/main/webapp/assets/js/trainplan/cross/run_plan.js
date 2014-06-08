@@ -96,7 +96,53 @@ function CrossModel() {
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
 		}
 	};
-	
+	self.clearData = function(){
+		 self.crossRows.clear(); 
+		 self.currentCross(new CrossRow({"crossId":"",
+				"crossName":"", 
+				"chartId":"",
+				"chartName":"",
+				"crossStartDate":"",
+				"crossEndDate":"",
+				"crossSpareName":"",
+				"alterNateDate":"",
+				"alterNateTranNbr":"",
+				"spareFlag":"",
+				"cutOld":"",
+				"groupTotalNbr":"",
+				"pairNbr":"",
+				"highlineFlag":"",
+				"highlineRule":"",
+				"commonlineRule":"",
+				"appointWeek":"",
+				"appointDay":"",
+				"crossSection":"",
+				"throughline":"",
+				"startBureau":"",
+				"tokenVehBureau":"",
+				"tokenVehDept":"",
+				"tokenVehDepot":"",
+				"tokenPsgBureau":"",
+				"tokenPsgDept":"",
+				"tokenPsgDepot":"",
+				"locoType":"",
+				"crhType":"",
+				"elecSupply":"",
+				"dejCollect":"",
+				"airCondition":"",
+				"note":"", 
+				"createPeople":"", 
+				"createPeopleOrg":"",  
+				"createTime":""})); 
+		 self.stns.remove(function(item){
+			return true;
+		 });
+		 
+		 self.trains.remove(function(item){
+			return true;
+		 });  
+		 self.currentTrain = ko.observable();
+	};
 	self.selectCross = function(row){
 //		self.crossAllcheckBox();
 		console.log(row.selected());

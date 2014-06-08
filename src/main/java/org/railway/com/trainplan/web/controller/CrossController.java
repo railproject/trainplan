@@ -119,7 +119,7 @@ public class CrossController {
 	public Result deleteUnitCorssInfo(@RequestBody Map<String,Object> reqMap){
 		 Result result = new Result();
 		 try{
-			 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
+			 String crossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
 			 if(crossIds != null){
 				String[] crossIdsArray = crossIds.split(",");
 				//先删除cross_train表中数据

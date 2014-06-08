@@ -3,7 +3,6 @@ $(function() {
 	var cross = new CrossModel();
 	ko.applyBindings(cross); 
 	
-	console.dir(canvasData); 
 	cross.init();   
 });
 
@@ -46,8 +45,11 @@ function CrossModel() {
 	self.planCrossRows =  ko.observableArray();
 	
 	self.loadRunPlans = function(crossId){
-		var startDate = self.searchModle().planStartDate();
-		var endDate =  self.searchModle().planEndDate();
+//		var startDate = self.searchModle().planStartDate();
+//		var endDate =  self.searchModle().planEndDate();
+		var startDate = $("#runplan_input_startDate").val(); 
+		var endDate =  $("#runplan_input_endDate").val();
+		
 		var currentTime = new Date(startDate);
 		var endTime = endDate.substring(5);  
 		self.planDays.remove(function(item) {
@@ -107,7 +109,7 @@ function CrossModel() {
 	
 	self.selectCrosses = function(){
 //		self.crossAllcheckBox(); 
-		$.each(self.crossRows.rows(), function(i, crossRow){ 
+		$.each(self.planCrossRows(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0);
 			}else{
@@ -145,7 +147,7 @@ function CrossModel() {
 		console.log(row.selected());
 		if(row.selected() == 0){
 			self.crossAllcheckBox(1);
-			$.each(self.crossRows.rows(), function(i, crossRow){ 
+			$.each(self.planCrossRows(), function(i, crossRow){ 
 				console.log("==="+ crossRow.selected());
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
@@ -320,7 +322,8 @@ function CrossModel() {
 //		$("#cross_train_time_dlg").dialog("close"); 
 //		$("#cross_start_day").datepicker();
 //		
-		
+		$("#runplan_input_startDate").datepicker();
+		$("#runplan_input_endDate").datepicker();
 		//x放大2倍
 		$("#canvas_event_btn_x_magnification").click(function(){
 			if (currentXScaleCount == 32) {
@@ -473,11 +476,11 @@ function CrossModel() {
 						});
 					} 
 				} else {
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					showErrorDialog("获取路局列表失败");
 				} 
 			},
 			error : function() {
-				showErrorDialog("接口调用失败");
+				showErrorDialog("获取路局列表失败");
 			},
 			complete : function(){
 				initFlag++;
@@ -515,17 +518,17 @@ function CrossModel() {
 		var startBureauCode = self.searchModle().startBureau();  
 //		var planStartDate = self.searchModle().planStartDate(); 
 //		var planEndDate = self.searchModle().planEndDate(); 
-		 var planStartDate = $("#canvas_runplan_input_startDate").val();
+		 var planStartDate = $("#runplan_input_startDate").val();
 			
-		 var planEndDate =  $("#canvas_runplan_input_endDate").val();
+		 var planEndDate =  $("#runplan_input_endDate").val();
 		console.log(planStartDate);
 		console.log(planEndDate);
 		
-		if(chart == null){
-			showErrorDialog("请选择方案!");
-			commonJsScreenUnLock();
-			return;
-		}
+//		if(chart == null){
+//			showErrorDialog("请选择方案!");
+//			commonJsScreenUnLock();
+//			return;
+//		}
 		self.planCrossRows.remove(function(item) {
 			return true;
 		}); 
@@ -565,11 +568,11 @@ function CrossModel() {
 						 $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取车底交路列表失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取车底交路列表失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -653,11 +656,11 @@ function CrossModel() {
 							self.stns.push(n); 
 						});
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取列车时刻表失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取列车时刻表失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -667,16 +670,14 @@ function CrossModel() {
 		
 	};  
 	
-	self.deleteCrosses = function(){
-		
-		 
+	self.deleteCrosses = function(){ 
 		var crossIds = "";
 		var crosses = self.crossRows.rows(); 
 		var delCrosses = [];
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].crossId; 
+				crossIds += crosses[i].planCrossId; 
 				delCrosses.push(crosses[i]); 
 			}  
 		}   
@@ -730,7 +731,7 @@ function CrossModel() {
 						});
 						showSuccessDialog("生成交路单元成功");
 					}else{
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("生成交路单元失败");
 					}
 				},
 				error : function() {
@@ -741,7 +742,61 @@ function CrossModel() {
 				}
 			}); 
 	};
-	
+	self.clearData = function(){ 
+		 self.currentCross(new CrossRow({"crossId":"",
+				"crossName":"", 
+				"chartId":"",
+				"chartName":"",
+				"crossStartDate":"",
+				"crossEndDate":"",
+				"crossSpareName":"",
+				"alterNateDate":"",
+				"alterNateTranNbr":"",
+				"spareFlag":"",
+				"cutOld":"",
+				"groupTotalNbr":"",
+				"pairNbr":"",
+				"highlineFlag":"",
+				"highlineRule":"",
+				"commonlineRule":"",
+				"appointWeek":"",
+				"appointDay":"",
+				"crossSection":"",
+				"throughline":"",
+				"startBureau":"",
+				"tokenVehBureau":"",
+				"tokenVehDept":"",
+				"tokenVehDepot":"",
+				"tokenPsgBureau":"",
+				"tokenPsgDept":"",
+				"tokenPsgDepot":"",
+				"locoType":"",
+				"crhType":"",
+				"elecSupply":"",
+				"dejCollect":"",
+				"airCondition":"",
+				"note":"", 
+				"createPeople":"", 
+				"createPeopleOrg":"",  
+				"createTime":""})); 
+		 self.stns.remove(function(item){
+			return true;
+		 });
+		 self.planCrossRows.remove(function(item){
+			return true;
+		 });
+		 
+		 self.trainPlans.remove(function(item){
+			return true;
+		 }); 
+		self.planDays.remove(function(item){
+			return true;
+		 }); 
+		 self.trains.remove(function(item){
+			return true;
+		 });  
+		 self.currentTrain = ko.observable();
+	};
 	self.bureauChange = function(){ 
 		if(hasActiveRole(self.searchModle().bureau())){
 			self.searchModle().activeFlag(1); 
@@ -781,11 +836,11 @@ function CrossModel() {
 						});
 						showSuccessDialog("审核成功");
 					}else{
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("审核失败");
 					}
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("审核失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -800,9 +855,9 @@ function CrossModel() {
 //		
 //		 var planEndDate = self.searchModle().planEndDate();
 		 
-		 var planStartDate = $("#canvas_runplan_input_startDate").val();
+		 var planStartDate = $("#runplan_input_startDate").val();
 			
-		 var planEndDate =  $("#canvas_runplan_input_endDate").val();
+		 var planEndDate =  $("#runplan_input_endDate").val();
 		 
 		 $.ajax({
 				url : "cross/createCrossMap",
@@ -813,7 +868,7 @@ function CrossModel() {
 				data :JSON.stringify({  
 					planCrossId : row.planCrossId(),  
 					startTime : planStartDate != null ? planStartDate : self.currdate(),
-					endTime : planEndDate != null ? planEndDate : self.self.get40Date()
+					endTime : planEndDate != null ? planEndDate : self.get40Date()
 				}),
 				success : function(result) {    
 					console.log(result);
@@ -829,11 +884,11 @@ function CrossModel() {
 						}
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取车底交路绘图数据失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取车底交路绘图数据失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -870,11 +925,11 @@ function CrossModel() {
 						}
 						 
 					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+						showErrorDialog("获取列车列表失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("获取列车列表失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -882,7 +937,26 @@ function CrossModel() {
 			}); 
 		
 	};  
-	
+	self.removeArrayValue = function(arr, value){
+		var index = -1;
+		for(var i = 0 ; i < arr.length; i++){
+			if(value == arr[i]){
+				index = i;
+				break;
+			}
+		}
+		if(index > -1){
+			arr.splice(index, 1);
+		}
+	};
+	self.drawFlagChange = function(a, n){  
+		if(n.target.checked){
+			self.searchModle().drawFlags.push(n.target.value);
+		}else{ 
+			self.removeArrayValue(self.searchModle().drawFlags(), n.target.value);
+		} 
+		self.runPlanCanvasPage.drawChart({startX:60, yScale: 2, stationTypeArray:self.searchModle().drawFlags()}); 
+	};
 	
 	self.filterCrosses = function(){
 		var filterCheckFlag = self.searchModle().filterCheckFlag();  
@@ -902,6 +976,8 @@ function searchModle(){
 	self = this;  
 	 
 	self.activeFlag = ko.observable(0);
+	
+	self.drawFlags =ko.observableArray(['0']); 
 	
 	self.planStartDate = ko.observable();
 	
@@ -994,8 +1070,8 @@ function CrossRow(data) {
 	
 	
 	self.shortName = ko.computed(function(){
-		if(data.crossName != null){
-			trainNbrs = data.crossName.split('-');
+		if(data.planCrossName != null){
+			trainNbrs = data.planCrossName.split('-');
 			if(trainNbrs.length > 2){
 				return trainNbrs[0] + '-......-' + trainNbrs[trainNbrs.length-1];
 			}else{
@@ -1092,15 +1168,15 @@ function RunPlanRow(data){
 		switch (data.runFlag) {
 		case '0':
 			self.color("gray");
-			return "停运";
+			return "停";
 			break;
 		case '1':
 			self.color("green");
-			return "开行";
+			return "开";
 			break;
 		case '2':
 			self.color("blue");
-			return "备用";
+			return "备";
 			break;
 		default: 
 			return '';

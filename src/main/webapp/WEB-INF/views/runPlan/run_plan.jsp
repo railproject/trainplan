@@ -77,19 +77,19 @@ var all_role = "<%=userRolesString %>";
 				    <section class="panel panel-default">
 				        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
 				        	<div class="panel-body">
-								<form class="form-horizontal" role="form"> 
-									<div class="row" style="margin-top: 5px;">
-									        <div class="row"  style="margin-top: 5px;">
-											    <div class="form-group" style="float: left; margin-left: 0px; margin-top: 0px;width: 100%">  
-														<label for="exampleInputEmail3" class="control-label pull-left">
-																		方案:&nbsp;</label> 
-														<div class="pull-left">
-															<select style="width: 250px" id="input_cross_chart_id"
-																class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name'">
-															</select>
-														</div>  
+								<form class="form-horizontal" role="form">  
+											<div class="row"  style="width: 100%; margin-top: 5px;">
+												<label for="exampleInputEmail3" class="control-label pull-left" >
+													开始日期:</label>
+												<div class="pull-left" style="margin-left: 5px;">
+													<input type="text" class="form-control" style="width:80px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
+												</div>
+												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 33px;">
+													截至日期:</label>
+												<div class="pull-left" style="margin-left: 5px; ">
+													<input type="text" class="form-control" style="width:80px;" placeholder="" id="runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
 												</div> 
-											</div>
+											</div>   
 											<div class="row"  style="width: 100%; margin-top: 5px;">
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													车辆担当局:</label>
@@ -101,7 +101,7 @@ var all_role = "<%=userRolesString %>";
 												<div class="pull-left" style="margin-left: 5px; ">
 													<select style="width: 60px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
 												</div> 
-											</div>    
+											</div>     
 											<div class="row"  style="margin-top: 5px;">
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													铁路线类型:</label>
@@ -148,15 +148,10 @@ var all_role = "<%=userRolesString %>";
 													<select style="width: 66px" id="input_cross_filter_showFlag"
 														class="form-control" data-bind="options: [{'code': 1, 'text': '简称'},{'code': 2, 'text': '全称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
 													</select>
-												</div>  
-												<div class="pull-left" style="margin-left: 20px">
-													<input type="checkbox" class="pull-left" class="form-control"
-														value="1" data-bind=" event:{change: showCrossMapDlg}, checked: searchModle().showCrossMap"
-														style="width: 20px; margin-left: 5px; margin-top: 5px"
-														class="form-control">
-														<label for="exampleInputEmail5" class="control-label pull-left">
-														 显示交路图</label>   
-											    </div> 
+												</div> 
+											</div>
+											<div class="row"  style="margin-top: 5px;"> 
+												<span style="margin-left: 20px;"><span style="">途经局:</span><span data-bind="text: '京郑武广'"></span><span style="margin-left:3px" data-bind="text: '已审核: 郑  ; 未审核 : 京武广'"></span></span>   
 											</div>
 											<div class="row" style="margin-top:10px">
 												<div class="form-group"
@@ -174,14 +169,16 @@ var all_role = "<%=userRolesString %>";
 									<div class="row" style="margin-top:10px">
 										   <div class="pull-left" style="width: 60%;">
 										        <section class="panel panel-default">
-										          <div class="panel-heading">车底交路名</div>
-										        	<div class="panel-body" style="height: 450px; overflow-y:auto"> 
+										          <div class="panel-heading"><span><input type="checkbox" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}">全选 车底交路名</span></div>
+										        	<div class="panel-body" style="height: 250px; overflow-y:auto"> 
 														<div class="table-responsive"> 
 															<table class="table table-bordered table-striped table-hover" 
 																id="cross_table_crossInfo"> 
 																<tbody data-bind="foreach: planCrossRows">
-																	<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}, click: $parent.showTrains" >
-																		<td data-bind=" text: crossName , attr:{title: crossName}"></td>
+																	<tr data-bind=" visible: visiableRow" >
+																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
+																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
+																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}, click: $parent.showTrains"></td>
 																	</tr> 
 																</tbody>  					 
 															</table>
@@ -192,7 +189,7 @@ var all_role = "<%=userRolesString %>";
 											<div class="pull-right" style="width: 40%;">  
 											 <section class="panel panel-default">
 										          <div class="panel-heading">车次</div>
-										        	<div class="panel-body" style="height: 450px; overflow-y:auto "> 
+										        	<div class="panel-body" style="height: 250px; overflow-y:auto "> 
 												      <div class="table-responsive" > 
 															<table class="table table-bordered table-striped table-hover"
 																id="cross_trainInfo" > 
@@ -217,8 +214,8 @@ var all_role = "<%=userRolesString %>";
 		<!-- Nav tabs -->
 		<div class="pull-left" style="width: 100%;"> 
 					<ul class="nav nav-tabs" >
-					  <li class="active"><a href="#home" data-toggle="tab">车底交路</a></li>
-					  <li><a href="#profile" data-toggle="tab">交路基本信息</a></li> 
+					  <li class="active"><a style="padding:3px 10px;" href="#home" data-toggle="tab">车底交路</a></li>
+					  <li><a style="padding:3px 10px;" href="#profile" data-toggle="tab">交路基本信息</a></li> 
 					</ul> 
 					<!-- Tab panes -->
 					<div class="tab-content" >
@@ -234,7 +231,10 @@ var all_role = "<%=userRolesString %>";
 							                  <input type="text" class="form-control" style="width:120px;" placeholder="" id="canvas_runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
 								              <button class="btn btn-primary" type="button" id="canvas_event_btnQuery"><i class="fa fa-search"></i>查询</button>
 							              </div>
-							              <div class="row" style="margin:5px 0 10px 150px;">
+							              <div class="row" style="margin:5px 0 10px 150px;"> 
+							                  <input type="hidden" value="0" data-bind="checked: searchModle().drawFlags">
+							                  <input type="checkbox" style="margin-left:10px" value="FJK" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">分界口
+							                  <input type="checkbox" style="margin-left:10px" value="TZ" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">停站
 							                  <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
@@ -244,18 +244,18 @@ var all_role = "<%=userRolesString %>";
 								          </div>
 							          </form>
 								    </div> 
-							        <div class="table-responsive" style="width:100%;height:650px;overflow-x:auto; overflow-y:auto;">
+							        <div class="table-responsive" style="width:100%;height:430px;overflow-x:auto; overflow-y:auto;">
 							        	<canvas id="canvas_event_getvalue"></canvas>
 							        </div> 
 							      </div> 
 						</div>
-						 <div class="pull-right" style="width: 30%; margin-top:5px" id="run_plan_train_times" > 
+						 <div class="pull-right" style="width: 29%; margin-top:5px" id="run_plan_train_times" > 
 						        <div id="plan_view_div_palnDayDetail" class="panel panel-default">
 							      <div class="panel-heading">
 							        <h3 class="panel-title" style="float: left;"> <i class="fa fa fa-folder-open"></i>详情时刻表  <span style="margin-left:5px" data-bind="text:currentTrain() == null ? '' : '车次:' + currentTrain().trainNbr"></span><label id="plan_view_div_palnDayDetail_title"></label></h3>
 							      </div>
 							      <!--panle-heading-->
-							      <div class="panel-body" style="padding:10px;height:530px;overflow-y:auto">
+							      <div class="panel-body" style="padding:10px;height:470px;overflow-y:auto">
 							      	<div class="table-responsive" > 
 							          <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 									        <thead>
@@ -549,16 +549,16 @@ var all_role = "<%=userRolesString %>";
 			 </div> 
 		</div>
      </div>
-   	   <div class="row" style="margin: 10px 10px 10px 10px;" >
+   	   <div class="row" style="margin: 10px 10px 10px 10px; height:250px" >
  	   	    <ul class="nav nav-tabs" >
-			  <li class="active"><a href="#runPlan" data-toggle="tab">开行情况</a></li>
+			  <li class="active"><a style="padding:3px 10px;" href="#runPlan" data-toggle="tab">开行情况</a></li>
 			</ul> 
 			<!-- Tab panes -->
-			<div class="tab-content" >
-			  <div class="tab-pane active" id="runPlan"> 
+			<div class="tab-content" style="height:200px;overflow: auto">
+			  <div class="tab-pane active" id="runPlan" > 
 			  		 <div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
 							      <!--panle-heading-->
-							      <div class="panel-body" style="bapadding:10px;overflow-y: auto">
+							      <div class="panel-body" style="bapadding:10px;overflow: auto">
 							      	<div class="table-responsive" > 
 							          <table class="table table-bordered table-striped table-hover" id="run_plan_table">
 								      <thead> 
@@ -624,14 +624,14 @@ var basePath = "<%=basePath %>";
     <!-- ko if: $index() == 0 -->
  	<td></td>
  	<!-- /ko --> 
- 	<td data-bind="text: day"></td>
+ 	<td align='center' data-bind="text: day"></td>
 </script>
 <script  type="text/html" id="runPlanTableVlaues">
  <tr data-bind="foreach: runPlans">
     <!-- ko if: $index() == 0 --> 
  	<td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->  
- 	<td  data-bind="text: runFlag, style:{'background-color': color}"></td>
+ 	<td  align='center' data-bind="text: runFlag, style:{'color': color}"></td>
  </tr> 
 </script>
 </html>

@@ -66,6 +66,7 @@ public class CrossInfo {
 	//组数序号,只有unit_cross表中有
 	private int groupSerialNbr;
 	
+	private String planCrossId;
 	
 	public String getBaseCrossId() {
 		return baseCrossId;

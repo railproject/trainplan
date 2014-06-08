@@ -111,7 +111,7 @@ function CrossModel() {
 		}
 	};
 	
-	self.selectCross = function(row){
+	self.selectCross = function(row){ 
 //		self.crossAllcheckBox();
 		if(row.selected() == 0){
 			self.crossAllcheckBox(1);
@@ -337,6 +337,8 @@ function CrossModel() {
 	self.loadCrosseForPage = function(startIndex, endIndex) { 
 		self.crossAllcheckBox(0);
 		commonJsScreenLock();
+		
+	
 		/* $.each(crosses,function(n, crossInfo){
 			var row = new CrossRow(crossInfo);
 			self.crossRows.push(row);
@@ -349,6 +351,12 @@ function CrossModel() {
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
 		var chart = self.searchModle().chart();
 		var startBureauCode = self.searchModle().startBureau();  
+		
+		if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
+			self.searchModle().activeFlag(1);  
+		}else if(!hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 1){
+			self.searchModle().activeFlag(0); 
+		} 
 		
 		if(chart == null){
 			showErrorDialog("请选择方案!");

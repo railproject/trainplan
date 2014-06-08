@@ -84,7 +84,7 @@
 			  t.base_cross_id baseCrossId,
               t.cross_name planCrossName  
       from plan_cross t
-      where  t.base_chart_id=#{chartId} 
+      where  1=1 
       <if test="trainNbr != null">
 			AND cross_name like '%' || #{trainNbr} || '%'
 	  </if>
