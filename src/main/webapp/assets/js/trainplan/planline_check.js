@@ -222,6 +222,8 @@ function ApplicationModel() {
 function ParamModel(tableModel) {
     var self = this;
 
+    self.unknownRunLine = ko.observable(0);
+
     // 初始化时间控件
     $("#date_selector").datepicker({
         format: "yyyy-mm-dd",
@@ -334,6 +336,23 @@ function ParamModel(tableModel) {
 
             })
         }
+
+        $.ajax({
+            url: "audit/check/line/" + $("#date_selector").val() + "/unknown",
+            method: "GET",
+            contentType: "application/json; charset=UTF-8"
+        }).done(function(resp) {
+            if(resp.code) {
+
+            } else {
+                self.unknownRunLine(resp.NUM);
+            }
+
+        }).fail(function() {
+
+        }).always(function() {
+
+        })
     }
 
     self.loadPies(moment($("#date_selector").val()).format("YYYYMMDD"));

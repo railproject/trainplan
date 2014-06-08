@@ -40,8 +40,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-home"></i>审核
-
-                    <span class="pull-right" data-bind="text: checkStatus"></span>
+                    <span class="pull-right">存在 <a style="color: #ff0000" data-bind="text: paramModel().unknownRunLine"></a> 条冗余运行线 | <span data-bind="text: checkStatus"></span></span>
                 </div>
                 <div class="panel-body">
                     <div class="row">

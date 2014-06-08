@@ -22,4 +22,10 @@ public interface RunLineDao {
      * @return
      */
     Map<String, Object> findLineInfoByLineId(String lineId);
+
+    /**
+     * 查询在客运计划没有对应关系的运行线记录数
+     * @return
+     */
+    Map<String, Object> findUnknownRunLine(Map<String, Object> params);
 }
