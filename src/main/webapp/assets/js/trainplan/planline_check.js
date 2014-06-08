@@ -257,7 +257,12 @@ function ParamModel(tableModel) {
                     data[i] = resp[i].count;
                     dataArrayFinal[i] = new Array(name[i],data[i]);
                 }
-                drawPie($("#chart_01"), '开行/热备/停运统计', dataArrayFinal);
+                drawPie($("#chart_01"), '开行/热备/停运统计', dataArrayFinal, [
+                    '#008000',
+                    '#C80000',
+                    '#808080',
+                    '#C800C8'
+                ]);
             }
 
         }).fail(function() {
@@ -280,7 +285,11 @@ function ParamModel(tableModel) {
                     data[i] = resp[i].count;
                     dataArrayFinal[i] = new Array(name[i],data[i]);
                 }
-                drawPie($("#chart_02"), '客运计划已上图/未上图统计', dataArrayFinal);
+                drawPie($("#chart_02"), '客运计划已上图/未上图统计', dataArrayFinal, [
+                    '#008000',
+                    '#C80000',
+                    '#C800C8'
+                ]);
             }
 
         }).fail(function() {
@@ -304,7 +313,10 @@ function ParamModel(tableModel) {
                         data[i] = resp[i].count;
                         dataArrayFinal[i] = new Array(name[i],data[i]);
                     }
-                    drawPie($("#chart_03"), '已审核/未审核', dataArrayFinal);
+                    drawPie($("#chart_03"), '已审核/未审核', dataArrayFinal, [
+                        '#008000',
+                        '#C80000'
+                    ]);
                 }
 
             }).fail(function() {
@@ -587,7 +599,7 @@ function getHintCss(reqLength, respLength) {
     }
 }
 
-function drawPie($div, chartName, data) {
+function drawPie($div, chartName, data, colors) {
     $div.highcharts({
         chart: {
             plotBackgroundColor: null,
@@ -611,6 +623,7 @@ function drawPie($div, chartName, data) {
                 showInLegend: true
             }
         },
+        colors:colors,
         series: [{
             type: 'pie',
             name: '列车数量',
