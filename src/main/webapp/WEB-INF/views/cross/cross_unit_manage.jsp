@@ -357,6 +357,20 @@ console.log(all_role);
 									<label for="exampleInputEmail5" class="control-label pull-left">
 										截断原交路</label>
 									
+									<label for="exampleInputEmail5"  style="margin-left: 40px;" class="control-label pull-left">
+										开始日期:&nbsp;</label>
+									<div class="pull-left">
+										<input type="text" class="form-control" style="width: 140px;"
+											placeholder=""  data-bind="value: crossStartDate">
+									</div>
+									
+									<label for="exampleInputEmail5"  style="margin-left: 10px;" class="control-label pull-left">
+										结束日期:&nbsp;</label>
+									<div class="pull-left">
+										<input type="text" class="form-control" style="width: 140px;"
+											placeholder=""  data-bind="value: crossEndDate">
+									</div>
+									
 								</div>
 								<div class="row" style="margin: 5px 0 0px 0;">
 									<label for="exampleInputEmail5" class="control-label pull-left">
@@ -516,7 +530,7 @@ console.log(all_role);
 									</div> 
 									  <a type="button" style="margin-left: 15px"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save" data-bind="click: $parent.saveCrossInfo"> 保存</a>
+										id="cross_train_save" data-bind="attr:{class: $parent.searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'},click: $parent.saveCrossInfo"> 保存</a>
 								</div>  
 							</div>
 							<!--col-md-3 col-sm-4 col-xs-4-->
@@ -535,17 +549,14 @@ console.log(all_role);
 									style="margin-left: 10px; margin-top: 5px;">
 									  <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_add" data-bind="click: showCrossTrainDlg">添加</a> <a type="button"
+										id="cross_train_add" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'},click: showCrossTrainDlg">添加</a> <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save" data-bind="click: showCrossTrainDlg"> 修改</a> <a type="button"
-										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete">删除</a>
+										id="cross_train_save" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: showCrossTrainDlg"> 修改</a> <a type="button"
+										class="btn btn-success" data-toggle="modal" data-target="#" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}"
+										id="cross_train_delete">删除</a> 
 										 <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">时刻表</a>
-										 <a type="button"
-										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">详点</a> 
+										id="cross_train_delete" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: showCrossTrainTimeDlg">详点</a> 
 								</div>
 								<table class="table table-bordered table-striped table-hover"
 									id="cross_trainInfo">
