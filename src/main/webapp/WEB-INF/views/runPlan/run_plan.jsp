@@ -150,9 +150,9 @@ var all_role = "<%=userRolesString %>";
 													</select>
 												</div> 
 											</div>
-											<div class="row"  style="margin-top: 5px;"> 
+										<!-- 	<div class="row"  style="margin-top: 5px;"> 
 												<span style="margin-left: 20px;"><span style="">途经局:</span><span data-bind="text: '京郑武广'"></span><span style="margin-left:3px" data-bind="text: '已审核: 郑  ; 未审核 : 京武广'"></span></span>   
-											</div>
+											</div> -->
 											<div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 20px;">
