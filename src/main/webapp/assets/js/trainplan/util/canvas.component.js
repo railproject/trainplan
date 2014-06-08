@@ -8,11 +8,11 @@
  * 			]
  * @param stnArray (必选参数)交路经由站数组 用于绘制y轴
  * 			[
- * 				{stnName:"成都"},//stnName（必选）
+ * 				{stnName:"成都",stationType:'0'},//stnName（必选）
  * 				{stnName:"遂宁",isCurrentBureau:1},//isCurrentBureau：（可选）是否为当前局 0：否，1：是
- * 				{stnName:"南充",isCurrentBureau:1},
- * 				{stnName:"蓬安"},
- * 				{stnName:"营山"}
+ * 				{stnName:"南充",stationType:'TZ',isCurrentBureau:1},
+ * 				{stnName:"蓬安",stationType:'FJK'},
+ * 				{stnName:"营山",stationType:'BT'}
  * 			]
  * @param expandObj (可选参数) 缩放比例参数对象
  * 			{
@@ -20,14 +20,16 @@
  * 				startY : 50,		//(可选参数)y起始位置
  * 				xScale : 10,		//(可选参数)x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数 （建议整数：1、2、10等）
  * 				xScaleCount : 1,	//(可选参数)x轴放大总倍数
- * 				yScale : 1			//(可选参数)y轴缩放比例 除数
+ * 				yScale : 1,			//(可选参数)y轴缩放比例 除数
+ * 				stationTypeArray:['0','TZ','FJK','BT']	//绘图条件数组 0:始发站或终到站 TZ：停站  FJK：分界口站  BT:不停的经由站
  * 			}
  */
 var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	
 	var _context = context;
 	var _xDateArray = xDateArray;
-	var _stnArray = stnArray;
+	var _stationTypeArray = [];//['0','TZ','FJK','BT'] 绘图条件数组 0:始发站或终到站 TZ：停站  FJK：分界口站  BT:不停的经由站
+	var _stnArray = [];
 	var _stnOffsetY = 45;	//第一个站横虚线y对于_startY（画布y起始位置）的偏移量
 	var _startX = 150;	//默认100 x起始位置
 	var _startY = 50;	//默认100 y起始位置
@@ -48,6 +50,19 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	 * private
 	 */
 	function initVariables() {
+		//解析生成新的纵坐标数组   判断是否要屏蔽部分车站数据，如：只绘制起止及分界口、绘制起止及停靠站等   
+		if (expandObj && expandObj.stationTypeArray && expandObj.stationTypeArray!="undefine") {
+			for(var i=0, _len=stnArray.length; i <_len; i++) {
+				if ($.inArray(stnArray[i].stationType.toUpperCase(), expandObj.stationTypeArray) > -1) {
+					_stnArray.push(stnArray[i]);
+				}
+			}
+			
+			_stationTypeArray = expandObj.stationTypeArray;
+		} else {
+			_stnArray = stnArray;
+		}
+		
 		if (expandObj && expandObj.xScale && !isNaN(expandObj.xScale)) {
 			_xScale = expandObj.xScale;
 		}
@@ -435,6 +450,12 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			//绘制列车运行线
 			for(var i=0; i<_len;i++) {
 				var _obj = this.obj.trainStns[i];
+				
+				//屏蔽不在显示要求范围内的数据
+				if (_stationTypeArray.length>0 && $.inArray(_obj.stationType.toUpperCase(), _stationTypeArray) < 0) {
+					continue;
+				}
+				
 				_y = getY(_obj.stnName);	//该车站Y标
 				_arrTimeX = getX(_obj.arrTime);//计算到达点x标
 				_dptTimeX = getX(_obj.dptTime);//计算出发点x标
@@ -504,6 +525,12 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			//绘制列车运行线
 			for(var i=0; i<_len;i++) {
 				var _obj = this.obj.trainStns[i];
+				
+				//屏蔽不在显示要求范围内的数据
+				if (_stationTypeArray.length>0 && $.inArray(_obj.stationType.toUpperCase(), _stationTypeArray) < 0) {
+					continue;
+				}
+				
 				_y = getY(_obj.stnName);	//该车站Y标
 				_arrTimeX = getX(_obj.arrTime);//计算到达点x标
 				_dptTimeX = getX(_obj.dptTime);//计算出发点x标
@@ -759,10 +786,10 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		    				  startStn:"成都",//始发站名 为null时填入""（空串）
 		    				  endStn:"北京西",//终到站名为null时填入""（空串）
 		    				  trainStns:[
-		    						{runDays:0,stnName:"成都",arrTime:"2014-05-11 19:18",dptTime:"2014-05-11 19:18",stayTime:0},
-		    						{runDays:0,stnName:"遂宁",arrTime:"2014-05-11 21:19",dptTime:"2014-05-11 21:33",stayTime:14},
-		    						{runDays:0,stnName:"南充",arrTime:"2014-05-11 22:15",dptTime:"2014-05-11 22:22",stayTime:7},
-		    						{runDays:0,stnName:"蓬安",arrTime:"2014-05-11 22:49",dptTime:"2014-05-11 22:54",stayTime:5},
+		    						{isCurrentBureau:1,stationType:'0',runDays:0,stnName:"成都",arrTime:"2014-05-11 19:18",dptTime:"2014-05-11 19:18",stayTime:0},
+		    						{isCurrentBureau:1,stationType:'TZ',runDays:0,stnName:"遂宁",arrTime:"2014-05-11 21:19",dptTime:"2014-05-11 21:33",stayTime:14},
+		    						{isCurrentBureau:1,stationType:'FJK',runDays:0,stnName:"南充",arrTime:"2014-05-11 22:15",dptTime:"2014-05-11 22:22",stayTime:7},
+		    						{stationType:'BT',runDays:0,stnName:"蓬安",arrTime:"2014-05-11 22:49",dptTime:"2014-05-11 22:54",stayTime:5},
 		    						{runDays:0,stnName:"营山",arrTime:"2014-05-11 23:06",dptTime:"2014-05-11 23:11",stayTime:5},
 		    						{runDays:1,stnName:"达州",arrTime:"2014-05-12 00:13",dptTime:"2014-05-12 00:23",stayTime:10},
 		    						{runDays:1,stnName:"安康",arrTime:"2014-05-12 03:12",dptTime:"2014-05-12 03:32",stayTime:20},
@@ -775,8 +802,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		    	          	  startStn:"北京西",//始发站名 为null时填入""（空串）
 		    	          	  endStn:"成都",//终到站名为null时填入""（空串）
 		    	          	  trainStns:[
-										{runDays:0,stnName:"北京西",arrTime:"2014-05-13 08:35",dptTime:"2014-05-13 08:35",stayTime:0},
-										{runDays:0,stnName:"华山",arrTime:"2014-05-13 23:07",dptTime:"2014-05-13 23:13",stayTime:6},
+										{isCurrentBureau:1,runDays:0,stnName:"北京西",arrTime:"2014-05-13 08:35",dptTime:"2014-05-13 08:35",stayTime:0},
+										{isCurrentBureau:1,runDays:0,stnName:"华山",arrTime:"2014-05-13 23:07",dptTime:"2014-05-13 23:13",stayTime:6},
 										{runDays:1,stnName:"安康",arrTime:"2014-05-14 03:59",dptTime:"2014-05-14 04:13",stayTime:14},
 										{runDays:1,stnName:"达州",arrTime:"2014-05-14 07:29",dptTime:"2014-05-14 07:35",stayTime:6},
 										{runDays:1,stnName:"土溪",arrTime:"2014-05-14 08:09",dptTime:"2014-05-14 08:13",stayTime:4},
