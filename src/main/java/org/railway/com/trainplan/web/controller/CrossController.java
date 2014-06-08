@@ -431,11 +431,13 @@ public class CrossController {
 					 //列车信息
 					 List<TrainInfoDto> trains = new ArrayList<TrainInfoDto>();
 					 Map<String,Object> crossMap = new HashMap<String,Object>();
-					 TrainInfoDto dto = new TrainInfoDto();
+					
 					 List<TrainLineSubInfo> subInfoList = lineInfo.getTrainSubInfoList();
 					 if(subInfoList != null && subInfoList.size()>0){
-						 List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
+						
 						 for(TrainLineSubInfo subInfo :subInfoList){
+							 TrainInfoDto dto = new TrainInfoDto();
+							 List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
 							 dto.setTrainName(subInfo.getTrainNbr());
 							 dto.setStartStn(subInfo.getStartStn());
 							 dto.setEndStn(subInfo.getEndStn());
