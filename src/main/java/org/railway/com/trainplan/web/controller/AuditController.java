@@ -10,10 +10,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.railway.com.trainplan.entity.PlanCross;
 import org.railway.com.trainplan.entity.RunPlan;
-import org.railway.com.trainplan.service.ChartService;
-import org.railway.com.trainplan.service.PlanLineService;
-import org.railway.com.trainplan.service.RunPlanService;
-import org.railway.com.trainplan.service.ShiroRealm;
+import org.railway.com.trainplan.service.*;
 import org.railway.com.trainplan.web.dto.ChartDto;
 import org.railway.com.trainplan.web.dto.PlanLineCheckResultDto;
 import org.railway.com.trainplan.web.dto.RunPlanDTO;
@@ -24,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +41,9 @@ public class AuditController {
 
     @Autowired
     private PlanLineService planLineService;
+
+    @Autowired
+    private RunLineService runLineService;
 
     @Autowired
     private ChartService chartService;
@@ -222,5 +223,27 @@ public class AuditController {
         chart2.setCount(MapUtils.getIntValue(result, "UNCHECKED", 0));
         charts.add(chart2);
         return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "check/line/{date}/unknown", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> findUnknownRunLine(@PathVariable String date) {
+        ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        Map<String, Object> result;
+        try {
+            result = runLineService.findUnknownRunLine(user.getBureauShortName(), date);
+        } catch (ParseException e) {
+            logger.error("findUnknownRunLine", e);
+            Map<String, Object> error = Maps.newHashMap();
+            error.put("code", "500");
+            error.put("message", "日期格式错误");
+            return new ResponseEntity<Map<String, Object>>(error, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("findUnknownRunLine", e);
+            Map<String, Object> error = Maps.newHashMap();
+            error.put("code", "500");
+            error.put("message", "查询冗余运行线出错");
+            return new ResponseEntity<Map<String, Object>>(error, HttpStatus.OK);
+        }
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
 }
