@@ -327,7 +327,7 @@ public class RunPlanService {
      * @return 生成了多少个plancross的计划
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        ExecutorService executorService = Executors.newFixedThreadPool(50);
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
