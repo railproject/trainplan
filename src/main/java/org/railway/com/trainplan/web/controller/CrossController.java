@@ -426,15 +426,18 @@ public class CrossController {
 			List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 			
 			if(list != null && list.size() > 0 ){
-				 //列车信息
-				 List<TrainInfoDto> trains = new ArrayList<TrainInfoDto>();
+				
 				 for(TrainLineInfo lineInfo :list ){
+					 //列车信息
+					 List<TrainInfoDto> trains = new ArrayList<TrainInfoDto>();
 					 Map<String,Object> crossMap = new HashMap<String,Object>();
-					 TrainInfoDto dto = new TrainInfoDto();
+					
 					 List<TrainLineSubInfo> subInfoList = lineInfo.getTrainSubInfoList();
 					 if(subInfoList != null && subInfoList.size()>0){
-						 List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
+						
 						 for(TrainLineSubInfo subInfo :subInfoList){
+							 TrainInfoDto dto = new TrainInfoDto();
+							 List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
 							 dto.setTrainName(subInfo.getTrainNbr());
 							 dto.setStartStn(subInfo.getStartStn());
 							 dto.setEndStn(subInfo.getEndStn());
@@ -457,14 +460,14 @@ public class CrossController {
 							 
 							 trainStns.add(stnDtoStart);
 							 trainStns.add(stnDtoEnd);
-							 
-							 
+							 dto.setTrainStns(trainStns);
+							 trains.add(dto);
 						 }
 						 
-						 dto.setTrainStns(trainStns);
+						 
 					 }
 					 
-					 trains.add(dto);
+					
 					 //组装接续关系
 					 List<CrossRelationDto> jxgx = getJxgx(trains);
 					 crossMap.put("jxgx", jxgx);

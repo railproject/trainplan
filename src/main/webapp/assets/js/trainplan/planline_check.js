@@ -20,11 +20,17 @@ function ApplicationModel() {
 
     self.allBtn = ko.observable(false);
 
-    // 记录当前多少条计划正在校验，校验开始时赋值计划列表长度。每个校验请求返回的时候减一，为0时表示校验完毕
-    self.nbr = 0;
+    self.currCheckNbr = ko.observable(0);
+
+    self.checkStatus = ko.computed(function() {
+        return "正在校验： " + self.currCheckNbr() + " / " + self.tableModel().planList().length;
+    })
 
     self.canCheckLev1 = ko.computed(function() {
         var flag = false;
+        if(self.currCheckNbr() > 0 && self.currCheckNbr() != self.tableModel().planList().length) {
+            return flag;
+        }
         ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
             if(plan.needLev1()) {
                 flag = true;;
@@ -46,9 +52,7 @@ function ApplicationModel() {
     });
 
     self.autoCheck = function() {
-        $checkBtn = $(this);
-        $checkBtn.prop( "disabled", true )
-        self.nbr = self.tableModel().planList();
+        self.currCheckNbr(0);
         ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
             if(plan.dailyLineFlag() != "已上图" || !plan.dailyLineId()) {
                 plan.isTrainInfoMatch(-1);
@@ -66,16 +70,10 @@ function ApplicationModel() {
                 }).fail(function() {
 
                 }).always(function() {
-                    self.nbr = self.nbr - 1;
-                    if(self.nbr == 0) {
-                        $checkBtn.prop( "disabled", false )
-                    }
+                    self.currCheckNbr(self.currCheckNbr() + 1);
                 })
             }
         });
-        if(self.nbr == 0) {
-            $checkBtn.prop( "disabled", false )
-        }
     }
 
 
