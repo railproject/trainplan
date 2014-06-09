@@ -246,25 +246,25 @@
     </select>
 
     <select id="getStationListForPlanCrossId" parameterType="map" resultType="map">
-    select b.START_STN STNNAME,'0' stationType,
+    select b.START_STN STNNAME,'0' stationType,'1' sort,
 DECODE(b.start_bureau,#{stnBureau},1,0) isCurrentBureau
 from PLAN_TRAIN b,
 (select a.PLAN_TRAIN_ID from PLAN_TRAIN a where a.PLAN_CROSS_ID =#{planCrossId} group by a.PLAN_TRAIN_ID) a
 where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID
 
 UNION
-select c.CNAME,'FJK' stationType , 
+select c.CNAME,'FJK' stationType ,'2' sort,
 DECODE(a.stn_bureau,#{stnBureau},1,0) isCurrentBureau
 from JHPT_JCSJ.ZDFJK c,
 (select d.STN_NAME,d.stn_bureau from PLAN_TRAIN a , plan_train_stn d where a.PLAN_CROSS_ID =#{planCrossId} and a.plan_train_id = d.plan_train_id group by d.STN_NAME,d.stn_bureau) a
 where c.CNAME = a.STN_NAME
 
 UNION
-select b.END_STN STNNAME,'0' stationType,
+select b.END_STN STNNAME,'0' stationType,'3' sort,
 DECODE(b.end_bureau,#{stnBureau},1,0) isCurrentBureau
 from PLAN_TRAIN b,
 (select a.PLAN_TRAIN_ID from PLAN_TRAIN a where a.PLAN_CROSS_ID =#{planCrossId} group by a.PLAN_TRAIN_ID) a
-where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID
+where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID order by sort
     </select>
     
     <select id="getUnitCrossInfoForCrossId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">

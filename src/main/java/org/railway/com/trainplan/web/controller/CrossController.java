@@ -483,7 +483,32 @@ public class CrossController {
 				 //组装坐标
 				 //获取stationList
 				 List<Map<String,Object>> stationList = crossService.getStationListForPlanCrossId(planCrossId,bureauShortName);
-				 grid = getPlanLineGridForPlanLine(stationList,startTime,endTime);
+				 
+				 List<Map<String,Object>> stationTempList = new ArrayList<Map<String,Object>>();
+				 
+				 /**
+				  * StringUtil.objToStr(map.get("STNNAME")),
+				    			((BigDecimal)map.get("ISCURRENTBUREAU")).intValue(),
+				    			StringUtil.objToStr(map.get("STATIONTYPE"))
+				  */
+				 Map<String,Object> startMap = null;
+				
+				 if(stationList != null && stationList.size() > 0){
+					 for(Map<String,Object> map : stationList){
+						 String stnName = StringUtil.objToStr(map.get("STNNAME"));
+						
+						 String sort = StringUtil.objToStr(map.get("SORT"));
+						 if("1".equals(sort) && startMap == null){
+							 startMap = map;
+							 stationTempList.add(startMap);
+						 }else if("2".equals(sort)){
+							 stationTempList.add(map);
+						 }else if("3".equals(sort) && !stnName.equals(StringUtil.objToStr(startMap.get("STNNAME"))) ){
+							 stationTempList.add(map);
+						 }
+					 }
+				 }
+				 grid = getPlanLineGridForPlanLine(stationTempList,startTime,endTime);
 				 String myJlData = objectMapper.writeValueAsString(dataList);
 			     //图形数据
 				 Map<String,Object> dataMap = new HashMap<String,Object>();
