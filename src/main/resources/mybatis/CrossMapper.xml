@@ -528,7 +528,7 @@ start with a.ROWID in(select min(ROWID) startTime from PLAN_TRAIN b where  b.pla
 PLAN_TRAIN_STN t1
 where (t1.STN_NAME = T2.startStn OR t1.STN_NAME = T2.endStn  OR (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE  T3.CNAME=t1.stn_name) >0) AND 
 t2.planTrainId = t1.plan_train_id 
-ORDER BY t2.groupSerialNbr, T2.startTime
+ORDER BY t2.groupSerialNbr, T1.arr_time
 
  </select>
  

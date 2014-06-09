@@ -422,8 +422,8 @@ public class CrossController {
 			String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
 			String startTime = StringUtil.objToStr(reqMap.get("startTime"));
 			String endTime = StringUtil.objToStr(reqMap.get("endTime"));
-			//ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-			String bureauShortName = "京";//user.getBureauShortName();
+			ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+			String bureauShortName = user.getBureauShortName();
 			//System.err.println("planCrossId==" + planCrossId);
 			//System.err.println("bureauShortName==" + bureauShortName);
 			//查询列车运行线信息
