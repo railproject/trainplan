@@ -57,6 +57,14 @@ var all_role = "<%=userRolesString %>";
 	border: 1px solid #dddddd;
 	margin-left: -1px;
 }
+.ckbox.disabled{
+	cursor: not-allowed;
+	pointer-events: none;
+	opacity: 0.65;
+	filter: alpha(opacity=65);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
  </style>
 
  
@@ -177,8 +185,8 @@ var all_role = "<%=userRolesString %>";
 																<tbody data-bind="foreach: planCrossRows">
 																	<tr data-bind=" visible: visiableRow" >
 																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
-																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
-																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, style:{color: $parent.currentCross().planCrossId == planCrossId  ? 'blue':''}, click: $parent.showTrains"></td>
+																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 0 ? 'ckbox disabled' : ''},event:{change: $parent.selectCross}, checked: selected"></td>
+																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().baseCrossId == baseCrossId  ? 'blue':''}, click: $parent.showTrains"></td>
 																	</tr> 
 																</tbody>  					 
 															</table>

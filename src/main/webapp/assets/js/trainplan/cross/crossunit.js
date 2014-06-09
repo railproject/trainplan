@@ -471,8 +471,12 @@ function CrossModel() {
 //		diag.show();
 	};
 	
-	self.showCrossMapDlg = function(){ 
+	self.showCrossMapDlg = function(n, e){ 
 		if(self.currentCross().unitCrossId == '' || self.currentCross().unitCrossId == undefined || self.currentCross().unitCrossId == "undefined"){
+			if(e.target.checked){
+				e.target.checked = false;
+				showErrorDialog("没有选中记录");
+			}  
 			return;
 		}
 		var unitCrossId = self.currentCross().unitCrossId; 

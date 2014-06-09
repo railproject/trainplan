@@ -438,8 +438,12 @@ function CrossModel() {
 //		diag.show();
 	};
 	
-	self.showCrossMapDlg = function(){ 
-		if(!self.currentCross().crossId || self.currentCross().crossId == ''){
+	self.showCrossMapDlg = function(n, e){ 
+		if(!self.currentCross().crossId || self.currentCross().crossId == ''){ 
+			if(e.target.checked){
+				e.target.checked = false;
+				showErrorDialog("没有选中记录");
+			} 
 			return;
 		}
 		var crossId = self.currentCross().crossId; 

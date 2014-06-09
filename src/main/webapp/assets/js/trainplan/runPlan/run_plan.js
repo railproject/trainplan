@@ -132,32 +132,45 @@ function CrossModel() {
 		self.currentCross(cross); 
 	};
 	
-	self.selectCross = function(row){
-//		self.crossAllcheckBox();
-		if(row.selected() == 0){
+	
+	self.selectCrosses = function(){
+//		self.crossAllcheckBox(); 
+		$.each(self.crossRows.rows(), function(i, crossRow){ 
+			if(self.crossAllcheckBox() == 1){
+				crossRow.selected(0);
+				self.searchModle().activeFlag(0);
+			}else{
+				if(hasActiveRole(crossRow.tokenVehBureau())){ 
+					crossRow.selected(1); 
+					self.searchModle().activeFlag(1);
+				}
+			}  
+		});  
+	};
+	
+	self.selectCross = function(row){ 
+//		self.crossAllcheckBox();  
+		if(row.selected() == 0){  
 			self.crossAllcheckBox(1);  
-			$.each(self.planCrossRows(), function(i, crossRow){  
-				if(crossRow.selected() != 1 && crossRow != row){
+			self.searchModle().activeFlag(1);
+			$.each(self.crossRows.rows(), function(i, crossRow){  
+				if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
 					self.crossAllcheckBox(0);
 					return false;
 				}  
 			}); 
 		}else{
+			self.searchModle().activeFlag(0);  
 			self.crossAllcheckBox(0);
+			$.each(self.crossRows.rows(), function(i, crossRow){  
+				if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
+					self.searchModle().activeFlag(1);
+					return false;
+				}  
+			}); 
 		} 
 	};
 	
-	self.selectCrosses = function(){
-//		self.crossAllcheckBox(); 
-		$.each(self.planCrossRows(), function(i, crossRow){  
-			if(self.crossAllcheckBox() == 1){
-				crossRow.selected(0); 
-			}else{
-				crossRow.selected(1); 
-				
-			} 
-		}); 
-	};
 	
 	// cross基础信息中的下拉列表  
 	self.loadBureau = function(bureaus){   
@@ -899,6 +912,7 @@ function CrossModel() {
 			}); 
 	};
 	self.showTrains = function(row) {  
+		self.setCurrentCross(row);
 		commonJsScreenLock();
 		self.createCrossMap(row);
 		self.trains.remove(function(item) {
@@ -978,7 +992,7 @@ function CrossModel() {
 function searchModle(){
 	self = this;  
 	 
-	self.activeFlag = ko.observable(0);
+	self.activeFlag = ko.observable(0);  
 	
 	self.drawFlags =ko.observableArray(['0']); 
 	
@@ -1113,6 +1127,10 @@ function CrossRow(data) {
 	self.startBureau = ko.observable(data.startBureau); 
 	//车辆担当局 
 	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
+	self.activeFlag = ko.computed(function(){
+		return hasActiveRole(data.tokenVehBureau);
+	});  
+	
 	
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);

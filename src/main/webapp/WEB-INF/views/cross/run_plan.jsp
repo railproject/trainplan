@@ -50,6 +50,16 @@ var basePath = "<%=basePath %>";
 	border: 1px solid #dddddd;
 	margin-left: -1px;
 }
+
+
+.ckbox.disabled{
+	cursor: not-allowed;
+	pointer-events: none;
+	opacity: 0.65;
+	filter: alpha(opacity=65);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
  </style>
 
  
@@ -105,7 +115,7 @@ var basePath = "<%=basePath %>";
 															<table class="table table-bordered table-striped table-hover" 
 																id="cross_table_crossInfo"> 
 																<tbody data-bind="foreach: crossRows.rows">
-																	<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}, click: $parent.showTrains" >
+																	<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().planCrossId == planCrossId ? 'blue':''}, click: $parent.showTrains" >
 																		<td data-bind=" text: crossName , attr:{title: crossName}"></td>
 																	</tr> 
 																</tbody>  					 
