@@ -95,11 +95,11 @@ function CrossModel() {
 	};
 	
 	self.setCurrentCross = function(cross){
-		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
-			self.searchModle().activeFlag(1);  
-		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
-			self.searchModle().activeFlag(0); 
-		} 
+//		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
+//			self.searchModle().activeFlag(1);  
+//		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
+//			self.searchModle().activeFlag(0); 
+//		} 
 		self.currentCross(cross);
 		if(self.currentCross().crossId == ''){
 			return;
@@ -112,9 +112,9 @@ function CrossModel() {
 	};
 	
 	self.selectCross = function(row){ 
-//		self.crossAllcheckBox();
-		if(row.selected() == 0){
-			self.crossAllcheckBox(1);
+//		self.crossAllcheckBox(); 
+		if(row.selected() == 0){ 
+			self.crossAllcheckBox(1); 
 			$.each(self.crossRows.rows(), function(i, crossRow){ 
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
@@ -440,6 +440,9 @@ function CrossModel() {
 	};
 	
 	self.showCrossTrainTimeDlg = function(){   
+		if(self.currentTrain() == null){
+			return;
+		}
 		$("#cross_train_time_dlg").dialog({title: "详情时刻表     车次:" + self.currentTrain().trainNbr,draggable: true, resizable:true});
 		  
 	};

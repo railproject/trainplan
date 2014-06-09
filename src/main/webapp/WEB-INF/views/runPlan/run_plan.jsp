@@ -82,12 +82,12 @@ var all_role = "<%=userRolesString %>";
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													开始日期:</label>
 												<div class="pull-left" style="margin-left: 5px;">
-													<input type="text" class="form-control" style="width:80px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
+													<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 												</div>
-												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 33px;">
+												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 													截至日期:</label>
 												<div class="pull-left" style="margin-left: 5px; ">
-													<input type="text" class="form-control" style="width:80px;" placeholder="" id="runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
+													<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
 												</div> 
 											</div>   
 											<div class="row"  style="width: 100%; margin-top: 5px;">
@@ -96,7 +96,7 @@ var all_role = "<%=userRolesString %>";
 												<div class="pull-left" style="margin-left: 5px;">
 													<select style="width:60px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
 												</div>
-												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 40px;">
+												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 													始发路局:</label>
 												<div class="pull-left" style="margin-left: 5px; ">
 													<select style="width: 60px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
@@ -108,7 +108,7 @@ var all_role = "<%=userRolesString %>";
 												<div class="pull-left" style="margin-left: 5px;">
 												    <select  style="width:60px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
 												</div>
-												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 40px;">
+												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 													 审核状态:</label>
 												<div class="pull-left" style="margin-left: 5px;">
 													<select style="width:60px" id="input_cross_sure_flag"
@@ -125,7 +125,7 @@ var all_role = "<%=userRolesString %>";
 													<input type="text" class="form-control" style="width: 100px;"
 												 		 id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
 												</div> 
-												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 40px;" >
+												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;" >
 													生成状态:</label>
 												<div class="pull-left" style="margin-left: 5px;">
 													<select style="width:60px" id="input_cross_sure_flag"
@@ -178,7 +178,7 @@ var all_role = "<%=userRolesString %>";
 																	<tr data-bind=" visible: visiableRow" >
 																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
 																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
-																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}, click: $parent.showTrains"></td>
+																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, style:{color: $parent.currentCross().planCrossId == planCrossId  ? 'blue':''}, click: $parent.showTrains"></td>
 																	</tr> 
 																</tbody>  					 
 															</table>
@@ -224,17 +224,17 @@ var all_role = "<%=userRolesString %>";
 							 <div class="panel-body" >
 							      	<div class="row" style="margin:5px 0 10px 0;">
 								      <form class="form-inline" role="form">
-							              <div class="input-group">
+							              <!-- <div class="input-group">
 							                  <label class="margin-right-10">开始日期:</label>
 							                  <input type="text" class="form-control" style="width:120px;" placeholder="" id="canvas_runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 							                  <label class="margin-right-10">&nbsp;&nbsp;截至日期:</label>
 							                  <input type="text" class="form-control" style="width:120px;" placeholder="" id="canvas_runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
 								              <button class="btn btn-primary" type="button" id="canvas_event_btnQuery"><i class="fa fa-search"></i>查询</button>
-							              </div>
-							              <div class="row" style="margin:5px 0 10px 150px;"> 
-							                 <!--  <input type="hidden" value="0" data-bind="checked: searchModle().drawFlags">
+							              </div> -->
+							              <div class="row" style="margin:5px 0 10px 90px;"> 
+							                <input type="hidden" value="0" data-bind="checked: searchModle().drawFlags">
 							                  <input type="checkbox" style="margin-left:10px" value="FJK" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">分界口
-							                  <input type="checkbox" style="margin-left:10px" value="TZ" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">停站 -->
+							                  <!-- <input type="checkbox" style="margin-left:10px" value="TZ" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">停站 -->
 							                  <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>

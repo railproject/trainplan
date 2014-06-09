@@ -68,6 +68,12 @@ public class CrossInfo {
 	
 	private String planCrossId;
 	
+	public String getPlanCrossId() {
+		return planCrossId;
+	}
+	public void setPlanCrossId(String planCrossId) {
+		this.planCrossId = planCrossId;
+	}
 	public String getBaseCrossId() {
 		return baseCrossId;
 	}

@@ -120,22 +120,11 @@ function PageModle(pageSize, fun, jg){
 		self.currentPage(pageIndex);
 		self.currentIndex(pageIndex * self.pageSize());
 		self.loadFunc(self.currentIndex() + 1, self.currentIndex() + self.pageSize());  
-	}; 
+	};  
 	self.pageNbrChange = function(page, event){ 
 	    var keycode = (event.keyCode ? event.keyCode : event.which);  
-	    if(keycode == 13){ 
-	    	if(/[1-9]+/.test(event.target.value)){
-	    		self.loadPage(parseInt(event.target.value) - 1);
-	    	}else{
-	    		$(event.target).val(self.currentPage() + 1);
-	    	} 
-	    } 
-	};
-	self.pageNbrChange = function(page, event){ 
-	    var keycode = (event.keyCode ? event.keyCode : event.which);  
-	    var value = event.target.value;
-	    console.log(value);
-	    if(!(/[123456789]+/.test(value)) || (value < 0 || value > self.pageCount())){  
+	    var value = event.target.value; 
+	    if(!(/[123456789]+/.test(value)) || (value <= 0 || value > self.pageCount())){  
 	    	$(event.target).val(self.currentPage() + 1); 
     	} 
 	    if(keycode == 13){  
