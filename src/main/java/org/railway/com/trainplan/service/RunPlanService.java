@@ -19,6 +19,7 @@ import org.railway.com.trainplan.exceptions.*;
 import org.railway.com.trainplan.repository.mybatis.*;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +54,9 @@ public class RunPlanService {
     
     @Autowired
     private BaseDao baseDao;
+
+    @Value("#{restConfig['plan.generatr.thread']}")
+    private String threadNbr;
 
     public List<Map<String, Object>> findRunPlan(String date, String bureau, int type) {
         logger.debug("findRunPlan::::");
@@ -327,7 +331,7 @@ public class RunPlanService {
      * @return 生成了多少个plancross的计划
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(50);
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(this.threadNbr));
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
@@ -339,29 +343,6 @@ public class RunPlanService {
         }
         return planCrossList.size();
     }
-
-    public List<String> generateRunPlan(List<String> planCrossIdList, String startDate, int days, Map<String, Object> callBackParams) {
-        ExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
-        List<String> planCrossIds = Lists.newArrayList();
-        try{
-            List<PlanCross> planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
-            for(PlanCross planCross: planCrossList) {
-//                executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
-//                ListenableFuture futureTask = executorService.submit(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
-//                futureTask.addListener(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                    }
-//                }, executorService);
-                planCrossIds.add(planCross.getPlanCrossId());
-            }
-        } finally {
-            executorService.shutdown();
-        }
-        return planCrossIds;
-    }
-
 
     class RunPlanGenerator implements Runnable {
 
