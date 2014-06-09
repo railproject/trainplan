@@ -34,18 +34,7 @@ function CrossModel() {
 	self.times = ko.observableArray();
 	
 	//车辆担当局
-	self.searchModle = ko.observable(new searchModle());
-	
-	self.selectCrosses = function(){
-//		self.crossAllcheckBox(); 
-		$.each(self.crossRows.rows(), function(i, crossRow){ 
-			if(self.crossAllcheckBox() == 1){
-				crossRow.selected(0);
-			}else{
-				crossRow.selected(1); 
-			} 
-		}); 
-	};
+	self.searchModle = ko.observable(new searchModle()); 
 	
 	self.clearData = function(){
 		 self.crossRows.clear(); 
@@ -135,11 +124,11 @@ function CrossModel() {
 	};
 	
 	self.setCurrentCross = function(cross){
-//		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
-//			self.searchModle().activeFlag(1);  
-//		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
-//			self.searchModle().activeFlag(0); 
-//		} 
+		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeCurrentCrossFlag() == 0){
+			self.searchModle().activeCurrentCrossFlag(1);  
+		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeCurrentCrossFlag() == 1){
+			self.searchModle().activeCurrentCrossFlag(0); 
+		} 
 		self.currentCross(cross);
 		if(self.searchModle().showCrossMap() == 1){
 			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + cross.unitCrossId);
@@ -151,20 +140,44 @@ function CrossModel() {
 		self.searchModle().filterTrainNbr(event.target.value.toUpperCase());
 	};
 	
-	self.selectCross = function(row){
-//		self.crossAllcheckBox();
-		if(row.selected() == 0){
-			self.crossAllcheckBox(1);
-			$.each(self.crossRows.rows(), function(i, crossRow){ 
-				if(crossRow.selected() != 1 && crossRow != row){
+	self.selectCrosses = function(){
+//		self.crossAllcheckBox(); 
+		$.each(self.crossRows.rows(), function(i, crossRow){ 
+			if(self.crossAllcheckBox() == 1){
+				crossRow.selected(0);
+				self.searchModle().activeFlag(0);
+			}else{
+				if(hasActiveRole(crossRow.tokenVehBureau())){ 
+					crossRow.selected(1); 
+					self.searchModle().activeFlag(1);
+				}
+			}  
+		});  
+	};
+	
+	self.selectCross = function(row){ 
+//		self.crossAllcheckBox();  
+		if(row.selected() == 0){  
+			self.crossAllcheckBox(1);  
+			self.searchModle().activeFlag(1);
+			$.each(self.crossRows.rows(), function(i, crossRow){  
+				if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
 					self.crossAllcheckBox(0);
 					return false;
 				}  
 			}); 
 		}else{
+			self.searchModle().activeFlag(0);  
 			self.crossAllcheckBox(0);
+			$.each(self.crossRows.rows(), function(i, crossRow){  
+				if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
+					self.searchModle().activeFlag(1);
+					return false;
+				}  
+			}); 
 		} 
 	};
+	
 	
 	// cross基础信息中的下拉列表  
 	self.loadBureau = function(bureaus){   
@@ -703,6 +716,8 @@ function searchModle(){
 	
 	self.activeFlag = ko.observable(0);
 	
+	self.activeCurrentCrossFlag = ko.observable(0);
+	
 	self.bureaus = ko.observableArray();  
 	self.startBureaus = ko.observableArray();
 	
@@ -811,6 +826,10 @@ function CrossRow(data) {
 	//车辆担当局 
 	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
 	
+	self.activeFlag = ko.computed(function(){
+		return hasActiveRole(data.tokenVehBureau);
+	});  
+	
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
 	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
@@ -909,6 +928,8 @@ function TrainRow(data) {
 					break;
 			}
 	});
+	
+	
 //	var highlingFlags = [{"value": -1, "text": ""},{"value": 0, "text": "普线"},{"value": 1, "text": "高线"},{"value": 2, "text": "混合"}];
 //	var sureFlags = [{"value": -1, "text": ""},{"value": "0", "text": "已审核"},{"value": 1, "text": "未审核"}];
 //	var highlingrules = [{"value": 1, "text": "平日"},{"value": 2, "text": "周末"},{"value": 3, "text": "高峰"}];

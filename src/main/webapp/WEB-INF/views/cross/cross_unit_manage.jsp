@@ -56,6 +56,15 @@
 	border: 1px solid #dddddd;
 	margin-left: -1px;
 }
+
+.ckbox.disabled{
+	cursor: not-allowed;
+	pointer-events: none;
+	opacity: 0.65;
+	filter: alpha(opacity=65);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
  </style>
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
@@ -192,7 +201,7 @@ console.log(all_role);
 																<table class="table table-bordered table-striped table-hover" >
 																	<tbody data-bind="foreach: crossRows.rows">
 																		<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().unitCrossId == unitCrossId ? 'blue':''}" >
-																			<td  align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
+																			<td  align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 0 ? 'ckbox disabled' : ''}, event:{change: $parent.selectCross}, checked: selected"></td>
 																			<td style="width: 10%" data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
 																			<td style="width: 58%" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
 																			<td  style="width:10%"  align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
@@ -530,7 +539,7 @@ console.log(all_role);
 									</div> 
 									  <a type="button" style="margin-left: 15px"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save" data-bind="attr:{class: $parent.searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'},click: $parent.saveCrossInfo"> 保存</a>
+										id="cross_train_save" data-bind="attr:{class: $parent.searchModle().activeCurrentCrossFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'},click: $parent.saveCrossInfo"> 保存</a>
 								</div>  
 							</div>
 							<!--col-md-3 col-sm-4 col-xs-4-->
@@ -549,10 +558,10 @@ console.log(all_role);
 									style="margin-left: 10px; margin-top: 5px;">
 									  <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_add" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'},click: showCrossTrainDlg">添加</a> <a type="button"
+										id="cross_train_add" data-bind="attr:{class: searchModle().activeCurrentCrossFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'},click: showCrossTrainDlg">添加</a> <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: showCrossTrainDlg"> 修改</a> <a type="button"
-										class="btn btn-success" data-toggle="modal" data-target="#" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}"
+										id="cross_train_save" data-bind="attr:{class: searchModle().activeCurrentCrossFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: showCrossTrainDlg"> 修改</a> <a type="button"
+										class="btn btn-success" data-toggle="modal" data-target="#" data-bind="attr:{class: searchModle().activeCurrentCrossFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}"
 										id="cross_train_delete">删除</a> 
 										 <a type="button"
 										class="btn btn-success" data-toggle="modal" data-target="#"

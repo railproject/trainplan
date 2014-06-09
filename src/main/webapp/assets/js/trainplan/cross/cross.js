@@ -45,11 +45,39 @@ function CrossModel() {
 		$.each(self.crossRows.rows(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0);
+				self.searchModle().activeFlag(0);
 			}else{
-				crossRow.selected(1); 
-			} 
-		}); 
+				if(hasActiveRole(crossRow.tokenVehBureau())){ 
+					crossRow.selected(1); 
+					self.searchModle().activeFlag(1);
+				}
+			}  
+		});  
 	};
+	
+	self.selectCross = function(row){ 
+//		self.crossAllcheckBox();  
+		if(row.selected() == 0){  
+			self.crossAllcheckBox(1);  
+			self.searchModle().activeFlag(1);
+			$.each(self.crossRows.rows(), function(i, crossRow){  
+				if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
+					self.crossAllcheckBox(0);
+					return false;
+				}  
+			}); 
+		}else{
+			self.searchModle().activeFlag(0);  
+			self.crossAllcheckBox(0);
+			$.each(self.crossRows.rows(), function(i, crossRow){  
+				if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
+					self.searchModle().activeFlag(1);
+					return false;
+				}  
+			}); 
+		} 
+	};
+	
 	
 	self.trainNbrChange = function(n,  event){
 		self.searchModle().filterTrainNbr(event.target.value.toUpperCase());
@@ -95,11 +123,11 @@ function CrossModel() {
 	};
 	
 	self.setCurrentCross = function(cross){
-//		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
-//			self.searchModle().activeFlag(1);  
-//		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
-//			self.searchModle().activeFlag(0); 
-//		} 
+		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeCurrentCrossFlag() == 0){
+			self.searchModle().activeCurrentCrossFlag(1);  
+		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeCurrentCrossFlag() == 1){
+			self.searchModle().activeCurrentCrossFlag(0); 
+		} 
 		self.currentCross(cross);
 		if(self.currentCross().crossId == ''){
 			return;
@@ -111,21 +139,7 @@ function CrossModel() {
 		}
 	};
 	
-	self.selectCross = function(row){ 
-//		self.crossAllcheckBox(); 
-		if(row.selected() == 0){ 
-			self.crossAllcheckBox(1); 
-			$.each(self.crossRows.rows(), function(i, crossRow){ 
-				if(crossRow.selected() != 1 && crossRow != row){
-					self.crossAllcheckBox(0);
-					return false;
-				}  
-			}); 
-		}else{
-			self.crossAllcheckBox(0);
-		} 
-	};
-	
+
 	// cross基础信息中的下拉列表  
 	self.loadBureau = function(bureaus){   
 		for ( var i = 0; i < bureaus.length; i++) {  
@@ -703,6 +717,8 @@ function searchModle(){
 	 */
 	self.activeFlag = ko.observable(0);
 	
+	self.activeCurrentCrossFlag = ko.observable(0);
+	
 	self.bureaus = ko.observableArray();  
 	self.startBureaus = ko.observableArray();
 	
@@ -818,6 +834,10 @@ function CrossRow(data) {
 	//车辆担当局 
 	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
 	
+	self.activeFlag = ko.computed(function(){
+		return hasActiveRole(data.tokenVehBureau);
+	});  
+	
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
 	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
@@ -896,7 +916,8 @@ function TrainRow(data) {
 	 
 	self.spareApplyFlage =  ko.computed(function(){  
 		return data.spareApplyFlage == 1 ? "是" : "";
-	});
+	}); 
+	
 	//SPARE_APPLY_FLAG
 	//self.highlineFlag = data.highlineFlag ;//HIGHLINE_FLAG 
 	self.highlineFlag = ko.computed(function(){  
