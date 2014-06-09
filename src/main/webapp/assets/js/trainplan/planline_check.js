@@ -257,7 +257,7 @@ function ParamModel(tableModel) {
                     data[i] = resp[i].count;
                     dataArrayFinal[i] = new Array(name[i],data[i]);
                 }
-                drawPie($("#chart_01"), '开行/热备/停运统计', dataArrayFinal, [
+                drawPie($("#chart_01"), '开行状态', dataArrayFinal, [
                     '#008000',
                     '#C80000',
                     '#808080',
@@ -285,7 +285,7 @@ function ParamModel(tableModel) {
                     data[i] = resp[i].count;
                     dataArrayFinal[i] = new Array(name[i],data[i]);
                 }
-                drawPie($("#chart_02"), '客运计划已上图/未上图统计', dataArrayFinal, [
+                drawPie($("#chart_02"), '上图状态', dataArrayFinal, [
                     '#008000',
                     '#C80000',
                     '#C800C8'
@@ -313,7 +313,7 @@ function ParamModel(tableModel) {
                         data[i] = resp[i].count;
                         dataArrayFinal[i] = new Array(name[i],data[i]);
                     }
-                    drawPie($("#chart_03"), '已审核/未审核', dataArrayFinal, [
+                    drawPie($("#chart_03"), '审核状态', dataArrayFinal, [
                         '#008000',
                         '#C80000'
                     ]);
@@ -339,7 +339,7 @@ function ParamModel(tableModel) {
                         data[i] = resp[i].count;
                         dataArrayFinal[i] = new Array(name[i],data[i]);
                     }
-                    drawPie($("#chart_04"), '已审核/未审核', dataArrayFinal, [
+                    drawPie($("#chart_04"), '审核状态', dataArrayFinal, [
                         '#008000',
                         '#C80000'
                     ]);
