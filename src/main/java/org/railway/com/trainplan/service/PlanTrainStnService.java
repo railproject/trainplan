@@ -84,11 +84,12 @@ public class PlanTrainStnService {
      * runDate :格式：yyyyMMdd
      */
   
-    public  List<ParamDto>  getTotalTrains(String runDate,String startBureauFull){
+    public  List<ParamDto>  getTotalTrains(String runDate,String startBureauFull,String trainNbr){
     	    List<ParamDto>  list = new ArrayList<ParamDto>();
     	    Map<String,String> paramMap = new HashMap<String,String>();
     	    paramMap.put("runDate", runDate);
     	    paramMap.put("startBureauFull",startBureauFull );
+    	    paramMap.put("trainNbr", trainNbr);
     	    List<Map<String,Object>> mapList = baseDao.selectListBySql(Constants.TRAINPLANDAO_GET_TOTALTRAINS, paramMap);
     	    if(mapList != null && mapList.size() > 0){
     	    	 //System.err.println("mapList.size===" + mapList.size());

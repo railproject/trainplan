@@ -38,7 +38,7 @@ public class MessageHandler implements MessageListener{
 				 String resultString = (String)result.get("result");
 				 JSONObject json = new JSONObject();
 				 JSONObject result1 = json.fromObject(resultString);
-				 System.err.println("result1==" + result1);
+				 //System.err.println("result1==" + result1);
 				// Map<String,Object> result1 = mapper.readValue(resultString, Map.class);
 				 if(result1 != null && result1.size()>0){
 					 String code = StringUtil.objToStr(result.get("code"));

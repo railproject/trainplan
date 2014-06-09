@@ -422,8 +422,8 @@ public class CrossController {
 			String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
 			String startTime = StringUtil.objToStr(reqMap.get("startTime"));
 			String endTime = StringUtil.objToStr(reqMap.get("endTime"));
-			ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-			String bureauShortName = user.getBureauShortName();
+			//ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+			String bureauShortName = "京";//user.getBureauShortName();
 			//System.err.println("planCrossId==" + planCrossId);
 			//System.err.println("bureauShortName==" + bureauShortName);
 			//查询列车运行线信息
@@ -490,8 +490,8 @@ public class CrossController {
 				 String gridStr = objectMapper.writeValueAsString(grid);
 				 dataMap.put("myJlData",myJlData);
 				 dataMap.put("gridData", gridStr);
-				 //System.err.println("myJlData==" + myJlData);
-				 //System.err.println("gridStr==" + gridStr);
+				 System.err.println("myJlData==" + myJlData);
+				 System.err.println("gridStr==" + gridStr);
 				result.setData(dataMap);
 				
 			}
