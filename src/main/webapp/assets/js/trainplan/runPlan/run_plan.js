@@ -860,7 +860,7 @@ function CrossModel() {
 //		 var planStartDate = self.searchModle().planStartDate();
 //		
 //		 var planEndDate = self.searchModle().planEndDate();
-		 
+		self.runPlanCanvasPage.clearChart();	//清除画布
 		 var planStartDate = $("#runplan_input_startDate").val();
 			
 		 var planEndDate =  $("#runplan_input_endDate").val();
