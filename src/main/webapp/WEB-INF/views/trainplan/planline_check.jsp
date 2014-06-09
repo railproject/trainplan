@@ -110,13 +110,13 @@
                                         <th rowspan="2" class="text-center">终到站</th>
                                         <th rowspan="2" class="text-center">终到时间</th>
                                         <th rowspan="2" class="text-center">是否上图</th>
-                                        <th colspan="3" class="text-center">校验项</th>
+                                        <th colspan="2" class="text-center">校验项</th>
 
                                     </tr>
                                     <tr>
                                         <th class="text-center">列车</th>
                                         <th class="text-center">时刻</th>
-                                        <th class="text-center">经由</th>
+                                        <%--<th class="text-center">经由</th>--%>
                                     </tr>
                                     </thead>
                                     <tbody data-bind="foreach: planList">
@@ -142,9 +142,9 @@
                                         <td class="text-center">
                                             <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTimeTableMatchClass, text: isTimeTableMatchText, click: showTimeTableComparePanel"></button>
                                         </td>
-                                        <td class="text-center">
+                                        <%--<td class="text-center">
                                             <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isRoutingMatchClass, text: isRoutingMatchText"></button>
-                                        </td>
+                                        </td>--%>
                                     </tr>
                                     </tbody>
                                 </table>
