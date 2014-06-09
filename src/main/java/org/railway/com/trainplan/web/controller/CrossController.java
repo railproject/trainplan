@@ -490,8 +490,8 @@ public class CrossController {
 				 String gridStr = objectMapper.writeValueAsString(grid);
 				 dataMap.put("myJlData",myJlData);
 				 dataMap.put("gridData", gridStr);
-				 System.err.println("myJlData==" + myJlData);
-				 System.err.println("gridStr==" + gridStr);
+				 //System.err.println("myJlData==" + myJlData);
+				 //System.err.println("gridStr==" + gridStr);
 				result.setData(dataMap);
 				
 			}
