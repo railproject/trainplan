@@ -649,11 +649,13 @@ public class CrossService{
 	/**
 	 * 通过crossid查询crosstrainInfo信息
 	 * @param unitCrossId
+	 * @param bureauShortName 所属局简称
 	 * @return
 	 */
-	public List<TrainLineInfo> getTrainPlanLineInfoForPlanCrossId(String planCrossId){
+	public List<TrainLineInfo> getTrainPlanLineInfoForPlanCrossId(String planCrossId,String bureauShortName){
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("planCrossId", planCrossId);
+		paramMap.put("bureauShortName", bureauShortName);
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINPLANLINE_INFO_FOR_PLANCROSSID, paramMap);
 	}
 	
@@ -662,8 +664,11 @@ public class CrossService{
 	 * @param planCrossId
 	 * @return
 	 */
-	public List<String> getStationListForPlanCrossId(String planCrossId){
-		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_STATIONLIST_FOR_PLANCROSSID, planCrossId);
+	public List<Map<String,Object>> getStationListForPlanCrossId(String planCrossId,String stnBureau){
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("planCrossId",planCrossId );
+		reqMap.put("stnBureau",stnBureau );
+		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_STATIONLIST_FOR_PLANCROSSID, reqMap);
 	}
 	
 	

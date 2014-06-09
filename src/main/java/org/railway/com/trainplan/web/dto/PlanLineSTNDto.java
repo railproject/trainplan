@@ -30,6 +30,7 @@ public class PlanLineSTNDto {
     private int psg;
 
     private boolean owner;
+    private String stationType;
 
     public PlanLineSTNDto(){}
     public PlanLineSTNDto(Map<String, Object> map) {
@@ -68,7 +69,13 @@ public class PlanLineSTNDto {
         this.owner = MapUtils.getString(map, "STN_BUREAU", "").equals(bureau);
     }
 
-    public String getId() {
+    public String getStationType() {
+		return stationType;
+	}
+	public void setStationType(String stationType) {
+		this.stationType = stationType;
+	}
+	public String getId() {
         return id;
     }
 

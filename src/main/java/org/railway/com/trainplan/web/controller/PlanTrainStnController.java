@@ -189,9 +189,9 @@ public class PlanTrainStnController {
 		List<UnitCrossTrainInfo>  list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
 		result.setData(list);*/
 		
-		String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
+		/*String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
 		List<TrainLineInfo>  list = crossService.getTrainPlanLineInfoForPlanCrossId(planCrossId);
-		result.setData(list);
+		result.setData(list);*/
 		
 		
 		//List<String> list = crossService.getStationListForPlanCrossId(planCrossId);

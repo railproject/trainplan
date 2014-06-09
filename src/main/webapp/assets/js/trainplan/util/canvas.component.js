@@ -53,7 +53,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		//解析生成新的纵坐标数组   判断是否要屏蔽部分车站数据，如：只绘制起止及分界口、绘制起止及停靠站等   
 		if (expandObj && expandObj.stationTypeArray && expandObj.stationTypeArray!="undefine") {
 			for(var i=0, _len=stnArray.length; i <_len; i++) {
-				if ($.inArray(stnArray[i].stationType.toUpperCase(), expandObj.stationTypeArray) > -1) {
+				if ($.inArray(stnArray[i].stationType, expandObj.stationTypeArray) > -1) {
 					_stnArray.push(stnArray[i]);
 				}
 			}
@@ -62,6 +62,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		} else {
 			_stnArray = stnArray;
 		}
+
+		
+		
 		
 		if (expandObj && expandObj.xScale && !isNaN(expandObj.xScale)) {
 			_xScale = expandObj.xScale;
@@ -452,7 +455,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				var _obj = this.obj.trainStns[i];
 				
 				//屏蔽不在显示要求范围内的数据
-				if (_stationTypeArray.length>0 && $.inArray(_obj.stationType.toUpperCase(), _stationTypeArray) < 0) {
+				if (_stationTypeArray.length>0 && $.inArray(_obj.stationType, _stationTypeArray) < 0) {
 					continue;
 				}
 				
@@ -527,7 +530,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				var _obj = this.obj.trainStns[i];
 				
 				//屏蔽不在显示要求范围内的数据
-				if (_stationTypeArray.length>0 && $.inArray(_obj.stationType.toUpperCase(), _stationTypeArray) < 0) {
+				if (_stationTypeArray.length>0 && $.inArray(_obj.stationType, _stationTypeArray) < 0) {
 					continue;
 				}
 				

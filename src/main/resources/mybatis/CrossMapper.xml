@@ -245,12 +245,24 @@
         from base_cross where BASE_CROSS_ID=#{crossId}
     </select>
 
-    <select id="getStationListForPlanCrossId" parameterType="String" resultType="String">
-    select b.START_STN STN from PLAN_TRAIN b,
+    <select id="getStationListForPlanCrossId" parameterType="map" resultType="map">
+    select b.START_STN STNNAME,'0' stationType,
+DECODE(b.start_bureau,#{stnBureau},1,0) isCurrentBureau
+from PLAN_TRAIN b,
 (select a.PLAN_TRAIN_ID from PLAN_TRAIN a where a.PLAN_CROSS_ID =#{planCrossId} group by a.PLAN_TRAIN_ID) a
 where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID
+
 UNION
-select b.END_STN STN from PLAN_TRAIN b,
+select c.CNAME,'FJK' stationType , 
+DECODE(a.stn_bureau,#{stnBureau},1,0) isCurrentBureau
+from JHPT_JCSJ.ZDFJK c,
+(select d.STN_NAME,d.stn_bureau from PLAN_TRAIN a , plan_train_stn d where a.PLAN_CROSS_ID =#{planCrossId} and a.plan_train_id = d.plan_train_id group by d.STN_NAME,d.stn_bureau) a
+where c.CNAME = a.STN_NAME
+
+UNION
+select b.END_STN STNNAME,'0' stationType,
+DECODE(b.end_bureau,#{stnBureau},1,0) isCurrentBureau
+from PLAN_TRAIN b,
 (select a.PLAN_TRAIN_ID from PLAN_TRAIN a where a.PLAN_CROSS_ID =#{planCrossId} group by a.PLAN_TRAIN_ID) a
 where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID
     </select>
@@ -465,25 +477,56 @@ ORDER BY A.BASE_CROSS_ID,B.TRAIN_SORT,C.STN_SORT
 	        <result column="endTime" property="endTime"/>
 	        <result column="startStn" property="startStn"/>
 	        <result column="endStn" property="endStn"/>
+            <collection property="trainStaionList" resultMap="trainSubInfoTime"/>
     </resultMap>
+ 
+    <resultMap id="trainSubInfoTime" type="org.railway.com.trainplan.entity.TrainLineSubInfoTime">
+	        <id column="plan_train_stn_id" property="planTrainStnId"/>
+	        <result column="stationFlag" property="stationFlag"/>
+	        <result column="stnName" property="stnName"/>
+	        <result column="stnSort" property="stnSort"/>
+	        <result column="arrTime" property="arrTime"/>
+	        <result column="dptTime" property="dptTime"/>
+    </resultMap>
+     
+    
 
  <select id="getTrainPlanLineInfoForPlanCrossId"  parameterType="map" resultMap="trainPlanLine">
- select plan_cross_id as planCrossId,
+ SELECT * FROM (
+ select 
+case 
+when to_char(t1.arr_time,'yyyy-MM-dd hh24:mi:SS')=to_char(t1.dpt_time,'yyyy-MM-dd hh24:mi:SS') then 
+  (case when t1.stn_name=t2.startStn or t1.stn_name=t2.endStn then '0' WHEN (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE T3.CNAME=t1.stn_name) >0 THEN 'FJK' else 'BT' END)
+ELSE case WHEN (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE T3.CNAME=t1.stn_name) >0 THEN 'FJK' ELSE 'TZ'  END
+end stationFlag,
 
-group_serial_nbr as groupSerialNbr,
-train_nbr as trainNbr,
+t1.stn_sort as stnSort,
+t1.stn_bureau as stnBureau,
+t1.stn_name as stnName,
+t1.PLAN_TRAIN_STN_ID,
+to_char(t1.arr_time,'yyyy-MM-dd hh24:mi:SS') as arrTime,
+to_char(t1.dpt_time,'yyyy-MM-dd hh24:mi:SS') as dptTime,
 
-train_sort as trainSort,
-to_char(start_time,'yyyy-MM-dd hh24:mi:SS') as startTime,
-to_char(end_time,'yyyy-MM-dd hh24:mi:SS') as endTime,
-start_stn as startStn,
-end_stn as endStn,
+
+DECODE(t1.stn_bureau,#{bureauShortName},1,0) isCurrentBureau,
+t2.*
+from 
+(select a.plan_cross_id as planCrossId,
+a.group_serial_nbr as groupSerialNbr,
+a.train_nbr as trainNbr,
+a.train_sort as trainSort,
+to_char(a.start_time,'yyyy-MM-dd hh24:mi:SS') as startTime,
+to_char(a.end_time,'yyyy-MM-dd hh24:mi:SS') as endTime,
+a.start_stn as startStn,
+a.end_stn as endStn,
 a.plan_train_id as planTrainId,
-pre_train_id as preTrainId,
-next_train_id as nextTrainId
+a.pre_train_id as preTrainId,
+a.next_train_id as nextTrainId
 from PLAN_TRAIN a
-where 1=1 start with a.ROWID in(select min(ROWID) startTime from PLAN_TRAIN b 
-where  b.plan_cross_id = #{planCrossId} group by b.GROUP_SERIAL_NBR) connect by prior a.PLAN_TRAIN_ID = a.PRE_TRAIN_ID
+start with a.ROWID in(select min(ROWID) startTime from PLAN_TRAIN b where  b.plan_cross_id = #{planCrossId} group by b.GROUP_SERIAL_NBR) connect by prior a.PLAN_TRAIN_ID = a.PRE_TRAIN_ID
+)t2,
+PLAN_TRAIN_STN t1
+where t2.planTrainId = t1.plan_train_id) WHERE stationflag in('0','FJK')
  
  
  </select>

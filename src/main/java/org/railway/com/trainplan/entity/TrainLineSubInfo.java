@@ -1,5 +1,8 @@
 package org.railway.com.trainplan.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TrainLineSubInfo {
 
 	private String planTrainId;
@@ -9,8 +12,15 @@ public class TrainLineSubInfo {
 	private String endTime;
 	private String startStn;
 	private String endStn;
+	private List<TrainLineSubInfoTime> trainStaionList = new ArrayList<TrainLineSubInfoTime>();
 	
 	
+	public List<TrainLineSubInfoTime> getTrainStaionList() {
+		return trainStaionList;
+	}
+	public void setTrainStaionList(List<TrainLineSubInfoTime> trainStaionList) {
+		this.trainStaionList = trainStaionList;
+	}
 	public String getTrainNbr() {
 		return trainNbr;
 	}

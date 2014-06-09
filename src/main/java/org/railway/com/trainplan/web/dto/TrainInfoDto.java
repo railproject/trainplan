@@ -12,13 +12,21 @@ public class TrainInfoDto {
 	public String endStn;
 	//始发时刻
 	public String startTime;
-	//终到时刻
+	
+	public String groupSerialNbr;
+
 	public String endTime;
 	public String startDate;
 	private String endDate;
 	public List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
 	
 	
+	public String getGroupSerialNbr() {
+		return groupSerialNbr;
+	}
+	public void setGroupSerialNbr(String groupSerialNbr) {
+		this.groupSerialNbr = groupSerialNbr;
+	}
 	public String getStartDate() {
 		return startDate;
 	}
