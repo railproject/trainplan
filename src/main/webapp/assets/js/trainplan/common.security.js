@@ -8,6 +8,8 @@ $(function(){
 	
 	if (currentLocation == topLocation) {
 		_self.location = getRootPath()+"/index";
+	} else if (currentLocation == "login") {
+		top.location.reload();
 	}
 
 });
