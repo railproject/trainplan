@@ -406,7 +406,7 @@ public class DateUtil {
 		//System.err.println("" + da.toString("yyyy-MM-dd"));
 		
 		//System.err.println(format(parseDate("2014-06-07 10:20:30"),"yyyy-MM-dd"));
-		System.err.println(da.toString("yyyy-MM-dd"));
+		//System.err.println(da.toString("yyyy-MM-dd"));
 		
 	}
 		

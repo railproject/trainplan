@@ -39,7 +39,7 @@ public class ConstructionController {
 	public Result getFullStationTrains(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			System.err.println("queryConstructionDetail~~reqMap="+reqMap);
+			//System.err.println("queryConstructionDetail~~reqMap="+reqMap);
 			 
 			String trainNbr="";
 			if(reqMap.get("trainNbr") !=null || !"".equals(reqMap.get("trainNbr").toString())) {
@@ -65,7 +65,7 @@ public class ConstructionController {
 	public Result createConstructionPlain(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			System.err.println("createConstructionPlain~~reqMap="+reqMap);
+			//System.err.println("createConstructionPlain~~reqMap="+reqMap);
 			String runDate="";
 			if(reqMap.get("runDate") ==null || "".equals(reqMap.get("runDate").toString())) {
 				runDate = DateUtil.format(new Date(), "yyyy-MM-dd");
@@ -104,7 +104,7 @@ public class ConstructionController {
 	public Result queryTrainForBureau(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			System.err.println("queryTrainForBureau~~reqMap="+reqMap);
+			//System.err.println("queryTrainForBureau~~reqMap="+reqMap);
 			String runDate="";
 			if(reqMap.get("runDate") ==null || "".equals(reqMap.get("runDate").toString())) {
 				runDate = DateUtil.format(new Date(), "yyyy-MM-dd");

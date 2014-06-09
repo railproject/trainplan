@@ -73,7 +73,7 @@ public class DayTrainPlanTask implements Callable<Map<String,Object>>{
 				count = completion.take().get();
 				
 				totalCount = totalCount + count;
-				System.err.print("count==" + count);
+				//System.err.print("count==" + count);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

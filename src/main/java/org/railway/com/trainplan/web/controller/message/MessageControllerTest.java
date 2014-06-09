@@ -61,9 +61,9 @@ public class MessageControllerTest {
 	@RequestMapping(value = "/sendMessage", method = RequestMethod.POST)
 	public void sendMessage(@RequestBody Map<String,String> reqMap){
 		try {
-			System.err.println("!!!!"+reqMap);
-			System.err.println("!!!!"+reqMap.get("message"));
-			System.err.println("!!!!"+reqMap.get("pageUrl"));
+			//System.err.println("!!!!"+reqMap);
+			//System.err.println("!!!!"+reqMap.get("message"));
+			//System.err.println("!!!!"+reqMap.get("pageUrl"));
 			  sendMsgService.sendMessage(reqMap.get("message"), reqMap.get("pageUrl"), "showMessage");
 		} catch (Exception e) {
 				// TODO Auto-generated catch block

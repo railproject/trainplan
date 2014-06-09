@@ -101,7 +101,7 @@ public class CrossService{
 		Map<String,Object> reqMap = new HashMap<String,Object>();
 		reqMap.put("trainCrossList",list );
 		int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_PLAN_CROSS_INFO, reqMap);
-		System.err.println("addPlanCrossInfo--count==" + count);
+		//System.err.println("addPlanCrossInfo--count==" + count);
 		return count;
 	}
 	/**

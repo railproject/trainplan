@@ -336,7 +336,7 @@ public class CrossInfo {
 		this.groupSerialNbr = groupSerialNbr;
 	}
 	public static void main(String args[]){
-		System.err.println(new Date());
+		//System.err.println(new Date());
 		
 	} 
 

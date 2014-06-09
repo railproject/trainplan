@@ -27,12 +27,12 @@ public class TrainsTask implements Callable<Integer>{
 	public Integer call() throws Exception{
 		List<TrainlineTemplateDto>  list = new ArrayList<TrainlineTemplateDto>();
 		
-			System.err.println("startNum==" + dayTaskDto.getRownumstart());
-			System.err.println("endNum==" + dayTaskDto.getRownumend());
-			System.err.println("************************");
+			//System.err.println("startNum==" + dayTaskDto.getRownumstart());
+			//System.err.println("endNum==" + dayTaskDto.getRownumend());
+			//System.err.println("************************");
 			//1、查询数据，并解析
 			list = trainInfoService.getTrainsAndTimesForList(dayTaskDto);
-			System.err.println("list.size==" + list.size());
+			//System.err.println("list.size==" + list.size());
 			//2、插入数据库
 			// 保存数据
 			trainInfoService.addTrainPlanLine(list);	

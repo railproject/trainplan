@@ -65,7 +65,7 @@ public class SendMsgService {
 		Browser.withAllSessionsFiltered(new ScriptSessionFilter() {
 			public boolean match(ScriptSession session) {
 				ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)session.getAttribute("userInfo");
-				System.err.println("!!!!!!!! session.getPage()="+session.getPage()+" session.username ="+user.getUsername());
+				//System.err.println("!!!!!!!! session.getPage()="+session.getPage()+" session.username ="+user.getUsername());
 				if ((pageUrl).equals(session.getPage()) && user!=null && user.getUsername().equals(username)) {
 					return true;
 				} else {

@@ -48,7 +48,7 @@ public class TreadService {
 		//final int totalCount = 2;
 		//final int totalCount = trainInfoService.getTrainsAndTimesCount(reqDto.getChartId(), reqDto.getOperation());
 		logger.info("traintotalCount===" + totalCount);
-		System.err.println("traintotalCount===" + totalCount);
+		//System.err.println("traintotalCount===" + totalCount);
 		
 		(new Thread() {
 			public void run() {
@@ -72,7 +72,7 @@ public class TreadService {
 						Map<String,Object> returnMap = pool.take().get();
 						String runDate = StringUtil.objToStr(returnMap.get("runDate"));
 						int count = (Integer)returnMap.get("totalCount");
-						System.err.println("dayTraincount===" + count);
+						//System.err.println("dayTraincount===" + count);
 						//推送某天结束的信息
 						quoteService.sendQuotes(runDate,dayCount, count, "plan.day.end");
 						//System.err.println("rundate==" + runDate);

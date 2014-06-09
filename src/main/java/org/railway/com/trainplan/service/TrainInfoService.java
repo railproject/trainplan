@@ -206,7 +206,7 @@ public class TrainInfoService {
 								map.put("trainStnList", subList);
 								//批量插入数据表train_plan_stn
 								int successCountStn = baseDao.insertBySql(Constants.TRAINPLANDAO_ADD_TRAIN_PLAN_STN, map);
-								System.err.println("count of inserting into train_plan_stn==" + successCountStn);
+								//System.err.println("count of inserting into train_plan_stn==" + successCountStn);
 									
 							}
 							

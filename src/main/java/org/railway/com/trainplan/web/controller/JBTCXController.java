@@ -52,7 +52,7 @@ public class JBTCXController {
 		public Result querySchemes(@RequestBody Map<String,Object> reqMap){
 			Result result = new Result();
 			try{
-				System.err.println("queryConstructionDetail~~reqMap="+reqMap);
+				//System.err.println("queryConstructionDetail~~reqMap="+reqMap);
 				  
 //				//路局全称
 //				String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
@@ -77,7 +77,7 @@ public class JBTCXController {
 	public Result queryTrains(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			System.err.println("queryConstructionDetail~~reqMap="+reqMap);
+			//System.err.println("queryConstructionDetail~~reqMap="+reqMap);
 			  
 //			//路局全称
 //			String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
@@ -97,7 +97,7 @@ public class JBTCXController {
 	public Result queryTrainTimes(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			System.err.println("queryTrainTimes~~reqMap="+reqMap);
+			//System.err.println("queryTrainTimes~~reqMap="+reqMap);
 			  
 //			//路局全称
 //			String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));

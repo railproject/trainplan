@@ -396,10 +396,10 @@ public class CrossController {
 					  //图形数据
 					  result.addObject("myJlData",myJlData);
 					  logger.debug("myJlData==" + myJlData);
-					  System.err.println("myJlData==" + myJlData);
+					  //System.err.println("myJlData==" + myJlData);
 					String gridStr = objectMapper.writeValueAsString(grid);
 					logger.debug("gridStr==" + gridStr);
-					System.err.println("gridStr==" + gridStr);
+					//System.err.println("gridStr==" + gridStr);
 					result.addObject("gridData",gridStr);
 
 				 }
@@ -424,8 +424,8 @@ public class CrossController {
 			String endTime = StringUtil.objToStr(reqMap.get("endTime"));
 			ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 			String bureauShortName = user.getBureauShortName();
-			System.err.println("planCrossId==" + planCrossId);
-			System.err.println("bureauShortName==" + bureauShortName);
+			//System.err.println("planCrossId==" + planCrossId);
+			//System.err.println("bureauShortName==" + bureauShortName);
 			//查询列车运行线信息
 			List<TrainLineInfo>  list = crossService.getTrainPlanLineInfoForPlanCrossId(planCrossId,bureauShortName);
 			List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
@@ -490,8 +490,8 @@ public class CrossController {
 				 String gridStr = objectMapper.writeValueAsString(grid);
 				 dataMap.put("myJlData",myJlData);
 				 dataMap.put("gridData", gridStr);
-				 System.err.println("myJlData==" + myJlData);
-				 System.err.println("gridStr==" + gridStr);
+				 //System.err.println("myJlData==" + myJlData);
+				 //System.err.println("gridStr==" + gridStr);
 				result.setData(dataMap);
 				
 			}
