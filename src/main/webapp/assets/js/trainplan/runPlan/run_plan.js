@@ -1,3 +1,4 @@
+var canvasData = {}; 
 $(function() { 
 	
 	var cross = new CrossModel();
@@ -102,21 +103,11 @@ function CrossModel() {
 	};
 	
 	self.dragRunPlan = function(n,event){
-		console.log(event.target);
 		$(event.target).dialog("open");
 		
 	};
 	
-	self.selectCrosses = function(){
-//		self.crossAllcheckBox(); 
-		$.each(self.planCrossRows(), function(i, crossRow){ 
-			if(self.crossAllcheckBox() == 1){
-				crossRow.selected(0);
-			}else{
-				crossRow.selected(1); 
-			} 
-		}); 
-	};
+
 	
 	self.loadStns = function(stns){ 
 		self.stns.remove(function(item) {
@@ -129,26 +120,23 @@ function CrossModel() {
 		};
 	};
 	self.setCurrentTrain = function(train){
-		console.log(train)
 		self.currentTrain(train); 
 	};
 	
 	self.setCurrentCross = function(cross){
-		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
-			self.searchModle().activeFlag(1);  
-		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
-			self.searchModle().activeFlag(0); 
-		} 
+//		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
+//			self.searchModle().activeFlag(1);  
+//		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
+//			self.searchModle().activeFlag(0); 
+//		} 
 		self.currentCross(cross); 
 	};
 	
 	self.selectCross = function(row){
 //		self.crossAllcheckBox();
-		console.log(row.selected());
 		if(row.selected() == 0){
-			self.crossAllcheckBox(1);
-			$.each(self.planCrossRows(), function(i, crossRow){ 
-				console.log("==="+ crossRow.selected());
+			self.crossAllcheckBox(1);  
+			$.each(self.planCrossRows(), function(i, crossRow){  
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
 					return false;
@@ -157,6 +145,18 @@ function CrossModel() {
 		}else{
 			self.crossAllcheckBox(0);
 		} 
+	};
+	
+	self.selectCrosses = function(){
+//		self.crossAllcheckBox(); 
+		$.each(self.planCrossRows(), function(i, crossRow){  
+			if(self.crossAllcheckBox() == 1){
+				crossRow.selected(0); 
+			}else{
+				crossRow.selected(1); 
+				
+			} 
+		}); 
 	};
 	
 	// cross基础信息中的下拉列表  
@@ -344,7 +344,8 @@ function CrossModel() {
 			self.runPlanCanvasPage.drawChart({
 					 xScale : currentXScale,			//x轴缩放比例
 					 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-					 yScale : currentYScale			//y轴缩放比例
+					 yScale : currentYScale,		//y轴缩放比例
+					 stationTypeArray:self.searchModle().drawFlags()
 				 });
 			
 		});
@@ -369,7 +370,8 @@ function CrossModel() {
 			self.runPlanCanvasPage.drawChart({
 				 xScale : currentXScale,			//x轴缩放比例
 				 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-				 yScale : currentYScale			//y轴缩放比例
+				 yScale : currentYScale,			//y轴缩放比例
+				 stationTypeArray:self.searchModle().drawFlags()
 			 });
 		});
 		//y放大2倍
@@ -392,7 +394,8 @@ function CrossModel() {
 			self.runPlanCanvasPage.drawChart({
 					 xScale : currentXScale,			//x轴缩放比例
 					 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-					 yScale : currentYScale			//y轴缩放比例
+					 yScale : currentYScale,			//y轴缩放比例
+					 stationTypeArray:self.searchModle().drawFlags()
 				 }); 
 		});
 		
@@ -416,7 +419,8 @@ function CrossModel() {
 			self.runPlanCanvasPage.drawChart({
 				 xScale : currentXScale,			//x轴缩放比例
 				 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-				 yScale : currentYScale			//y轴缩放比例
+				 yScale : currentYScale,			//y轴缩放比例
+				 stationTypeArray:self.searchModle().drawFlags()
 			 });
 		}); 
 		
@@ -604,7 +608,6 @@ function CrossModel() {
 	};
 	
 	self.showCrossMapDlg = function(){ 
-		console.log(self.currentCross().crossId);
 		if(!self.currentCross().crossId || self.currentCross().crossId == ''){
 			return;
 		}
@@ -632,7 +635,6 @@ function CrossModel() {
 	};
 	
 	self.showTrainTimes = function(row) {
-		console.log(row);
 		self.currentTrain(row);
 		self.runPlanCanvasPage.reDrawByTrainNbr(row.trainNbr);
 		self.stns.remove(function(item){
@@ -654,7 +656,6 @@ function CrossModel() {
 					trainId : row.baseTrainId
 				}),
 				success : function(result) {  
-					console.log(result) 
 					if (result != null && result != "undefind" && result.code == "0") {  
 						row.loadTimes(result.data);  
 						$.each(row.times(), function(i, n){
@@ -876,16 +877,13 @@ function CrossModel() {
 					endTime : planEndDate != null ? planEndDate : self.get40Date()
 				}),
 				success : function(result) {    
-					console.log(result);
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null) {   
 							canvasData = {
 									grid: $.parseJSON(result.data.gridData),
 									jlData: $.parseJSON(result.data.myJlData)
-							}; 
-							lineList = [];
-							jlList = [];
-							self.runPlanCanvasPage.drawChart({startX:60, yScale: 2}); 
+							};   
+							self.runPlanCanvasPage.drawChart({startX:60, yScale: 2,  stationTypeArray:self.searchModle().drawFlags()}); 
 						}
 						 
 					} else {
@@ -919,7 +917,7 @@ function CrossModel() {
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {  
-							self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
+							//self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
 //							self.currentCross(new CrossRow(result.data[0].crossInfo));
 							if(result.data[0].crossTrainInfo != null){
 								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
@@ -1058,21 +1056,23 @@ function CrossRow(data) {
 function CrossRow(data) {
 	var self = this; 
 	
+	if(data == null){
+		return ;
+	}
+	
 	self.visiableRow =  ko.observable(true); 
 	
-	self.selected =  ko.observable(0);
-	
-	self.crossId = data.crossId; 
+	self.selected =  ko.observable(0); 
 	
 	self.baseCrossId = data.baseCrossId; 
+	
+	self.crossId = data.crossId; 
 	
 	self.shortNameFlag =  ko.observable(true);
 	
 	self.planCrossId = ko.observable(data.planCrossId);  
 	 
-	self.crossName = ko.observable(data.planCrossName);  
-	
-	
+	self.crossName = ko.observable(data.planCrossName);   
 	
 	self.shortName = ko.computed(function(){
 		if(data.planCrossName != null){

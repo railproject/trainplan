@@ -135,7 +135,7 @@ function PageModle(pageSize, fun, jg){
 	    var keycode = (event.keyCode ? event.keyCode : event.which);  
 	    var value = event.target.value;
 	    console.log(value);
-	    if(!(/[123456789]+/.test(value)) || (value < 0 || value > self.pageCount())){  
+	    if(!(/[123456789]+/.test(value)) || (value < 0 || value >= self.pageCount())){  
 	    	$(event.target).val(self.currentPage() + 1); 
     	} 
 	    if(keycode == 13){  

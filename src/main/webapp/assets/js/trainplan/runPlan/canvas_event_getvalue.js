@@ -22,7 +22,7 @@ var RunPlanCanvasPage = function(cross) {
 //		ko.applyBindings(runTimeModel);
 		
 		//2.画图
-		_self.drawChart({startX:60, yScale: 2});
+		//_self.drawChart({startX:60, yScale: 2});
 		
 		//3.增加canvas监听事件
 		canvas.onmousedown = function(e) {
@@ -174,6 +174,11 @@ var RunPlanCanvasPage = function(cross) {
 	
 	
 	this.drawChart = function(scale) {
+		lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
+		jlList = [];	//用于保存交路数据元素，以便重新绘图
+		
+		this.clearChart();	//清除画布
+		//context.beginPath();
 		console.dir("~!!!!!!!!!!!!");
 		console.dir(canvasData);
 		console.dir("~!!!!!!!!!!!!");

@@ -135,11 +135,11 @@ function CrossModel() {
 	};
 	
 	self.setCurrentCross = function(cross){
-		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
-			self.searchModle().activeFlag(1);  
-		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
-			self.searchModle().activeFlag(0); 
-		} 
+//		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
+//			self.searchModle().activeFlag(1);  
+//		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
+//			self.searchModle().activeFlag(0); 
+//		} 
 		self.currentCross(cross);
 		if(self.searchModle().showCrossMap() == 1){
 			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + cross.unitCrossId);
@@ -474,7 +474,9 @@ function CrossModel() {
 	};
 	
 	self.showCrossTrainTimeDlg = function(){
-		
+		if(self.currentTrain() == null){
+			return;
+		}
 		$("#cross_train_time_dlg").dialog({title: "详情时刻表     车次:" + self.currentTrain().trainNbr,draggable: true, resizable:true});
 	};
 	

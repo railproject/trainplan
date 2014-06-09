@@ -19,8 +19,8 @@ public class CrossInfo {
 	
 	private String crossIdForExcel;
 	
-	private String highlineRule;
-	private String commonlineRule;
+	private String highlineRule = "1";
+	private String commonlineRule = "1";
 	private int cutOld;
 	private int groupTotalNbr;
 	private int elecSupply;
@@ -68,6 +68,12 @@ public class CrossInfo {
 	
 	private String planCrossId;
 	
+	public String getPlanCrossId() {
+		return planCrossId;
+	}
+	public void setPlanCrossId(String planCrossId) {
+		this.planCrossId = planCrossId;
+	}
 	public String getBaseCrossId() {
 		return baseCrossId;
 	}

@@ -178,7 +178,7 @@ var all_role = "<%=userRolesString %>";
 																	<tr data-bind=" visible: visiableRow" >
 																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
 																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
-																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}, click: $parent.showTrains"></td>
+																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, style:{color: $parent.currentCross().planCrossId == planCrossId  ? 'blue':''}, click: $parent.showTrains"></td>
 																	</tr> 
 																</tbody>  					 
 															</table>
@@ -232,9 +232,9 @@ var all_role = "<%=userRolesString %>";
 								              <button class="btn btn-primary" type="button" id="canvas_event_btnQuery"><i class="fa fa-search"></i>查询</button>
 							              </div>
 							              <div class="row" style="margin:5px 0 10px 150px;"> 
-							                 <!--  <input type="hidden" value="0" data-bind="checked: searchModle().drawFlags">
+							                <input type="hidden" value="0" data-bind="checked: searchModle().drawFlags">
 							                  <input type="checkbox" style="margin-left:10px" value="FJK" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">分界口
-							                  <input type="checkbox" style="margin-left:10px" value="TZ" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">停站 -->
+							                  <!-- <input type="checkbox" style="margin-left:10px" value="TZ" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">停站 -->
 							                  <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
