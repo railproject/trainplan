@@ -126,7 +126,7 @@
 	                <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图明细查询</a></li>
                </ul>
            	</li>
-           	<li><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="_blank" class="menu_one"><i class="fa fa-file"></i>技术资料 </a></li>
+           	<li><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="contentFrame" class="menu_one"><i class="fa fa-file"></i>技术资料 </a></li>
             
             <shiro:authenticated>
 	            <li><a target="contentFrame" class="menu_one"><i class="fa fa-road"></i>客运列车<i class="fa fa-caret-down pull-right"></i> </a>
