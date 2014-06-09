@@ -492,13 +492,13 @@ ORDER BY A.BASE_CROSS_ID,B.TRAIN_SORT,C.STN_SORT
     
 
  <select id="getTrainPlanLineInfoForPlanCrossId"  parameterType="map" resultMap="trainPlanLine">
- SELECT * FROM (
+
  select 
 case 
 when to_char(t1.arr_time,'yyyy-MM-dd hh24:mi:SS')=to_char(t1.dpt_time,'yyyy-MM-dd hh24:mi:SS') then 
   (case when t1.stn_name=t2.startStn or t1.stn_name=t2.endStn then '0' WHEN (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE T3.CNAME=t1.stn_name) >0 THEN 'FJK' else 'BT' END)
 ELSE case WHEN (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE T3.CNAME=t1.stn_name) >0 THEN 'FJK' ELSE 'TZ'  END
-end stationFlag,
+end stationFlag ,
 
 t1.stn_sort as stnSort,
 t1.stn_bureau as stnBureau,
@@ -526,9 +526,10 @@ from PLAN_TRAIN a
 start with a.ROWID in(select min(ROWID) startTime from PLAN_TRAIN b where  b.plan_cross_id = #{planCrossId} group by b.GROUP_SERIAL_NBR) connect by prior a.PLAN_TRAIN_ID = a.PRE_TRAIN_ID
 )t2,
 PLAN_TRAIN_STN t1
-where t2.planTrainId = t1.plan_train_id) WHERE stationflag in('0','FJK')
- 
- 
+where (t1.STN_NAME = T2.startStn OR t1.STN_NAME = T2.endStn  OR (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE  T3.CNAME=t1.stn_name) >0) AND 
+t2.planTrainId = t1.plan_train_id 
+ORDER BY t2.groupSerialNbr, T1.arr_time
+
  </select>
  
     <select id="getUnitCrossTrainInfoForUnitCrossid" parameterType="map" resultMap="unitCrossTrain">

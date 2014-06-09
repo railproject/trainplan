@@ -189,9 +189,9 @@ public class PlanTrainStnController {
 		List<UnitCrossTrainInfo>  list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
 		result.setData(list);*/
 		
-		/*String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
-		List<TrainLineInfo>  list = crossService.getTrainPlanLineInfoForPlanCrossId(planCrossId);
-		result.setData(list);*/
+		String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
+		List<TrainLineInfo>  list = crossService.getTrainPlanLineInfoForPlanCrossId(planCrossId,"京");
+		result.setData(list);
 		
 		
 		//List<String> list = crossService.getStationListForPlanCrossId(planCrossId);
@@ -231,6 +231,7 @@ public class PlanTrainStnController {
 		Result result  = new Result();
 		try{
 		String runDate = StringUtil.objToStr(reqMap.get("runDate"));
+		String trainNbr = StringUtil.objToStr(reqMap.get("trainNbr"));
 		//路局全称
 		String startBureauFull  = StringUtil.objToStr(reqMap.get("startBureauFull"));
 		String dayCount =  StringUtil.objToStr(reqMap.get("dayCount"));
@@ -238,7 +239,7 @@ public class PlanTrainStnController {
 		for(int i = 1;i<=count;i++){
 			String tempDate = DateUtil.getDateByDay(runDate, -(i-1));
 			tempDate = DateUtil.format(DateUtil.parse(tempDate), "yyyyMMdd");
-			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull);
+			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull, trainNbr);
 			String jsonStr = combinationMessage(listDto);
 			logger.debug("jsonStr====" + jsonStr);
 			//向rabbit发送消息
@@ -270,7 +271,7 @@ public class PlanTrainStnController {
 			//路局全称
 			String startBureauFull  = StringUtil.objToStr(reqMap.get("startBureauFull"));
 			
-			List<ParamDto> listDto = planTrainStnService.getTotalTrains(runDate,startBureauFull);
+			List<ParamDto> listDto = planTrainStnService.getTotalTrains(runDate,startBureauFull,null);
 			String jsonStr = combinationMessage(listDto);
 			//向rabbit发送消息
 			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);

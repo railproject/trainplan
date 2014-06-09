@@ -30,6 +30,9 @@
 		run_date
 		from plan_train
 		where run_date=#{runDate} and START_BUREAU_FULL = #{startBureauFull}
+		<if test="trainNbr != null">
+			AND TRAIN_NBR= #{trainNbr}
+		</if>
 
 	</select>
 

@@ -208,6 +208,7 @@ var PlanRunLineBatchPage = function(){
 			data :JSON.stringify({
 				runDate : _plan_runline_batch_selectdate.val(),
 				dayCount:_plan_runline_batch_input_days.val(),
+				trainNbr: $("#plan_runline_input_trainNbr").val(),
 				startBureauFull:_plan_runline_batch_select_lj.val()
 			}),
 			success : function(result) {
