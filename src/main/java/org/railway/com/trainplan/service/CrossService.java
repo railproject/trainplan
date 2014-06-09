@@ -1136,10 +1136,7 @@ public class CrossService{
 				if(this.cross.getCommonlineRule() == null){
 					this.cross.setCommonlineRule("1");
 				}
-			}
-			
-			//高线
-			if("1".equals(this.cross.getHighlineFlag())){
+			}else if("1".equals(this.cross.getHighlineFlag())){
 				if(this.cross.getHighlineRule() == null){
 					this.cross.setHighlineRule("1");
 				}
