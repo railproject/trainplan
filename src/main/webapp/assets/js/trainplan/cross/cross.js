@@ -112,9 +112,9 @@ function CrossModel() {
 	};
 	
 	self.selectCross = function(row){ 
-//		self.crossAllcheckBox();
+//		self.crossAllcheckBox(); 
 		if(row.selected() == 0){ 
-			self.crossAllcheckBox(1);
+			self.crossAllcheckBox(1); 
 			$.each(self.crossRows.rows(), function(i, crossRow){ 
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);

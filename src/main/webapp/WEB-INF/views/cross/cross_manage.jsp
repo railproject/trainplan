@@ -616,8 +616,8 @@ console.log(all_role);
 	 <!--交路图--> 
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
-		style="width: 800px; height: 330px;">
-		 <iframe style="width: 100%; height: 100%;border: 0" src=""></iframe>
+		style="width: 800px; height: 400px;">
+		 <iframe style="width: 100%; height: 350px;border: 0;overflow: hidden;" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 
@@ -666,31 +666,41 @@ console.log(all_role);
 			      <!--panle-heading-->
 			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 			      	<div class="table-responsive" > 
-			          <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
+			            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 					        <thead>
-					        <tr >
+					        <tr>
 					          <th style="width:5%">序号</th>
 			                  <th style="width:20%">站名</th>
 			                  <th style="width:5%">路局</th>
 			                  <th style="width:15%">到达时间</th>
 			                  <th style="width:15%">出发时间</th>
 			                  <th style="width:15%">停留时间</th>
-			                   <th style="width:10%">天数</th> 
-			                  <th style="width:15%">股道</th> 
+			                  <th style="width:10%">天数</th> 
+			                  <th style="width:15%" colspan="2">股道</th>  
 			                 </tr>
 					        </thead>
-					        <tbody data-bind="foreach: times">
-					           <tr>  
-								<td align="center" data-bind=" text: $index() + 1"></td>
-								<td data-bind="text: stnName, attr:{title: stnName}"></td>
-								<td align="center" data-bind="text: bureauShortName"></td>
-								<td align="center" data-bind="text: sourceTime"></td>
-								<td align="center" data-bind="text: targetTime"></td>
-								<td align="center" data-bind="text: stepStr"></td>
-								<td align="center" data-bind="text: runDays"></td>
-								<td align="center" data-bind="text: trackName"></td>
-					        	</tr>
-					        </tbody>
+					        <tbody style="padding:0">
+								 <tr style="padding:0">
+								   <td colspan="9" style="padding:0">
+										 <div style="height: 400px; overflow-y:auto;"> 
+											<table class="table table-bordered table-striped table-hover" >
+												 <tbody data-bind="foreach: times">
+										           <tr>  
+													<td style="width:6%" align="center" data-bind=" text: $index() + 1"></td>
+													<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
+													<td style="width:7%" align="center" data-bind="text: bureauShortName"></td>
+													<td style="width:15%" align="center" data-bind="text: sourceTime"></td>
+													<td style="width:15%" align="center" data-bind="text: targetTime"></td>
+													<td style="width:15%" align="center" data-bind="text: stepStr"></td>
+													<td style="width:10%" align="center" data-bind="text: runDays"></td>
+													<td style="width:15%" align="center" data-bind="text: trackName"></td>
+										        	</tr>
+										        </tbody>
+											</table> 
+									 	</div>
+									</td>
+								</tr>
+							</tbody> 
 					      </table>
 			        </div>   
       		</div>

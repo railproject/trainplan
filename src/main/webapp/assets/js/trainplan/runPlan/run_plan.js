@@ -883,7 +883,7 @@ function CrossModel() {
 									grid: $.parseJSON(result.data.gridData),
 									jlData: $.parseJSON(result.data.myJlData)
 							};   
-							self.runPlanCanvasPage.drawChart({startX:60, yScale: 2,  stationTypeArray:self.searchModle().drawFlags()}); 
+							self.runPlanCanvasPage.drawChart({startX:100, yScale: 2,  stationTypeArray:self.searchModle().drawFlags()}); 
 						}
 						 
 					} else {
@@ -958,7 +958,7 @@ function CrossModel() {
 		}else{ 
 			self.removeArrayValue(self.searchModle().drawFlags(), n.target.value);
 		} 
-		self.runPlanCanvasPage.drawChart({startX:60, yScale: 2, stationTypeArray:self.searchModle().drawFlags()}); 
+		self.runPlanCanvasPage.drawChart({startX:100, yScale: 2, stationTypeArray:self.searchModle().drawFlags()}); 
 	};
 	
 	self.filterCrosses = function(){

@@ -649,7 +649,7 @@ public class CrossController {
 							
 							if(response.equals(Constants.REMOTE_SERVICE_SUCCESS)){
 								//调用后台接口成功，更新本地数据表unit_cross中字段CREAT_CROSS_TIME
-								crossService.updateUnitCrossUnitCreateTime(crossArray);
+								crossService.updateUnitCrossUnitCreateTime(new String[]{unitCrossId});
 								JSONObject subResult = new JSONObject();
 								subResult.put("unitCrossId", unitCrossId); 
 								subResult.put("flag", 1); 

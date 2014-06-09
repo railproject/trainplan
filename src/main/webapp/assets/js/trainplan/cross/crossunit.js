@@ -459,7 +459,7 @@ function CrossModel() {
 	};
 	
 	self.showCrossMapDlg = function(){ 
-		if(self.currentCross().unitCrossId == ''){
+		if(self.currentCross().unitCrossId == '' || self.currentCross().unitCrossId == undefined || self.currentCross().unitCrossId == "undefined"){
 			return;
 		}
 		var unitCrossId = self.currentCross().unitCrossId; 
