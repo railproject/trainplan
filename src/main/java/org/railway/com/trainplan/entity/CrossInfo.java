@@ -19,8 +19,8 @@ public class CrossInfo {
 	
 	private String crossIdForExcel;
 	
-	private String highlineRule = "1";
-	private String commonlineRule = "1";
+	private String highlineRule;
+	private String commonlineRule;
 	private int cutOld;
 	private int groupTotalNbr;
 	private int elecSupply;

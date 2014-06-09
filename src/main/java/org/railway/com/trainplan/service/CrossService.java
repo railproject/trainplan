@@ -803,6 +803,7 @@ public class CrossService{
 				CrossInfo crossInfo = alllist.get(i);
 				crossInfo.setChartId(chartId);
 				crossInfo.setChartName(chartName); 
+				
 				 if(StringUtils.isEmpty(crossInfo.getAlterNateDate())){
 					 crossInfo.setAlterNateDate(startDay);
 				 }
@@ -1128,7 +1129,22 @@ public class CrossService{
 		   this.baseDao = baseDao;
 		}
 		
-		public String call() throws Exception {  
+		public String call() throws Exception {   
+			
+			//普线和混合
+			if("0".equals(this.cross.getHighlineFlag()) || "2".equals(this.cross.getHighlineFlag())){
+				if(this.cross.getCommonlineRule() == null){
+					this.cross.setCommonlineRule("1");
+				}
+			}
+			
+			//高线
+			if("1".equals(this.cross.getHighlineFlag())){
+				if(this.cross.getHighlineRule() == null){
+					this.cross.setHighlineRule("1");
+				}
+			}
+			
 			LinkedList<CrossTrainInfo>  crossTrains = this.createTrainsForCross(this.cross); 
 			//保存交路信息
 			ArrayList<CrossInfo> crossList = new ArrayList<CrossInfo>();
