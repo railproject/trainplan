@@ -241,12 +241,14 @@ public class PlanTrainStnController {
 			tempDate = DateUtil.format(DateUtil.parse(tempDate), "yyyyMMdd");
 			System.err.println();
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull, trainNbr);
-			
+			if(listDto != null && listDto.size() > 0){
 				String jsonStr = combinationMessage(listDto);
 				logger.debug("jsonStr====" + jsonStr);
 				//System.err.println("jsonStr====" + jsonStr);
 				//向rabbit发送消息
 				amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);	
+			}
+				
 			
 			
 		}
@@ -277,9 +279,12 @@ public class PlanTrainStnController {
 			String startBureauFull  = StringUtil.objToStr(reqMap.get("startBureauFull"));
 			
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(runDate,startBureauFull,null);
-			String jsonStr = combinationMessage(listDto);
-			//向rabbit发送消息
-			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+			if(listDto != null && listDto.size() > 0){
+				String jsonStr = combinationMessage(listDto);
+				//向rabbit发送消息
+				amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+					
+			}
 			
 	    }catch(Exception e){
 	    	logger.error("handleTrainLines error==" + e.getMessage());
