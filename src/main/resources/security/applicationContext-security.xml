@@ -40,6 +40,7 @@
                 /dwr/** = anon
                 /jbtcx/** = anon
 				/default/transfer/planReviewLines = anon
+				/construction/** = anon
                 /** = authc
             </value>
         </property>
