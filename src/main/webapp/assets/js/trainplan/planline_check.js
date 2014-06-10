@@ -55,6 +55,7 @@ function ApplicationModel() {
         self.currCheckNbr(0);
         ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
             if(plan.dailyLineFlag() != "已上图" || !plan.dailyLineId()) {
+                self.currCheckNbr(self.currCheckNbr() + 1);
                 plan.isTrainInfoMatch(-1);
                 plan.isTimeTableMatch(-1);
                 plan.isRoutingMatch(-1);
