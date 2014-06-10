@@ -427,6 +427,8 @@ public class RunPlanService {
             List<RunPlan> resultList = Lists.newArrayList();
             // 计算结束时间
             LocalDate lastDate = startDate.plusDays(days);
+            // 记录daygap
+            int totalDayGap = 0;
             // 开始生成
             generate: {
                 for(int i = 0; true; i ++) {
@@ -475,11 +477,12 @@ public class RunPlanService {
                                 } else if(resultList.size() == 0) {
                                     LocalDate unitCrossTrainStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
                                     int initInterval = Days.daysBetween(unitCrossTrainStartDate, startDate).getDays();
-                                    runPlan.setRunDate(unitCrossTrainStartDate.plusDays(initInterval).plusDays(unitCrossTrain.getDayGap()).toString("yyyyMMdd"));
+                                    runPlan.setRunDate(unitCrossTrainStartDate.plusDays(initInterval).toString("yyyyMMdd"));
                                 } else {
                                     LocalDate unitCrossTrainStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
                                     int initInterval = Days.daysBetween(unitCrossTrainStartDate, startDate).getDays();
-                                    runPlan.setRunDate(unitCrossTrainStartDate.plusDays(initInterval).plusDays(unitCrossTrain.getGroupGap()).toString("yyyyMMdd"));
+                                    totalDayGap += unitCrossTrain.getGroupGap();
+                                    runPlan.setRunDate(unitCrossTrainStartDate.plusDays(initInterval).plusDays(totalDayGap).toString("yyyyMMdd"));
                                 }
 
                                 runPlan.setStartDateTime(new Timestamp(simpleDateFormat.parse(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate()).toString("yyyy-MM-dd") + " " + runPlan.getStartTimeStr()).getTime()));
