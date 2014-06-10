@@ -99,6 +99,7 @@ public class PlanTrainStnService {
     	    	for(Map<String,Object> map :mapList ){
     	    		ParamDto dto = new ParamDto();
     	    		dto.setSourceEntityId(StringUtil.objToStr(map.get("BASE_TRAIN_ID")));
+    	    		dto.setPlanTrainId(StringUtil.objToStr(map.get("PLAN_TRAIN_ID")));
     	    		String time = StringUtil.objToStr(map.get("RUN_DATE"));
     	    		dto.setTime(DateUtil.formateDate(time));
     	    		list.add(dto);
