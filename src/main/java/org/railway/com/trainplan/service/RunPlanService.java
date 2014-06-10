@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -56,7 +57,16 @@ public class RunPlanService {
     private BaseDao baseDao;
 
     @Value("#{restConfig['plan.generatr.thread']}")
-    private String threadNbr;
+    private int threadNbr;
+
+    private static ExecutorService executorService;
+
+    @PostConstruct
+    public void init() {
+        logger.info("init thread pool start");
+        executorService = Executors.newFixedThreadPool(threadNbr);
+        logger.info("init thread pool end");
+    }
 
     public List<Map<String, Object>> findRunPlan(String date, String bureau, int type) {
         logger.debug("findRunPlan::::");
@@ -331,7 +341,6 @@ public class RunPlanService {
      * @return 生成了多少个plancross的计划
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(this.threadNbr));
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
