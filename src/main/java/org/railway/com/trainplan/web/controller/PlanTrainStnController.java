@@ -239,11 +239,16 @@ public class PlanTrainStnController {
 		for(int i = 1;i<=count;i++){
 			String tempDate = DateUtil.getDateByDay(runDate, -(i-1));
 			tempDate = DateUtil.format(DateUtil.parse(tempDate), "yyyyMMdd");
+			System.err.println();
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull, trainNbr);
-			String jsonStr = combinationMessage(listDto);
-			logger.debug("jsonStr====" + jsonStr);
-			//向rabbit发送消息
-			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+			
+				String jsonStr = combinationMessage(listDto);
+				logger.debug("jsonStr====" + jsonStr);
+				//System.err.println("jsonStr====" + jsonStr);
+				//向rabbit发送消息
+				amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);	
+			
+			
 		}
 		}catch(Exception e){
 			e.printStackTrace();

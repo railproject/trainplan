@@ -526,4 +526,52 @@ public class RunPlanService {
             return resultList;
         }
     }
+
+	public int deletePlanCrossByPlanCorssIds(String[] crossIdsArray) {
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIdsArray.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIdsArray[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("planCrossIds", bf.toString()); 
+		//删除经由
+		deletePlanTrainStnsByPlanCrossIds(crossIdsArray);
+		//删除车
+		deletePlanTrainsByPlanCorssIds(crossIdsArray);
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
+	}
+	
+	private int deletePlanTrainStnsByPlanCrossIds(String[] crossIdsArray) {
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIdsArray.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIdsArray[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("planCrossIds", bf.toString()); 
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANTRAINSTN_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
+	} 
+	private int deletePlanTrainsByPlanCorssIds(String[] crossIdsArray) {
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIdsArray.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIdsArray[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("planCrossIds", bf.toString()); 
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANTRAIN_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
+	}
 }

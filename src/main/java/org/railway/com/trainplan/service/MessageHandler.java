@@ -32,7 +32,7 @@ public class MessageHandler implements MessageListener{
 		try {
 			 msg= mapper.readValue(message.getBody(), Map.class);
 			 logger.debug("msg======" + msg);
-			
+			 //System.err.println("msg======" + msg);
 			 if(msg != null && msg.size()>0){
 				 Map<String,Object> result = ((Map<String,Object>)msg.get("result"));
 				 String resultString = (String)result.get("result");

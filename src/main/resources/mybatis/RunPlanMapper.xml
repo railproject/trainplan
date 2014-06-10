@@ -82,7 +82,9 @@
     <select id="getPlanCross" parameterType="map" resultType="org.railway.com.trainplan.service.dto.PlanCrossDto">
        select t.plan_cross_id planCrossId,
 			  t.base_cross_id baseCrossId,
-              t.cross_name planCrossName  
+              t.cross_name planCrossName, 
+              t.TOKEN_VEH_BUREAU as tokenVehBureau ,
+              t.START_BUREAU as startBureau
       from plan_cross t
       where  1=1 
       <if test="trainNbr != null">
@@ -109,18 +111,37 @@
         <if test="unitCreateFlag == 1 ">
             AND CREAT_PLAN_TIME is not null
         </if> -->
-        <if test="startTime != null ">
-            AND CROSS_START_DATE >= #{startTime}
+        <if test="startTime != null">  
+            AND (CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
         </if>
-        <if test="endTime != null ">
-             AND CROSS_START_DATE &lt;= #{endTime}
-        </if>
+         <if test="endTime != null ">
+             AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime})
+       	</if> 
+       	<if test="startTime != nul">  
+      	     <if test="endTime != nul">  
+          		OR (CROSS_START_DATE &lt;= #{startTime} AND CROSS_END_DATE >=  #{endTime})
+          	 </if> 
+        </if> 
        order by t.cross_name 
     </select> 
 
     <update id="updateCheckInfo" parameterType="map">
         UPDATE PLAN_TRAIN PT SET PT.CHECK_LEV1_TYPE = #{lev1Type}, PT.CHECK_LEV1_BUREAU = #{lev1Bureau}, PT.CHECK_LEV2_TYPE = #{lev2Type}, PT.CHECK_LEV2_BUREAU = #{lev2Bureau} WHERE PT.PLAN_TRAIN_ID = #{planId}
     </update>
+    
+    
+     <delete id="deletePlanCrossByPlanCrossIds" parameterType="map">
+        delete from plan_cross where plan_cross_id in (${planCrossIds})
+    </delete>
+    
+    <delete id="deletePlanTrainsByPlanCrossIds" parameterType="map">
+        delete from plan_train where plan_cross_id in (${planCrossIds})
+    </delete>
+    
+    <delete id="deletePlanTrainStnsByPlanCrossIds" parameterType="map">
+        delete from plan_train_stn t where exists (select 1 from plan_train a where a.plan_train_id=t.plan_train_id and a.plan_cross_id in (${planCrossIds}))
+    </delete>
+    
 
     <insert id="addRunPlan" parameterType="org.railway.com.trainplan.entity.RunPlan">
         INSERT INTO PLAN_TRAIN(PLAN_TRAIN_ID, PLAN_TRAIN_SIGN,PLAN_CROSS_ID,MARSHALLING_NAME,GROUP_SERIAL_NBR,TRAIN_SORT,PRE_TRAIN_ID,NEXT_TRAIN_ID,RUN_DATE,
