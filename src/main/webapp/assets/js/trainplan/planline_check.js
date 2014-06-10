@@ -259,9 +259,9 @@ function ParamModel(tableModel) {
                     dataArrayFinal[i] = new Array(name[i],data[i]);
                 }
                 drawPie($("#chart_01"), '开行状态', dataArrayFinal, [
-                    '#008000',
-                    '#C80000',
+                    '#006400',
                     '#808080',
+                    '#8b0000',
                     '#C800C8'
                 ]);
             }
@@ -287,8 +287,8 @@ function ParamModel(tableModel) {
                     dataArrayFinal[i] = new Array(name[i],data[i]);
                 }
                 drawPie($("#chart_02"), '上图状态', dataArrayFinal, [
-                    '#008000',
-                    '#C80000',
+                    '#006400',
+                    '#8b0000',
                     '#C800C8'
                 ]);
             }
@@ -315,8 +315,8 @@ function ParamModel(tableModel) {
                         dataArrayFinal[i] = new Array(name[i],data[i]);
                     }
                     drawPie($("#chart_03"), '审核状态', dataArrayFinal, [
-                        '#008000',
-                        '#C80000'
+                        '#006400',
+                        '#8b0000'
                     ]);
                 }
 
@@ -341,8 +341,8 @@ function ParamModel(tableModel) {
                         dataArrayFinal[i] = new Array(name[i],data[i]);
                     }
                     drawPie($("#chart_04"), '审核状态', dataArrayFinal, [
-                        '#008000',
-                        '#C80000'
+                        '#006400',
+                        '#8b0000'
                     ]);
                 }
 
