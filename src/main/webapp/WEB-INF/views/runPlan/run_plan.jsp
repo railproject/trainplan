@@ -186,7 +186,7 @@ var all_role = "<%=userRolesString %>";
 																	<tr data-bind=" visible: visiableRow" >
 																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
 																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 0 ? 'ckbox disabled' : ''},event:{change: $parent.selectCross}, checked: selected"></td>
-																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().baseCrossId == baseCrossId  ? 'blue':''}, click: $parent.showTrains"></td>
+																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().crossName() == crossName()  ? 'blue':''}, click: $parent.showTrains"></td>
 																	</tr> 
 																</tbody>  					 
 															</table>

@@ -3,6 +3,10 @@ package org.railway.com.trainplan.web.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.railway.com.trainplan.common.constants.StaticCodeType;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.service.RunPlanService;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
@@ -16,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/runPlan")
 public class RunPlanController {
-	
+	 private static Log logger = LogFactory.getLog(CrossController.class.getName());
 	 @Autowired
 	 private RunPlanService runPlanService;
 	 
@@ -53,6 +57,25 @@ public class RunPlanController {
 		 } 
 		 return result; 
      }
+	 
+	@ResponseBody
+	@RequestMapping(value = "/deletePlanCrosses", method = RequestMethod.POST)
+	public Result deletePlanCrosses(@RequestBody Map<String,Object> reqMap){
+		 Result result = new Result();
+		 try{
+			 String crossIds = StringUtil.objToStr(reqMap.get("planCrossIds"));
+			 if(crossIds != null){
+				String[] crossIdsArray = crossIds.split(",");
+				//先删除cross_train表中数据
+				int countTrain = runPlanService.deletePlanCrossByPlanCorssIds(crossIdsArray); 
+			 }  
+		 }catch(Exception e){
+			 logger.error("deleteUnitCorssInfo error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	 
+		 }
+		 return result;
+	} 
 	 
 
 }

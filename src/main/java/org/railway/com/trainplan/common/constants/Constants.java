@@ -177,4 +177,7 @@ public class Constants {
     
     public static final String GET_TRAIN_RUN_PLAN = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlans";
 	public static final String GET_PLAN_CROSS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getPlanCross";
+	public static final String CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanCrossByPlanCrossIds";
+	public static final String CROSSDAO_DELETE_PLANTRAIN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainsByPlanCrossIds";
+	public static final String CROSSDAO_DELETE_PLANTRAINSTN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainStnsByPlanCrossIds";
 }

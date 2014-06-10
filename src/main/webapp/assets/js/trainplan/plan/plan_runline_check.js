@@ -91,31 +91,31 @@ function ApplicationModel() {
 					commonJsScreenUnLock();
 				}
 		    });
-//	    $.ajax({
-//			url : "plan/getFullStationInfo",
-//			cache : false,
-//			type : "GET",
-//			dataType : "json",
-//			contentType : "application/json", 
-//			success : function(result) {    
-//				if (result != null && result != "undefind" && result.code == "0") { 
-//					self.searchModle().loadBureau(result.data); 
-//					if (result.data !=null) { 
-//						$.each(result.data,function(n, bureau){  
-//							self.gloabBureaus.push({"shortName": bureau.ljjc, "code": bureau.ljpym}); 
-//						});
-//					} 
-//				} else {
-//					showErrorDialog("");
-//				} 
-//			},
-//			error : function() {
-//				showErrorDialog("接口调用失败");
-//			},
-//			complete : function(){
-//				commonJsScreenUnLock();
-//			}
-//	    });
+	    $.ajax({
+			url : "plan/getFullStationInfo",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					self.searchModle().loadBureau(result.data); 
+					if (result.data !=null) { 
+						$.each(result.data,function(n, bureau){  
+							self.gloabBureaus.push({"shortName": bureau.ljjc, "code": bureau.ljpym}); 
+						});
+					} 
+				} else {
+					showErrorDialog("");
+				} 
+			},
+			error : function() {
+				showErrorDialog("接口调用失败");
+			},
+			complete : function(){
+				commonJsScreenUnLock();
+			}
+	    });
 		
 		
 	};  
@@ -137,14 +137,7 @@ function ApplicationModel() {
 		if(chart == null){
 			showErrorDialog("请选择方案");
 			return;
-		}
-		console.log(startBureauShortName)
-		console.log(endBureauShortName)
-		console.log(trainNbr)
-		console.log(chart)
-		console.log(startIndex)
-		console.log(endIndex)
-		  
+		} 
 		$.ajax({
 				url : "jbtcx/queryTrains",
 				cache : false,

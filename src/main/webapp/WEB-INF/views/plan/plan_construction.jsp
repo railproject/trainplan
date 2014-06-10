@@ -17,7 +17,7 @@ String basePath = request.getContextPath();
   <span><i class="fa fa-anchor"></i>当前位置：</span>
   <li><a href="#">货运运行线</a></li>
 </ol> 
-  <div class="pull-right" style="width:550px;"> 
+  <div class="pull-right" style="width:32%;"> 
     <!--分栏框开始-->
     <div id="plan_view_div_palnDayDetail" class="panel panel-default">
       <div class="panel-heading">
@@ -54,7 +54,7 @@ String basePath = request.getContextPath();
 
 
 <!--分栏框开始-->
-<div class="pull-left" style="width:655px;"> 
+<div class="pull-left" style="width:67%;"> 
     <!--分栏框开始-->
     <div id="plan_view_div_palnDayDetail" class="panel panel-default">
        <div class="row" style="margin:15px 0 10px 0;"> 
@@ -78,7 +78,7 @@ String basePath = request.getContextPath();
 		        <!--col-md-3 col-sm-4 col-xs-4-->
 		      </form> 
 		    </div> 
-		     <div class="table-responsive" >
+		     <div class="table-responsive" style="margin:10px 10px 10px 10px;">
 		          <table class="table table-bordered table-striped table-hover" id="plan_review_table_trainInfo"> 
 				        <thead>
 				        <tr>
