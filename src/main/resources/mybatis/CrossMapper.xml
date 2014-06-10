@@ -523,7 +523,7 @@ a.plan_train_id as planTrainId,
 a.pre_train_id as preTrainId,
 a.next_train_id as nextTrainId
 from PLAN_TRAIN a
-start with a.ROWID in(select min(ROWID) startTime from PLAN_TRAIN b where  b.plan_cross_id = #{planCrossId} group by b.GROUP_SERIAL_NBR) connect by prior a.PLAN_TRAIN_ID = a.PRE_TRAIN_ID
+start with a.start_time in(select min(b.start_time) startTime from PLAN_TRAIN b where  b.plan_cross_id = #{planCrossId} group by b.GROUP_SERIAL_NBR) connect by prior a.PLAN_TRAIN_ID = a.PRE_TRAIN_ID
 )t2,
 PLAN_TRAIN_STN t1
 where (t1.STN_NAME = T2.startStn OR t1.STN_NAME = T2.endStn  OR (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE  T3.CNAME=t1.stn_name) >0) AND 
