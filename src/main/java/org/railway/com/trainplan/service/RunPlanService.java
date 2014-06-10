@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -56,7 +57,16 @@ public class RunPlanService {
     private BaseDao baseDao;
 
     @Value("#{restConfig['plan.generatr.thread']}")
-    private String threadNbr;
+    private int threadNbr;
+
+    private static ExecutorService executorService;
+
+    @PostConstruct
+    public void init() {
+        logger.info("init thread pool start");
+        executorService = Executors.newFixedThreadPool(threadNbr);
+        logger.info("init thread pool end");
+    }
 
     public List<Map<String, Object>> findRunPlan(String date, String bureau, int type) {
         logger.debug("findRunPlan::::");
@@ -331,7 +341,6 @@ public class RunPlanService {
      * @return 生成了多少个plancross的计划
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
-        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(this.threadNbr));
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
@@ -515,4 +524,52 @@ public class RunPlanService {
             return resultList;
         }
     }
+
+	public int deletePlanCrossByPlanCorssIds(String[] crossIdsArray) {
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIdsArray.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIdsArray[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("planCrossIds", bf.toString()); 
+		//删除经由
+		deletePlanTrainStnsByPlanCrossIds(crossIdsArray);
+		//删除车
+		deletePlanTrainsByPlanCorssIds(crossIdsArray);
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
+	}
+	
+	private int deletePlanTrainStnsByPlanCrossIds(String[] crossIdsArray) {
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIdsArray.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIdsArray[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("planCrossIds", bf.toString()); 
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANTRAINSTN_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
+	} 
+	private int deletePlanTrainsByPlanCorssIds(String[] crossIdsArray) {
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = crossIdsArray.length;
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(crossIdsArray[i]).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("planCrossIds", bf.toString()); 
+		
+		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANTRAIN_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
+	}
 }

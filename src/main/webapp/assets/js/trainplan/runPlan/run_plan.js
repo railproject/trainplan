@@ -135,7 +135,7 @@ function CrossModel() {
 	
 	self.selectCrosses = function(){
 //		self.crossAllcheckBox(); 
-		$.each(self.crossRows.rows(), function(i, crossRow){ 
+		$.each(self.planCrossRows(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0);
 				self.searchModle().activeFlag(0);
@@ -153,7 +153,7 @@ function CrossModel() {
 		if(row.selected() == 0){  
 			self.crossAllcheckBox(1);  
 			self.searchModle().activeFlag(1);
-			$.each(self.crossRows.rows(), function(i, crossRow){  
+			$.each(self.planCrossRows(), function(i, crossRow){  
 				if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
 					self.crossAllcheckBox(0);
 					return false;
@@ -162,7 +162,7 @@ function CrossModel() {
 		}else{
 			self.searchModle().activeFlag(0);  
 			self.crossAllcheckBox(0);
-			$.each(self.crossRows.rows(), function(i, crossRow){  
+			$.each(self.planCrossRows(), function(i, crossRow){  
 				if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
 					self.searchModle().activeFlag(1);
 					return false;
@@ -691,35 +691,39 @@ function CrossModel() {
 	
 	self.deleteCrosses = function(){ 
 		var crossIds = "";
-		var crosses = self.crossRows.rows(); 
+		var crosses = self.planCrossRows(); 
 		var delCrosses = [];
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].planCrossId; 
+				crossIds += crosses[i].planCrossId(); 
 				delCrosses.push(crosses[i]); 
 			}  
-		}   
-//		$.ajax({
-//			url : "cross/deleteCrosses",
-//			cache : false,
-//			type : "POST",
-//			dataType : "json",
-//			contentType : "application/json",
-//			data :JSON.stringify({  
-//				crossIds : crossIds
-//			}),
-//			success : function(result) {     
-//				if(result.code == 0){
-//					$.each(delCrosses, function(i, n){ 
-//						self.crossRows.rows.remove(n); 
-//					});
-//					showSuccessDialog("删除交路单元成功"); 
-//				}else{
-//					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-//				}
-//			}
-//		}); 
+		}
+		if(crossIds == ""){
+			showErrorDialog("没有可删除的记录");
+			return;
+		}
+		$.ajax({
+			url : "runPlan/deletePlanCrosses",
+			cache : false,
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+			data :JSON.stringify({  
+				planCrossIds : crossIds
+			}),
+			success : function(result) {     
+				if(result.code == 0){
+					$.each(delCrosses, function(i, n){ 
+						self.planCrossRows.remove(n); 
+					});
+					showSuccessDialog("删除车底交路成功"); 
+				}else{
+					showErrorDialog("删除车底交路失败");
+				}
+			}
+		}); 
 	};
 	
 	self.createUnitCrossInfo = function(){ 
@@ -730,7 +734,7 @@ function CrossModel() {
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].crossId;
+				crossIds += crosses[i].planCrossId;
 				delCrosses.push( crosses[i]);
 			}
 		} 
@@ -912,9 +916,13 @@ function CrossModel() {
 			}); 
 	};
 	self.showTrains = function(row) {  
+		
 		self.setCurrentCross(row);
 		commonJsScreenLock();
 		self.createCrossMap(row);
+		self.stns.remove(function(item) {
+			return true;
+		});
 		self.trains.remove(function(item) {
 			return true;
 		});
@@ -930,9 +938,9 @@ function CrossModel() {
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {  
-							//self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
-//							self.currentCross(new CrossRow(result.data[0].crossInfo));
+						if (result.data !=null && result.data.length > 0) {   
+							self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
+							//self.currentCross(new CrossRow(result.data[0].crossInfo));
 							if(result.data[0].crossTrainInfo != null){
 								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
 									var row = new TrainRow(crossInfo);
@@ -1086,7 +1094,7 @@ function CrossRow(data) {
 	
 	self.planCrossId = ko.observable(data.planCrossId);  
 	 
-	self.crossName = ko.observable(data.planCrossName);   
+	self.crossName = ko.observable(data.planCrossName == null ? data.crossName : data.planCrossName);   
 	
 	self.shortName = ko.computed(function(){
 		if(data.planCrossName != null){
