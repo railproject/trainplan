@@ -49,7 +49,8 @@ public class MessageHandler implements MessageListener{
 						 Map<String,Object> reqMap = new HashMap<String,Object>();
 						 String baseTrainId = StringUtil.objToStr(paramObj.get("sourceEntityId"));
 						 String daylyPlanId = StringUtil.objToStr(result1.get("id"));
-						 reqMap.put("baseTrainId", baseTrainId);
+						 String planTrainId = StringUtil.objToStr(paramObj.get("planTrainId"));
+						 reqMap.put("planTrainId", planTrainId);
 						 reqMap.put("daylyPlanId",daylyPlanId );
 						 //更新表plan_train中字段DAILYPLAN_FLAG值为0
 						 planTrainStnService.updatePlanTrainDaylyPlanFlag(reqMap);

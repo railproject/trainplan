@@ -424,6 +424,7 @@ public class PlanTrainStnController {
 					//组装发往rabbit的报文
 					JSONObject  temp = new JSONObject();
 					temp.put("sourceEntityId", dto.getSourceEntityId());
+					temp.put("planTrainId", dto.getPlanTrainId());
 					temp.put("time", dto.getTime());
 					temp.put("source", dto.getSource());
 					temp.put("action", dto.getAction());
