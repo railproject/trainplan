@@ -20,7 +20,21 @@ Object grid =  request.getAttribute("gridData");
   <div >
     <!--分栏框开始-->
     <div class="panel panel-default">
-      <!--panle-heading-->
+    
+	   	<div class="row" style="margin:5px 0 10px 0;">
+	      <form class="form-inline">
+	         <div class="row" style="margin:5px 0 10px 90px;"> 
+	              <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
+	              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
+	              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
+	              <button type="button" class="btn btn-success" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
+	              
+	                                                当前比例倍数：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
+	         	<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示停站时刻
+	         </div>
+	      </form>
+	    </div>
+   
       <div style="width:100%;height:100%">
         <div class="table-responsive" style="overflow: auto;width:100%;height:100%">
         	<canvas id="unit_cross_canvas">您的浏览器不支持HTML5</canvas>
