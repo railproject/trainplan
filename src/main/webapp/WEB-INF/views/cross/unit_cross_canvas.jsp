@@ -31,6 +31,8 @@ Object grid =  request.getAttribute("gridData");
 	              
 	                                                当前比例倍数：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
 	         	<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示停站时刻
+	         	&nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
+	         
 	         </div>
 	      </form>
 	    </div>
