@@ -32,7 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommonService {
 	private static final Logger logger = Logger.getLogger(CommonService.class);
 	
-	private static Map<String, Ljzd> map = new HashMap<String, Ljzd>();
+	private static Map<String, Ljzd> map = new HashMap<String, Ljzd>(); 
+	private static Map<String, String> jcMap = new HashMap<String, String>();
 	
 	@Autowired
 	private LjzdMybatisDao ljzdDao;
@@ -64,12 +65,63 @@ public class CommonService {
 	/**
     * 从基础数据库中获取18个路局的基本信息
     * @return
-    */
-  
+    */ 
     public List<Ljzd> getFullStationInfo(){
     	List<Ljzd> list = baseDao.selectListBySql(Constants.LJZDDAO_GET_FULL_STATION_INFO, null);
     	return list;
     }
+    
+    /**
+     * 从基础数据库中获取18个路局的基本信息
+     * @return
+     */ 
+     public Map<String, String> getStationJCMapping(){
+    	 List<Ljzd> list = getFullStationInfo();
+    	 if(jcMap.isEmpty()){
+	    	 for(Ljzd ljzd : list){
+	    		 jcMap.put(ljzd.getLjpym(), ljzd.getLjjc());
+	    	 }
+    	 }
+    	 return jcMap;
+     }
+     
+     
+     /**
+      * 从基础数据库中获取18个路局的基本信息
+      * @return
+      */ 
+      public String getStationJC(String py){
+     	 List<Ljzd> list = getFullStationInfo();
+     	 if(jcMap.isEmpty()){
+ 	    	 for(Ljzd ljzd : list){
+ 	    		 jcMap.put(ljzd.getLjpym(), ljzd.getLjjc());
+ 	    	 }
+     	 }
+     	 return jcMap.get(py);
+     	
+      
+      }
+      
+      /**
+       * 从基础数据库中获取18个路局的基本信息
+       * @return
+       */ 
+       public String getStationPy(String jc){
+	      	 List<Ljzd> list = getFullStationInfo();
+	      	 if(jcMap.isEmpty()){
+	  	    	 for(Ljzd ljzd : list){
+	  	    		 jcMap.put(ljzd.getLjpym(), ljzd.getLjjc());
+	  	    	 }
+	      	 }
+	      	for(String p : jcMap.keySet()){
+	     		if(jc.equals(jcMap.get(p))){
+	     			return p;
+	     		}
+	    	 }
+	      	 return null;
+       }
+    
+    
 	    
 	    
 }

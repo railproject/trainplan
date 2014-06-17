@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Monitored
 public class TrainInfoService {
+	
 	private static final Logger logger = Logger.getLogger(TrainInfoService.class);
 	@Autowired
 	private BaseDao baseDao;

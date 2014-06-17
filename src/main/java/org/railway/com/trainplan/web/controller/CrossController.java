@@ -96,11 +96,12 @@ public class CrossController {
 				String chartId = request.getParameter("chartId");
 				String chartName = request.getParameter("chartName");
 				String startDay = request.getParameter("startDay"); 
+				String addFlag = request.getParameter("addFlag"); 
 			    Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();   
 			    for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {   
 			    	// 上传文件 
 			    	MultipartFile mf = entity.getValue();  
-			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay, chartName);
+			    	crossService.actionExcel(mf.getInputStream(), chartId, startDay, chartName, addFlag);
 			  	}  
  
 			} catch (Exception e) {

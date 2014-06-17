@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -24,7 +26,7 @@ public class ExcelUtil<T> {
 	private Map<String, Short> map;
 	private PropertyDescriptor[] propertyDescriptors;
 	private DateFormat format = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
-	private Map<String, Map<String, String>> valueMapping;
+	private Map<String, ValueConvert> valueMapping = new HashMap<String, ValueConvert>();
 	
 	public ExcelUtil(LinkedHashMap<String, String> propertyMapping, HSSFSheet sheet, Class<T> c){
 		this.propertyMapping = propertyMapping;
@@ -193,15 +195,24 @@ public class ExcelUtil<T> {
 							}
 							
 							if(valueMapping != null && valueMapping.containsKey(propertyName)){
-								Map<String, String> values = valueMapping.get(propertyName);
-								if(values.containsValue(value)){
-									for(String key : values.keySet()){
-										if(value.equals(values.get(key))){
-											value = key;
-											break;
-										}
-									}
-								}
+								ValueConvert vc = valueMapping.get(propertyName);  
+								value = vc.convert(value);
+//								System.out.println("-----------value1----------------" + value);
+//								for(String key : values.keySet()){
+//									if(String.valueOf(value).indexOf(values.get(key)) > -1){
+//										value = String.valueOf(value).replace(values.get(key), key);
+//									}
+//								}
+//								System.out.println("-----------value2----------------" + value);
+//								if(values.containsValue(value)){
+//									for(String key : values.keySet()){
+//										if(value.equals(values.get(key))){
+//											value = key;
+//											break;
+//										}
+//									}
+//								}
+								
 							}		
 //							System.out.println("value==" + value);
 							//System.out.println(value.getClass().getName());  
@@ -272,14 +283,54 @@ public class ExcelUtil<T> {
 
 	public void setFormat(DateFormat format) {
 		this.format = format;
+	}  
+	
+	static class ValueConvert{
+		
+		private String reg = null;
+		
+		private Map<String, String> valueMap = new HashMap<String, String>();  
+		
+		public ValueConvert(Map<String, String> valueMap){
+			StringBuffer regStr = new StringBuffer("("); 
+			for(String key : valueMap.keySet()){
+				if(regStr.length() > 1){
+					regStr.append("|");
+				}
+				regStr.append(valueMap.get(key));
+				this.valueMap.put(valueMap.get(key) ,key);
+			}
+			regStr.append(")");
+			
+			this.reg = regStr.toString(); 
+		} 
+		public Object convert(Object value) {
+			// TODO Auto-generated method stub 
+			if(this.reg == null){
+				return value;
+			}
+			Pattern p = Pattern.compile(this.reg);
+			Matcher m = p.matcher(String.valueOf(value));
+			StringBuffer result = new StringBuffer(); 
+			while(m.find()){
+				String v = valueMap.get(m.group(1)); 
+				if(value != null){
+					m.appendReplacement(result, v);
+				}
+			}
+			m.appendTail(result);
+			return result.toString();
+		}
+		
 	}
-
-	public Map<String, Map<String, String>> getValueMapping() {
+	
+	public Map<String, ValueConvert> getValueMapping() {
 		return valueMapping;
 	}
 
-	public void setValueMapping(Map<String, Map<String, String>> valueMapping) {
-		this.valueMapping = valueMapping;
-	}
-	
+	public void setValueMapping(Map<String,  Map<String, String>> valueMapping) {
+		for(String key : valueMapping.keySet()){
+			this.valueMapping.put(key, new ValueConvert(valueMapping.get(key)));
+		} 
+	} 
 }

@@ -7,7 +7,8 @@ List<String> permissionList = user.getPermissionList();
 String userRolesString = "";
 for(String p : permissionList){
 	userRolesString += userRolesString.equals("") ? p : "," + p;
-} 
+}
+ 
 String basePath = request.getContextPath(); 
 %>
 <!DOCTYPE HTML>
@@ -26,14 +27,16 @@ String basePath = request.getContextPath();
  
 <!-- Custom styles for this template --> 
 <link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
-<link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
-
+<link href="<%=basePath %>/assets/css/style.css" rel="stylesheet"> 
 <link href="<%=basePath %>/assets/easyui/themes/default/easyui.css" rel="stylesheet">
 <link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
 
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/html5.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/bootstrap.min.js"></script> 
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery-ui-1.10.4.min.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/jquery.ui.widget.js"></script>
+
 <script type="text/javascript" src="<%=basePath %>/assets/js/respond.min.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/easyui/jquery.easyui.min.js"></script>
 
@@ -43,12 +46,14 @@ String basePath = request.getContextPath();
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/cross/cross.js"></script>  
 <script type="text/javascript" src="<%=basePath %>/assets/js/datepicker.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.gritter.min.js"></script> 
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script> 
+
+
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
-var all_role = "<%=userRolesString %>";
-console.log(all_role);
+var all_role = "<%=userRolesString %>"; 
+   
 </script>
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
  <style type="text/css">
@@ -91,8 +96,9 @@ console.log(all_role);
 			    <section class="panel panel-default">
 			        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
 			        <div class="panel-body">
-						<form class="form-horizontal" role="form">  
-							<div class="row">
+						<form class="form-horizontal" role="form">   
+						<!-- <select id="selectTest" class="easyui-combobox" name="organs"  style="width:200px;" multiple="multiple" valueField="id" textField="text" ></select> -->
+							<div class="row"> 
 									<div class="form-group"
 										style="float: left; margin-left: 0px; margin-top: 0px;width: 100%"> 
 									  <div class="row" style="width: 100%;" >
@@ -103,7 +109,7 @@ console.log(all_role);
 													class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name'">
 												</select>
 											</div>   
-									   </div> 
+									   </div>  
 										<div class="row"  style="width: 100%; margin-top: 5px;">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												车辆担当局:</label>
@@ -448,8 +454,8 @@ console.log(all_role);
 								<div class="row" style="margin: 5px 0 0px 0;">
 									<label class="control-label pull-left"> 车辆担当局:&nbsp;</label>
 										<div class="pull-left">
-											<select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code' , optionsCaption: ''"></select>
-											<!-- <input type="text" class="form-control" style="width: 30px;"  data-bind="value: tokenVehBureau"> -->
+											<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code' , optionsCaption: ''"></select> -->
+											<input type="text" class="form-control" disabled  style="width: 50px;"  data-bind="value: tokenVehBureau">
 										</div>
 									<label  class="control-label pull-left" style=" margin-left: 20px;"> 车辆段/动车段:&nbsp;</label>
 										<div class="pull-left">
@@ -463,8 +469,8 @@ console.log(all_role);
 											class="control-label pull-left" style=" margin-left: 30px;" > 客运担当局:&nbsp;</label>
 									<div class="pull-left">
 										<!-- <input type="text" class="form-control" style="width: 30px;" data-bind="value: tokenPsgDept"> -->
-										
-										<select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
+										<input type="text" class="form-control disabled" style="width: 50px;" disabled  data-bind="value: tokenPsgBureau" >
+										<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select> -->
 									</div>
 									<label for="exampleInputEmail3"
 										class="control-label pull-left" style=" margin-left: 20px;" > 客运段:&nbsp;</label>
@@ -638,19 +644,49 @@ console.log(all_role);
     <!--导入弹窗--> 
 	<div id="file_upload_dlg" class="easyui-dialog" title="导入对数表文件"
 		data-options="iconCls:'icon-save'"
-		style="width: 400px; height: 200px; padding: 10px">
-		<img id="loading" src="assets/images/loading.gif" style="display:none;">
-		<form id="file_upload_id" name="file_upload_name" action="cross/fileUpload"
-			method="post" enctype="multipart/form-data"> 
-			 <div class="row" style="width: 100%; margin-top: 5px;">
-				<label for="exampleInputEmail3" class="control-label pull-left">
-								方案:&nbsp;</label> 
+		style="width: 400px; height: 280px; padding: 10px">
+		<img id="loading" src="assets/images/loading.gif" style="display:none;"> 
+		<form id="file_upload_id" name="file_upload_name" action="cross/fileUpload" method="post" enctype="multipart/form-data"> 
+			<div class="row" style="width: 100%;">
+				<label for="exampleInputEmail5" class="control-label pull-left">
+					导入类型:</label> 
+			</div>
+			<div class="row" style="width: 100%; margin-top: 5px;">
 				<div class="pull-left">
-					<select style="width: 273px" id="input_cross_chart_id"
-						class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
-					</select>
-				</div>   
-		   </div> 
+					<input type="radio" class="pull-left" class="form-control" 
+						style="width: 20px; margin-left: 35px;"
+						class="form-control" data-bind="checked: searchModle().upLoadFlag" value="0">
+				</div> 
+				<label for="exampleInputEmail5" class="control-label pull-left">
+					覆盖同名交路，其他追加</label> 
+			</div>
+			<div class="row" style="width: 100%; margin-top: 5px;">
+				<div class="pull-left">
+					<input type="radio" class="pull-left" class="form-control" 
+						style="width: 20px; margin-left: 35px;"
+						class="form-control" value="1" data-bind="checked: searchModle().upLoadFlag">
+				</div>
+				<label for="exampleInputEmail5" class="control-label pull-left">
+					清空当前方案内全部交路,重新导入</label> 
+			</div>
+			<div class="row" style="width: 100%; margin-top: 5px;">
+				<div class="pull-left">
+					<input type="radio" class="pull-left" class="form-control" 
+						style="width: 20px; margin-left: 35px;"
+						class="form-control" value="2" data-bind="checked: searchModle().upLoadFlag" >
+				</div>
+				<label for="exampleInputEmail5" class="control-label pull-left">
+					不覆盖,追加</label> 
+			</div>
+			<div class="row" style="width: 100%; margin-top: 5px;">
+					<label for="exampleInputEmail3" class="control-label pull-left">
+									方案:&nbsp;</label> 
+					<div class="pull-left">
+						<select style="width: 273px" id="input_cross_chart_id"
+							class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+						</select>
+					</div>   
+			 </div> 
 			 <div class="row" style="margin: 10px 0 5px 0;">
 				<label for="exampleInputEmail2" class="control-label pull-left">启用日期:&nbsp;</label>
 		        <div class="pull-left">
