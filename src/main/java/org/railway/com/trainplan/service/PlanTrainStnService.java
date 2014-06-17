@@ -89,13 +89,17 @@ public class PlanTrainStnService {
     	    Map<String,String> paramMap = new HashMap<String,String>();
     	    paramMap.put("runDate", runDate);
     	    paramMap.put("startBureauFull",startBureauFull );
-    	    paramMap.put("trainNbr", trainNbr);
+    	    if(trainNbr != null && !"".equals(trainNbr.trim())){
+    	    	paramMap.put("trainNbr", trainNbr);
+    	    }
+    	    
     	    List<Map<String,Object>> mapList = baseDao.selectListBySql(Constants.TRAINPLANDAO_GET_TOTALTRAINS, paramMap);
     	    if(mapList != null && mapList.size() > 0){
     	    	 //System.err.println("mapList.size===" + mapList.size());
     	    	for(Map<String,Object> map :mapList ){
     	    		ParamDto dto = new ParamDto();
     	    		dto.setSourceEntityId(StringUtil.objToStr(map.get("BASE_TRAIN_ID")));
+    	    		dto.setPlanTrainId(StringUtil.objToStr(map.get("PLAN_TRAIN_ID")));
     	    		String time = StringUtil.objToStr(map.get("RUN_DATE"));
     	    		dto.setTime(DateUtil.formateDate(time));
     	    		list.add(dto);

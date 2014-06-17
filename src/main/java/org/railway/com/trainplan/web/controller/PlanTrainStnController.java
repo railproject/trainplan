@@ -239,11 +239,18 @@ public class PlanTrainStnController {
 		for(int i = 1;i<=count;i++){
 			String tempDate = DateUtil.getDateByDay(runDate, -(i-1));
 			tempDate = DateUtil.format(DateUtil.parse(tempDate), "yyyyMMdd");
+			System.err.println();
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull, trainNbr);
-			String jsonStr = combinationMessage(listDto);
-			logger.debug("jsonStr====" + jsonStr);
-			//向rabbit发送消息
-			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+			if(listDto != null && listDto.size() > 0){
+				String jsonStr = combinationMessage(listDto);
+				logger.debug("jsonStr====" + jsonStr);
+				//System.err.println("jsonStr====" + jsonStr);
+				//向rabbit发送消息
+				amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);	
+			}
+				
+			
+			
 		}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -272,9 +279,12 @@ public class PlanTrainStnController {
 			String startBureauFull  = StringUtil.objToStr(reqMap.get("startBureauFull"));
 			
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(runDate,startBureauFull,null);
-			String jsonStr = combinationMessage(listDto);
-			//向rabbit发送消息
-			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+			if(listDto != null && listDto.size() > 0){
+				String jsonStr = combinationMessage(listDto);
+				//向rabbit发送消息
+				amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+					
+			}
 			
 	    }catch(Exception e){
 	    	logger.error("handleTrainLines error==" + e.getMessage());
@@ -414,6 +424,7 @@ public class PlanTrainStnController {
 					//组装发往rabbit的报文
 					JSONObject  temp = new JSONObject();
 					temp.put("sourceEntityId", dto.getSourceEntityId());
+					temp.put("planTrainId", dto.getPlanTrainId());
 					temp.put("time", dto.getTime());
 					temp.put("source", dto.getSource());
 					temp.put("action", dto.getAction());

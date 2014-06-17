@@ -3,6 +3,7 @@ package org.railway.com.trainplan.service.dto;
 public class ParamDto {
 
 	private String sourceEntityId;
+	private String planTrainId;
 	//开行日期yyyy-mm-dd
 	private String time;
 	private String source = "1";
@@ -30,6 +31,12 @@ public class ParamDto {
 	}
 	public void setAction(String action) {
 		this.action = action;
+	}
+	public String getPlanTrainId() {
+		return planTrainId;
+	}
+	public void setPlanTrainId(String planTrainId) {
+		this.planTrainId = planTrainId;
 	}
 	
 	

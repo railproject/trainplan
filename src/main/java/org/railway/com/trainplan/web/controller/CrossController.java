@@ -487,11 +487,7 @@ public class CrossController {
 				 
 				 List<Map<String,Object>> stationTempList = new ArrayList<Map<String,Object>>();
 				 
-				 /**
-				  * StringUtil.objToStr(map.get("STNNAME")),
-				    			((BigDecimal)map.get("ISCURRENTBUREAU")).intValue(),
-				    			StringUtil.objToStr(map.get("STATIONTYPE"))
-				  */
+				
 				 Map<String,Object> startMap = null;
 				
 				 if(stationList != null && stationList.size() > 0){
@@ -516,8 +512,8 @@ public class CrossController {
 				 String gridStr = objectMapper.writeValueAsString(grid);
 				 dataMap.put("myJlData",myJlData);
 				 dataMap.put("gridData", gridStr);
-				 //System.err.println("myJlData==" + myJlData);
-				 //System.err.println("gridStr==" + gridStr);
+				 System.err.println("myJlData==" + myJlData);
+				 System.err.println("gridStr==" + gridStr);
 				result.setData(dataMap);
 				
 			}

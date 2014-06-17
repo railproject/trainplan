@@ -32,7 +32,7 @@ public class MessageHandler implements MessageListener{
 		try {
 			 msg= mapper.readValue(message.getBody(), Map.class);
 			 logger.debug("msg======" + msg);
-			
+			 //System.err.println("msg======" + msg);
 			 if(msg != null && msg.size()>0){
 				 Map<String,Object> result = ((Map<String,Object>)msg.get("result"));
 				 String resultString = (String)result.get("result");
@@ -49,7 +49,8 @@ public class MessageHandler implements MessageListener{
 						 Map<String,Object> reqMap = new HashMap<String,Object>();
 						 String baseTrainId = StringUtil.objToStr(paramObj.get("sourceEntityId"));
 						 String daylyPlanId = StringUtil.objToStr(result1.get("id"));
-						 reqMap.put("baseTrainId", baseTrainId);
+						 String planTrainId = StringUtil.objToStr(paramObj.get("planTrainId"));
+						 reqMap.put("planTrainId", planTrainId);
 						 reqMap.put("daylyPlanId",daylyPlanId );
 						 //更新表plan_train中字段DAILYPLAN_FLAG值为0
 						 planTrainStnService.updatePlanTrainDaylyPlanFlag(reqMap);

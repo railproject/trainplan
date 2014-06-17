@@ -21,12 +21,12 @@
 		DAILYPLAN_TIME=sysdate,
 		DAILYPLAN_TIMES=DAILYPLAN_TIMES+1,
 		DAILYPLAN_ID=#{daylyPlanId}
-		where base_train_id=#{baseTrainId}
+		where plan_train_id=#{planTrainId}
 
 	</update>
 
 	<select id="getTotalTrains" parameterType="map" resultType="map">
-		select base_train_id ,
+		select base_train_id ,plan_train_id,
 		run_date
 		from plan_train
 		where run_date=#{runDate} and START_BUREAU_FULL = #{startBureauFull}
