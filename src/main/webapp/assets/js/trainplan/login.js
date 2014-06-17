@@ -31,6 +31,15 @@ $(function() {
         $("input[name='username']").val($("#inputUsername").val() + "@" + $("#inputAccount").val());
         $("input[name='password']").val($("#inputPassword").val());
     });
+
+    $("#inputPassword").bind("keydown", function(e) {
+
+        if (e.keyCode == 13) {
+            e.preventDefault();
+
+            $("#loginForm").submit();
+        }
+    });
     
     /**
      * 获取项目根路径
