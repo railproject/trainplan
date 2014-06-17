@@ -447,8 +447,8 @@ console.log(all_role);
 								<div class="row" style="margin: 5px 0 0px 0;">
 									<label class="control-label pull-left"> 车辆担当局:&nbsp;</label>
 										<div class="pull-left">
-											<select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code' , optionsCaption: ''"></select>
-											<!-- <input type="text" class="form-control" style="width: 30px;"  data-bind="value: tokenVehBureau"> -->
+											<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code' , optionsCaption: ''"></select> -->
+											<input type="text" class="form-control" style="width: 50px;"  data-bind="value: tokenVehBureau" disabled> 
 										</div>
 									<label  class="control-label pull-left" style=" margin-left: 20px;"> 车辆段/动车段:&nbsp;</label>
 										<div class="pull-left">
@@ -461,9 +461,9 @@ console.log(all_role);
 									<label for="exampleInputEmail3"
 											class="control-label pull-left" style=" margin-left: 30px;" > 客运担当局:&nbsp;</label>
 									<div class="pull-left">
-										<!-- <input type="text" class="form-control" style="width: 30px;" data-bind="value: tokenPsgDept"> -->
+										<input type="text" class="form-control" style="width: 50px;" data-bind="value: tokenPsgBureau" disabled>
 										
-										<select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
+										<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select> -->
 									</div>
 									<label for="exampleInputEmail3"
 										class="control-label pull-left" style=" margin-left: 20px;" > 客运段:&nbsp;</label>

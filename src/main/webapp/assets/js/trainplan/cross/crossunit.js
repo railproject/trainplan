@@ -828,7 +828,22 @@ function CrossRow(data) {
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 
 	//车辆担当局 
-	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
+	self.tokenVehBureau = ko.computed(function(){ 
+			var result = "";
+			 if(data.tokenVehBureau != null && data.tokenVehBureau != "null"){
+				 var bs = data.tokenVehBureau.split("、"); 
+				 result = data.tokenVehBureau;
+				 for(var j = 0; j < bs.length; j++){
+					 for(var i = 0; i < gloabBureaus.length; i++){
+						 if(bs[j] == gloabBureaus[i].code){
+							 result = result.replace(bs[j], gloabBureaus[i].shortName);
+							 break;
+						 }
+					 }
+				 } 
+			 }
+			 return result; 
+	});
 	
 	self.activeFlag = ko.computed(function(){
 		return hasActiveRole(data.tokenVehBureau);
@@ -836,7 +851,22 @@ function CrossRow(data) {
 	
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
-	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
+	self.tokenPsgBureau = ko.computed(function(){ 
+		var result = "";
+		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
+			 var bs = data.tokenPsgBureau.split("、"); 
+			 result = data.tokenPsgBureau;
+			 for(var j = 0; j < bs.length; j++){
+				 for(var i = 0; i < gloabBureaus.length; i++){
+					 if(bs[j] == gloabBureaus[i].code){
+						 result = result.replace(bs[j], gloabBureaus[i].shortName);
+						 break;
+					 }
+				 }
+			 } 
+		 }
+		 return result; 
+	});
 	self.tokenPsgDept = ko.observable(data.tokenPsgDept);
 	self.tokenPsgDepot = ko.observable(data.tokenPsgDepot);
 	self.locoType = ko.observable(data.locoType);

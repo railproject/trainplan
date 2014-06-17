@@ -367,6 +367,7 @@ function CrossModel() {
 		});  */
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag();
+		console.log(highlingFlag);
 		var trainNbr = self.searchModle().filterTrainNbr(); 
 		var checkFlag = self.searchModle().checkFlag();
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
@@ -847,7 +848,7 @@ function CrossRow(data) {
 	//车辆担当局 
 	self.tokenVehBureau = ko.computed(function(){ 
 			var result = "";
-			 if(data.tokenVehBureau != null){
+			 if(data.tokenVehBureau != null && data.tokenVehBureau != "null"){
 				 var bs = data.tokenVehBureau.split("、"); 
 				 result = data.tokenVehBureau;
 				 for(var j = 0; j < bs.length; j++){
@@ -873,7 +874,7 @@ function CrossRow(data) {
 	
 	self.tokenPsgBureau = ko.computed(function(){ 
 		var result = "";
-		 if(data.tokenPsgBureau != null){
+		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
 			 var bs = data.tokenPsgBureau.split("、"); 
 			 result = data.tokenPsgBureau;
 			 for(var j = 0; j < bs.length; j++){
