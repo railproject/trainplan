@@ -111,17 +111,26 @@
         <if test="unitCreateFlag == 1 ">
             AND CREAT_PLAN_TIME is not null
         </if> -->
-        <if test="startTime != null">  
-            AND (CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
-        </if>
-         <if test="endTime != null ">
-             AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime})
-       	</if> 
+      <!--   <if test="startTime != null">  
+            AND ((CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
+        </if> -->
+        
        	<if test="startTime != nul">  
+       	      AND 
+       	       <if test="endTime != nul"> 
+       	          ((
+       	       </if>
+       	       (CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
       	     <if test="endTime != nul">  
-          		OR (CROSS_START_DATE &lt;= #{startTime} AND CROSS_END_DATE >=  #{endTime})
+      	         AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime}))
+          		OR (CROSS_START_DATE &lt;= #{startTime} AND CROSS_END_DATE >=  #{endTime}))
           	 </if> 
         </if> 
+        <if test="startTime == nul"> 
+	        <if test="endTime != null ">
+	             AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime})) 
+	       	</if> 
+	    </if>
        order by t.cross_name 
     </select> 
 

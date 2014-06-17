@@ -1,8 +1,13 @@
 $(function() { 
 	
 	var cross = new CrossModel();
-	ko.applyBindings(cross); 
-	 
+	ko.applyBindings(cross);  
+//	
+//	var data, json;
+//	json = '[{"id":"年计划1","text":"年计划1","selected":true},{"id":"年计划2","text":"年计划2","selected":true},{"id":"年计划3","text":"年计划3","selected":true}]';
+//	data = $.parseJSON(json);
+//	$("#bureauTest").combobox();
+
 	cross.init();   
 });
 
@@ -183,6 +188,7 @@ function CrossModel() {
 		    }
 		    $("#loading").show();
 		    $("#btn_fileToUpload").attr("disabled", "disabled");
+		    var addFlag = self.searchModle().upLoadFlag();
 	        $.ajaxFileUpload
 	        ({
                 url:'cross/fileUpload',
@@ -194,7 +200,8 @@ function CrossModel() {
                 data:{
                 	chartId:chart.chartId,
                 	startDay:startDay,
-                	chartName:chart.name
+                	chartName:chart.name,
+                	addFlag: addFlag
                 },
                 success: function (data, status)
                 {  
@@ -759,6 +766,8 @@ function searchModle(){
 	
 	self.shortNameFlag = ko.observable(1);
 	
+	self.upLoadFlag = ko.observable(0);
+	
 	self.loadBureau = function(bureaus){   
 		for ( var i = 0; i < bureaus.length; i++) {  
 			self.bureaus.push(new BureausRow(bureaus[i])); 
@@ -836,7 +845,23 @@ function CrossRow(data) {
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 
 	//车辆担当局 
-	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
+	self.tokenVehBureau = ko.computed(function(){ 
+			var result = "";
+			 if(data.tokenVehBureau != null){
+				 var bs = data.tokenVehBureau.split("、"); 
+				 result = data.tokenVehBureau;
+				 for(var j = 0; j < bs.length; j++){
+					 for(var i = 0; i < gloabBureaus.length; i++){
+						 if(bs[j] == gloabBureaus[i].code){
+							 result = result.replace(bs[j], gloabBureaus[i].shortName);
+							 break;
+						 }
+					 }
+				 } 
+			 }
+			 return result; 
+	});
+	//ko.observable(data.tokenVehBureau); 
 	
 	self.activeFlag = ko.computed(function(){
 		return hasActiveRole(data.tokenVehBureau);
@@ -844,7 +869,25 @@ function CrossRow(data) {
 	
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
-	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
+	//self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
+	
+	self.tokenPsgBureau = ko.computed(function(){ 
+		var result = "";
+		 if(data.tokenPsgBureau != null){
+			 var bs = data.tokenPsgBureau.split("、"); 
+			 result = data.tokenPsgBureau;
+			 for(var j = 0; j < bs.length; j++){
+				 for(var i = 0; i < gloabBureaus.length; i++){
+					 if(bs[j] == gloabBureaus[i].code){
+						 result = result.replace(bs[j], gloabBureaus[i].shortName);
+						 break;
+					 }
+				 }
+			 } 
+		 }
+		 return result; 
+	});
+	
 	self.tokenPsgDept = ko.observable(data.tokenPsgDept);
 	self.tokenPsgDepot = ko.observable(data.tokenPsgDepot);
 	self.locoType = ko.observable(data.locoType);
