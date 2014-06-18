@@ -191,6 +191,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			var _obj = _stnArray[i];
 			_y = _startY + i*_stepY/_yScale + _stnOffsetY;//
 			myCanvasFillText(_context, {
+				font : "normal 14px Arial",
 				textAlign:"right",
 				text : _obj.stnName,
 				fromX : _fillTextStartX,
