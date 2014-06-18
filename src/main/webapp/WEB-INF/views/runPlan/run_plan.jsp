@@ -637,12 +637,12 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 							        <thead>
 							        <tr>
 							          <th style="width:5%">序号</th>
-					                  <th style="width:20%">站名</th>
-					                  <th style="width:5%">路局</th>
-					                  <th style="width:15%">到达时间</th>
-					                  <th style="width:15%">出发时间</th>
-					                  <th style="width:15%">停留时间</th>
-					                  <th style="width:10%">天数</th> 
+					                  <th style="width:18%">站名</th>
+					                  <th style="width:7%">路局</th>
+					                  <th style="width:21%">到达时间</th>
+					                  <th style="width:21%">出发时间</th>
+					                  <th style="width:8%">停留时间</th>
+					                  <th style="width:5%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
 					                 </tr>
 							        </thead>
