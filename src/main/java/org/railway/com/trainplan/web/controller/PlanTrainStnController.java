@@ -14,9 +14,9 @@ import org.joda.time.DateTime;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.SchemeInfo;
-import org.railway.com.trainplan.entity.TrainLineInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.CrossService;
@@ -189,13 +189,21 @@ public class PlanTrainStnController {
 		List<UnitCrossTrainInfo>  list = crossService.getUnitCrossTrainInfoForUnitCrossid(unitCrossId);
 		result.setData(list);*/
 		
-		String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
+		/*String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
 		List<TrainLineInfo>  list = crossService.getTrainPlanLineInfoForPlanCrossId(planCrossId,"京");
-		result.setData(list);
+		result.setData(list);*/
 		
 		
 		//List<String> list = crossService.getStationListForPlanCrossId(planCrossId);
 		//result.setData(list);
+		
+		//test update base_cross
+		CrossInfo crossInfo = new CrossInfo();
+		crossInfo.setBaseCrossId("2b3a19b1-508c-4ccf-a625-0c2c809dc1eb");
+		crossInfo.setCrossStartDate("20140910");
+		crossInfo.setCrossEndDate("20141010");
+		int count = crossService.updateBaseCross(crossInfo);
+		System.err.println("count==" + count);
 		return result;
 	}
 	

@@ -58,6 +58,7 @@ public class CrossInfo {
 	private String chartName;
 	private String baseCrossId;
 	private String startStn;
+	private String createUnitTime;
 	/****以下字段unit_cross表用到  ****/
 	//unit_cross表主键
 	private String unitCrossId;
@@ -68,6 +69,14 @@ public class CrossInfo {
 	
 	private String planCrossId;
 	
+	
+	
+	public String getCreateUnitTime() {
+		return createUnitTime;
+	}
+	public void setCreateUnitTime(String createUnitTime) {
+		this.createUnitTime = createUnitTime;
+	}
 	public String getPlanCrossId() {
 		return planCrossId;
 	}

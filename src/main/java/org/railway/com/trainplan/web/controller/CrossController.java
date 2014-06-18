@@ -113,7 +113,75 @@ public class CrossController {
 	}
 	
 	/**
-	 * 删除base_cross表和表base_cross_train中数据
+	 * 修改对数表信息
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editBaseCorssInfo", method = RequestMethod.POST)
+	public Result editBaseCrossInfo(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			logger.info("editBaseCorssInfo~~~~reqMap==" + reqMap);
+			String baseCrossId =  StringUtil.objToStr(reqMap.get("baseCrossId"));
+			//通过baseCrossId查询crossInfo对象
+			CrossInfo crossInfo = crossService.getCrossInfoForCrossid(baseCrossId);
+			crossInfo.setCrossSpareName(StringUtil.objToStr(reqMap.get("crossSpareName")));
+			crossInfo.setHighlineFlag(StringUtil.objToStr(reqMap.get("highlineFlag")));
+			crossInfo.setHighlineRule(StringUtil.objToStr(reqMap.get("highlineRule")));
+			crossInfo.setCommonlineRule(StringUtil.objToStr(reqMap.get("commonlineRule")));
+			crossInfo.setGroupTotalNbr(Integer.valueOf(StringUtil.objToStr(reqMap.get("groupTotalNbr"))));
+			crossInfo.setPairNbr(StringUtil.objToStr(reqMap.get("pairNbr")));
+			crossInfo.setCutOld(Integer.valueOf(StringUtil.objToStr(reqMap.get("cutOld"))));
+			crossInfo.setCrossStartDate(StringUtil.objToStr(reqMap.get("crossStartDate")));
+			crossInfo.setCrossEndDate(StringUtil.objToStr(reqMap.get("crossEndDate")));
+			crossInfo.setAppointWeek(StringUtil.objToStr(reqMap.get("appointWeek")));
+			crossInfo.setAppointDay(StringUtil.objToStr(reqMap.get("appointDay")));
+			crossInfo.setTokenVehBureau(StringUtil.objToStr(reqMap.get("tokenVehBureau")));
+			crossInfo.setTokenVehDepot(StringUtil.objToStr(reqMap.get("tokenVehDepot")));
+			crossInfo.setTokenPsgBureau(StringUtil.objToStr(reqMap.get("tokenPsgBureau")));
+			crossInfo.setTokenPsgDept(StringUtil.objToStr(reqMap.get("tokenPsgDept")));
+			crossInfo.setLocoType(StringUtil.objToStr(reqMap.get("locoType")));
+			crossInfo.setCrhType(StringUtil.objToStr(reqMap.get("crhType")));
+			crossInfo.setElecSupply(Integer.valueOf(StringUtil.objToStr(reqMap.get("elecSupply"))));
+			crossInfo.setDejCollect(Integer.valueOf(StringUtil.objToStr(reqMap.get("dejCollect"))));
+			crossInfo.setAirCondition(Integer.valueOf(StringUtil.objToStr(reqMap.get("airCondition"))));
+			crossInfo.setNote( StringUtil.objToStr(reqMap.get("note")));
+			crossInfo.setThroughline(StringUtil.objToStr(reqMap.get("throughline")));
+			crossInfo.setCreateUnitTime("");
+			
+			if(crossInfo != null){
+				//通过baseCrossId查询unitCross信息
+				List<CrossInfo> unitCrossInfoList = crossService.getUnitCrossInfosForCrossId(crossInfo.getBaseCrossId());
+			    //删除unit_cross_train中的数据
+				if( unitCrossInfoList != null && unitCrossInfoList.size() > 0){
+					String[]  unitCrossIds = new String[10];
+					List<String> unitCrossIdsList = new ArrayList<String>();
+					for(int i = 0;i<unitCrossIds.length;i++){
+						unitCrossIdsList.add(unitCrossIds[i]);
+					}
+					//删除unit_cross_train中的数据
+					crossService.deleteUnitCrossInfoTrainForCorssIds(unitCrossIdsList);
+					//删除unit_cross中的数据
+					crossService.deleteUnitCrossInfoForCorssIds(unitCrossIdsList);
+					List<String> baseCrossIdList = new ArrayList<String>();
+					baseCrossIdList.add(baseCrossId);
+					//更改crossinfo,crossInfo要根据页面传入重新设置，并将createUnitTime设为空
+					crossService.updateBaseCross(crossInfo);
+				}
+				
+			}
+			
+		}catch(Exception e){
+			 logger.error("editBaseCrossInfo error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	 
+		 }
+		return result;
+	}
+	
+	/**
+	 * 删除unit_cross表和表unit_cross_train中数据
 	 * @param reqMap
 	 * @return
 	 * @throws Exception
@@ -123,13 +191,17 @@ public class CrossController {
 	public Result deleteUnitCorssInfo(@RequestBody Map<String,Object> reqMap){
 		 Result result = new Result();
 		 try{
-			 String crossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
-			 if(crossIds != null){
-				String[] crossIdsArray = crossIds.split(",");
-				//先删除cross_train表中数据
-				int countTrain = crossService.deleteUnitCrossInfoTrainForCorssIds(crossIdsArray);
+			 String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
+			 if(unitCrossIds != null){
+				String[] crossIdsArray = unitCrossIds.split(",");
+				List<String> crossIdsList = new ArrayList<String>();
+				for(int i = 0;i<crossIdsArray.length;i++){
+					crossIdsList.add(crossIdsArray[i]);
+				}
+				//先删除unit_cross_train表中数据
+				int countTrain = crossService.deleteUnitCrossInfoTrainForCorssIds(crossIdsList);
 				//删除unit_cross表中数据
-				int count = crossService.deleteUnitCrossInfoForCorssIds(crossIdsArray);
+				int count = crossService.deleteUnitCrossInfoForCorssIds(crossIdsList);
 			 }  
 		 }catch(Exception e){
 			 logger.error("deleteUnitCorssInfo error==" + e.getMessage());
@@ -153,10 +225,14 @@ public class CrossController {
 			 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
 			 if(crossIds != null){
 				String[] crossIdsArray = crossIds.split(",");
+				List<String> crossIdsList = new ArrayList<String>();
+				for(int i = 0;i<crossIdsArray.length;i++){
+					crossIdsList.add(crossIdsArray[i]);
+				}
 				//先删除base_cross_train表中数据
-				int countTrain = crossService.deleteCrossInfoTrainForCorssIds(crossIdsArray);
+				int countTrain = crossService.deleteCrossInfoTrainForCorssIds(crossIdsList);
 				//删除base_cross表中数据
-				int count = crossService.deleteCrossInfoForCorssIds(crossIdsArray);
+				int count = crossService.deleteCrossInfoForCorssIds(crossIdsList);
 			 }  
 		 }catch(Exception e){
 			 logger.error("deleteCorssInfo error==" + e.getMessage());
@@ -178,7 +254,11 @@ public class CrossController {
 			 String crossIds = StringUtil.objToStr(reqMap.get("crossIds"));
 			 if(crossIds != null){
 				String[] crossIdsArray = crossIds.split(",");
-				int count = crossService.updateCorssCheckTime(crossIdsArray);
+				List<String> crossIdsList = new ArrayList<String>();
+				for(int i = 0;i<crossIdsArray.length;i++){
+					crossIdsList.add(crossIdsArray[i]);
+				}
+				int count = crossService.updateCorssCheckTime(crossIdsList);
 				logger.debug("update--count==" + count);
 			 } 
 		 }catch(Exception e){
@@ -202,7 +282,11 @@ public class CrossController {
 			 String unitCrossIds = StringUtil.objToStr(reqMap.get("unitCrossIds"));
 			 if(unitCrossIds != null){
 				String[] unitCrossIdsArray = unitCrossIds.split(",");
-				int count = crossService.updateUnitCorssCheckTime(unitCrossIdsArray);
+				List<String> unitCrossIdsList = new ArrayList<String>();
+				for(int i = 0;i<unitCrossIdsArray.length;i++){
+					unitCrossIdsList.add(unitCrossIdsArray[i]);
+				}
+				int count = crossService.updateUnitCorssCheckTime(unitCrossIdsList);
 				logger.debug("update--count==" + count);
 			 } 
 		 }catch(Exception e){
@@ -461,6 +545,7 @@ public class CrossController {
 									 PlanLineSTNDto stnDtoStart = new PlanLineSTNDto();
 									 stnDtoStart.setArrTime(subInfoTime.getArrTime());
 									 stnDtoStart.setDptTime(subInfoTime.getDptTime());
+									 stnDtoStart.setStayTime(subInfoTime.getStayTime());
 									 stnDtoStart.setStnName(subInfoTime.getStnName());
 									 stnDtoStart.setStationType(subInfoTime.getStationFlag());
 									 trainStns.add(stnDtoStart);
@@ -475,6 +560,7 @@ public class CrossController {
 					 List<CrossRelationDto> jxgx = getJxgx(trains);
 					 crossMap.put("jxgx", jxgx);
 					 crossMap.put("trains", trains);
+					 crossMap.put("groupSerialNbr", groupSerialNbr);
 					 dataList.add(crossMap);
 				 }
 				 
@@ -670,7 +756,9 @@ public class CrossController {
 							
 							if(response.equals(Constants.REMOTE_SERVICE_SUCCESS)){
 								//调用后台接口成功，更新本地数据表unit_cross中字段CREAT_CROSS_TIME
-								crossService.updateUnitCrossUnitCreateTime(new String[]{unitCrossId});
+								List<String> unitCrossIdList = new ArrayList<String>();
+								unitCrossIdList.add(unitCrossId);
+								crossService.updateUnitCrossUnitCreateTime(unitCrossIdList);
 								JSONObject subResult = new JSONObject();
 								subResult.put("unitCrossId", unitCrossId); 
 								subResult.put("flag", 1); 
@@ -821,8 +909,12 @@ public class CrossController {
 					//根据crossid生成交路单元
 					crossService.completeUnitCrossInfo(crossid);
 				}
+				List<String> crossIdsList = new ArrayList<String>();
+				for(int i = 0;i<crossIds.length;i++){
+					crossIdsList.add(crossIds[i]);
+				}
 				//生成交路单元完成后，更改表base_cross中的creat_unit_time字段的值
-				crossService.updateCrossUnitCreateTime(crossIds);
+				crossService.updateCrossUnitCreateTime(crossIdsList);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

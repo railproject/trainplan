@@ -15,10 +15,18 @@ public class UnitCrossTrainSubInfoTime {
 	private String arrTime;
 	private String dptTime;
 	private int runDays;
+	//停留时间，单位：分
+	private int stayTime;
 	private String trackName;
 	
 	
 	
+	public int getStayTime() {
+		return stayTime;
+	}
+	public void setStayTime(int stayTime) {
+		this.stayTime = stayTime;
+	}
 	public String getId() {
 		return id;
 	}

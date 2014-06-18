@@ -8,8 +8,22 @@ public class TrainTimeInfo {
 	 private String arrTime;
 	 private String dptTime;
 	 private int runDays; 
-	
+	 private String stnBureauFull;
+	 private String stationFlag;
 	 
+	 
+	public String getStnBureauFull() {
+		return stnBureauFull;
+	}
+	public void setStnBureauFull(String stnBureauFull) {
+		this.stnBureauFull = stnBureauFull;
+	}
+	public String getStationFlag() {
+		return stationFlag;
+	}
+	public void setStationFlag(String stationFlag) {
+		this.stationFlag = stationFlag;
+	}
 	public int getChildIndex() {
 		return childIndex;
 	}

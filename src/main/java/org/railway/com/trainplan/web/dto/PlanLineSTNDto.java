@@ -26,6 +26,8 @@ public class PlanLineSTNDto {
     private String dptTime;
 
     private String trackName;
+    //停留时间
+    private int stayTime;
 
     private int psg;
 
@@ -69,7 +71,14 @@ public class PlanLineSTNDto {
         this.owner = MapUtils.getString(map, "STN_BUREAU", "").equals(bureau);
     }
 
-    public String getStationType() {
+    
+    public int getStayTime() {
+		return stayTime;
+	}
+	public void setStayTime(int stayTime) {
+		this.stayTime = stayTime;
+	}
+	public String getStationType() {
 		return stationType;
 	}
 	public void setStationType(String stationType) {

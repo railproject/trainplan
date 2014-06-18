@@ -168,8 +168,10 @@ public class PlanTrainStnService {
 				planCross.setBaseChartName(cross.getChartName());
 				planCross.setBaseCrossId(cross.getBaseCrossId());
 				planCross.setCrossStartDate(startDate.replaceAll("-",""));
-				//TODO 暂时指定时间，以后要通过计算
-				planCross.setCrossEndDate("20140830");
+				String crossStartDate = cross.getCrossStartDate();
+				String crossEndDate = cross.getCrossEndDate();
+				int crossDayGap = DateUtil.getDaysBetween(DateUtil.getFormateDay(crossStartDate), DateUtil.getFormateDay(crossEndDate));
+				planCross.setCrossEndDate(DateUtil.getDateByDay(startDate, -(Integer.valueOf(dayCount) + crossDayGap)));
 				listPlanCross.add(planCross);
 			}
 		}
