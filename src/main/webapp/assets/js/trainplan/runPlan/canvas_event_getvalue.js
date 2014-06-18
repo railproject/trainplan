@@ -62,17 +62,22 @@ var RunPlanCanvasPage = function(cross) {
 	 */
 	function getScale(scale) {
 		//生成分界口、停站标记
-		var _stationTypeArray = [];
+		var _stationTypeArray = ["0"];
 		$("[name='canvas_checkbox_stationType']").each(function(){
 			if($(this).is(":checked")) {
-				_stationTypeArray.push($(this).val());
+				//查看简图 只包含始发、终到
+				_stationTypeArray = ["0"];
+				//_stationTypeArray.push($(this).val());
 			} else {
-				removeArrayValue(_stationTypeArray, $(this).val());
+				//显示所有 包含始发、终到、分界口、停站、不停站
+				_stationTypeArray = ["0","FJK","TZ","BT"];
+//				removeArrayValue(_stationTypeArray, $(this).val());
 			}
 	    });
-		if (_stationTypeArray.length >0) {
-			_stationTypeArray.push("0");	//增加显示始发及终到
-		}
+		//保留方便以后复选框扩展
+//		if (_stationTypeArray.length >0) {
+//			_stationTypeArray.push("0");	//增加显示始发及终到
+//		}
 		
 		
 		var _canvasIsDrawTrainTime = false;	//是否绘制列车经由站到达及出发时间
@@ -174,13 +179,9 @@ var RunPlanCanvasPage = function(cross) {
 		
 
 		//分界口 复选框事件
-		$("#canvas_checkbox_stationType_fjk").click(function(){
+		$("#canvas_checkbox_stationType_jt").click(function(){
 			_self.drawChart();
 			
-		});
-		//停站 复选框事件
-		$("#canvas_checkbox_stationType_tz").click(function(){
-			_self.drawChart();
 		});
 		
 		

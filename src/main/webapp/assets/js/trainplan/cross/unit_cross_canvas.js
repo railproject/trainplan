@@ -10,10 +10,69 @@ var currentXScaleCount = 1;//x轴放大总倍数
 var currentYScale = 1;	//y轴缩放比例
 var currentYScaleCount = 1;//y轴放大总倍数
 var dataIsNull = false;
-var myIsDrawTrainTime = false;	//是否绘制列车经由站到达及出发时间
 var pageModel = null;			//knockout绑定对象
 
 var MyCanvas = function(){
+	
+	
+	/**
+	 * 获取绘图扩展条件对象
+	 * @param scale
+	 * @returns
+	 */
+	function getScale(scale) {
+		//生成分界口、停站标记
+		var _stationTypeArray = ["0"];
+		$("[name='canvas_checkbox_stationType']").each(function(){
+			if($(this).is(":checked")) {
+				//查看简图 只包含始发、终到
+				_stationTypeArray = ["0"];
+				//_stationTypeArray.push($(this).val());
+			} else {
+				//显示所有 包含始发、终到、分界口、停站、不停站
+				_stationTypeArray = ["0","FJK","TZ","BT"];
+//				removeArrayValue(_stationTypeArray, $(this).val());
+			}
+	    });
+		//保留方便以后复选框扩展
+//		if (_stationTypeArray.length >0) {
+//			_stationTypeArray.push("0");	//增加显示始发及终到
+//		}
+		
+		var _canvasIsDrawTrainTime = false;	//是否绘制列车经由站到达及出发时间
+		if($("#canvas_checkbox_trainTime").is(":checked")){
+			_canvasIsDrawTrainTime = true;
+		} else {
+			_canvasIsDrawTrainTime = false;
+		}
+		
+		
+		
+		if (scale && scale!=null && scale!="undefine" && typeof scale == "object") {
+			scale.xScale = currentXScale;				//x轴缩放比例
+			scale.xScaleCount = currentXScaleCount;	//x轴当前放大倍数，用于控制时刻线条数
+			scale.yScale = currentYScale;				//y轴缩放比例
+			scale.stationTypeArray = _stationTypeArray;	//分界口复选框
+			scale.isDrawTrainTime = _canvasIsDrawTrainTime;	//是否绘制列车经由站到达及出发时间
+			scale.currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();	//当前组号
+			return scale;
+		} else {
+			return {
+				xScale : currentXScale,				//x轴缩放比例
+				xScaleCount : currentXScaleCount,	//x轴当前放大倍数，用于控制时刻线条数
+				yScale : currentYScale,				//y轴缩放比例
+				stationTypeArray:_stationTypeArray,	//分界口复选框
+				isDrawTrainTime:_canvasIsDrawTrainTime,	//是否绘制列车经由站到达及出发时间
+				currentGroupSerialNbr : _canvas_select_groupSerialNbr.val()	//当前组号
+			};
+		}
+		
+		
+		
+		
+	};
+	
+	
 	/**
 	 * public
 	 */
@@ -38,11 +97,13 @@ var MyCanvas = function(){
 	};
 	
 	
-	this.drawGraph = function (contextParam, scale) {
+	this.drawGraph = function (scale) {
+		this.clearChart();
+		
 		var _groupSerialNbrComboxData = [];
 		
 		var booleanDrawJlStartAndEnd = true;	//是否绘制交路起止标记
-		var myCanvasComponent = new MyCanvasComponent(contextParam, canvasData.grid.days, canvasData.grid.crossStns, scale);
+		var myCanvasComponent = new MyCanvasComponent(context, canvasData.grid.days, canvasData.grid.crossStns, getScale(scale));
 		//1.绘制网格
 		myCanvasComponent.drawGrid("green");
 		
@@ -68,7 +129,7 @@ var MyCanvas = function(){
 			
 			//2.1 绘制交路列车运行线
 			for (var j=0; j<_lenJlTrain; j++) {
-				new myCanvasComponent.drawTrainRunLine(false, _color, _obj.trains[j]).drawLine(contextParam);
+				new myCanvasComponent.drawTrainRunLine(false, _color, _obj.trains[j]).drawLine(context);
 			}
 			
 			//2.2 绘制交路接续关系
@@ -106,20 +167,14 @@ $(function(){
 	context = canvas.getContext('2d');
 
 	_MyCanvas = new MyCanvas();
-	_MyCanvas.drawGraph(context);
+	_MyCanvas.drawGraph();
 	
 	
 	
 	$("#canvas_select_groupSerialNbr").change(function(){
 		_currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();
 		
-		_MyCanvas.drawGraph(context,{
-			isDrawTrainTime:myIsDrawTrainTime,			//是否绘制列车经由站到达及出发时间
-			xScale : currentXScale,						//x轴缩放比例
-			xScaleCount : currentXScaleCount,			//x轴放大总倍数
-			yScale : currentYScale,						//y轴缩放比例
-			currentGroupSerialNbr : _currentGroupSerialNbr	//当前组号
-		});
+		_MyCanvas.drawGraph();
 	});
 	
 	//显示停站时刻 复选框事件
@@ -129,25 +184,14 @@ $(function(){
 			return;
 		}
 
-		_MyCanvas.clearChart();	//清除画布
-		if($("#canvas_checkbox_trainTime").is(":checked")){
-			myIsDrawTrainTime = true;
-			_MyCanvas.drawGraph(context,{
-				isDrawTrainTime:myIsDrawTrainTime,			//是否绘制列车经由站到达及出发时间
-				xScale : currentXScale,			//x轴缩放比例
-				xScaleCount : currentXScaleCount,	//x轴放大总倍数
-				yScale : currentYScale			//y轴缩放比例
-			});
-		} else {
-			myIsDrawTrainTime = false;
-			_MyCanvas.drawGraph(context,{
-				isDrawTrainTime:myIsDrawTrainTime,			//是否绘制列车经由站到达及出发时间
-				xScale : currentXScale,			//x轴缩放比例
-				xScaleCount : currentXScaleCount,	//x轴放大总倍数
-				yScale : currentYScale			//y轴缩放比例
-			});
-		}
+		_MyCanvas.drawGraph();
 		
+	});
+	
+
+	//分界口 复选框事件
+	$("#canvas_checkbox_stationType_jt").click(function(){
+		_MyCanvas.drawGraph();
 	});
 	
 	
@@ -166,18 +210,9 @@ $(function(){
 		currentXScale = currentXScale/2;
 		currentXScaleCount = currentXScaleCount*2;
 		
-		if($("#canvas_checkbox_trainTime").is(":checked")){
-			
-		}
 
 		$("#canvas_event_label_xscale").text(currentXScaleCount);
-		_MyCanvas.clearChart();	//清除画布
-		_MyCanvas.drawGraph(context,{
-				isDrawTrainTime:myIsDrawTrainTime,			//是否绘制列车经由站到达及出发时间
-				 xScale : currentXScale,			//x轴缩放比例
-				 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-				 yScale : currentYScale			//y轴缩放比例
-			 });
+		_MyCanvas.drawGraph();
 		
 	});
 	
@@ -198,13 +233,7 @@ $(function(){
 		currentXScaleCount = currentXScaleCount/2;
 
 		$("#canvas_event_label_xscale").text(currentXScaleCount);
-		_MyCanvas.clearChart();	//清除画布
-		_MyCanvas.drawGraph(context,{
-			isDrawTrainTime:myIsDrawTrainTime,			//是否绘制列车经由站到达及出发时间
-			 xScale : currentXScale,			//x轴缩放比例
-			 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-			 yScale : currentYScale			//y轴缩放比例
-		 });
+		_MyCanvas.drawGraph();
 	});
 	
 	//y放大2倍
@@ -224,13 +253,7 @@ $(function(){
 		currentYScaleCount = currentYScaleCount*2;
 
 		$("#canvas_event_label_yscale").text(currentYScaleCount);
-		_MyCanvas.clearChart();	//清除画布
-		_MyCanvas.drawGraph(context,{
-				isDrawTrainTime:myIsDrawTrainTime,			//是否绘制列车经由站到达及出发时间
-				 xScale : currentXScale,			//x轴缩放比例
-				 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-				 yScale : currentYScale			//y轴缩放比例
-			 });
+		_MyCanvas.drawGraph();
 		
 	});
 	
@@ -251,13 +274,7 @@ $(function(){
 		currentYScaleCount = currentYScaleCount/2;
 
 		$("#canvas_event_label_yscale").text(currentYScaleCount);
-		_MyCanvas.clearChart();	//清除画布
-		_MyCanvas.drawGraph(context,{
-			isDrawTrainTime:myIsDrawTrainTime,			//是否绘制列车经由站到达及出发时间
-			 xScale : currentXScale,			//x轴缩放比例
-			 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-			 yScale : currentYScale			//y轴缩放比例
-		 });
+		_MyCanvas.drawGraph();
 	});
 	
 	
