@@ -569,7 +569,7 @@ var all_role = "<%=userRolesString %>";
 			  <div class="tab-pane active" id="runPlan" > 
 			  		 <div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
 							      <!--panle-heading-->
-							      <div class="panel-body" style="bapadding:10px;overflow: auto">
+							      <div class="panel-body .panel-collapse" style="bapadding:10px;overflow: auto">
 							      	<div class="table-responsive" > 
 							          <table class="table table-bordered table-striped table-hover" id="run_plan_table">
 								      <thead> 

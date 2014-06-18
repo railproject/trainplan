@@ -436,7 +436,7 @@ function CrossModel() {
 				 stationTypeArray:self.searchModle().drawFlags()
 			 });
 		}); 
-		
+//		
 //		runPlanCanvasPage = new RunPlanCanvasPage(cross);
 		self.runPlanCanvasPage.initPage(); 
 		
@@ -650,42 +650,42 @@ function CrossModel() {
 	self.showTrainTimes = function(row) {
 		self.currentTrain(row);
 		self.runPlanCanvasPage.reDrawByTrainNbr(row.trainNbr);
-		self.stns.remove(function(item){
-			return true;
-		});
-		if(row.times().length > 0){ 
-			$.each(row.times(), function(i, n){
-				self.stns.push(n); 
-			}) ;
-			 
-		}else{
-			$.ajax({
-				url : "jbtcx/queryTrainTimes",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({   
-					trainId : row.baseTrainId
-				}),
-				success : function(result) {  
-					if (result != null && result != "undefind" && result.code == "0") {  
-						row.loadTimes(result.data);  
-						$.each(row.times(), function(i, n){
-							self.stns.push(n); 
-						});
-					} else {
-						showErrorDialog("获取列车时刻表失败");
-					};
-				},
-				error : function() {
-					showErrorDialog("获取列车时刻表失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-			}); 
-		}
+//		self.stns.remove(function(item){
+//			return true;
+//		});
+//		if(row.times().length > 0){ 
+//			$.each(row.times(), function(i, n){
+//				self.stns.push(n); 
+//			}) ;
+//			 
+//		}else{
+//			$.ajax({
+//				url : "jbtcx/queryTrainTimes",
+//				cache : false,
+//				type : "POST",
+//				dataType : "json",
+//				contentType : "application/json",
+//				data :JSON.stringify({   
+//					trainId : row.baseTrainId
+//				}),
+//				success : function(result) {  
+//					if (result != null && result != "undefind" && result.code == "0") {  
+//						row.loadTimes(result.data);  
+//						$.each(row.times(), function(i, n){
+//							self.stns.push(n); 
+//						});
+//					} else {
+//						showErrorDialog("获取列车时刻表失败");
+//					};
+//				},
+//				error : function() {
+//					showErrorDialog("获取列车时刻表失败");
+//				},
+//				complete : function(){
+//					commonJsScreenUnLock();
+//				}
+//			}); 
+//		}
 		
 	};  
 	
@@ -916,55 +916,55 @@ function CrossModel() {
 			}); 
 	};
 	self.showTrains = function(row) {   
-		self.setCurrentCross(row);
-		console.log(row);
+		self.setCurrentCross(row); 
 		commonJsScreenLock();
 		self.createCrossMap(row);
-		self.stns.remove(function(item) {
-			return true;
-		});
+//		self.stns.remove(function(item) {
+//			return true;
+//		});
 		self.trains.remove(function(item) {
 			return true;
 		});
+		
+		var trains = row.crossName().split("-");
+		
+		$.each(trains, function(n, trainNbr){
+			var row = new TrainRow({"trainNbr": trainNbr});
+			self.trains.push(row); 
+		}); 
+		
 		self.loadRunPlans(row.planCrossId());
-		 $.ajax({
-				url : "cross/getCrossTrainInfo",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({  
-					crossId : row.baseCrossId  
-				}),
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {   
-							if(result.data[0].crossInfo != null){
-								self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
-								showWarningDialog("没有找打对应的交路被找到");
-							}else{ 
-								self.setCurrentCross(new CrossRow(self.defualtCross));
-							} 
-							//self.currentCross(new CrossRow(result.data[0].crossInfo));
-							if(result.data[0].crossTrainInfo != null){
-								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
-									var row = new TrainRow(crossInfo);
-									self.trains.push(row); 
-								});
-							}
-						}
-						 
-					} else {
-						showErrorDialog("获取列车列表失败");
-					} 
-				},
-				error : function() {
-					showErrorDialog("获取列车列表失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-			}); 
+//		 $.ajax({
+//				url : "runplan/getPlanCrossInfo",
+//				cache : false,
+//				type : "POST",
+//				dataType : "json",
+//				contentType : "application/json",
+//				data :JSON.stringify({  
+//					planCrossId : row.planCrossId  
+//				}),
+//				success : function(result) {    
+//					if (result != null && result != "undefind" && result.code == "0") {
+//						if (result.data !=null && result.data.length > 0) {   
+//							if(result.data[0].crossInfo != null){
+//								self.setCurrentCross(new CrossRow(result.data[0].crossInfo)); 
+//							}else{ 
+//								self.setCurrentCross(new CrossRow(self.defualtCross));
+//								showWarningDialog("没有找打对应的交路被找到");
+//							}  
+//						}
+//						 
+//					} else {
+//						showErrorDialog("获取列车列表失败");
+//					} 
+//				},
+//				error : function() {
+//					showErrorDialog("获取列车列表失败");
+//				},
+//				complete : function(){
+//					commonJsScreenUnLock();
+//				}
+//			}); 
 		
 	};  
 	self.removeArrayValue = function(arr, value){
