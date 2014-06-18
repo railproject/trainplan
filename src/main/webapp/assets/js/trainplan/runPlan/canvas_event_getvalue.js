@@ -139,20 +139,20 @@ var RunPlanCanvasPage = function(cross) {
 	            	break;
 	            }
 	        }
-	        var stns = [];
+	       
 	        for(var i = 0; i < lineList.length; i++) {
 	            var c = lineList[i]; 
 	            if(c.isCurrent == true) { 
-	            	if(c.obj.trainStns != null){
-	            		$.each(c.obj.trainStns, function(z, n){
-	            			 stns.push(n); 
-	            		});
-	            	}
+	            	console.log("---------------------faf-----------------");
+	            	console.log(c);
+	            	_self.app.loadStns(c.obj.planTrainId);
+//	            	if(c.obj.trainStns != null){
+//	            		$.each(c.obj.trainStns, function(z, n){
+//	            			 stns.push(n); 
+//	            		});
+//	            	}
 	            	
 	            }  
-	        }
-	        if(stns.length > 0){
-	        	 _self.app.loadStns(stns);
 	        } 
 	    };
 	    

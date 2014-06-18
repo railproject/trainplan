@@ -430,7 +430,7 @@ function CrossModel() {
 	self.crossRows = new PageModle(200, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() {  
-		showConfirmDiv("提示", "你确定要执行保存操作码?", function (r) { 
+		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
 			commonJsScreenLock();
 			if(r){
 				$.ajax({

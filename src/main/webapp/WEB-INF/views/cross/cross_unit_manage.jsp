@@ -56,7 +56,9 @@
 	border: 1px solid #dddddd;
 	margin-left: -1px;
 }
-
+.Iframe_body {
+   padding: 12px 2%;
+}
 .ckbox.disabled{
 	cursor: not-allowed;
 	pointer-events: none;
@@ -81,7 +83,7 @@ console.log(all_role);
 		<li><a href="#">基本交路单元管理</a></li>
 	</ol> 
     <div id="plan_view_div_palnDayDetail" class="panel panel-default">
-	<div class="row" style="margin: 10px 10px 10px 10px;">     
+	<div class="row" style="margin: 5px 5px 5px 5px;">
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 28%;">
 		<!--分栏框开始--> 
@@ -189,7 +191,8 @@ console.log(all_role);
 													<tr style="height: 25px">
 														<th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
 														<th style="width: 8%" align="center">序号</th>
-														<th style="width: 59%" align="center">车底交路名</th>
+														<th style="width: 8%" align="center">局</th>
+														<th style="width: 51%" align="center">车底交路名</th>
 														<th style="width: 8%" align="center">审核</th>
 														<th style="width: 15%" align="center" colspan="2">生成</th> 
 													</tr>
@@ -203,7 +206,8 @@ console.log(all_role);
 																		<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().unitCrossId == unitCrossId ? 'blue':''}" >
 																			<td  align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 0 ? 'ckbox disabled' : ''}, event:{change: $parent.selectCross}, checked: selected"></td>
 																			<td style="width: 10%" data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
-																			<td style="width: 58%" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
+																			<td style="width: 10%" data-bind=" text: tokenVehBureauShowValue"></td>
+																			<td style="width: 48%" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
 																			<td  style="width:10%"  align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
 																			<td  style="width: 11%" align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
 																		</tr> 
@@ -283,28 +287,28 @@ console.log(all_role);
 											class="control-label pull-left"> 车底交路名:&nbsp;</label>
 										<div class="pull-left" style="margin-left: 26px;">
 											<input type="text" class="form-control" style="width: 470px;" data-bind="value: crossName"
-												id="plan_construction_input_trainNbr">
+												id="plan_construction_input_trainNbr" disabled>
 										</div> 
 										<label for="exampleInputEmail5" class="control-label pull-left" style="margin-left:40px">
 											线路线型:</label> 
 										<div class="pull-left">
 											<input type="radio" class="pull-left" class="form-control" 
 												style="width: 20px; margin-left: 5px; margin-top: 5px"
-												class="form-control" data-bind="checked: highlineFlag" value="0">
+												class="form-control" data-bind="checked: highlineFlag" value="0" disabled>
 										</div>
 										<label for="exampleInputEmail5" class="control-label pull-left">
 											普线</label> 
 										<div class="pull-left">
 											<input type="radio" class="pull-left" class="form-control" 
 												style="width: 20px; margin-left: 5px; margin-top: 5px"
-												class="form-control" value="1" data-bind="checked: highlineFlag">
+												class="form-control" value="1" data-bind="checked: highlineFlag" disabled>
 										</div>
 										<label for="exampleInputEmail5" class="control-label pull-left">
 											高线</label> 
 										<div class="pull-left">
 											<input type="radio" class="pull-left" class="form-control" 
 												style="width: 20px; margin-left: 5px; margin-top: 5px"
-												class="form-control" value="2" data-bind="checked: highlineFlag" >
+												class="form-control" value="2" data-bind="checked: highlineFlag" disabled>
 										</div>
 										<label for="exampleInputEmail5" class="control-label pull-left">
 											混合</label> 
@@ -313,7 +317,7 @@ console.log(all_role);
 								    <label for="exampleInputEmail3"
 											class="control-label pull-left"> 备用套跑交路名:&nbsp;</label>
 									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 470px;" data-bind="value: crossSpareName">
+										<input type="text" class="form-control" style="width: 470px;" data-bind="value: crossSpareName" disabled>
 									</div> 
 									<label for="exampleInputEmail5" style="margin-left: 40px;" class="control-label pull-left">
 										开行状态:</label>
@@ -322,7 +326,7 @@ console.log(all_role);
 										<input type="radio" class="pull-left" class="form-control"
 											value="1" data-bind="checked: spareFlag"
 											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
+											class="form-control" disabled>
 									</div>
 									<label for="exampleInputEmail5" class="control-label pull-left">
 										开行</label>
@@ -331,7 +335,7 @@ console.log(all_role);
 										<input type="radio" class="pull-left" class="form-control"
 											value="2" data-bind="checked: spareFlag"
 											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
+											class="form-control" disabled>
 									</div>
 									<label for="exampleInputEmail5" class="control-label pull-left">
 										备用</label>
@@ -339,7 +343,7 @@ console.log(all_role);
 										<input type="radio" class="pull-left" class="form-control"
 											value="0" data-bind="checked: spareFlag"
 											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
+											class="form-control" disabled>
 									</div>
 									<label for="exampleInputEmail5" class="control-label pull-left">
 										停运</label> 
@@ -348,7 +352,7 @@ console.log(all_role);
 									<label for="exampleInputEmail3"
 										class="control-label pull-left"> 组数:&nbsp;</label>
 									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 40px;" data-bind="value: groupTotalNbr">
+										<input type="text" class="form-control" style="width: 40px;" data-bind="value: groupTotalNbr" disabled>
 									</div> 
 									<label for="exampleInputEmail2" style="margin-left: 23px;" class="control-label pull-left">对数:&nbsp;</label>
 									<div class="pull-left">
@@ -448,7 +452,7 @@ console.log(all_role);
 									<label class="control-label pull-left"> 车辆担当局:&nbsp;</label>
 										<div class="pull-left">
 											<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code' , optionsCaption: ''"></select> -->
-											<input type="text" class="form-control" style="width: 50px;"  data-bind="value: tokenVehBureau" disabled> 
+											<input type="text" class="form-control" style="width: 50px;"  data-bind="value: tokenVehBureauShowValue" disabled> 
 										</div>
 									<label  class="control-label pull-left" style=" margin-left: 20px;"> 车辆段/动车段:&nbsp;</label>
 										<div class="pull-left">
@@ -461,7 +465,7 @@ console.log(all_role);
 									<label for="exampleInputEmail3"
 											class="control-label pull-left" style=" margin-left: 30px;" > 客运担当局:&nbsp;</label>
 									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 50px;" data-bind="value: tokenPsgBureau" disabled>
+										<input type="text" class="form-control" style="width: 50px;" data-bind="value: tokenPsgBureauShowValue" disabled>
 										
 										<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select> -->
 									</div>
@@ -638,51 +642,100 @@ console.log(all_role);
 	</div> 
 	 
 	<!--详情时刻表--> 
-	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
+	<div id="cross_train_time_dlg" class="easyui-dialog" title="详情时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 600px; height: 500px; padding: 10px;"> 
+		style="width: 600px; height: 500px; padding: 10px; "> 
 			      <!--panle-heading-->
 			      <div class="panel-body" style="padding:10px;margin-right:10px;">
-			      	<div class="table-responsive" >  
-			          <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
-					        <thead>
-					        <tr >
-					          <th style="width:5%">序号</th>
-			                  <th style="width:20%">站名</th>
-			                  <th style="width:5%">路局</th>
-			                  <th style="width:15%">到达时间</th>
-			                  <th style="width:15%">出发时间</th>
-			                  <th style="width:15%">停留时间</th>
-			                  <th style="width:10%">天数</th> 
-			                  <th style="width:15%" colspan="2">股道</th>  
-			                 </tr>
-					        </thead>
-					        <tbody style="padding:0">
-								 <tr style="padding:0">
-								   <td colspan="9" style="padding:0">
-										 <div style="height: 400px; overflow-y:auto;"> 
-											<table class="table table-bordered table-striped table-hover" >
-												 <tbody data-bind="foreach: times">
-										           <tr>  
-													<td style="width:6%" align="center" data-bind=" text: $index() + 1"></td>
-													<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
-													<td style="width:7%" align="center" data-bind="text: bureauShortName"></td>
-													<td style="width:15%" align="center" data-bind="text: sourceTime"></td>
-													<td style="width:15%" align="center" data-bind="text: targetTime"></td>
-													<td style="width:15%" align="center" data-bind="text: stepStr"></td>
-													<td style="width:10%" align="center" data-bind="text: runDays"></td>
-													<td style="width:15%" align="center" data-bind="text: trackName"></td>
-										        	</tr>
-										        </tbody>
-											</table> 
-									 	</div>
-									</td>
-								</tr>
-							</tbody> 
-					      </table>
-			        </div>   
+				       <ul class="nav nav-tabs" >
+						  <li class="active"><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
+						  <li><a style="padding:3px 10px;" href="#someTimes" data-toggle="tab">简点</a></li> 
+						</ul> 
+						<!-- Tab panes -->
+						<div class="tab-content" >
+						  <div class="tab-pane active" id="allTimes" > 
+					      	<div class="table-responsive" > 
+					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
+							        <thead>
+							        <tr>
+							          <th style="width:5%">序号</th>
+					                  <th style="width:20%">站名</th>
+					                  <th style="width:5%">路局</th>
+					                  <th style="width:15%">到达时间</th>
+					                  <th style="width:15%">出发时间</th>
+					                  <th style="width:15%">停留时间</th>
+					                  <th style="width:10%">天数</th> 
+					                  <th style="width:15%" colspan="2">股道</th>  
+					                 </tr>
+							        </thead>
+							        <tbody style="padding:0">
+										 <tr style="padding:0">
+										   <td colspan="9" style="padding:0">
+												 <div style="height: 400px; overflow-y:auto;"> 
+													<table class="table table-bordered table-striped table-hover" >
+														 <tbody data-bind="foreach: times">
+												           <tr>  
+															<td style="width:6%" align="center" data-bind=" text: $index() + 1"></td>
+															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
+															<td style="width:7%" align="center" data-bind="text: bureauShortName"></td>
+															<td style="width:15%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:15%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
+															<td style="width:10%" align="center" data-bind="text: runDays"></td>
+															<td style="width:15%" align="center" data-bind="text: trackName"></td>
+												        	</tr>
+												        </tbody>
+													</table> 
+											 	</div>
+											</td>
+										</tr>
+									</tbody> 
+						        </table>
+			        		</div>   
+			        	</div>
+			        	<div class="tab-pane" id="someTimes" > 
+					      	<div class="table-responsive" > 
+					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
+							        <thead>
+							        <tr>
+							          <th style="width:5%">序号</th>
+					                  <th style="width:20%">站名</th>
+					                  <th style="width:5%">路局</th>
+					                  <th style="width:15%">到达时间</th>
+					                  <th style="width:15%">出发时间</th>
+					                  <th style="width:15%">停留时间</th>
+					                  <th style="width:10%">天数</th> 
+					                  <th style="width:15%" colspan="2">股道</th>  
+					                 </tr>
+							        </thead>
+							        <tbody style="padding:0">
+										 <tr style="padding:0">
+										   <td colspan="9" style="padding:0">
+												 <div style="height: 400px; overflow-y:auto;"> 
+													<table class="table table-bordered table-striped table-hover" >
+														 <tbody data-bind="foreach: times">
+												           <tr>  
+															<td style="width:6%" align="center" data-bind=" text: $index() + 1"></td>
+															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
+															<td style="width:7%" align="center" data-bind="text: bureauShortName"></td>
+															<td style="width:15%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:15%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
+															<td style="width:10%" align="center" data-bind="text: runDays"></td>
+															<td style="width:15%" align="center" data-bind="text: trackName"></td>
+												        	</tr>
+												        </tbody>
+													</table> 
+											 	</div>
+											</td>
+										</tr>
+									</tbody> 
+						        </table>
+			        		</div>   
+			        	</div>
+			        </div>
       		</div>
-	   </div>
+	   </div> 
  </div>
 </div>
 </body>  
