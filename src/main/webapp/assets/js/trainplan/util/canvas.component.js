@@ -54,7 +54,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	 */
 	function initVariables() {
 		//解析生成新的纵坐标数组   判断是否要屏蔽部分车站数据，如：只绘制起止及分界口、绘制起止及停靠站等   
-		if (expandObj && expandObj.stationTypeArray && expandObj.stationTypeArray!="undefine") {
+		if (expandObj && expandObj.stationTypeArray && expandObj.stationTypeArray!="undefine"
+				&& expandObj.stationTypeArray.length>0) {
 			for(var i=0, _len=stnArray.length; i <_len; i++) {
 				if ($.inArray(stnArray[i].stationType, expandObj.stationTypeArray) > -1) {
 					_stnArray.push(stnArray[i]);
@@ -557,7 +558,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				myCanvasFillTextWithColor(ctx, color, {
 					font : "Bold 18px Arial",
 					text : _canvasComponentSelf.convertGroupSerialNbr(groupSerialNbr),//绘制列车所属组号①②③④⑤⑥⑥⑦⑧⑨
-					fromX : this.firstX-26,
+					fromX : this.firstX-35,
 					fromY : this.firstY
 				});
 			}
