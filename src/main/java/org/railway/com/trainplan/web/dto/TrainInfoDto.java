@@ -18,9 +18,17 @@ public class TrainInfoDto {
 	public String endTime;
 	public String startDate;
 	private String endDate;
+	private String planTrainId;
 	public List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
 	
 	
+	
+	public String getPlanTrainId() {
+		return planTrainId;
+	}
+	public void setPlanTrainId(String planTrainId) {
+		this.planTrainId = planTrainId;
+	}
 	public String getGroupSerialNbr() {
 		return groupSerialNbr;
 	}

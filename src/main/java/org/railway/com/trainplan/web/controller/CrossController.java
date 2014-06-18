@@ -537,6 +537,7 @@ public class CrossController {
 							 dto.setGroupSerialNbr(groupSerialNbr);
 							 dto.setStartDate(subInfo.getStartTime());
 							 dto.setEndDate(subInfo.getEndTime());
+							 dto.setPlanTrainId(subInfo.getPlanTrainId());
 							 //起始站，终到站，分解口列表              
 							 List<TrainLineSubInfoTime> subInfoTimeList = subInfo.getTrainStaionList();
 							 
