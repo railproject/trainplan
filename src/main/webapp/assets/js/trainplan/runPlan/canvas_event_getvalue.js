@@ -96,6 +96,7 @@ var RunPlanCanvasPage = function(cross) {
 			scale.stationTypeArray = _stationTypeArray;	//分界口复选框
 			scale.isDrawTrainTime = _canvasIsDrawTrainTime;	//是否绘制列车经由站到达及出发时间
 			scale.currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();	//当前组号
+			scale.isZgsUser = _isZgsUser;//当前用户是否为总公司用户
 			return scale;
 		} else {
 			return {
@@ -104,7 +105,8 @@ var RunPlanCanvasPage = function(cross) {
 				yScale : currentYScale,				//y轴缩放比例
 				stationTypeArray:_stationTypeArray,	//分界口复选框
 				isDrawTrainTime:_canvasIsDrawTrainTime,	//是否绘制列车经由站到达及出发时间
-				currentGroupSerialNbr : _canvas_select_groupSerialNbr.val()	//当前组号
+				currentGroupSerialNbr : _canvas_select_groupSerialNbr.val(),	//当前组号
+				isZgsUser : _isZgsUser//当前用户是否为总公司用户
 			};
 		}
 		
@@ -352,9 +354,6 @@ var RunPlanCanvasPage = function(cross) {
 		
 		this.clearChart();	//清除画布
 		//context.beginPath();
-		console.dir("~!!!!!!!!!!!!");
-		console.dir(canvasData);
-		console.dir("~!!!!!!!!!!!!");
 		myCanvasComponent = new MyCanvasComponent(context, canvasData.grid.days, canvasData.grid.crossStns,getScale(scale));
 		//绘制客运开行计划
 		//1.绘制网格
