@@ -246,21 +246,17 @@
   <update id="updateBaseCross" parameterType="org.railway.com.trainplan.entity.CrossInfo">
   
     update base_cross
-    set CROSS_SPARE_NAME = #{crossSpareName} ,
-        HIGHLINE_FLAG = #{highlineFlag},
+    set 
         HIGHLINE_RULE = #{highlineRule},
         COMMONLINE_RULE = #{commonlineRule},
-        GROUP_TOTAL_NBR = #{groupTotalNbr},
         PAIR_NBR = #{pairNbr},
         CUT_OLD = #{cutOld},
         CROSS_START_DATE = #{crossStartDate},
         CROSS_END_DATE = #{crossEndDate},
         APPOINT_WEEK = #{appointWeek},
         APPOINT_DAY = #{appointDay},
-        TOKEN_VEH_BUREAU = #{tokenVehBureau},
         TOKEN_VEH_DEPT = #{tokenVehDept},
         TOKEN_VEH_DEPOT = #{tokenVehDepot},
-        TOKEN_PSG_BUREAU = #{tokenPsgBureau},
         TOKEN_PSG_DEPT = #{tokenPsgDept},
         LOCO_TYPE = #{locoType},
         CRH_TYPE = #{crhType},
@@ -886,8 +882,14 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
 
     <select id="getCrossInfoTotalCount" parameterType="map" resultType="map">
         select count(*) as count from BASE_CROSS where 1=1
+        <if test="chartId != null">
+            AND BASE_CHART_ID= #{chartId}
+        </if>
         <if test="tokenVehBureau != null">
             AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+        </if>
+        <if test="crossName != null">
+            AND cross_name = #{crossName}
         </if>
         <if test="startBureau != null">
             AND START_BUREAU = #{startBureau}

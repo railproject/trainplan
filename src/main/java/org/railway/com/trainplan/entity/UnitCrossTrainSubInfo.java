@@ -15,11 +15,17 @@ public class UnitCrossTrainSubInfo {
 	private String endStn;
 	private String startStn;
 	private String endBureau;
-	
+	public int groupSerialNbr;
 	private List<UnitCrossTrainSubInfoTime> stationTimeList ;
 	
 	
 	
+	public int getGroupSerialNbr() {
+		return groupSerialNbr;
+	}
+	public void setGroupSerialNbr(int groupSerialNbr) {
+		this.groupSerialNbr = groupSerialNbr;
+	}
 	public String getRunDate() {
 		return runDate;
 	}
