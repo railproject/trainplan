@@ -14,7 +14,7 @@ var highlingrules = [{"value": "1", "text": "平日"},{"value": "2", "text": "�
 var commonlinerules = [{"value": "1", "text": "每日"},{"value": "2", "text": "隔日"}];
  
 var _cross_role_key_pre = "JHPT.KYJH.JHBZ.";
-function hasActiveRole(bureau){
+function hasActiveRole(bureau){ 
 	var roleKey = _cross_role_key_pre + bureau;
 	return all_role.indexOf(roleKey) > -1; 
 }
@@ -143,7 +143,7 @@ function CrossModel() {
 					
 				}
 		    }); 
-		 $("#run_plan_train_times").dialog("open");
+		// $("#run_plan_train_times").dialog("open");
 	};
 	self.setCurrentTrain = function(train){
 		self.currentTrain(train); 
@@ -942,7 +942,7 @@ function CrossModel() {
 	};
 	self.showTrains = function(row) {   
 		self.setCurrentCross(row); 
-		commonJsScreenLock();
+		commonJsScreenLock(3);
 		self.createCrossMap(row);
 //		self.stns.remove(function(item) {
 //			return true;
@@ -958,9 +958,8 @@ function CrossModel() {
 			self.trains.push(row); 
 		}); 
 		 
-		self.loadRunPlans(row.planCrossId());
-		console.log(row)
-		console.log("-------------ttttt-----------------------")
+		self.loadRunPlans(row.planCrossId()); 
+		
 		 $.ajax({
 				url : "cross/getPlanCrossInfo",
 				cache : false,
