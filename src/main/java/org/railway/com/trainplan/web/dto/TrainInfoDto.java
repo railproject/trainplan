@@ -13,7 +13,7 @@ public class TrainInfoDto {
 	//始发时刻
 	public String startTime;
 	
-	public String groupSerialNbr;
+	public int groupSerialNbr;
 
 	public String endTime;
 	public String startDate;
@@ -29,10 +29,10 @@ public class TrainInfoDto {
 	public void setPlanTrainId(String planTrainId) {
 		this.planTrainId = planTrainId;
 	}
-	public String getGroupSerialNbr() {
+	public int getGroupSerialNbr() {
 		return groupSerialNbr;
 	}
-	public void setGroupSerialNbr(String groupSerialNbr) {
+	public void setGroupSerialNbr(int groupSerialNbr) {
 		this.groupSerialNbr = groupSerialNbr;
 	}
 	public String getStartDate() {

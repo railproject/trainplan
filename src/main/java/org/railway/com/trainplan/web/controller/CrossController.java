@@ -128,20 +128,15 @@ public class CrossController {
 			String baseCrossId =  StringUtil.objToStr(reqMap.get("baseCrossId"));
 			//通过baseCrossId查询crossInfo对象
 			CrossInfo crossInfo = crossService.getCrossInfoForCrossid(baseCrossId);
-			crossInfo.setCrossSpareName(StringUtil.objToStr(reqMap.get("crossSpareName")));
-			crossInfo.setHighlineFlag(StringUtil.objToStr(reqMap.get("highlineFlag")));
 			crossInfo.setHighlineRule(StringUtil.objToStr(reqMap.get("highlineRule")));
-			crossInfo.setCommonlineRule(StringUtil.objToStr(reqMap.get("commonlineRule")));
-			crossInfo.setGroupTotalNbr(Integer.valueOf(StringUtil.objToStr(reqMap.get("groupTotalNbr"))));
+			crossInfo.setCommonlineRule(StringUtil.objToStr(reqMap.get("commonlineRule")));	
 			crossInfo.setPairNbr(StringUtil.objToStr(reqMap.get("pairNbr")));
 			crossInfo.setCutOld(Integer.valueOf(StringUtil.objToStr(reqMap.get("cutOld"))));
 			crossInfo.setCrossStartDate(StringUtil.objToStr(reqMap.get("crossStartDate")));
 			crossInfo.setCrossEndDate(StringUtil.objToStr(reqMap.get("crossEndDate")));
 			crossInfo.setAppointWeek(StringUtil.objToStr(reqMap.get("appointWeek")));
 			crossInfo.setAppointDay(StringUtil.objToStr(reqMap.get("appointDay")));
-			crossInfo.setTokenVehBureau(StringUtil.objToStr(reqMap.get("tokenVehBureau")));
 			crossInfo.setTokenVehDepot(StringUtil.objToStr(reqMap.get("tokenVehDepot")));
-			crossInfo.setTokenPsgBureau(StringUtil.objToStr(reqMap.get("tokenPsgBureau")));
 			crossInfo.setTokenPsgDept(StringUtil.objToStr(reqMap.get("tokenPsgDept")));
 			crossInfo.setLocoType(StringUtil.objToStr(reqMap.get("locoType")));
 			crossInfo.setCrhType(StringUtil.objToStr(reqMap.get("crhType")));
@@ -326,6 +321,7 @@ public class CrossController {
 			 for(int i = 0;i<size;i++){
 				 Map<String,Object> crossMap = new HashMap<String,Object>();
 				 UnitCrossTrainInfo unitCrossInfo = list.get(i);
+				 int groupSerialNbr = unitCrossInfo.getGroupSerialNbr();
 				 //列车信息列表
 				 List<UnitCrossTrainSubInfo> unitStationsList = unitCrossInfo.getTrainInfoList();
 				//列车信息列表
@@ -342,6 +338,7 @@ public class CrossController {
 						 dto.setEndStn(subInfo.getEndStn());
 						 dto.setStartDate(subInfo.getRunDate());
 						 dto.setEndDate(subInfo.getEndDate());
+						 dto.setGroupSerialNbr(groupSerialNbr);
 						 //列车经由时刻等信息
 						 List<PlanLineSTNDto> trainStns = new ArrayList<PlanLineSTNDto>();
 						 List<UnitCrossTrainSubInfoTime> stationTimeList = subInfo.getStationTimeList();
@@ -382,13 +379,11 @@ public class CrossController {
 					 } 
 				 }
 				
-				
-				// dataList.add(crossMap);
-				 
 				 //组装接续关系
 				 List<CrossRelationDto> jxgx = getJxgx(trains);
 				 crossMap.put("jxgx", jxgx);
 				 crossMap.put("trains", trains);
+				 crossMap.put("groupSerialNbr",groupSerialNbr);
 				 crossMap.put("crossName","");
 				 dataList.add(crossMap);
 			 }
