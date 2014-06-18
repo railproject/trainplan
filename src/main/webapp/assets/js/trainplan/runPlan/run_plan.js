@@ -244,9 +244,7 @@ function CrossModel() {
 	} ;
 	
 	 
-	
-	//当前选中的交路对象
-	self.currentCross = ko.observable(new CrossRow({"crossId":"",
+	self.defualtCross = {"crossId":"",
 		"crossName":"", 
 		"chartId":"",
 		"chartName":"",
@@ -281,7 +279,9 @@ function CrossModel() {
 		"note":"", 
 		"createPeople":"", 
 		"createPeopleOrg":"",  
-		"createTime":""})); 
+		"createTime":""};
+	//当前选中的交路对象
+	self.currentCross = ko.observable(new CrossRow(self.defualtCross)); 
 	 
 	//currentIndex 
 	self.currdate =function(){
@@ -915,9 +915,9 @@ function CrossModel() {
 				}
 			}); 
 	};
-	self.showTrains = function(row) {  
-		
+	self.showTrains = function(row) {   
 		self.setCurrentCross(row);
+		console.log(row);
 		commonJsScreenLock();
 		self.createCrossMap(row);
 		self.stns.remove(function(item) {
@@ -939,7 +939,12 @@ function CrossModel() {
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {   
-							self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
+							if(result.data[0].crossInfo != null){
+								self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
+								showWarningDialog("没有找打对应的交路被找到");
+							}else{ 
+								self.setCurrentCross(new CrossRow(self.defualtCross));
+							} 
 							//self.currentCross(new CrossRow(result.data[0].crossInfo));
 							if(result.data[0].crossTrainInfo != null){
 								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){

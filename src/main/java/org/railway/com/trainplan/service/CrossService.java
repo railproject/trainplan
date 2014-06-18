@@ -830,13 +830,18 @@ public class CrossService{
 		}
 		
 	} 
+	 
 	
 	private void clearCrossInfoByChartId(String chartId) {
-	
-		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNITCROSSTRAIN_BY_CHARID, chartId);
-		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNITCROSS_INFO_BY_CHARID, chartId);
-		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSSTRAIN_BY_CHARID, chartId); 
-		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSSINFO_BY_CHARID, chartId); 
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("chartId", chartId); 
+		ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal(); 
+		map.put("bureaus", user.getBureauShortName());
+		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNITCROSSTRAIN_BY_CHARID, map);
+		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNITCROSS_INFO_BY_CHARID, map);
+		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSSTRAIN_BY_CHARID, map); 
+		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSSINFO_BY_CHARID, map); 
 	} 
 
 	
@@ -948,7 +953,7 @@ public class CrossService{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println(train2.getTrainNbr() + "--getTargetTime-" + train2.getTargetTime());
-			logger.error(train1.getTrainNbr() + "--getSourceTargetTime-" + train1.getSourceTargetTime() , e);
+			System.out.println(train1.getTrainNbr() + "--getSourceTargetTime-" + train1.getSourceTargetTime());
 			e.printStackTrace();
 		};
 		 

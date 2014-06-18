@@ -195,8 +195,7 @@ function CrossModel() {
                 secureuri:false,
                 fileElementId:'fileToUpload',
                 type : "POST",
-                dataType: 'json', 
-                timeout:4000,
+                dataType: 'json',  
                 data:{
                 	chartId:chart.chartId,
                 	startDay:startDay,
@@ -430,20 +429,40 @@ function CrossModel() {
 
 	self.crossRows = new PageModle(200, self.loadCrosseForPage);
 	
-	self.saveCrossInfo = function() { 
-		alert(self.currentCross().tokenVehBureau());
+	self.saveCrossInfo = function() {  
+		showConfirmDiv("提示", "你确定要执行保存操作码?", function (r) { 
+			commonJsScreenLock();
+			if(r){
+				$.ajax({
+					url : "cross/saveCrossInfo",
+					cache : false,
+					type : "POST",
+					dataType : "json",
+					contentType : "application/json",
+					data :JSON.stringify(ko.toJSON(self.currentCross)),
+					success : function(result) {     
+						if (result != null && result.code == "0") { 
+							// $("#cross_table_crossInfo").freezeHeader();  
+							showSuccessDialog("保存交路信息成功"); 
+						} else {
+							showErrorDialog("获取交路基本信息失败");
+						};
+					},
+					error : function() {
+						showErrorDialog("获取交路基本信息失败");
+					},
+					complete : function(){
+						commonJsScreenUnLock();
+					}
+				}); 
+			}
+		});
+		
 	};
 	 
 	self.showUploadDlg = function(){
 		
-		$("#file_upload_dlg").dialog("open");
-//		var diag = new Dialog();
-//		diag.Title = "上传对数文件";
-//		diag.Width = 400;
-//		diag.Height = 200;
-//		diag.InnerHtml = $("#file_upload_dlg").html();
-//		//diag.URL = "javascript:void(document.write(\'这是弹出窗口中的内容\'))";
-//		diag.show();
+		$("#file_upload_dlg").dialog("open"); 
 	};
 	
 	self.showCrossMapDlg = function(n, e){ 
@@ -846,7 +865,10 @@ function CrossRow(data) {
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 
 	//车辆担当局 
-	self.tokenVehBureau = ko.computed(function(){ 
+	self.tokenVehBureau = ko.observable(data.tokenVehBureau);  
+	
+	//车辆担当局 
+	self.tokenVehBureauShowValue = ko.computed(function(){ 
 			var result = "";
 			 if(data.tokenVehBureau != null && data.tokenVehBureau != "null"){
 				 var bs = data.tokenVehBureau.split("、"); 
@@ -870,9 +892,9 @@ function CrossRow(data) {
 	
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
-	//self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
+	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
 	
-	self.tokenPsgBureau = ko.computed(function(){ 
+	self.tokenPsgBureauShowValue = ko.computed(function(){ 
 		var result = "";
 		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
 			 var bs = data.tokenPsgBureau.split("、"); 
