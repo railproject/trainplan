@@ -321,7 +321,7 @@ public class CrossController {
 			 for(int i = 0;i<size;i++){
 				 Map<String,Object> crossMap = new HashMap<String,Object>();
 				 UnitCrossTrainInfo unitCrossInfo = list.get(i);
-				 int groupSerialNbr = unitCrossInfo.getGroupSerialNbr();
+				 String groupSerialNbr = unitCrossInfo.getGroupSerialNbr();
 				 //列车信息列表
 				 List<UnitCrossTrainSubInfo> unitStationsList = unitCrossInfo.getTrainInfoList();
 				//列车信息列表

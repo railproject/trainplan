@@ -8,7 +8,7 @@ public class UnitCrossTrainInfo {
 	private List<UnitCrossTrainSubInfo> trainInfoList ;
 	private String unitCrossTrainId;
 	private String unitCrossId;
-	private int groupSerialNbr;
+	private String groupSerialNbr;
 	public List<UnitCrossTrainSubInfo> getTrainInfoList() {
 		return trainInfoList;
 	}
@@ -27,10 +27,10 @@ public class UnitCrossTrainInfo {
 	public void setUnitCrossId(String unitCrossId) {
 		this.unitCrossId = unitCrossId;
 	}
-	public int getGroupSerialNbr() {
+	public String getGroupSerialNbr() {
 		return groupSerialNbr;
 	}
-	public void setGroupSerialNbr(int groupSerialNbr) {
+	public void setGroupSerialNbr(String groupSerialNbr) {
 		this.groupSerialNbr = groupSerialNbr;
 	} 
 	
