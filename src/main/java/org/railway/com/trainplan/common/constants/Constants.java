@@ -140,6 +140,8 @@ public class Constants {
     public static final String CROSSDAO_UPDATE_CROSS_CHECKTIME = "crossDao.updateCrossCheckTime";
     //更新base_cross的creat_unit_time  
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossUnitCreateTime";
+    public static final String CROSSDAO_UPDATE_CROSS_CREATETIME_TO_NULL = "crossDao.updateCrossUnitCreateTimeToNull";
+    
     public static final String CROSSDAO_UPDATE_Unit_CROSS_CREATETIME = "crossDao.updateUnitCrossUnitCreateTime";
     //根据plan_cross_id查询运行线
     public static final String CROSSDAO_GET_TRAINPLANLINE_INFO_FOR_PLANCROSSID="crossDao.getTrainPlanLineInfoForPlanCrossId";
@@ -151,8 +153,11 @@ public class Constants {
     public static final String CROSSDAO_DELETE_CROSS_INFO_FOR_CROSSIDS = "crossDao.deleteCrossInfoForCrossIds";
     //根据crossIds批量删除base_cross_train表中数据
     public static final String CROSSDAO_DELETE_CROSS_INFO_TRAIN_FOR_CROSSIDS = "crossDao.deleteCrossInfoTrainForCrossIds";
-    
-  //根据crossids批量删除unit_cross表中数据
+    //更新表base_cross
+    public static final String CROSSDAO_UPDATE_BASE_CROSS_INFO = "crossDao.updateBaseCross";
+    //根据baseCrossId查询unitCross对象列表 
+    public static final String CROSSDAO_GET_UNITCROSS_INFO_FOR_BASECROSSID = "crossDao.getUnitCrossInfoForBaseCrossId";
+    //根据crossids批量删除unit_cross表中数据
     public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoForCrossIds";
     //根据crossIds批量删除unit_cross_train表中数据
     public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_TRAIN_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoTrainForCrossIds";
@@ -181,7 +186,8 @@ public class Constants {
     public static final String TRAININFO_GET_START_END_TRAINTIME_FOR_TRAINID = "trainInfoDao.getStartEndTrainTimeInfoForTrainId";
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";
-    
+    //根据plan_train_id获取运行线列车时刻表 
+    public static final String TRAININFO_GETPLANLINE_TRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getPlanLineTrainTimeInfoByTrainId";
     public static final String GET_TRAIN_RUN_PLAN = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlans";
 	public static final String GET_PLAN_CROSS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getPlanCross";
 	public static final String CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanCrossByPlanCrossIds";

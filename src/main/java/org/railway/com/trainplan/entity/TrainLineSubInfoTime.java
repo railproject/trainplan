@@ -8,9 +8,17 @@ public class TrainLineSubInfoTime {
 	private String stnName;
 	private String arrTime;
 	private String dptTime;
+	private int stayTime;
 	private String planTrainStnId;
 	
 	
+	
+	public int getStayTime() {
+		return stayTime;
+	}
+	public void setStayTime(int stayTime) {
+		this.stayTime = stayTime;
+	}
 	public String getPlanTrainStnId() {
 		return planTrainStnId;
 	}

@@ -353,8 +353,8 @@ public class DateUtil {
 		/**
 		 * 7.区间计算
 		 */
-		DateTime begin = new DateTime("2012-02-01");  
-		DateTime end = new DateTime("2012-05-01");  
+		DateTime begin = new DateTime("2012-02-29");  
+		DateTime end = new DateTime("2012-03-01");  
 		  
 		//计算区间毫秒数  
 		Duration d = new Duration(begin, end);  
@@ -363,7 +363,7 @@ public class DateUtil {
 		//计算区间天数  
 		Period p = new Period(begin, end, PeriodType.days());  
 		int days = p.getDays();  
-		  
+		//System.err.println("days==" + days);
 		//计算特定日期是否在该区间内  
 		Interval i = new Interval(begin, end);  
 		boolean contained = i.contains(new DateTime("2012-03-01")); 
@@ -371,8 +371,8 @@ public class DateUtil {
 	   /**
 	    * 8.日期的比较
 	    */
-		DateTime d10 = new DateTime("2012-02-01");  
-		DateTime d11 = new DateTime("2012-05-01");  
+		DateTime d10 = new DateTime("2012-02-28");  
+		DateTime d11 = new DateTime("2012-03-01");  
 		  
 		//和系统时间比  
 		boolean b1 = d10.isAfterNow();  

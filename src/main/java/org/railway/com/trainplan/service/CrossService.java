@@ -108,19 +108,36 @@ public class CrossService{
 	public List<CrossInfo> getUnitCrossInfoForChartId(String chartId){
 		return baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSSINFO_FOR_CHARTID, chartId);
 	}
+	
+	/**
+	 *@param baseCrossId  base_cross_id
+	 * 通过baseCrossId查询unit_cross信息列表
+	 */
+	public List<CrossInfo> getUnitCrossInfoForBaseCrossId(String baseCrossId){
+		return baseDao.selectListBySql(Constants.CROSSDAO_GET_UNITCROSS_INFO_FOR_BASECROSSID, baseCrossId);
+	}
+	
+	/**
+	 * 通过base_cross_id更新表base_cross
+	 * @param crossInfo base_cross表对应的java对象
+	 * @return 更新成功的数据条数
+	 */
+	public int updateBaseCross(CrossInfo crossInfo){
+		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_BASE_CROSS_INFO, crossInfo);
+	}
 	/**
 	 * 更新base_cross中的creat_unit_time字段的值
 	 * @param crossIds
 	 * @return
 	 * @throws Exception
 	 */
-	public int updateCrossUnitCreateTime(String[] crossIds) throws Exception {
+	public int updateCrossUnitCreateTime(List<String> crossIds) throws Exception {
 		
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = crossIds.length;
+		int size = crossIds.size();
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(crossIds[i]).append("'");
+			bf.append("'").append(crossIds.get(i)).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
@@ -132,18 +149,45 @@ public class CrossService{
 	}
 	
 	/**
+	 * 更新base_cross中的creat_unit_time字段的值为空
+	 * @param baseCrossIds  base_cross_id组成的数组
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateCrossUnitCreateTimeToNull(List<String> baseCrossIds) throws Exception {
+		
+		StringBuffer bf = new StringBuffer();
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		int size = baseCrossIds.size();
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(baseCrossIds.get(i)).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		reqMap.put("baseCrossIds", bf.toString());
+		
+		
+		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_CROSS_CREATETIME_TO_NULL, reqMap);
+	}
+	
+	
+	
+	
+	
+	/**
 	 * 更新unit_cross中的creat_unit_time字段的值
 	 * @param unitCrossIds
 	 * @return
 	 * @throws Exception
 	 */
-	public int updateUnitCrossUnitCreateTime(String[] unitCrossIds) throws Exception {
+	public int updateUnitCrossUnitCreateTime(List<String> unitCrossIds) throws Exception {
 		
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = unitCrossIds.length;
+		int size = unitCrossIds.size();
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(unitCrossIds[i]).append("'");
+			bf.append("'").append(unitCrossIds.get(i)).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
@@ -155,46 +199,46 @@ public class CrossService{
 	}
 	
 	/**
-	 * 根据crossIds删除表unit_cross_train表中数据
+	 * 根据unitCrossIds删除表unit_cross_train表中数据
 	 * @param crossIds
 	 * @return
 	 * @throws Exception
 	 */
-	public int deleteUnitCrossInfoTrainForCorssIds(String[] crossIds) throws Exception {
+	public int deleteUnitCrossInfoTrainForCorssIds(List<String> unitCrossIds) throws Exception {
 		//组装字符串
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = crossIds.length;
+		int size = unitCrossIds.size();
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(crossIds[i]).append("'");
+			bf.append("'").append(unitCrossIds.get(i)).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
 		}
-		reqMap.put("baseCrossIds", bf.toString());
+		reqMap.put("unitCrossIds", bf.toString());
 		
 		
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNIT_CROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap);
 	}
 	
 	/**
-	 * 根据crossIds删除表unit_cross表中数据
+	 * 根据unitCrossIds删除表unit_cross表中数据
 	 * @param crossIds
 	 * @return
 	 * @throws Exception
 	 */
-	public int deleteUnitCrossInfoForCorssIds(String[] crossIds) throws Exception {
+	public int deleteUnitCrossInfoForCorssIds(List<String> unitCrossIds) throws Exception {
 		//组装字符串
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = crossIds.length;
+		int size = unitCrossIds.size();
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(crossIds[i]).append("'");
+			bf.append("'").append(unitCrossIds.get(i)).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
 		}
-		reqMap.put("baseCrossIds", bf.toString());
+		reqMap.put("unitCrossIds", bf.toString());
 		
 		
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNIT_CROSS_INFO_FOR_CROSSIDS, reqMap);
@@ -206,13 +250,13 @@ public class CrossService{
 	 * @return
 	 * @throws Exception
 	 */
-	public int deleteCrossInfoTrainForCorssIds(String[] crossIds) throws Exception {
+	public int deleteCrossInfoTrainForCorssIds(List<String> crossIds) throws Exception {
 		//组装字符串
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = crossIds.length;
+		int size = crossIds.size();
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(crossIds[i]).append("'");
+			bf.append("'").append(crossIds.get(i)).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
@@ -230,13 +274,13 @@ public class CrossService{
 	 * @return
 	 * @throws Exception
 	 */
-	public int deleteCrossInfoForCorssIds(String[] crossIds) throws Exception {
+	public int deleteCrossInfoForCorssIds(List<String> crossIds) throws Exception {
 		//组装字符串
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = crossIds.length;
+		int size = crossIds.size();
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(crossIds[i]).append("'");
+			bf.append("'").append(crossIds.get(i)).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
@@ -252,13 +296,13 @@ public class CrossService{
 	 * @return
 	 * @throws Exception
 	 */
-	public int updateCorssCheckTime(String[] crossIds) throws Exception{
+	public int updateCorssCheckTime(List<String> crossIds) throws Exception{
 		//组装字符串
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = crossIds.length;
+		int size = crossIds.size();
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(crossIds[i]).append("'");
+			bf.append("'").append(crossIds.get(i)).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
@@ -276,13 +320,13 @@ public class CrossService{
 	 * @return
 	 * @throws Exception
 	 */
-	public int updateUnitCorssCheckTime(String[] unitCrossIds) throws Exception{
+	public int updateUnitCorssCheckTime(List<String> unitCrossIds) throws Exception{
 		//组装字符串
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();
-		int size = unitCrossIds.length;
+		int size = unitCrossIds.size();
 		for(int i = 0 ;i<size;i++){
-			bf.append("'").append(unitCrossIds[i]).append("'");
+			bf.append("'").append(unitCrossIds.get(i)).append("'");
 			if(i != size - 1){
 				bf.append(",");
 			}
@@ -293,6 +337,8 @@ public class CrossService{
 		return baseDao.insertBySql(Constants.CROSSDAO_UPDATE_UNIT_CROSS_CHECKTIME, reqMap);
 		
 	}
+	
+
 	/**
 	 * 根据unitCrossid查询trainNbr
 	 * @param unitCrossId
@@ -1092,10 +1138,14 @@ public class CrossService{
 			 
 			 try {
 				if(ids.length > 0){
-					deleteUnitCrossInfoTrainForCorssIds(ids);
-					deleteUnitCrossInfoForCorssIds(ids);
-					deleteCrossInfoTrainForCorssIds(ids);
-					deleteCrossInfoForCorssIds(ids); 
+					List<String> idsList = new ArrayList<String>();
+					for(int i=0;i<ids.length;i++){
+						idsList.add(ids[i]);
+					}
+					deleteUnitCrossInfoTrainForCorssIds(idsList);
+					deleteUnitCrossInfoForCorssIds(idsList);
+					deleteCrossInfoTrainForCorssIds(idsList);
+					deleteCrossInfoForCorssIds(idsList); 
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

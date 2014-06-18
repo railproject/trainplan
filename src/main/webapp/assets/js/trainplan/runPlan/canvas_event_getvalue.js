@@ -6,14 +6,115 @@ var jlList = [];	//用于保存交路数据元素，以便重新绘图
 
 var canvas = document.getElementById("canvas_event_getvalue");
 var context = canvas.getContext('2d');
+
+var runPlanCanvasPage = null;
+var currentXScale = 10;	//x轴缩放比例
+var currentXScaleCount = 1;//x轴放大总倍数
+var currentYScale = 1;	//y轴缩放比例
+var currentYScaleCount = 1;//y轴放大总倍数
+var _canvas_select_groupSerialNbr = null;
+var _currentGroupSerialNbr = "";		//当前组号
+var dataIsNull = false;
     
 var RunPlanCanvasPage = function(cross) {
 	var _self = this; 
-	_self.app = cross; 
+	_self.app = cross;
+	
+	
+	/**
+	 * 绘图条件绑定模型
+	 * private
+	 */
+	function CanvasQueryModle(){
+		_self = this;
+		_self.drawFlags =ko.observableArray(['0']);		//分界口、停站、经由站复选框 "0"表示显示始发及终到
+		_self.drawFlagChange = function(a, n){			//分界口、停站、经由站复选框点击事件
+			if(n.target.checked){
+				_self.drawFlags.push(n.target.value);
+			}else{
+				self.removeArrayValue(_self.drawFlags(), n.target.value);
+			}
+			runPlanCanvasPage.drawChart({startX:100}); 
+		};
+		
+//		_self.canvasIsDrawTrainTime = ko.observable();
+	}
+	
+	
+	function removeArrayValue(arr, value){
+		var index = -1;
+		for(var i = 0 ; i < arr.length; i++){
+			if(value == arr[i]){
+				index = i;
+				break;
+			}
+		}
+		if(index > -1){
+			arr.splice(index, 1);
+		}
+	};
+	
+	
+	/**
+	 * 获取绘图扩展条件对象
+	 * @param scale
+	 * @returns
+	 */
+	function getScale(scale) {
+		//生成分界口、停站标记
+		var _stationTypeArray = [];
+		$("[name='canvas_checkbox_stationType']").each(function(){
+			if($(this).is(":checked")) {
+				_stationTypeArray.push($(this).val());
+			} else {
+				removeArrayValue(_stationTypeArray, $(this).val());
+			}
+	    });
+		if (_stationTypeArray.length >0) {
+			_stationTypeArray.push("0");	//增加显示始发及终到
+		}
+		
+		
+		var _canvasIsDrawTrainTime = false;	//是否绘制列车经由站到达及出发时间
+		if($("#canvas_checkbox_trainTime").is(":checked")){
+			_canvasIsDrawTrainTime = true;
+		} else {
+			_canvasIsDrawTrainTime = false;
+		}
+		
+		
+		
+		if (scale && scale!=null && scale!="undefine" && typeof scale == "object") {
+			scale.xScale = currentXScale;				//x轴缩放比例
+			scale.xScaleCount = currentXScaleCount;	//x轴当前放大倍数，用于控制时刻线条数
+			scale.yScale = currentYScale;				//y轴缩放比例
+			scale.stationTypeArray = _stationTypeArray;	//分界口复选框
+			scale.isDrawTrainTime = _canvasIsDrawTrainTime;	//是否绘制列车经由站到达及出发时间
+			scale.currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();	//当前组号
+			return scale;
+		} else {
+			return {
+				xScale : currentXScale,				//x轴缩放比例
+				xScaleCount : currentXScaleCount,	//x轴当前放大倍数，用于控制时刻线条数
+				yScale : currentYScale,				//y轴缩放比例
+				stationTypeArray:_stationTypeArray,	//分界口复选框
+				isDrawTrainTime:_canvasIsDrawTrainTime,	//是否绘制列车经由站到达及出发时间
+				currentGroupSerialNbr : _canvas_select_groupSerialNbr.val()	//当前组号
+			};
+		}
+		
+		
+		
+		
+	};
+	
+	
+	
 	/**
 	 * public
 	 */
 	this.initPage = function() {
+		
 		$("#canvas_runplan_input_startDate").datepicker();
 		$("#canvas_runplan_input_endDate").datepicker();
 		 
@@ -54,6 +155,35 @@ var RunPlanCanvasPage = function(cross) {
 	        	 _self.app.loadStns(stns);
 	        } 
 	    };
+	    
+		
+	    _canvas_select_groupSerialNbr = $("#canvas_select_groupSerialNbr");
+	    initGroupSerialNbrCombox([]);
+		$("#canvas_select_groupSerialNbr").change(function(){
+			_currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();
+			
+			_self.drawChart();
+		});
+		
+
+		//显示停站时刻 复选框事件
+		$("#canvas_checkbox_trainTime").click(function(){
+			_self.drawChart();
+			
+		});
+		
+
+		//分界口 复选框事件
+		$("#canvas_checkbox_stationType_fjk").click(function(){
+			_self.drawChart();
+			
+		});
+		//停站 复选框事件
+		$("#canvas_checkbox_stationType_tz").click(function(){
+			_self.drawChart();
+		});
+		
+		
 	};
 	
 	
@@ -64,6 +194,11 @@ var RunPlanCanvasPage = function(cross) {
 		//清除画布所有元素
 		context.clearRect(0,0,canvas.width,canvas.height);
 	};
+	
+	
+	
+	
+
 	
 	
 	/**
@@ -104,17 +239,49 @@ var RunPlanCanvasPage = function(cross) {
 	};
 	
 	
+	/**
+	 * 渲染组号下拉框数据
+	 * @param groupSerialNbrComboxData
+	 */
+	function initGroupSerialNbrCombox(groupSerialNbrComboxData) {
+		_canvas_select_groupSerialNbr.empty();
+		_canvas_select_groupSerialNbr.append("<option value='' selected='selected'>全部</option>");
+		for(var j=0;j<groupSerialNbrComboxData.length;j++) {
+			if (groupSerialNbrComboxData[j].value == _currentGroupSerialNbr) {
+				_canvas_select_groupSerialNbr.append("<option selected='selected' value='"+groupSerialNbrComboxData[j].value+"'>"+groupSerialNbrComboxData[j].text+"</option>");
+			} else {
+				_canvas_select_groupSerialNbr.append("<option value='"+groupSerialNbrComboxData[j].value+"'>"+groupSerialNbrComboxData[j].text+"</option>");
+			}
+			
+		}
+		
+	};
+	
 	
 	/**
 	 * 绘制交路线
 	 */
 	function drawJlLine() {
+		var _groupSerialNbrComboxData = [];
 		var booleanDrawJlStartAndEnd = true;	//是否绘制交路起止标记
-		console.log("--------------------------------");
+		
 		for (var i=0, _len=canvasData.jlData.length; i<_len; i++) {
 			var _obj = canvasData.jlData[i];
 			var _color = getRandomColor();
 			var _lenJlTrain=_obj.trains.length;
+			
+			
+			//临时保存车组号
+			if (_obj.groupSerialNbr!=null && _obj.groupSerialNbr!="undefine") {
+				_groupSerialNbrComboxData.push({
+					value:_obj.groupSerialNbr,
+					text:myCanvasComponent.convertGroupSerialNbr(_obj.groupSerialNbr)+"组"
+				});
+			}
+			if (_canvas_select_groupSerialNbr.val()!="" && _canvas_select_groupSerialNbr.val()!=_obj.groupSerialNbr) {
+				continue;
+			}
+			
 			
 			//2.1 绘制交路列车运行线
 			for (var j=0; j<_lenJlTrain; j++) {
@@ -133,6 +300,11 @@ var RunPlanCanvasPage = function(cross) {
 			
 			jlList.push({color:_color,data:_obj});
 		};
+		
+		
+
+		//3.渲染组号下拉框数据
+		initGroupSerialNbrCombox(_groupSerialNbrComboxData);
 	};
 	
 	
@@ -182,7 +354,7 @@ var RunPlanCanvasPage = function(cross) {
 		console.dir("~!!!!!!!!!!!!");
 		console.dir(canvasData);
 		console.dir("~!!!!!!!!!!!!");
-		myCanvasComponent = new MyCanvasComponent(context, canvasData.grid.days, canvasData.grid.crossStns,scale);
+		myCanvasComponent = new MyCanvasComponent(context, canvasData.grid.days, canvasData.grid.crossStns,getScale(scale));
 		//绘制客运开行计划
 		//1.绘制网格
 		myCanvasComponent.drawGrid("green");
@@ -209,121 +381,7 @@ var RunPlanCanvasPage = function(cross) {
 	
 };
 
-var runPlanCanvasPage = null;
-var currentXScale = 10;	//x轴缩放比例
-var currentXScaleCount = 1;//x轴放大总倍数
-var currentYScale = 1;	//y轴缩放比例
-var currentYScaleCount = 1;//y轴放大总倍数
 
-//$(function(){
-//	console.dir(canvasData);
-//	//x放大2倍
-//	$("#canvas_event_btn_x_magnification").click(function(){
-//		if (currentXScaleCount == 32) {
-//			showErrorDialog("当前已经不支持继续放大啦！");
-//			return;
-//		}
-//		
-//		//必须清除
-//		lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
-//		jlList = [];	//用于保存交路数据元素，以便重新绘图
-//		
-//		//计算画布比例及倍数
-//		currentXScale = currentXScale/2;
-//		currentXScaleCount = currentXScaleCount*2;
-//
-//		$("#canvas_event_label_xscale").text(currentXScaleCount);
-//		runPlanCanvasPage.clearChart();	//清除画布
-//		runPlanCanvasPage.drawChart({
-//				 xScale : currentXScale,			//x轴缩放比例
-//				 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-//				 yScale : currentYScale			//y轴缩放比例
-//			 });
-//		
-//	});
-//	
-//	//x缩小2倍
-//	$("#canvas_event_btn_x_shrink").click(function(){
-//		if (currentXScaleCount == 0.25) {
-//			showErrorDialog("当前已经不支持继续缩小啦！");
-//			return;
-//		}
-//		
-//		//必须清除
-//		lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
-//		jlList = [];	//用于保存交路数据元素，以便重新绘图
-//
-//		//计算画布比例及倍数
-//		currentXScale = currentXScale*2;
-//		currentXScaleCount = currentXScaleCount/2;
-//
-//		$("#canvas_event_label_xscale").text(currentXScaleCount);
-//		runPlanCanvasPage.clearChart();	//清除画布
-//		runPlanCanvasPage.drawChart({
-//			 xScale : currentXScale,			//x轴缩放比例
-//			 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-//			 yScale : currentYScale			//y轴缩放比例
-//		 });
-//	});
-//	//y放大2倍
-//	$("#canvas_event_btn_y_magnification").click(function(){
-//		if (currentYScaleCount == 8) {
-//			showErrorDialog("当前已经不支持继续放大啦！");
-//			return;
-//		}
-//		
-//		//必须清除
-//		lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
-//		jlList = [];	//用于保存交路数据元素，以便重新绘图
-//		
-//		//计算画布比例及倍数
-//		currentYScale = currentYScale/2;
-//		currentYScaleCount = currentYScaleCount*2;
-//
-//		$("#canvas_event_label_yscale").text(currentYScaleCount);
-//		runPlanCanvasPage.clearChart();	//清除画布
-//		runPlanCanvasPage.drawChart({
-//				 xScale : currentXScale,			//x轴缩放比例
-//				 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-//				 yScale : currentYScale			//y轴缩放比例
-//			 });
-//		
-//	});
-//	
-//	//y缩小2倍
-//	$("#canvas_event_btn_y_shrink").click(function(){
-//		if (currentYScaleCount == 0.25) {
-//			showErrorDialog("当前已经不支持继续缩小啦！");
-//			return;
-//		}
-//		
-//		//必须清除
-//		lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
-//		jlList = [];	//用于保存交路数据元素，以便重新绘图
-//
-//		//计算画布比例及倍数
-//		currentYScale = currentYScale*2;
-//		currentYScaleCount = currentYScaleCount/2;
-//
-//		$("#canvas_event_label_yscale").text(currentYScaleCount);
-//		runPlanCanvasPage.clearChart();	//清除画布
-//		runPlanCanvasPage.drawChart({
-//			 xScale : currentXScale,			//x轴缩放比例
-//			 xScaleCount : currentXScaleCount,	//x轴放大总倍数
-//			 yScale : currentYScale			//y轴缩放比例
-//		 });
-//	});
-//	
-//	
-//	
-//	
-//
-//	
-//	
-//	runPlanCanvasPage = new RunPlanCanvasPage();
-//	runPlanCanvasPage.initPage();
-//	
-//});
 
 
 

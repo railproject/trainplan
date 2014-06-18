@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.PlanTrain;
 import org.railway.com.trainplan.entity.SchemeInfo;
 import org.railway.com.trainplan.entity.TrainTimeInfo;
@@ -52,10 +53,7 @@ public class JBTCXController {
 		public Result querySchemes(@RequestBody Map<String,Object> reqMap){
 			Result result = new Result();
 			try{
-				//System.err.println("queryConstructionDetail~~reqMap="+reqMap);
-				  
-//				//路局全称
-//				String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
+				logger.info("querySchemes~~reqMap="+reqMap);
 				//调用后台接口
 				List<SchemeInfo> schemeInfos = schemeService.getSchemes();
 				result.setData(schemeInfos);
@@ -77,10 +75,8 @@ public class JBTCXController {
 	public Result queryTrains(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			//System.err.println("queryConstructionDetail~~reqMap="+reqMap);
-			  
-//			//路局全称
-//			String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
+			logger.info("queryTrains~~reqMap="+reqMap);
+			 
 			//调用后台接口
 			PagingResult page = new PagingResult(trainInfoService.getTrainInfoCount(reqMap), trainInfoService.getTrainsForPage(reqMap));
 			result.setData(page);
@@ -97,12 +93,9 @@ public class JBTCXController {
 	public Result queryTrainTimes(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
 		try{
-			//System.err.println("queryTrainTimes~~reqMap="+reqMap);
-			  
-//			//路局全称
-//			String startBureauFull = StringUtil.objToStr(reqMap.get("startBureauFull"));
 			//调用后台接口
-			List<TrainTimeInfo> times = trainTimeService.getTrainTimes(reqMap.get("trainId").toString());
+			String trainId =  StringUtil.objToStr(reqMap.get("trainId"));
+			List<TrainTimeInfo> times = trainTimeService.getTrainTimes(trainId);
 			result.setData(times);
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);
@@ -111,4 +104,31 @@ public class JBTCXController {
 		}
 		return result;
 	} 
+	
+	
+	/**
+	 * 查询运行线的列车运行时刻表
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/queryPlanLineTrainTimes", method = RequestMethod.POST)
+	public Result queryPlanLineTrainTimes(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			
+			String trainId =  StringUtil.objToStr(reqMap.get("trainId"));
+			logger.info("queryPlanLineTrainTimes~~trainId==" + trainId);
+			List<TrainTimeInfo> times = trainTimeService.getTrainTimeInfoByTrainId(trainId);
+			result.setData(times);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		return result;
+	} 
+	
+	
+	
 }
