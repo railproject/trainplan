@@ -72,11 +72,11 @@ var MyCanvas = function(){
 			}
 			
 			//2.2 绘制交路接续关系
-			myCanvasComponent.drawJxgx(_color, _obj.jxgx);
+			myCanvasComponent.drawJxgx(_color, _obj.jxgx, i);
 			
 			
 			if (booleanDrawJlStartAndEnd){
-				myCanvasComponent.drawJlStartAndEnd(_color, _obj.trains);
+				myCanvasComponent.drawJlStartAndEnd(_color, _obj.trains, i);
 			}
 			
 			

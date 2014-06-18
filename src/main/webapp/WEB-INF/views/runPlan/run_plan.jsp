@@ -242,7 +242,7 @@ var all_role = "<%=userRolesString %>";
 							              <div class="row" style="margin:5px 0 10px 90px;"> 
 							                  <input type="checkbox" id="canvas_checkbox_stationType_fjk" name="canvas_checkbox_stationType" style="margin-left:10px" value="FJK">分界口
 							                  <!-- <input type="checkbox" id="canvas_checkbox_stationType_tz" name="canvas_checkbox_stationType" style="margin-left:10px" value="TZ">停站 -->
-								          	  &nbsp;&nbsp;<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示停站时刻
+								          	  &nbsp;&nbsp;<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示时刻
 	         								  &nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
 								          </div>
 							              <div class="row" style="margin:5px 0 10px 90px;"> 
@@ -251,7 +251,7 @@ var all_role = "<%=userRolesString %>";
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
 								              
-								                                                当前比例倍数：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
+								                                                比例：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
 								          </div>
 							          </form>
 								    </div> 

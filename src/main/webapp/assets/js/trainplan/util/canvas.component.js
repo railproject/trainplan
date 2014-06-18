@@ -256,7 +256,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		for (var i = 0,_len=_xDateArray.length; i<_len; i++) {
 			//网格顶端显示 2014-05-12 一天范围内的 日期文本显示 
 			myCanvasFillText(_context, {
-				font :"normal 14px Arial",
+				font :"Bold 16px Arial",
 				textAlign:"center",
 				text : _xDateArray[i].runDate,
 				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
@@ -264,7 +264,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			});
 			//网格底端显示 2014-05-12
 			myCanvasFillText(_context, {
-				font :"normal 14px Arial",
+				font :"Bold 16px Arial",
 				textAlign:"center",
 				text : _xDateArray[i].runDate,
 				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
@@ -306,15 +306,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 					var _isDashLine = true;	//是否为虚线
 					var _lineWidth = 0.5;		//线宽
 					var _text = j/2;
-					
-					
-					//test
-//					if (_xScaleCount == 32) {
-//						console.log("j ="+j+"   _text="+_text+"   j%36="+j%36+"   j%24="+j%24+"   j%12="+j%12+"   j%2="+j%2);
-//					}
-					
-					
-					
 					
 					if (j==0) {
 						_text = "0";
@@ -380,10 +371,19 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		for (var i = 0,_len=_xDateArray.length; i<_len; i++) {
 			//一天范围内的 日期文本显示  如：2014-05-12
 			myCanvasFillText(_context, {
+				font :"Bold 16px Arial",
 				textAlign:"center",
 				text : _xDateArray[i].runDate,
 				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
 				fromY : _startY-30
+			});
+			//网格底端显示 2014-05-12
+			myCanvasFillText(_context, {
+				font :"Bold 16px Arial",
+				textAlign:"center",
+				text : _xDateArray[i].runDate,
+				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
+				fromY : _endY +35
 			});
 			
 			
@@ -738,14 +738,20 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	 * private
 	 * @param stnObj 列车某个站点信息
 	 * 			{runDays:0,stnName:"北京西",arrTime:"2014-05-12 08:35",dptTime:"2014-05-12 08:35",stayTime:0}
+	 * @param groupSerialNbrIndex （可选参数）组循环序号，避免与其他线重合
 	 */
-	function drawTrainStartArrows(colorParam, stnObj) {
+	function drawTrainStartArrows(colorParam, stnObj, groupSerialNbrIndex) {
 		var offsetY = 0;
 		var directionY = getDirectionY(stnObj.stnName);
+		var groupSerialNbrY = 0;
+		if (groupSerialNbrIndex && typeof groupSerialNbrIndex == "number") {
+			groupSerialNbrY = groupSerialNbrIndex*5;
+		}
+		
 		if ("up" == directionY) {
-			offsetY = -10;
+			offsetY = -10-groupSerialNbrY;
 		} else if ("down" == directionY) {
-			offsetY = 10;
+			offsetY = 10+groupSerialNbrY;
 		}
 		
 		//坐标定位
@@ -762,24 +768,29 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	 * 绘制终到标记 三角形   终到使用arrTime
 	 * private
 	 * @param 车站对象 {runDays:0,stnName:"北京西",arrTime:"2014-05-12 08:35",dptTime:"2014-05-12 08:35",stayTime:0}
+	 * @param groupSerialNbrIndex （可选参数）组循环序号，避免与其他线重合
 	 */
-	function drawTrainEndArrows(colorParam, stnObj) {
+	function drawTrainEndArrows(colorParam, stnObj, groupSerialNbrIndex) {
 		//坐标定位
 		fromX = getX(stnObj.arrTime);
 		fromY = getY(stnObj.stnName);
 		
 		var offsetY = 0;
 		var directionY = getDirectionY(stnObj.stnName);
+		var groupSerialNbrY = 0;
+		if (groupSerialNbrIndex && typeof groupSerialNbrIndex == "number") {
+			groupSerialNbrY = groupSerialNbrIndex*5;
+		}
 		
 		if ("up" == directionY) {
-			offsetY = -10;
+			offsetY = -15-groupSerialNbrY;
 			//绘线
 			myCanvasDrawLine(_context, 2, colorParam, fromX, fromY, fromX, fromY+offsetY);//竖线
 			myCanvasDrawLine(_context, 2, colorParam, fromX-5, fromY+offsetY, fromX+5, fromY+offsetY);//三角形横线
 			myCanvasDrawLine(_context, 2, colorParam, fromX-5, fromY+offsetY, fromX, fromY+offsetY-10);//三角形左斜线
 			myCanvasDrawLine(_context, 2, colorParam, fromX, fromY+offsetY-10, fromX+5, fromY+offsetY);//三角形右斜线
 		} else if ("down" == directionY) {
-			offsetY = 10;
+			offsetY = 15+groupSerialNbrY;
 
 			//绘线
 			myCanvasDrawLine(_context, 2, colorParam, fromX, fromY, fromX, fromY+offsetY);//竖线
@@ -872,13 +883,20 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	    	        {fromStnName:"成都",fromTime:"2014-05-13 12:30",fromStartStnName:"北京西",toStnName:"成都",toTime:"2014-05-13 19:18",toEndStnName:"北京西"},
 	    	        {fromStnName:"北京西",fromTime:"2014-05-13 21:07",fromStartStnName:"成都",toStnName:"北京西",toTime:"2014-05-14 08:35",toEndStnName:"成都"}
 				]
+	 * @param groupSerialNbrIndex (可选参数)组循环序号，用于计算接续线高度，以达到接续线高低错误显示目的
+		
 	 */
-	this.drawJxgx = function(colorParam, jxgxArray) {
+	this.drawJxgx = function(colorParam, jxgxArray, groupSerialNbrIndex) {
 		var fromX = 0;
 		var fromY = 0;
 		var toX = 0;
 		var toY = 0;
 		var offsetY = 0;	//Y偏移量 用于绘制交路接续方向  down:10px、up:-10px
+		var groupSerialNbrY = 0;
+		if (groupSerialNbrIndex && typeof groupSerialNbrIndex == "number") {
+			groupSerialNbrY = groupSerialNbrIndex*5;
+		}
+		
 		for (var i=0, _len = jxgxArray.length; i<_len; i++) {
 			_context.save();
 	    	_context.beginPath();
@@ -886,9 +904,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			var jxgxObj = jxgxArray[i];
 			var directionY = getDirectionYByJxgx(jxgxObj);
 			if ("up" == directionY) {
-				offsetY = -10;
+				offsetY = -10-groupSerialNbrY;
 			} else if ("down" == directionY) {
-				offsetY = 10;
+				offsetY = 10+groupSerialNbrY;
 			}
 			
 			//坐标定位
@@ -948,20 +966,21 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			    	        	  ]
 		    	          }
 		    	  ]
+	 * @param groupSerialNbrIndex （可选参数）组循环序号，避免与其他线重合
 	 */
-	this.drawJlStartAndEnd = function(_color, jlTrains) {
+	this.drawJlStartAndEnd = function(_color, jlTrains, groupSerialNbrIndex) {
 		var _len = jlTrains.length;	//交路包含列车数
 		if (jlTrains.length > 0) {
 			_context.save();
 	    	_context.beginPath();
 	    	
 			if(jlTrains[0].trainStns.length>0 && jlTrains[0].startStn == jlTrains[0].trainStns[0].stnName) {//交路第一个列车经由第一站==始发站   则绘制开始标记
-				drawTrainStartArrows(_color, jlTrains[0].trainStns[0]);
+				drawTrainStartArrows(_color, jlTrains[0].trainStns[0], groupSerialNbrIndex);
 			}
 			
 			var _lenTrainStnLast = jlTrains[_len-1].trainStns.length;//该交路最后一个车次经由站长度
 			if(_lenTrainStnLast>0 && jlTrains[_len-1].endStn == jlTrains[_len-1].trainStns[_lenTrainStnLast-1].stnName) {//交路最后一个车次经由最后一站==终到站   则绘制终到标记
-				drawTrainEndArrows(_color, jlTrains[_len-1].trainStns[_lenTrainStnLast-1]);
+				drawTrainEndArrows(_color, jlTrains[_len-1].trainStns[_lenTrainStnLast-1], groupSerialNbrIndex);
 			}
 
 			_context.strokeStyle = _color;

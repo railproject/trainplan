@@ -291,11 +291,11 @@ var RunPlanCanvasPage = function(cross) {
 			}
 			
 			//2.2 绘制交路接续关系
-			myCanvasComponent.drawJxgx(_color, _obj.jxgx);
+			myCanvasComponent.drawJxgx(_color, _obj.jxgx, i);
 			
 			//2.3绘制交路起止标识
 			if (booleanDrawJlStartAndEnd){
-				myCanvasComponent.drawJlStartAndEnd(_color, _obj.trains);
+				myCanvasComponent.drawJlStartAndEnd(_color, _obj.trains, i);
 			}
 			
 			jlList.push({color:_color,data:_obj});
