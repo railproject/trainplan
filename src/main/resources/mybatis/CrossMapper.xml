@@ -550,7 +550,7 @@ t1.stn_name as stnName,
 t1.PLAN_TRAIN_STN_ID,
 to_char(t1.arr_time,'yyyy-MM-dd hh24:mi:SS') as arrTime,
 to_char(t1.dpt_time,'yyyy-MM-dd hh24:mi:SS') as dptTime,
-ceil((TO_DATE(t1.dpt_time,'yyyy-MM-dd hh24:mi:SS') - TO_DATE(t1.arr_time,'yyyy-MM-dd hh24:mi:SS'))*24*60) stayTime,
+ceil((t1.dpt_time -t1.arr_time)*24*60) stayTime, 
 
 DECODE(t1.stn_bureau,#{bureauShortName},1,0) isCurrentBureau,
 t2.*
