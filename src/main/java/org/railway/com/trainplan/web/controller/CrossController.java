@@ -26,6 +26,7 @@ import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.BaseCrossTrainSubInfo;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
+import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.SubCrossInfo;
 import org.railway.com.trainplan.entity.TrainLineInfo;
 import org.railway.com.trainplan.entity.TrainLineSubInfo;
@@ -829,7 +830,7 @@ public class CrossController {
 	}
 	
 	/**
-	 * 获取车底交路信息
+	 * 获取基本交路单元信息
 	 * @param reqMap
 	 * @return
 	 */
@@ -891,6 +892,26 @@ public class CrossController {
 		return result;
 	}
 	
+	/**
+	 * 获取planCross信息
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getPlanCrossInfo", method = RequestMethod.POST)
+	public Result getPlanCrossInfo(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
+			PlanCrossInfo  planCrossInfo = crossService.getPlanCrossInfoForPlanCrossId(planCrossId);
+			result.setData(planCrossInfo);
+		}catch(Exception e){
+			logger.error("getPlanCrossInfo error==" + e.getMessage());
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		}
+		return result;
+	}
 	/**
 	 * 生成基本交路单元
 	 * @param reqMap

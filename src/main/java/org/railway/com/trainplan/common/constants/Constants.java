@@ -110,7 +110,8 @@ public class Constants {
 	public static final String CROSSDAO_GET_CROSS_INFO_COUNT = "crossDao.getCrossInfoTotalCount";
     //通过crossid获取crossinfo信息 
 	public static final String  CROSSDAO_GET_CROSS_INFO_FOR_PARAM = "crossDao.getCrossInfoForParam";
-	
+	//通过planCrossId查询plancross信息 
+	public static final String CROSSDAO_GET_PLANCROSSINFO_FOR_PLANCROSSID = "crossDao.getPlanCrossInfoForPlanCrossId";
 	//通过crossid获取crossinfo信息 
 	public static final String  CROSSDAO_GET_BASETRAIN_INFO_FOR_PARAM = "crossDao.getBaseTrainInfoByParams";
 	//通过crossid查询crosstrainInfo信息   

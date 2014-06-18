@@ -101,6 +101,15 @@ public class CrossService{
 	public List<BaseTrainInfo> getBaseTrainInfoByParam(Map<String, String> map){
 		return this.baseDao.selectListBySql(Constants.CROSSDAO_GET_BASETRAIN_INFO_FOR_PARAM, map);
 	}
+	
+	/**
+	 * 通过plan_cross_id查询plancross信息
+	 * @param planCrossId 表plan_cross中主键
+	 * @return
+	 */
+	public PlanCrossInfo getPlanCrossInfoForPlanCrossId(String planCrossId){
+		return (PlanCrossInfo)this.baseDao.selectOneBySql(Constants.CROSSDAO_GET_PLANCROSSINFO_FOR_PLANCROSSID, planCrossId);
+	}
 	/**
 	 *@param chartId  方案id
 	 * 通过chartId查询unit_cross信息

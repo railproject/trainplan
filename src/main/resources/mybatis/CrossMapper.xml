@@ -38,6 +38,51 @@
 	       
     </resultMap>
 
+   <select id="getPlanCrossInfoForPlanCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.PlanCrossInfo">
+   select     
+		plan_cross_id as planCrossId,
+		unit_cross_id as unitCrossId,
+		base_cross_id as baseCrossId,
+		base_chart_id as baseChartId,
+		base_chart_name as baseChartName,
+		cross_start_date as crossStartDate,
+		cross_end_date as crossEndDate,
+		cross_name as crossName,
+		cross_spare_name as crossSpareName,
+		SPARE_FLAG as spareFlag,
+		GROUP_TOTAL_NBR as groupTotalNbr,
+		PAIR_NBR as pairNbr,
+		HIGHLINE_FLAG as highlineFlag,
+		HIGHLINE_RULE as highlineRule,
+		COMMONLINE_RULE as commonlineRule,
+		APPOINT_WEEK as appointWeek,
+		APPOINT_DAY as appointDay,
+		CROSS_SECTION as crossSection,
+		THROUGH_LINE as throughline,
+		START_BUREAU as startBureau,
+		TOKEN_VEH_BUREAU as tokenVehBureau,
+		TOKEN_VEH_DEPT as tokenVehDept,
+		TOKEN_VEH_DEPOT as tokenVehDepot,
+		TOKEN_PSG_BUREAU as tokenPsgBureau,
+		TOKEN_PSG_DEPT as tokenPsgDept,
+		LOCO_TYPE as locoType,
+		CRH_TYPE as crhType,
+		ELEC_SUPPLY as elecSupply,
+		DEJ_COLLECT as dejCollect,
+		AIR_CONDITION as airCondition,
+		NOTE as note,
+		CREAT_PEOPLE as createPeople,
+		CREAT_PEOPLE_ORG as createPeopleOrg,
+		CREAT_TIME as createTime,
+		CHECK_TYPE as checkType,
+		CHECK_PEOPLE as checkPeople,
+		CHECK_PEOPLE_ORG as checkPeopleOrg,
+		CHECK_TIME as checkTime
+	
+	from plan_cross where plan_cross_id=#{planCrossId}
+	   
+   
+   </select>
 
     <select id="getCrossTrainInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossTrainInfo">
         select
