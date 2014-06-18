@@ -63,4 +63,39 @@ public interface RunPlanDao {
 
 
     int addRunPlan(RunPlan runplan);
+
+    /**
+     * 根据日期和担当局查询始发终到
+     * @param map date: 日期，格式 yyyymmdd, bureau: 路局简称
+     * @return 计划列表
+     */
+    List<Map<String, Object>> findRunPlan_sfzd(Map<String, Object> map);
+
+    /**
+     * 根据日期和担当局查询始发交出
+     * @param map date: 日期，格式 yyyymmdd, bureau: 路局简称
+     * @return 计划列表
+     */
+    List<Map<String, Object>> findRunPlan_sfjc(Map<String, Object> map);
+
+    /**
+     * 根据日期和担当局查询接入终到
+     * @param map date: 日期，格式 yyyymmdd, bureau: 路局简称
+     * @return 计划列表
+     */
+    List<Map<String, Object>> findRunPlan_jrzd(Map<String, Object> map);
+
+    /**
+     * 根据日期和担当局查询接入交出
+     * @param map date: 日期，格式 yyyymmdd, bureau: 路局简称
+     * @return 计划列表
+     */
+    List<Map<String, Object>> findRunPlan_jrjc(Map<String, Object> map);
+
+    /**
+     * 根据日期和担当局查询所有类型
+     * @param map date: 日期，格式 yyyymmdd, bureau: 路局简称
+     * @return 计划列表
+     */
+    List<Map<String, Object>> findRunPlan_all(Map<String, Object> map);
 }

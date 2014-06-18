@@ -104,11 +104,12 @@
                                         <th rowspan="2" class="text-center">序号</th>
                                         <th rowspan="2" class="text-center">车次</th>
                                         <th rowspan="2" class="text-center">来源</th>
+                                        <th rowspan="2" class="text-center">类型</th>
                                         <th rowspan="2" class="text-center">是否高线</th>
                                         <th rowspan="2" class="text-center">始发站</th>
-                                        <th rowspan="2" class="text-center">始发时间</th>
+                                        <th rowspan="2" class="text-center">始发/接入时间</th>
                                         <th rowspan="2" class="text-center">终到站</th>
-                                        <th rowspan="2" class="text-center">终到时间</th>
+                                        <th rowspan="2" class="text-center">终到/交出时间</th>
                                         <th rowspan="2" class="text-center">是否上图</th>
                                         <th colspan="2" class="text-center">校验项</th>
 
@@ -130,6 +131,7 @@
                                         <td class="text-center" data-bind="text: $index() + 1"></td>
                                         <td class="text-center"><a href="#" data-bind="text: name"></a></td>
                                         <td class="text-center" data-bind="text: sourceType"></td>
+                                        <td class="text-center" data-bind="text: trainType"></td>
                                         <td class="text-center" data-bind="text: highLineFlag"></td>
                                         <td class="text-center" data-bind="text: startStn"></td>
                                         <td class="text-center" data-bind="text: startTime"></td>
