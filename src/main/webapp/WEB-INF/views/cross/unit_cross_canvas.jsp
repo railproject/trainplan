@@ -1,7 +1,16 @@
+<%@page import="javax.sound.midi.SysexMessage"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
+<%@ page import="org.apache.shiro.SecurityUtils,org.railway.com.trainplan.service.ShiroRealm,java.util.List" %>
+<% 
+ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+boolean isZgsUser = false;	//当前用户是否为总公司用户
+if (user!=null && user.getBureau()==null) {
+	isZgsUser = true;
+}
+
+
 String basePath = request.getContextPath();
 Object jlData =  request.getAttribute("myJlData");
 Object grid =  request.getAttribute("gridData");
@@ -60,6 +69,7 @@ Object grid =  request.getAttribute("gridData");
 var canvasData = {};
 canvasData.grid = <%=grid%>;
 canvasData.jlData = <%=jlData%>;//交路数据
+var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 </script>
 
 

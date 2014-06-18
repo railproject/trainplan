@@ -2,14 +2,19 @@
     pageEncoding="utf-8"%>
 <%@ page import="org.apache.shiro.SecurityUtils,org.railway.com.trainplan.service.ShiroRealm,java.util.List" %>
 <% 
-ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal(); 
+ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+
+boolean isZgsUser = false;	//当前用户是否为总公司用户
+if (user!=null && user.getBureau()==null) {
+	isZgsUser = true;
+}
+
 List<String> permissionList = user.getPermissionList();
 String userRolesString = "";
 for(String p : permissionList){
 	userRolesString += userRolesString.equals("") ? p : "," + p;
 } 
 String basePath = request.getContextPath();
-System.out.println(basePath);
 %>
 <!DOCTYPE HTML>
 <html lang="en">
@@ -45,6 +50,7 @@ System.out.println(basePath);
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 var all_role = "<%=userRolesString %>";
+var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 </script>
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
  <style type="text/css">

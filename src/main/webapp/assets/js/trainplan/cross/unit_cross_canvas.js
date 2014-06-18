@@ -55,6 +55,7 @@ var MyCanvas = function(){
 			scale.stationTypeArray = _stationTypeArray;	//分界口复选框
 			scale.isDrawTrainTime = _canvasIsDrawTrainTime;	//是否绘制列车经由站到达及出发时间
 			scale.currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();	//当前组号
+			scale.isZgsUser = _isZgsUser;//当前用户是否为总公司用户
 			return scale;
 		} else {
 			return {
@@ -63,7 +64,8 @@ var MyCanvas = function(){
 				yScale : currentYScale,				//y轴缩放比例
 				stationTypeArray:_stationTypeArray,	//分界口复选框
 				isDrawTrainTime:_canvasIsDrawTrainTime,	//是否绘制列车经由站到达及出发时间
-				currentGroupSerialNbr : _canvas_select_groupSerialNbr.val()	//当前组号
+				currentGroupSerialNbr : _canvas_select_groupSerialNbr.val(),	//当前组号
+				isZgsUser : _isZgsUser//当前用户是否为总公司用户
 			};
 		}
 		

@@ -44,7 +44,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	var _endY = 1000;	//y轴 结束刻度
 	var _groupSerialNbrArray = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨"];//列车所属组号①②③④⑤⑥⑥⑦⑧⑨
 	var _isDrawTrainTime = false;	//是否绘制列车经由站到达及出发时间 		默认false
-		
+	var _isChangeColorByUser = false;	//是否根据当前用户是否为总公司用户而改变网格X线颜色 		总公司用户不限制 false，路局用户则非管内站线变暗 true
+	
 	initVariables();//初始化
 
 	
@@ -86,6 +87,10 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			_startY = expandObj.startY;
 		}
 		
+		
+		if (expandObj && typeof expandObj.isZgsUser == "boolean") {
+			_isChangeColorByUser = !expandObj.isZgsUser;
+		}
 
 		
 		if (expandObj && typeof expandObj.isDrawTrainTime !=null 
@@ -192,7 +197,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				fromY : _y+5
 			});
 
-			if (_obj.isCurrentBureau && _obj.isCurrentBureau == 1) {//该站属于当前路局管内
+			//是否根据当前用户是否为总公司用户而改变网格X线颜色 		总公司用户不限制 false，路局用户则非管内站线变暗 true
+			if (!_isChangeColorByUser || (_obj.isCurrentBureau && _obj.isCurrentBureau == 1)) {//该站属于当前路局管内
 				_color = color;//#c101db
 			} else {
 				_color = "gray";//gray、浅绿#eefde3、#c101db
