@@ -48,9 +48,9 @@
 	<!-- cxf inbound/outbound logger -->
 	<logger name="org.apache.cxf.services" level="ERROR" />
 
-    <logger name="org.springframework" level="DEBUG" />
+    <logger name="org.springframework" level="ERROR" />
 
-    <logger name="org.mybatis" level="DEBUG" />
+    <logger name="org.mybatis" level="ERROR" />
 
     <logger name="org.apache.ibatis" level="ERROR"/>
 
@@ -63,7 +63,7 @@
     <logger name="org.springframework.amqp" level="ERROR" />
 
 	<!-- root -->
-	<root level="debug">
+	<root level="INFO">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />
 	</root>

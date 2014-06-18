@@ -73,8 +73,27 @@ public class RunPlanService {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("date", date);
         map.put("bureau", bureau);
-//        map.put("type", type);
-        return runPlanDao.findRunPlan(map);
+        List<Map<String, Object>> list = Lists.newArrayList();
+        switch(type) {
+            case 0:
+                list = runPlanDao.findRunPlan_all(map);
+                break;
+            case 1:
+                list = runPlanDao.findRunPlan_sfzd(map);
+                break;
+            case 2:
+                list = runPlanDao.findRunPlan_sfjc(map);
+                break;
+            case 3:
+                list = runPlanDao.findRunPlan_jrzd(map);
+                break;
+            case 4:
+                list = runPlanDao.findRunPlan_jrjc(map);
+                break;
+            default:
+                break;
+        }
+        return list;
     }
 
     public List<Map<String, Object>> findPlanTimeTableByPlanId(String planId) {

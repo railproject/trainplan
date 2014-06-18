@@ -65,6 +65,9 @@ public class RunPlanDTO {
     // 是否二级审核
     private int lev2Checked;
 
+    // 列车类型（始发终到、始发交出、接入终到、接入交出）
+    private String trainType;
+
     public RunPlanDTO(Map<String, Object> map) {
         this.id = MapUtils.getString(map, "PLAN_TRAIN_ID");
         this.serial = MapUtils.getString(map, "TRAIN_NBR");
@@ -83,6 +86,7 @@ public class RunPlanDTO {
         this.dailyLineId = MapUtils.getString(map, "DAILYPLAN_ID");
         this.lev1Checked = MapUtils.getIntValue(map, "LEV1_CHECKED");
         this.lev2Checked = MapUtils.getIntValue(map, "LEV2_CHECKED");
+        this.trainType = MapUtils.getString(map, "TRAIN_TYPE");
     }
 
     public String getId() {
@@ -236,5 +240,13 @@ public class RunPlanDTO {
 
     public void setLev2Checked(int lev2Checked) {
         this.lev2Checked = lev2Checked;
+    }
+
+    public String getTrainType() {
+        return trainType;
+    }
+
+    public void setTrainType(String trainType) {
+        this.trainType = trainType;
     }
 }

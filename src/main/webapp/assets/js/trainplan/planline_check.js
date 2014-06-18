@@ -385,7 +385,7 @@ function TableModel() {
         commonJsScreenLock();
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         $.ajax({
-            url: "audit/plan/runplan/" + date + "/1",
+            url: "audit/plan/runplan/" + date + "/0",
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {
@@ -422,6 +422,7 @@ function Plan(dto) {
     self.dailyLineId = ko.observable(dto.dailyLineId);
     self.lev1Checked = ko.observable(dto.lev1Checked);
     self.lev2Checked = ko.observable(dto.lev2Checked);
+    self.trainType = ko.observable(dto.trainType);
     self.isSelected = ko.observable(false);
 
     // 校验项 0：未校验，1：匹配，-1：不匹配

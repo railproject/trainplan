@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class AuditController {
     private ChartService chartService;
 
     @RequestMapping(value = "plan/runplan/{date}/{type}", method = RequestMethod.GET)
-    public List<RunPlanDTO> getRunPlan(@PathVariable String date, @PathVariable int type) {
+    public ResponseEntity<List<RunPlanDTO>> getRunPlan(@PathVariable String date, @PathVariable int type) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         logger.debug("-X GET plan/runplan/");
         List<RunPlanDTO> result = new ArrayList<RunPlanDTO>();
@@ -58,7 +59,7 @@ public class AuditController {
             result.add(new RunPlanDTO(map));
         }
         logger.debug("getRunPlan end::::");
-        return result;
+        return new ResponseEntity<List<RunPlanDTO>>(result, HttpStatus.OK);
     }
 
     @RequestMapping(value = "plan/{planId}/line/{lineId}/check", method = RequestMethod.GET)
