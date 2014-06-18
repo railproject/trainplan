@@ -34,8 +34,6 @@
 	</appender>
 
 	<!-- project default level -->
-	<logger name="org.railway.com.trainplan" level="DEBUG" />
-	
 	<!-- business log 使用独立的appender，不继承Root的appender -->
 	<logger name="business" level="INFO" additivity="false">
 		<appender-ref ref="businessLogFile" />
@@ -65,7 +63,7 @@
     <logger name="org.springframework.amqp" level="ERROR" />
 
 	<!-- root -->
-	<root level="DEBUG">
+	<root level="INFO">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />
 	</root>

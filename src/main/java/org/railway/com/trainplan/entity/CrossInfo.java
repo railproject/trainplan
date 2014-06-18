@@ -1,6 +1,5 @@
 package org.railway.com.trainplan.entity;
 
-import java.util.Date;
 import java.util.UUID;
 
 
@@ -44,6 +43,7 @@ public class CrossInfo {
 	private String crossStartDate;
 	private String crossEndDate;
 	private String checkPeople; 
+	private String appointPeriod;
 	private String checkPeopleOrg;
 	private String crhType;
 	private String note;
@@ -58,7 +58,9 @@ public class CrossInfo {
 	private String chartName;
 	private String baseCrossId;
 	private String startStn;
-	private String createUnitTime;
+	private String relevantBureau;
+	 
+	
 	/****以下字段unit_cross表用到  ****/
 	//unit_cross表主键
 	private String unitCrossId;
@@ -70,13 +72,26 @@ public class CrossInfo {
 	private String planCrossId;
 	
 	
-	
-	public String getCreateUnitTime() {
+	public String getAppointPeriod() {
+		return appointPeriod;
+	}
+	public void setAppointPeriod(String appointPeriod) {
+		this.appointPeriod = appointPeriod;
+	}
+	 
+	public String getRelevantBureau() {
+		return relevantBureau;
+	}
+	public void setRelevantBureau(String relevantBureau) {
+		this.relevantBureau = relevantBureau;
+	}
+public String getCreateUnitTime() {
 		return createUnitTime;
 	}
 	public void setCreateUnitTime(String createUnitTime) {
 		this.createUnitTime = createUnitTime;
 	}
+
 	public String getPlanCrossId() {
 		return planCrossId;
 	}
@@ -353,6 +368,7 @@ public class CrossInfo {
 	public static void main(String args[]){
 		//System.err.println(new Date());
 		
-	} 
+	}
+	 
 
 }

@@ -109,7 +109,10 @@ public class Constants {
 	//查询crossinfo信息的条数
 	public static final String CROSSDAO_GET_CROSS_INFO_COUNT = "crossDao.getCrossInfoTotalCount";
     //通过crossid获取crossinfo信息 
-	public static final String  CROSSDAO_GET_CROSS_INFO_FOR_CROSSID = "crossDao.getCrossInfoForCrossid";
+	public static final String  CROSSDAO_GET_CROSS_INFO_FOR_PARAM = "crossDao.getCrossInfoForParam";
+	
+	//通过crossid获取crossinfo信息 
+	public static final String  CROSSDAO_GET_BASETRAIN_INFO_FOR_PARAM = "crossDao.getBaseTrainInfoByParams";
 	//通过crossid查询crosstrainInfo信息   
 	public static final String CROSSDAO_GET_CROSS_TRAIN_INFO_FOR_CROSSID = "crossDao.getCrossTrainInfoForCrossid";
     //插入表unit_cross  addUnitCrossInfo
@@ -158,6 +161,10 @@ public class Constants {
     public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoForCrossIds";
     //根据crossIds批量删除unit_cross_train表中数据
     public static final String CROSSDAO_DELETE_UNIT_CROSS_INFO_TRAIN_FOR_CROSSIDS = "crossDao.deleteUnitCrossInfoTrainForCrossIds";
+    public static final String CROSSDAO_DELETE_UNITCROSSTRAIN_BY_CHARID = "crossDao.deleteUnitCrossTrainByChartId";
+    public static final String CROSSDAO_DELETE_UNITCROSS_INFO_BY_CHARID = "crossDao.deleteUnitCrossInfoByChartId";
+    public static final String CROSSDAO_DELETE_CROSSTRAIN_BY_CHARID = "crossDao.deleteCrossTrainByChartId";
+    public static final String CROSSDAO_DELETE_CROSSINFO_BY_CHARID = "crossDao.deleteCrossInfoByChartId";
     //根据chartId查询unit_cross信息 
     public static final String CROSSDAO_GET_UNIT_CROSSINFO_FOR_CHARTID = "crossDao.getUnitCrossInfoForChartId";
     //获取全部方案列表
@@ -186,4 +193,5 @@ public class Constants {
 	public static final String CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanCrossByPlanCrossIds";
 	public static final String CROSSDAO_DELETE_PLANTRAIN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainsByPlanCrossIds";
 	public static final String CROSSDAO_DELETE_PLANTRAINSTN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainStnsByPlanCrossIds";
+	
 }

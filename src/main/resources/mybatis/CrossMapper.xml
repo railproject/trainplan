@@ -198,7 +198,6 @@
     </insert>
 
 
-
   <update id="updateBaseCross" parameterType="org.railway.com.trainplan.entity.CrossInfo">
   
     update base_cross
@@ -230,7 +229,9 @@
      where BASE_CROSS_ID = #{baseCrossId}
   </update>
 
-    <select id="getCrossInfoForCrossid" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
+
+    <select id="getCrossInfoForParam" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossInfo">
+
         select
         BASE_CROSS_ID as crossId,
         BASE_CHART_ID as chartId,
@@ -273,9 +274,14 @@
         NOTE  as  note,
         CREAT_PEOPLE  as createPeople ,
         CREAT_PEOPLE_ORG  as createPeopleOrg ,
-        CREAT_TIME  as  createTime
-
-        from base_cross where BASE_CROSS_ID=#{crossId}
+        CREAT_TIME  as  createTime 
+        from base_cross where 1=1
+        <if test="crossId != null">
+            AND BASE_CROSS_ID = #{crossId}
+        </if>
+        <if test="crossName != null">
+            AND CROSS_NAME = #{crossName}
+        </if>
     </select>
 
     <select id="getStationListForPlanCrossId" parameterType="map" resultType="map">
@@ -709,7 +715,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
 
         insert into unit_cross
         (UNIT_CROSS_ID,
-        BASE_CROSS_ID,
+        BASE_CROSS_ID,RELEVANT_BUREAU,APPOINT_PERIOD,
         BASE_CHART_ID,BASE_CHART_NAME,CROSS_START_DATE,CROSS_END_DATE,
         CROSS_NAME,CROSS_SPARE_NAME,ALTERNATE_DATE,ALTERNATE_TRAIN_NBR,
         SPARE_FLAG,CUT_OLD,GROUP_TOTAL_NBR,PAIR_NBR,
@@ -723,7 +729,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
                   separator="UNION">
         SELECT
         #{item.unitCrossId,jdbcType=VARCHAR},
-        #{item.crossId,jdbcType=VARCHAR},
+        #{item.crossId,jdbcType=VARCHAR},#{item.relevantBureau,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
         #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
         #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
         #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
@@ -777,7 +783,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
     <insert id="addCrossInfo"  parameterType="java.util.List" >
 
         insert into base_cross
-        (BASE_CROSS_ID,
+        (BASE_CROSS_ID,RELEVANT_BUREAU,APPOINT_PERIOD,
         BASE_CHART_ID,BASE_CHART_NAME,CROSS_START_DATE,CROSS_END_DATE,
         CROSS_NAME,CROSS_SPARE_NAME,ALTERNATE_DATE,ALTERNATE_TRAIN_NBR,
         SPARE_FLAG,CUT_OLD,GROUP_TOTAL_NBR,PAIR_NBR,
@@ -790,7 +796,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         (<foreach collection="list" item="item" index="index"
                   separator="UNION">
         SELECT
-        #{item.crossId,jdbcType=VARCHAR},
+        #{item.crossId,jdbcType=VARCHAR},#{item.relevantBureau,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
         #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
         #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
         #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
@@ -875,6 +881,9 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         <if test="tokenVehBureau != null">
             AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
         </if>
+         <if test="crossName != null">
+            AND cross_name = #{crossName}
+        </if>
         <if test="trainNbr != null">
             AND cross_name like '%' || #{trainNbr} || '%'
         </if>
@@ -931,6 +940,30 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
             AND CREAT_CROSS_TIME is not null
         </if>
     </select>
+    
+     <select id="getBaseTrainInfoByParams"  parameterType="map" resultType="org.railway.com.trainplan.entity.BaseTrainInfo"> 
+       select t.id as baseTrainId,
+               t.Source_Bureau_Name as startBureau,
+               t.source_bureau_shortname as startBureauShortName,
+               t.source_node_name as startStn,
+               t.target_bureau_name as endBureau,
+               t.target_bureau_shortname as endBureanShortName,
+               t.target_node_name as endStn,
+               t.route_bureau_shortnames as routeBureauShortNames,
+               TO_CHAR(T.Source_Time, 'hh24:mi:SS') as startTime,
+               TO_CHAR(t.target_time, 'hh24:mi:SS') as endTime, 
+               t.relative_target_time_day as runDays 
+          from JHPT_RJH.m_trainlinetemp t
+         where  t.name=#{trainNbr}
+        <if test="startStn != null">
+            <if test="endStn == null">
+            	AND (source_node_name= #{startStn} OR target_node_name= #{startStn})
+            </if>
+            <if test="endStn != null">
+            	AND source_node_name= #{startStn} AND target_node_name= #{startStn}
+            </if>
+        </if> 
+    </select>
 
 
 
@@ -960,7 +993,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         </if>
         <if test="trainNbr != null">
             AND CROSS_NAME like '%' || #{trainNbr} || '%'
-        </if>
+        </if> 
         <if test="checkFlag == 0 ">
             AND check_time is null
         </if>
@@ -975,8 +1008,8 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         </if>
         order by  CROSS_NAME) m )  where num >=#{rownumstart} AND num &lt;=#{rownumend}
 
-    </select>
-
+    </select> 
+     
     <select id="getTrainNbrFromUnitCross" parameterType="String" resultType="map">
         select DISTINCT(B.TRAIN_NBR),A.BASE_CHART_ID from unit_cross A ,base_cross_train B
         where A.BASE_CROSS_ID = B.BASE_CROSS_ID AND A.UNIT_CROSS_ID=#{unitCrossId}
@@ -1086,6 +1119,21 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
 
     <delete id="deleteUnitCrossInfoForCrossIds" parameterType="map">
         delete from unit_cross where unit_cross_id in (${unitCrossIds})
+    </delete>
+    
+    
+     <delete id="deleteCrossInfoByChartId" parameterType="string">
+        delete from base_cross where base_chart_ID=#{chartId}
+    </delete> 
+    <delete id="deleteCrossTrainByChartId" parameterType="string">
+        delete from base_cross_train where BASE_CROSS_ID in (select base_cross_id from base_cross where base_chart_ID=#{chartId})
+    </delete> 
+    <delete id="deleteUnitCrossTrainByChartId" parameterType="string">
+        delete from unit_cross_train where unit_cross_id in (select unit_cross_id from unit_cross where base_chart_ID=#{chartId})
+
+    </delete> 
+    <delete id="deleteUnitCrossInfoByChartId" parameterType="string">
+        delete from unit_cross where base_chart_ID=#{chartId}
     </delete>
 
 

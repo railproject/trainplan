@@ -28,6 +28,9 @@ public class CrossTrainInfo {
 	private String endDate;
 	private String targetTime;
 	private int runDay;
+	private String routeBureauShortNames;
+	
+	 
 	/**以下字段是表unit_cross_train中用到  **/
 	//unit_cross_train表id
 	private String unitCrossTrainId;
@@ -46,9 +49,14 @@ public class CrossTrainInfo {
 	}
 	public void setGroupGap(int groupGap) {
 		this.groupGap = groupGap;
+	}  
+	
+	public String getRouteBureauShortNames() {
+		return routeBureauShortNames;
 	}
-	
-	
+	public void setRouteBureauShortNames(String routeBureauShortNames) {
+		this.routeBureauShortNames = routeBureauShortNames;
+	}
 	public String getRunDate() {
 		return runDate;
 	}
@@ -217,8 +225,7 @@ public class CrossTrainInfo {
 	}
 	public void setUnitCrossId(String unitCrossId) {
 		this.unitCrossId = unitCrossId;
-	}
-	
+	} 
 	
 
 }

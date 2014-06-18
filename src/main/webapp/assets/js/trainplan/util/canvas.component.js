@@ -21,11 +21,12 @@
  * 				xScale : 10,		//(可选参数)x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数 （建议整数：1、2、10等）
  * 				xScaleCount : 1,	//(可选参数)x轴放大总倍数
  * 				yScale : 1,			//(可选参数)y轴缩放比例 除数
- * 				stationTypeArray:['0','TZ','FJK','BT']	//绘图条件数组 0:始发站或终到站 TZ：停站  FJK：分界口站  BT:不停的经由站
+ * 				stationTypeArray:['0','TZ','FJK','BT'],	//绘图条件数组 0:始发站或终到站 TZ：停站  FJK：分界口站  BT:不停的经由站
+ * 				isDrawTrainTime : true					//是否绘制列车经由站到达及出发时间
  * 			}
  */
 var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
-	
+	var _canvasComponentSelf = this;
 	var _context = context;
 	var _xDateArray = xDateArray;
 	var _stationTypeArray = [];//['0','TZ','FJK','BT'] 绘图条件数组 0:始发站或终到站 TZ：停站  FJK：分界口站  BT:不停的经由站
@@ -41,7 +42,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	var _drawYMoreFlag = false;	//默认false	每一天x长度范围内是否绘制更多竖线 true/false
 	var _endX = 1000;	//x轴 日期范围最大刻度值
 	var _endY = 1000;	//y轴 结束刻度
-	
+	var _groupSerialNbrArray = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨"];//列车所属组号①②③④⑤⑥⑥⑦⑧⑨
+	var _isDrawTrainTime = false;	//是否绘制列车经由站到达及出发时间 		默认false
+		
 	initVariables();//初始化
 
 	
@@ -82,9 +85,16 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			_startY = expandObj.startY;
 		}
 		
+
+		
+		if (expandObj && typeof expandObj.isDrawTrainTime !=null 
+				&& expandObj.isDrawTrainTime !="undefine" && typeof expandObj.isDrawTrainTime == "boolean") {
+			_isDrawTrainTime = expandObj.isDrawTrainTime;
+		}
+		
 		
 		if (_xDateArray.length <=2) {
-			_xScale = 4;	//x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数
+			_xScale = 4/_xScaleCount;	//x轴缩放比例 x轴时间（分钟）转换为长度像素px的除数
 			_drawYMoreFlag = true;	//每一天x长度范围内需要绘制更多竖线
 		}
 
@@ -93,6 +103,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		//设置画布x、y长度   +100是为了方便显示边缘线
 		_context.canvas.width =  _endX + 100;
 		_context.canvas.height = _endY +100;
+		
 	};
 	
 	
@@ -198,7 +209,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	 * @param dashFlag 是否为虚线
 	 * private
 	 */
-	function drawY(color, lineWidth, text, fromX, dashFlag) {
+	function drawY(color, lineWidth, text, fromX, dashFlag, font) {
 		if (dashFlag) {
 			myCanvasDrawDashLineY(_context, lineWidth, color,fromX,_startY, fromX, _endY, 10);
 		} else {
@@ -206,6 +217,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		}
 		//顶端显示
 		myCanvasFillText(_context, {
+			font : font,
 			textAlign:"center",
 			text : text,//0 6 12 18 
 			fromX : fromX,
@@ -213,6 +225,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		});
 		//底端显示
 		myCanvasFillText(_context, {
+			font : font,
 			textAlign:"center",
 			text : text,//0 6 12 18 
 			fromX : fromX,
@@ -242,6 +255,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		for (var i = 0,_len=_xDateArray.length; i<_len; i++) {
 			//网格顶端显示 2014-05-12 一天范围内的 日期文本显示 
 			myCanvasFillText(_context, {
+				font :"normal 14px Arial",
 				textAlign:"center",
 				text : _xDateArray[i].runDate,
 				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
@@ -249,6 +263,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			});
 			//网格底端显示 2014-05-12
 			myCanvasFillText(_context, {
+				font :"normal 14px Arial",
 				textAlign:"center",
 				text : _xDateArray[i].runDate,
 				fromX : (_startX+i*_oneDayWidth + _oclock12Width),
@@ -258,11 +273,12 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			
 			//
 			if (_xScaleCount<=2) {//0点、6点、12点、18点
-				drawY(color, 2, "0", _startX+i*_oneDayWidth, false);//0点
-				drawY(color, 0.5, "6", _startX+_oclock6Width+i*_oneDayWidth, true);//6点
-				drawY(color, 1, "12", _startX+_oclock12Width+i*_oneDayWidth, false);//12点
-				drawY(color, 0.5, "18", _startX+_oclock18Width+i*_oneDayWidth, true);//18点
-			} else if(_xScaleCount>2 && _xScaleCount<16) {	//每小时一条线
+				drawY(color, 2, "0", _startX+i*_oneDayWidth, false, "Bold 18px Arial");//0点
+				drawY(color, 0.5, "6", _startX+_oclock6Width+i*_oneDayWidth, true, "normal 14px Arial");//6点
+				drawY(color, 1, "12", _startX+_oclock12Width+i*_oneDayWidth, false, "Bold 16px Arial");//12点
+				drawY(color, 0.5, "18", _startX+_oclock18Width+i*_oneDayWidth, true, "normal 14px Arial");//18点
+			} else if(_xScaleCount>2 && _xScaleCount<8) {	//每小时一条线
+				
 				for (var j=0;j<24; j++) {
 					var _isDashLine = false;	//是否为虚线
 					var _lineWidth = false;		//线宽
@@ -273,32 +289,59 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 					}
 					if (j==0) {
 						_lineWidth = 2;
+						drawY(color, _lineWidth, j, _startX+i*_oneDayWidth + j*_oneHourWidth, _isDashLine, "Bold 18px Arial");//0点
 					} else if (j%12==0){
 						_lineWidth = 1;
+						drawY(color, _lineWidth, j, _startX+i*_oneDayWidth + j*_oneHourWidth, _isDashLine, "Bold 16px Arial");//12点
 					} else{
 						_lineWidth = 0.5;
+						drawY(color, _lineWidth, j, _startX+i*_oneDayWidth + j*_oneHourWidth, _isDashLine, "normal 14px Arial");//每小时
 					}
 					
-					drawY(color, _lineWidth, j, _startX+i*_oneDayWidth + j*_oneHourWidth, _isDashLine);//0点
+					
 				}
-			} else if(_xScaleCount>=16) {	//每半小时一条线
+			} else if(_xScaleCount>=8) {	//每半小时一条线
 				for (var j=0;j<48; j++) {
 					var _isDashLine = true;	//是否为虚线
 					var _lineWidth = 0.5;		//线宽
 					var _text = j/2;
+					
+					
+					//test
+//					if (_xScaleCount == 32) {
+//						console.log("j ="+j+"   _text="+_text+"   j%36="+j%36+"   j%24="+j%24+"   j%12="+j%12+"   j%2="+j%2);
+//					}
+					
+					
+					
+					
 					if (j==0) {
 						_text = "0";
 						_isDashLine = false;
-						_lineWidth = 2;
-					} else if (j%24==0){
+						_lineWidth = 3;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 18px Arial");//0点
+					} else if (j%36==0){
 						_isDashLine = false;
 						_lineWidth = 1;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 12px Arial");//18点
+					} else if (j%24==0){
+						_isDashLine = false;
+						_lineWidth = 2;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 16px Arial");//12点
+					} else if (j%12==0){
+						_isDashLine = false;
+						_lineWidth = 1;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 12px Arial");//6点
+					} else if (j%2==0){
+						_lineWidth = 0.5;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 11px Arial");//每一小时
 					}else if (j%2==1){//半小时
 						_lineWidth = 0.2;
 						_text = Math.floor(j/2)+":30";
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "lighter 11px Arial");//每半小时
 					}
 					
-					drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine);//0点
+					
 				}
 			}
 			
@@ -306,7 +349,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			
 			//x结束位置 再画一条竖线
 			if (i == _len-1) {
-				drawY(color, 2, "0", _startX+(i+1)*_oneDayWidth, false);//24点
+				drawY(color, 2, "0", _startX+(i+1)*_oneDayWidth, false, "Bold 18px Arial");//24点
 			}
 		}
 	};
@@ -322,6 +365,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	 */
 	function drawGridMoreY(color) {
 		//画竖线
+		var _halfHourWidth = 30*_stepX/_xScale;	//半小时
 		var _oneHourWidth = 60*_stepX/_xScale;
 		var _oclock3Width = 3*_oneHourWidth;
 		var _oclock6Width = 6*_oneHourWidth;
@@ -342,18 +386,78 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			});
 			
 			
-			drawY(color, 2, "0", _startX+i*_oneDayWidth, false);//0点
-			drawY(color, 0.5, "3", _startX+_oclock3Width+i*_oneDayWidth, true);//3点
-			drawY(color, 1, "6", _startX+_oclock6Width+i*_oneDayWidth, true);//6点
-			drawY(color, 0.5, "9", _startX+_oclock9Width+i*_oneDayWidth, true);//9点
-			drawY(color, 1, "12", _startX+_oclock12Width+i*_oneDayWidth, false);//12点
-			drawY(color, 0.5, "15", _startX+_oclock15Width+i*_oneDayWidth, true);//15点
-			drawY(color, 1, "18", _startX+_oclock18Width+i*_oneDayWidth, true);//18点
-			drawY(color, 0.5, "21", _startX+_oclock21Width+i*_oneDayWidth, true);//21点
+			if (_xScaleCount<=2) {//包含0点、6点、9点、12点、15点、18点、21点、0点
+				drawY(color, 2, "0", _startX+i*_oneDayWidth, false, "Bold 18px Arial");//0点
+				drawY(color, 0.5, "3", _startX+_oclock3Width+i*_oneDayWidth, true, "normal 12px Arial");//3点
+				drawY(color, 1, "6", _startX+_oclock6Width+i*_oneDayWidth, true, "normal 14px Arial");//6点
+				drawY(color, 0.5, "9", _startX+_oclock9Width+i*_oneDayWidth, true, "normal 12px Arial");//9点
+				drawY(color, 1, "12", _startX+_oclock12Width+i*_oneDayWidth, false, "Bold 16px Arial");//12点
+				drawY(color, 0.5, "15", _startX+_oclock15Width+i*_oneDayWidth, true, "normal 12px Arial");//15点
+				drawY(color, 1, "18", _startX+_oclock18Width+i*_oneDayWidth, true, "normal 14px Arial");//18点
+				drawY(color, 0.5, "21", _startX+_oclock21Width+i*_oneDayWidth, true, "normal 12px Arial");//21点
+			} else if(_xScaleCount>2 && _xScaleCount<8) {	//每小时一条线
+				
+				for (var j=0;j<24; j++) {
+					var _isDashLine = false;	//是否为虚线
+					var _lineWidth = false;		//线宽
+					if (j%12==0) {
+						_isDashLine = false;
+					} else {
+						_isDashLine = true;
+					}
+					if (j==0) {
+						_lineWidth = 2;
+						drawY(color, _lineWidth, j, _startX+i*_oneDayWidth + j*_oneHourWidth, _isDashLine, "Bold 18px Arial");//0点
+					} else if (j%12==0){
+						_lineWidth = 1;
+						drawY(color, _lineWidth, j, _startX+i*_oneDayWidth + j*_oneHourWidth, _isDashLine, "Bold 16px Arial");//12点
+					} else{
+						_lineWidth = 0.5;
+						drawY(color, _lineWidth, j, _startX+i*_oneDayWidth + j*_oneHourWidth, _isDashLine, "normal 14px Arial");//每小时
+					}
+					
+					
+				}
+			} else if(_xScaleCount>=8) {	//每半小时一条线
+				for (var j=0;j<48; j++) {
+					var _isDashLine = true;	//是否为虚线
+					var _lineWidth = 0.5;		//线宽
+					var _text = j/2;
+					if (j==0) {
+						_text = "0";
+						_isDashLine = false;
+						_lineWidth = 3;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 18px Arial");//0点
+					} else if (j%36==0){
+						_isDashLine = false;
+						_lineWidth = 1;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 12px Arial");//18点
+					} else if (j%24==0){
+						_isDashLine = false;
+						_lineWidth = 2;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 16px Arial");//12点
+					} else if (j%12==0){
+						_isDashLine = false;
+						_lineWidth = 1;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 12px Arial");//6点
+					} else if (j%2==0){
+						_lineWidth = 0.5;
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "Bold 11px Arial");//每一小时
+					}else if (j%2==1){//半小时
+						_lineWidth = 0.2;
+						_text = Math.floor(j/2)+":30";
+						drawY(color, _lineWidth, _text, _startX+i*_oneDayWidth + j*_halfHourWidth, _isDashLine, "lighter 11px Arial");//每半小时
+					}
+					
+					
+				}
+			}
+			
+			
 			
 			//x结束位置 再画一条竖线
 			if (i == _len-1) {
-				drawY(color, 2, "0", _startX+(i+1)*_oneDayWidth, false);//24点
+				drawY(color, 2, "0", _startX+(i+1)*_oneDayWidth, false, "Bold 18px Arial");//24点
 			}
 		}
 	};
@@ -384,7 +488,22 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	};
 	
 	
-	
+	/**
+	 * 将列车所属组号转换为特殊字符 1=① 2=② 3=③ 4=④ 5=⑤
+	 * public
+	 * 
+	 * @param groupSerialNbr 列车所属组号 如："1" "2" "3" "4"
+	 * return 匹配成功返回:①②③④⑤⑥⑥⑦⑧⑨	无任何匹配数据：no match
+	 */
+	this.convertGroupSerialNbr = function(groupSerialNbr) {
+		for (var i=1;i<=9;i++) {
+			if(i.toString() == groupSerialNbr) {
+				return _groupSerialNbrArray[i-1]
+			}
+		}
+		
+		return "no match";//无任何匹配数据
+	};
 	
 	
 	
@@ -396,8 +515,11 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	 * @param paramObj 单个车次信息
 	 * 			{
 		        	  trainName:"K818",
-					  startStn:"成都",//始发站名 为null时填入""（空串）
-					  endStn:"北京西",//终到站名为null时填入""（空串）
+					  startStn:"成都",					//始发站名 为null时填入""（空串）
+					  startDate: "2014-06-11 13:30:00",	//始发时间
+					  endStn:"北京西",					//终到站名为null时填入""（空串）
+					  endDate: "2014-06-11 13:35:00",	//终到时间
+					  groupSerialNbr:'1',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 					  trainStns:[
 							{runDays:0,stnName:"成都",arrTime:"2014-05-11 19:18",dptTime:"2014-05-11 19:18",stayTime:0},
 							{runDays:0,stnName:"遂宁",arrTime:"2014-05-11 21:19",dptTime:"2014-05-11 21:33",stayTime:14},
@@ -422,12 +544,24 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		this.firstY = 0;
 		
 
-		this.showTrainName = function(ctx,color) {
+		this.showTrainName = function(ctx,color,groupSerialNbr) {
+			//绘制列车车次
 			myCanvasFillTextWithColor(ctx, color, {
+				font : "normal 14px Arial",
 				text : this.obj.trainName,
 				fromX : this.firstX,
 				fromY : this.firstY
 			});
+			
+			if (groupSerialNbr!=null && groupSerialNbr!="" && groupSerialNbr!="undefine") {
+				myCanvasFillTextWithColor(ctx, color, {
+					font : "Bold 18px Arial",
+					text : _canvasComponentSelf.convertGroupSerialNbr(groupSerialNbr),//绘制列车所属组号①②③④⑤⑥⑥⑦⑧⑨
+					fromX : this.firstX-26,
+					fromY : this.firstY
+				});
+			}
+			
 		};
 		this.isPointInStroke = function(ctx, x, y) {
 			ctx.save();
@@ -470,11 +604,54 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				ctx.moveTo(_dptTimeX, _y);
 				ctx.arc(_dptTimeX, _y, 2, 0, Math.PI*2, false);
 	
+				
+				if (_isDrawTrainTime) {
+					if (_obj.arrTime == _obj.dptTime) {//始发 or 终到 or 经过站
+						//始发 or 经过站
+						if (_obj.stnName !=this.obj.endStn) {
+							myCanvasFillText(_context, {
+								font : "lighter 10px Arial",
+								textAlign:"center",
+								text : moment(_obj.dptTime).format("HH:mm"),//0 6 12 18 
+								fromX : _dptTimeX+20,
+								fromY : _y -8
+							});
+						} else {//终到站
+							myCanvasFillText(_context, {
+								font : "lighter 10px Arial",
+								textAlign:"center",
+								text : moment(_obj.arrTime).format("HH:mm"),//0 6 12 18 
+								fromX : _arrTimeX-20,
+								fromY : _y +10
+							});
+						}
+					} else {
+						//显示到达时间
+						myCanvasFillText(_context, {
+							font : "lighter 10px Arial",
+							textAlign:"center",
+							text : moment(_obj.arrTime).format("HH:mm"),//0 6 12 18 
+							fromX : _arrTimeX-20,
+							fromY : _y +10
+						});
+						
+						//显示出发时间
+						myCanvasFillText(_context, {
+							font : "lighter 10px Arial",
+							textAlign:"center",
+							text : moment(_obj.dptTime).format("HH:mm"),//0 6 12 18 
+							fromX : _dptTimeX+20,
+							fromY : _y -8
+						});
+					}
+				}
+				
+				
 				if (i == 0) {
 					//绘制列车名称
 					this.firstX = _dptTimeX;
 					this.firstY = _y-15;
-					line_self.showTrainName(_context, colorParam);
+					line_self.showTrainName(_context, colorParam, _obj.groupSerialNbr);
 				} else {
 					//连接上一站出发点到本站到达点
 					myCanvasDrawLine(_context, this.lineWidth, colorParam, _parentDeptStn.x, _parentDeptStn.y, _arrTimeX, _y);
@@ -541,15 +718,59 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				//绘制到达点
 				ctx.moveTo(_arrTimeX, _y);
 				ctx.arc(_arrTimeX,_y, 2, 0, Math.PI*2, false);
+				
 				//绘制出发点
 				ctx.moveTo(_dptTimeX, _y);
 				ctx.arc(_dptTimeX, _y, 2, 0, Math.PI*2, false);
+				
+				//是否绘制列车经由站到达及出发时间
+				if (_isDrawTrainTime) {
+					if (_obj.arrTime == _obj.dptTime) {//始发 or 终到 or 经过站
+						//始发 or 经过站
+						if (_obj.stnName !=this.obj.endStn) {
+							myCanvasFillText(_context, {
+								font : "lighter 10px Arial",
+								textAlign:"center",
+								text : moment(_obj.dptTime).format("HH:mm"),//0 6 12 18 
+								fromX : _dptTimeX+20,
+								fromY : _y -8
+							});
+						} else {//终到站
+							myCanvasFillText(_context, {
+								font : "lighter 10px Arial",
+								textAlign:"center",
+								text : moment(_obj.arrTime).format("HH:mm"),//0 6 12 18 
+								fromX : _arrTimeX-20,
+								fromY : _y +10
+							});
+						}
+					} else {
+						//显示到达时间
+						myCanvasFillText(_context, {
+							font : "lighter 10px Arial",
+							textAlign:"center",
+							text : moment(_obj.arrTime).format("HH:mm"),//0 6 12 18 
+							fromX : _arrTimeX-20,
+							fromY : _y +10
+						});
+						
+						//显示出发时间
+						myCanvasFillText(_context, {
+							font : "lighter 10px Arial",
+							textAlign:"center",
+							text : moment(_obj.dptTime).format("HH:mm"),//0 6 12 18 
+							fromX : _dptTimeX+20,
+							fromY : _y -8
+						});
+					}
+				}
+				
 	
 				if (i == 0) {
 					//绘制列车名称
 					this.firstX = _dptTimeX;
-					this.firstY = _y-15;
-					line_self.showTrainName(_context, colorParam);
+					this.firstY = _y-20;
+					line_self.showTrainName(_context, colorParam, _obj.groupSerialNbr);
 				} else {
 					//连接上一站出发点到本站到达点
 					myCanvasDrawLine(_context, this.lineWidth, colorParam, _parentDeptStn.x, _parentDeptStn.y, _arrTimeX, _y);
@@ -573,7 +794,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
                 ctx.strokeStyle = currentColor;
                 ctx.fillStyle = currentColor;
                 this.isCurrent = true;
-                line_self.showTrainName(_context, currentColor);
+                line_self.showTrainName(_context, currentColor, this.obj.groupSerialNbr);
                 
                 //查看选中线 列车运行时刻信息
                 if (expandObj.booleanShowTrainDetail) {
@@ -581,7 +802,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
                 }
             } else {
             	this.isCurrent = false;
-                line_self.showTrainName(_context, colorParam);
+                line_self.showTrainName(_context, colorParam, this.obj.groupSerialNbr);
                 ctx.strokeStyle = colorParam;
                 ctx.fillStyle = colorParam;
             }
@@ -623,8 +844,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		fromY = getY(stnObj.stnName);
 		
 		//绘线
-		myCanvasDrawLine(_context, 2, colorParam, fromX-5, fromY+offsetY, fromX+5, fromY+offsetY);
-		myCanvasDrawLine(_context, 2, colorParam, fromX, fromY+offsetY, fromX, fromY);
+		myCanvasDrawLine(_context, 2, colorParam, fromX-5, fromY+offsetY, fromX+5, fromY+offsetY);//横线
+		myCanvasDrawLine(_context, 2, colorParam, fromX, fromY+offsetY, fromX, fromY);//竖线
 	};
 	
 	
@@ -851,6 +1072,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	/**
 	 * 绘制时间刻度线 _xDateArray2天以上， 根据x轴放大倍数（_xScaleCount）绘制线条多少(包含0点、6点、12点、18点、0点)
 	 * public
+	 * 计划用于图形滚动条 暂时未被调用
 	 * 
 	 * 为避免循环中做逻辑if判断（会降低性能）。所以未与drawGridMoreY合并
 	 * private

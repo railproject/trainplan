@@ -77,21 +77,28 @@ function windowToCanvas(canvas, x, y) {
 function myCanvasFillTextWithColor(context, colorParam, textObj) {
 	context.fillStyle = colorParam;
 	// 设置字体
-	context.font = "Bold 14px Arial";
+	if (textObj.font !=null && textObj.font!="undefine") {
+		context.font = textObj.font;//"Bold 17px Arial";
+	}
+	
 	// 设置对齐方式
 	context.textAlign = "center";
+	//context.textBaseline = "middle";	//垂直居中
 	context.fillText(textObj.text, textObj.fromX, textObj.fromY);
 };
 
 
 function myCanvasFillText(context, textObj) {
-	context.beginPath();
 	context.strokeStyle = "#000000";
 	context.fillStyle = "#000000";
 	// 设置字体
-	context.font = "Bold 12px Arial";
+	if (textObj.font !=null && textObj.font!="undefine") {
+		context.font = textObj.font;//"normal 12px Arial";	//normal Bold Bolder lighter
+	}
+	
 	// 设置对齐方式
 	context.textAlign = textObj.textAlign,//"right";
+	//context.textBaseline = "middle";	//垂直居中
 	context.fillText(textObj.text, textObj.fromX, textObj.fromY);
 };
 

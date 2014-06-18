@@ -92,9 +92,9 @@ String basePath = request.getContextPath();
       <!--panel-body--> 
     </div> 
 
-<script type="text/javascript" src="<%=basePath%>/dwr/util.js"></script>
-<script type="text/javascript" src="<%=basePath%>/dwr/engine.js"></script>
+
 <script src="<%=basePath %>/assets/js/jquery.pagination.js" type="text/javascript"></script> 
 <script src="<%=basePath %>/assets/js/trainplan/plan/plan_review_lines.js"></script> 
+
 </body>
 </html>

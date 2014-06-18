@@ -17,7 +17,11 @@
         CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED
         FROM PLAN_TRAIN PT
         LEFT JOIN JHPT_RJH.M_TRAINLINE TL ON PT.DAILYPLAN_ID = TL.ID
-        WHERE PT.START_BUREAU = '${bureau}' AND PT.RUN_DATE = '${date}' ORDER BY PT.TRAIN_NBR
+        WHERE PT.RUN_DATE = '${date}'
+        <if test="bureau != null">
+        AND PT.START_BUREAU = '${bureau}'
+        </if>
+        ORDER BY PT.TRAIN_NBR
 	</select>
 
     <!-- 校验列车主体信息： 客运计划vs日计划 -->
@@ -111,17 +115,26 @@
         <if test="unitCreateFlag == 1 ">
             AND CREAT_PLAN_TIME is not null
         </if> -->
-        <if test="startTime != null">  
-            AND (CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
-        </if>
-         <if test="endTime != null ">
-             AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime})
-       	</if> 
+      <!--   <if test="startTime != null">  
+            AND ((CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
+        </if> -->
+        
        	<if test="startTime != nul">  
+       	      AND 
+       	       <if test="endTime != nul"> 
+       	          ((
+       	       </if>
+       	       (CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
       	     <if test="endTime != nul">  
-          		OR (CROSS_START_DATE &lt;= #{startTime} AND CROSS_END_DATE >=  #{endTime})
+      	         AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime}))
+          		OR (CROSS_START_DATE &lt;= #{startTime} AND CROSS_END_DATE >=  #{endTime}))
           	 </if> 
         </if> 
+        <if test="startTime == nul"> 
+	        <if test="endTime != null ">
+	             AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime})) 
+	       	</if> 
+	    </if>
        order by t.cross_name 
     </select> 
 
