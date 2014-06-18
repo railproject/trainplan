@@ -455,7 +455,7 @@ var all_role = "<%=userRolesString %>";
 									<label class="control-label pull-left"> 车辆担当局:&nbsp;</label>
 										<div class="pull-left">
 											<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code' , optionsCaption: ''"></select> -->
-											<input type="text" class="form-control" disabled  style="width: 50px;"  data-bind="value: tokenVehBureau">
+											<input type="text" class="form-control" disabled  style="width: 50px;"  data-bind="value: tokenVehBureauShowValue">
 										</div>
 									<label  class="control-label pull-left" style=" margin-left: 20px;"> 车辆段/动车段:&nbsp;</label>
 										<div class="pull-left">
@@ -469,7 +469,7 @@ var all_role = "<%=userRolesString %>";
 											class="control-label pull-left" style=" margin-left: 30px;" > 客运担当局:&nbsp;</label>
 									<div class="pull-left">
 										<!-- <input type="text" class="form-control" style="width: 30px;" data-bind="value: tokenPsgDept"> -->
-										<input type="text" class="form-control disabled" style="width: 50px;" disabled  data-bind="value: tokenPsgBureau" >
+										<input type="text" class="form-control disabled" style="width: 50px;" disabled  data-bind="value: tokenPsgBureauShowValue" >
 										<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select> -->
 									</div>
 									<label for="exampleInputEmail3"

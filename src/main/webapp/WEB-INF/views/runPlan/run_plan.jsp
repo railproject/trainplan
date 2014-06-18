@@ -240,9 +240,12 @@ var all_role = "<%=userRolesString %>";
 								              <button class="btn btn-primary" type="button" id="canvas_event_btnQuery"><i class="fa fa-search"></i>查询</button>
 							              </div> -->
 							              <div class="row" style="margin:5px 0 10px 90px;"> 
-							                <input type="hidden" value="0" data-bind="checked: searchModle().drawFlags">
-							                  <input type="checkbox" style="margin-left:10px" value="FJK" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">分界口
-							                  <!-- <input type="checkbox" style="margin-left:10px" value="TZ" data-bind="checked: searchModle().drawFlags, event:{change: drawFlagChange}">停站 -->
+							                  <input type="checkbox" id="canvas_checkbox_stationType_fjk" name="canvas_checkbox_stationType" style="margin-left:10px" value="FJK">分界口
+							                  <!-- <input type="checkbox" id="canvas_checkbox_stationType_tz" name="canvas_checkbox_stationType" style="margin-left:10px" value="TZ">停站 -->
+								          	  &nbsp;&nbsp;<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示停站时刻
+	         								  &nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
+								          </div>
+							              <div class="row" style="margin:5px 0 10px 90px;"> 
 							                  <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
 								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
@@ -566,7 +569,7 @@ var all_role = "<%=userRolesString %>";
 			  <div class="tab-pane active" id="runPlan" > 
 			  		 <div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
 							      <!--panle-heading-->
-							      <div class="panel-body" style="bapadding:10px;overflow: auto">
+							      <div class="panel-body .panel-collapse" style="bapadding:10px;overflow: auto">
 							      	<div class="table-responsive" > 
 							          <table class="table table-bordered table-striped table-hover" id="run_plan_table">
 								      <thead> 

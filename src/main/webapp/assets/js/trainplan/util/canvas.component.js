@@ -54,7 +54,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	 */
 	function initVariables() {
 		//解析生成新的纵坐标数组   判断是否要屏蔽部分车站数据，如：只绘制起止及分界口、绘制起止及停靠站等   
-		if (expandObj && expandObj.stationTypeArray && expandObj.stationTypeArray!="undefine") {
+		if (expandObj && expandObj.stationTypeArray && expandObj.stationTypeArray!="undefine"
+				&& expandObj.stationTypeArray.length>0) {
 			for(var i=0, _len=stnArray.length; i <_len; i++) {
 				if ($.inArray(stnArray[i].stationType, expandObj.stationTypeArray) > -1) {
 					_stnArray.push(stnArray[i]);
@@ -557,16 +558,13 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				myCanvasFillTextWithColor(ctx, color, {
 					font : "Bold 18px Arial",
 					text : _canvasComponentSelf.convertGroupSerialNbr(groupSerialNbr),//绘制列车所属组号①②③④⑤⑥⑥⑦⑧⑨
-					fromX : this.firstX-26,
+					fromX : this.firstX-35,
 					fromY : this.firstY
 				});
 			}
 			
 		};
-		this.isPointInStroke = function(ctx, x, y) {
-			ctx.save();
-	    	ctx.beginPath();
-			
+		this.draw = function() {
 			var _y = 0;					//到达站和出发站的y坐标
 			var _arrTimeX = 0;//计算到达点x标
 			var _dptTimeX = 0;//计算出发点x标
@@ -598,130 +596,12 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				_dptTimeX = getX(_obj.dptTime);//计算出发点x标
 	
 				//绘制到达点
-				ctx.moveTo(_arrTimeX, _y);
-				ctx.arc(_arrTimeX,_y, 2, 0, Math.PI*2, false);
-				//绘制出发点
-				ctx.moveTo(_dptTimeX, _y);
-				ctx.arc(_dptTimeX, _y, 2, 0, Math.PI*2, false);
-	
-				
-				if (_isDrawTrainTime) {
-					if (_obj.arrTime == _obj.dptTime) {//始发 or 终到 or 经过站
-						//始发 or 经过站
-						if (_obj.stnName !=this.obj.endStn) {
-							myCanvasFillText(_context, {
-								font : "lighter 10px Arial",
-								textAlign:"center",
-								text : moment(_obj.dptTime).format("HH:mm"),//0 6 12 18 
-								fromX : _dptTimeX+20,
-								fromY : _y -8
-							});
-						} else {//终到站
-							myCanvasFillText(_context, {
-								font : "lighter 10px Arial",
-								textAlign:"center",
-								text : moment(_obj.arrTime).format("HH:mm"),//0 6 12 18 
-								fromX : _arrTimeX-20,
-								fromY : _y +10
-							});
-						}
-					} else {
-						//显示到达时间
-						myCanvasFillText(_context, {
-							font : "lighter 10px Arial",
-							textAlign:"center",
-							text : moment(_obj.arrTime).format("HH:mm"),//0 6 12 18 
-							fromX : _arrTimeX-20,
-							fromY : _y +10
-						});
-						
-						//显示出发时间
-						myCanvasFillText(_context, {
-							font : "lighter 10px Arial",
-							textAlign:"center",
-							text : moment(_obj.dptTime).format("HH:mm"),//0 6 12 18 
-							fromX : _dptTimeX+20,
-							fromY : _y -8
-						});
-					}
-				}
-				
-				
-				if (i == 0) {
-					//绘制列车名称
-					this.firstX = _dptTimeX;
-					this.firstY = _y-15;
-					line_self.showTrainName(_context, colorParam, _obj.groupSerialNbr);
-				} else {
-					//连接上一站出发点到本站到达点
-					myCanvasDrawLine(_context, this.lineWidth, colorParam, _parentDeptStn.x, _parentDeptStn.y, _arrTimeX, _y);
-				}
-				
-				//连接本站到达点和出发点
-				myCanvasDrawLine(_context, this.lineWidth, colorParam, _arrTimeX, _y, _dptTimeX, _y);
-	
-				//保存上一站出发点x y坐标
-				_parentDeptStn = {x:_dptTimeX, y: _y};
-			}
-			
-			if(x && y && (ctx.isPointInStroke(x, y)||ctx.isPointInPath(x, y))) {
-				return true;
-			} else {
-				return false;
-			}
-		};
-		/**
-		 * @param ctx 必选参数
-		 * @param expandObj 可选参数 扩展对象
-		 * 			{
-		 * 				x : 247,						//可选参数 当前鼠标x坐标
-		 * 				y : 458,					 	//可选参数 当前鼠标y坐标
-		 * 				trainNbr : "K818",				//可选参数 车次号，外部传入条件，以便绘图时该车次高亮显示，类是鼠标选中效果
-		 * 				booleanShowTrainDetail : true, 	//可选参数 是否显示该车次详细信息
-		 * 			}
-		 * 
-		 */
-	    this.drawLine = function(ctx, expandObj) {
-	    	ctx.save();
-	    	ctx.beginPath();
-			
-			var _y = 0;					//到达站和出发站的y坐标
-			var _arrTimeX = 0;//计算到达点x标
-			var _dptTimeX = 0;//计算出发点x标
-			var _len = this.obj.trainStns.length;
-	    	
-			//绘制起止标记
-			if (this.flag && _len > 0) {
-				if(this.obj.startStn == this.obj.trainStns[0].stnName) {//列车经由第一站==始发站   则绘制开始标记
-					drawTrainStartArrows(colorParam, this.obj.trainStns[0]);
-				}
-				
-				if(this.obj.endStn == this.obj.trainStns[_len-1].stnName) {//列车经由最后一站==终到站   则绘制终到标记
-					drawTrainEndArrows(colorParam, this.obj.trainStns[_len-1]);
-				}
-			}
-			
-	
-			//绘制列车运行线
-			for(var i=0; i<_len;i++) {
-				var _obj = this.obj.trainStns[i];
-				
-				//屏蔽不在显示要求范围内的数据
-				if (_stationTypeArray.length>0 && $.inArray(_obj.stationType, _stationTypeArray) < 0) {
-					continue;
-				}
-				
-				_y = getY(_obj.stnName);	//该车站Y标
-				_arrTimeX = getX(_obj.arrTime);//计算到达点x标
-				_dptTimeX = getX(_obj.dptTime);//计算出发点x标
-	
-				//绘制到达点
-				ctx.moveTo(_arrTimeX, _y);
-				ctx.arc(_arrTimeX,_y, 2, 0, Math.PI*2, false);
+				_context.moveTo(_arrTimeX, _y);
+				_context.arc(_arrTimeX,_y, 2, 0, Math.PI*2, false);
 				
 				//绘制出发点
-				ctx.moveTo(_dptTimeX, _y);
-				ctx.arc(_dptTimeX, _y, 2, 0, Math.PI*2, false);
+				_context.moveTo(_dptTimeX, _y);
+				_context.arc(_dptTimeX, _y, 2, 0, Math.PI*2, false);
 				
 				//是否绘制列车经由站到达及出发时间
 				if (_isDrawTrainTime) {
@@ -782,6 +662,35 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				//保存上一站出发点x y坐标
 				_parentDeptStn = {x:_dptTimeX, y: _y};
 			}
+		};
+		this.isPointInStroke = function(ctx, x, y) {
+			ctx.save();
+	    	ctx.beginPath();
+			
+	    	line_self.draw();
+			
+			if(x && y && (ctx.isPointInStroke(x, y)||ctx.isPointInPath(x, y))) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+		/**
+		 * @param ctx 必选参数
+		 * @param expandObj 可选参数 扩展对象
+		 * 			{
+		 * 				x : 247,						//可选参数 当前鼠标x坐标
+		 * 				y : 458,					 	//可选参数 当前鼠标y坐标
+		 * 				trainNbr : "K818",				//可选参数 车次号，外部传入条件，以便绘图时该车次高亮显示，类是鼠标选中效果
+		 * 				booleanShowTrainDetail : true, 	//可选参数 是否显示该车次详细信息
+		 * 			}
+		 * 
+		 */
+	    this.drawLine = function(ctx, expandObj) {
+	    	ctx.save();
+	    	ctx.beginPath();
+
+	    	line_self.draw();
 
 			if(expandObj!=null && ((expandObj.x!="undefined" && expandObj.y!="undefined" && 
 								(ctx.isPointInStroke(expandObj.x, expandObj.y)||ctx.isPointInPath(expandObj.x, expandObj.y)))

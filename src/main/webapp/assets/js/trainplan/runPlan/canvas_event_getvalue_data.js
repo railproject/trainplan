@@ -50,6 +50,7 @@ var myJlData =
 			[
 		      {
 		    	  crossName:"K818-K817-1",
+				  groupSerialNbr:'1',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    	  jxgx:[//接续关系数组
 		    	        {fromStnName:"北京西",fromTime:"2014-06-11 21:07",toStnName:"北京西",toTime:"2014-06-12 08:35"},
   		    	        {fromStnName:"成都",fromTime:"2014-06-13 12:30",toStnName:"成都",toTime:"2014-06-13 19:18"},
@@ -61,6 +62,7 @@ var myJlData =
 		    	        	  trainName:"K818",
 		    				  startStn:"成都",//始发站名 为null时填入""（空串）
 		    				  endStn:"北京西",//终到站名为null时填入""（空串）
+		    				  groupSerialNbr:'1',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    				  trainStns:[
 		    						{runDays:0,stnName:"成都",arrTime:"2014-06-10 19:18",dptTime:"2014-06-10 19:18",stayTime:0},
 		    						{runDays:0,stnName:"遂宁",arrTime:"2014-06-10 21:19",dptTime:"2014-06-10 21:33",stayTime:14},
@@ -87,6 +89,7 @@ var myJlData =
 		    	        	  trainName:"K817",
 		    	          	  startStn:"北京西",//始发站名 为null时填入""（空串）
 		    	          	  endStn:"成都",//终到站名为null时填入""（空串）
+		    				  groupSerialNbr:'1',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    	        	  trainStns:[
 									{runDays:0,stnName:"北京西",arrTime:"2014-06-12 08:35",dptTime:"2014-06-12 08:35",stayTime:0},
 		    						{runDays:0,stnName:"高碑店",arrTime:"2014-06-12 09:29",dptTime:"2014-06-12 09:32",stayTime:3},
@@ -114,6 +117,7 @@ var myJlData =
 		    	        	  trainName:"K818",
 		    				  startStn:"成都",//始发站名 为null时填入""（空串）
 		    				  endStn:"北京西",//终到站名为null时填入""（空串）
+		    				  groupSerialNbr:'1',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    				  trainStns:[
 		    						{runDays:0,stnName:"成都",arrTime:"2014-06-13 19:18",dptTime:"2014-06-13 19:18",stayTime:0},
 		    						{runDays:0,stnName:"遂宁",arrTime:"2014-06-13 21:19",dptTime:"2014-06-13 21:33",stayTime:14},
@@ -140,6 +144,7 @@ var myJlData =
 		    	        	  trainName:"K817",
 		    	          	  startStn:"北京西",//始发站名 为null时填入""（空串）
 		    	          	  endStn:"成都",//终到站名为null时填入""（空串）
+		    				  groupSerialNbr:'1',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    	        	  trainStns:[
 									{runDays:0,stnName:"北京西",arrTime:"2014-06-15 08:35",dptTime:"2014-06-15 08:35",stayTime:0},
 		    						{runDays:0,stnName:"高碑店",arrTime:"2014-06-15 09:29",dptTime:"2014-06-15 09:32",stayTime:3},
@@ -168,6 +173,7 @@ var myJlData =
 		      //end 一条交路
 		      {
   		    	  crossName:"K818-K817-2",
+				  groupSerialNbr:'2',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
   		    	  jxgx:[//接续关系数组
   		    	        {fromStnName:"成都",fromTime:"2014-06-11 12:30",toStnName:"成都",toTime:"2014-06-11 19:18"},
   		    	        {fromStnName:"北京西",fromTime:"2014-06-12 21:07",toStnName:"北京西",toTime:"2014-06-13 08:35"},
@@ -178,6 +184,7 @@ var myJlData =
   		    	        	  trainName:"K817",
   		    	          	  startStn:"北京西",//始发站名 为null时填入""（空串）
   		    	          	  endStn:"成都",//终到站名为null时填入""（空串）
+  		    	          	  groupSerialNbr:'2',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
   		    	        	  trainStns:[
   									{runDays:0,stnName:"北京西",arrTime:"2014-06-10 08:35",dptTime:"2014-06-10 08:35",stayTime:0},
   		    						{runDays:0,stnName:"高碑店",arrTime:"2014-06-10 09:29",dptTime:"2014-06-10 09:32",stayTime:3},
@@ -205,6 +212,7 @@ var myJlData =
 		    	        	  trainName:"K818",
 		    				  startStn:"成都",//始发站名 为null时填入""（空串）
 		    				  endStn:"北京西",//终到站名为null时填入""（空串）
+  		    	          	  groupSerialNbr:'2',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    				  trainStns:[
 		    						{runDays:0,stnName:"成都",arrTime:"2014-06-11 19:18",dptTime:"2014-06-11 19:18",stayTime:0},
 		    						{runDays:0,stnName:"遂宁",arrTime:"2014-06-11 21:19",dptTime:"2014-06-11 21:33",stayTime:14},
@@ -231,6 +239,7 @@ var myJlData =
 		    	        	  trainName:"K817",
 		    	          	  startStn:"北京西",//始发站名 为null时填入""（空串）
 		    	          	  endStn:"成都",//终到站名为null时填入""（空串）
+  		    	          	  groupSerialNbr:'2',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    	        	  trainStns:[
 									{runDays:0,stnName:"北京西",arrTime:"2014-06-13 08:35",dptTime:"2014-06-13 08:35",stayTime:0},
 		    						{runDays:0,stnName:"高碑店",arrTime:"2014-06-13 09:29",dptTime:"2014-06-13 09:32",stayTime:3},
@@ -258,6 +267,7 @@ var myJlData =
 		    	        	  trainName:"K818",
 		    				  startStn:"成都",//始发站名 为null时填入""（空串）
 		    				  endStn:"北京西",//终到站名为null时填入""（空串）
+  		    	          	  groupSerialNbr:'2',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    				  trainStns:[
 		    						{runDays:0,stnName:"成都",arrTime:"2014-06-14 19:18",dptTime:"2014-06-14 19:18",stayTime:0},
 		    						{runDays:0,stnName:"遂宁",arrTime:"2014-06-14 21:19",dptTime:"2014-06-14 21:33",stayTime:14},
@@ -285,6 +295,7 @@ var myJlData =
   			  //end 一条交路
   		    {
   		    	  crossName:"K818-K817-3",
+  	          	  groupSerialNbr:'3',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
   		    	  jxgx:[//接续关系数组
   		    	        {fromStnName:"成都",fromTime:"2014-06-12 12:30",toStnName:"成都",toTime:"2014-06-12 19:18"},
   		    	        {fromStnName:"北京西",fromTime:"2014-06-13 21:07",toStnName:"北京西",toTime:"2014-06-14 08:35"},
@@ -296,6 +307,7 @@ var myJlData =
   		    	        	  trainName:"K817",
   		    	          	  startStn:"北京西",//始发站名 为null时填入""（空串）
   		    	          	  endStn:"成都",//终到站名为null时填入""（空串）
+  		    	          	  groupSerialNbr:'3',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
   		    	        	  trainStns:[
   									{runDays:0,stnName:"北京西",arrTime:"2014-06-11 08:35",dptTime:"2014-06-11 08:35",stayTime:0},
   		    						{runDays:0,stnName:"高碑店",arrTime:"2014-06-11 09:29",dptTime:"2014-06-11 09:32",stayTime:3},
@@ -323,6 +335,7 @@ var myJlData =
 		    	        	  trainName:"K818",
 		    				  startStn:"成都",//始发站名 为null时填入""（空串）
 		    				  endStn:"北京西",//终到站名为null时填入""（空串）
+		      	          	  groupSerialNbr:'3',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    				  trainStns:[
 		    						{runDays:0,stnName:"成都",arrTime:"2014-06-12 19:18",dptTime:"2014-06-12 19:18",stayTime:0},
 		    						{runDays:0,stnName:"遂宁",arrTime:"2014-06-12 21:19",dptTime:"2014-06-12 21:33",stayTime:14},
@@ -349,6 +362,7 @@ var myJlData =
 		    	        	  trainName:"K817",
 		    	          	  startStn:"北京西",//始发站名 为null时填入""（空串）
 		    	          	  endStn:"成都",//终到站名为null时填入""（空串）
+		      	          	  groupSerialNbr:'3',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    	        	  trainStns:[
 									{runDays:0,stnName:"北京西",arrTime:"2014-06-14 08:35",dptTime:"2014-06-14 08:35",stayTime:0},
 		    						{runDays:0,stnName:"高碑店",arrTime:"2014-06-14 09:29",dptTime:"2014-06-14 09:32",stayTime:3},
@@ -376,6 +390,7 @@ var myJlData =
 		    	        	  trainName:"K818",
 		    				  startStn:"成都",//始发站名 为null时填入""（空串）
 		    				  endStn:"北京西",//终到站名为null时填入""（空串）
+		      	          	  groupSerialNbr:'3',				//车底组号①②③④⑤⑥⑥⑦⑧⑨
 		    				  trainStns:[
 		    						{runDays:0,stnName:"成都",arrTime:"2014-06-15 19:18",dptTime:"2014-06-15 19:18",stayTime:0},
 		    						{runDays:0,stnName:"遂宁",arrTime:"2014-06-15 21:19",dptTime:"2014-06-15 21:33",stayTime:14},
@@ -405,7 +420,7 @@ var myJlData =
 
 
 
-var canvasData = {
+var canvasData1 = {
 		grid:gridData,
 		jlData:myJlData
 };

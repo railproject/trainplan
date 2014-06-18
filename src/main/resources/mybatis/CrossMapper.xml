@@ -1167,18 +1167,18 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
     </delete>
     
     
-     <delete id="deleteCrossInfoByChartId" parameterType="string">
-        delete from base_cross where base_chart_ID=#{chartId}
+     <delete id="deleteCrossInfoByChartId" parameterType="map">
+        delete from base_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus})
     </delete> 
-    <delete id="deleteCrossTrainByChartId" parameterType="string">
-        delete from base_cross_train where BASE_CROSS_ID in (select base_cross_id from base_cross where base_chart_ID=#{chartId})
+    <delete id="deleteCrossTrainByChartId" parameterType="map">
+        delete from base_cross_train where BASE_CROSS_ID in (select base_cross_id from base_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus}))
     </delete> 
-    <delete id="deleteUnitCrossTrainByChartId" parameterType="string">
-        delete from unit_cross_train where unit_cross_id in (select unit_cross_id from unit_cross where base_chart_ID=#{chartId})
+    <delete id="deleteUnitCrossTrainByChartId" parameterType="map">
+        delete from unit_cross_train where unit_cross_id in (select unit_cross_id from unit_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus}))
 
     </delete> 
-    <delete id="deleteUnitCrossInfoByChartId" parameterType="string">
-        delete from unit_cross where base_chart_ID=#{chartId}
+    <delete id="deleteUnitCrossInfoByChartId" parameterType="map">
+        delete from unit_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus})
     </delete>
 
 

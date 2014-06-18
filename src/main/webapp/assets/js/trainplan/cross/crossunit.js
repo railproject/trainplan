@@ -828,7 +828,10 @@ function CrossRow(data) {
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 
 	//车辆担当局 
-	self.tokenVehBureau = ko.computed(function(){ 
+	self.tokenVehBureau = ko.observable(data.tokenVehBureau);  
+	
+	//车辆担当局 
+	self.tokenVehBureauShowValue = ko.computed(function(){ 
 			var result = "";
 			 if(data.tokenVehBureau != null && data.tokenVehBureau != "null"){
 				 var bs = data.tokenVehBureau.split("、"); 
@@ -851,7 +854,9 @@ function CrossRow(data) {
 	
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
-	self.tokenPsgBureau = ko.computed(function(){ 
+	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
+	
+	self.tokenPsgBureauShowValue = ko.computed(function(){ 
 		var result = "";
 		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
 			 var bs = data.tokenPsgBureau.split("、"); 
