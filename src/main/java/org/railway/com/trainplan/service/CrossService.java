@@ -1133,10 +1133,14 @@ public class CrossService{
 			 
 			 try {
 				if(ids.length > 0){
-					deleteUnitCrossInfoTrainForCorssIds(ids);
-					deleteUnitCrossInfoForCorssIds(ids);
-					deleteCrossInfoTrainForCorssIds(ids);
-					deleteCrossInfoForCorssIds(ids); 
+					List<String> idsList = new ArrayList<String>();
+					for(int i=0;i<ids.length;i++){
+						idsList.add(ids[i]);
+					}
+					deleteUnitCrossInfoTrainForCorssIds(idsList);
+					deleteUnitCrossInfoForCorssIds(idsList);
+					deleteCrossInfoTrainForCorssIds(idsList);
+					deleteCrossInfoForCorssIds(idsList); 
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
