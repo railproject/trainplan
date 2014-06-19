@@ -57,7 +57,7 @@
                                         <option value="4">接入交出</option>
                                     </select>
 
-                                    <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: tableModel().loadTable">查询</button>
+                                    <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: search">查询</button>
 
                                     <shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: autoCheck, enable: canCheckLev1">校验</button>

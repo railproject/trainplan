@@ -20,9 +20,9 @@ function ApplicationModel() {
 
     self.currCheckNbr = ko.observable(0);
 
-    self.seach = function() {
-        self.tableModel.loadTable();
-        self.paramModel.loadPies();
+    self.search = function() {
+        self.tableModel().loadTable();
+        self.paramModel().loadPies();
     }
 
     self.checkStatus = ko.computed(function() {
@@ -250,7 +250,7 @@ function ParamModel() {
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         // 统计图
         $.ajax({
-            url: "audit/plan/chart/traintype/" + date,
+            url: "audit/plan/chart/traintype/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
@@ -278,7 +278,7 @@ function ParamModel() {
         })
 
         $.ajax({
-            url: "audit/plan/chart/planline/" + date,
+            url: "audit/plan/chart/planline/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
@@ -306,7 +306,7 @@ function ParamModel() {
 
         if($("#chart_03").size() == 1) {
             $.ajax({
-                url: "audit/plan/chart/lev1check/" + date,
+                url: "audit/plan/chart/lev1check/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
                 method: "GET",
                 contentType: "application/json; charset=UTF-8"
             }).done(function(resp) {
@@ -332,7 +332,7 @@ function ParamModel() {
             })
         } else if($("#chart_04").size() == 1) {
             $.ajax({
-                url: "audit/plan/chart/lev2check/" + date,
+                url: "audit/plan/chart/lev2check/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
                 method: "GET",
                 contentType: "application/json; charset=UTF-8"
             }).done(function(resp) {
