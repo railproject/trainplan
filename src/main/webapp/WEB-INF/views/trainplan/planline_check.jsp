@@ -119,6 +119,8 @@
                                         <th rowspan="2" class="text-center">终到站</th>
                                         <th rowspan="2" class="text-center">终到/交出时间</th>
                                         <th rowspan="2" class="text-center">是否上图</th>
+                                        <th rowspan="2" class="text-center">一级审核状态</th>
+                                        <th rowspan="2" class="text-center">二级审核状态</th>
                                         <th colspan="2" class="text-center">校验项</th>
 
                                     </tr>
@@ -146,6 +148,8 @@
                                         <td class="text-center" data-bind="text: endStn"></td>
                                         <td class="text-center" data-bind="text: endTime"></td>
                                         <td class="text-center" data-bind="text: dailyLineFlag"></td>
+                                        <td class="text-center" data-bind="html: lev1Status"></td>
+                                        <td class="text-center" data-bind="html: lev2Status"></td>
                                         <td class="text-center">
                                             <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTrainInfoMatchClass, text: isTrainInfoMatchText, click: showInfoComparePanel"></button>
                                         </td>

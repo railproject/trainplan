@@ -543,8 +543,24 @@ function Plan(dto) {
     });
 
     self.needLev2 = ko.computed(function() {
-        return self.checkLev1() == 2 && self.lev2Checked() == 0;
+        return (self.checkLev1() == 1 || self.checkLev1() == 2) && self.lev1Checked() == 1 && self.lev2Checked() == 0;
     });
+
+    self.lev1Status = ko.computed(function() {
+        if(self.lev1Checked() == 0) {
+            return "<i class=\"fa fa-times-circle text-danger\"></i>未审核";
+        } else {
+            return "<i class=\"fa fa-check-circle text-success\"></i>已审核";
+        }
+    });
+
+    self.lev2Status = ko.computed(function() {
+        if(self.lev2Checked() == 0) {
+            return "<i class=\"fa fa-times-circle text-danger\"></i>未审核";
+        } else {
+            return "<i class=\"fa fa-check-circle text-success\"></i>已审核";
+        }
+    })
 
     self._default = {
         autoOpen: false,
