@@ -375,9 +375,6 @@ function ParamModel() {
 
         })
     }
-
-    self.loadPies();
-
 }
 
 // ################# 列表模型 #############
@@ -549,17 +546,17 @@ function Plan(dto) {
 
     self.lev1Status = ko.computed(function() {
         if(self.lev1Checked() == 0) {
-            return "<i class=\"fa fa-times-circle text-danger\"></i>未审核";
+            return "<i class=\"fa fa-times-circle text-danger\"></i>未";
         } else {
-            return "<i class=\"fa fa-check-circle text-success\"></i>已审核";
+            return "<i class=\"fa fa-check-circle text-success\"></i>已";
         }
     });
 
     self.lev2Status = ko.computed(function() {
         if(self.lev2Checked() == 0) {
-            return "<i class=\"fa fa-times-circle text-danger\"></i>未审核";
+            return "<i class=\"fa fa-times-circle text-danger\"></i>未";
         } else {
-            return "<i class=\"fa fa-check-circle text-success\"></i>已审核";
+            return "<i class=\"fa fa-check-circle text-success\"></i>已";
         }
     })
 
