@@ -365,8 +365,8 @@ public class DateUtil {
 		int days = p.getDays();  
 		//System.err.println("days==" + days);
 		//计算特定日期是否在该区间内  
-		Interval i = new Interval(begin, end);  
-		boolean contained = i.contains(new DateTime("2012-03-01")); 
+		//Interval i = new Interval(begin, end);  
+		//boolean contained = i.contains(new DateTime("2012-03-01")); 
 	
 	   /**
 	    * 8.日期的比较
@@ -407,7 +407,34 @@ public class DateUtil {
 		
 		//System.err.println(format(parseDate("2014-06-07 10:20:30"),"yyyy-MM-dd"));
 		//System.err.println(da.toString("yyyy-MM-dd"));
+		List<String> list = new ArrayList<String>();
+		List<String> list1  = new ArrayList<String>();
+		list1.add("A");
+		list1.add("B");
+		list1.add("C");
+		list1.add("E");
+		list1.add("F");
+		list1.add("G");
+		List<String> list2  = new ArrayList<String>();
+		list2.add("A");
+		list2.add("B");
+		list2.add("C");
+		list2.add("D");
+		list2.add("F");
+		list2.add("G");
 		
+		for(int i = 0 ;i<list1.size();i++){
+			String temp1 = list1.get(i);
+			list.add(temp1);
+			for(int k = 0;k<list2.size();k++){
+				String temp2 = list2.get(k);
+				if(!list1.contains(temp2)){
+					list.add(temp2);	
+				}
+			}
+		}
+		
+		System.err.println(list);
 	}
 		
 		

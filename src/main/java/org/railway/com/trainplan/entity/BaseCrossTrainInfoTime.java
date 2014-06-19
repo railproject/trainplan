@@ -9,8 +9,20 @@ public class BaseCrossTrainInfoTime {
 	private String arrTime;
 	private String dptTime;
 	private int stayTime;
+	/**
+	 * 站的标识：0：始发站or终到站  BTZ：不停站  TZ:停站  FJK:分解口
+	 */
+	private String stationType;
 	
 	
+	
+	
+	public String getStationType() {
+		return stationType;
+	}
+	public void setStationType(String stationType) {
+		this.stationType = stationType;
+	}
 	public int getStayTime() {
 		return stayTime;
 	}

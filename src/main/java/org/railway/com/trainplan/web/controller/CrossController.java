@@ -545,7 +545,7 @@ public class CrossController {
 									 stnDtoStart.setDptTime(subInfoTime.getDptTime());
 									 stnDtoStart.setStayTime(subInfoTime.getStayTime());
 									 stnDtoStart.setStnName(subInfoTime.getStnName());
-									 stnDtoStart.setStationType(subInfoTime.getStationFlag());
+									 stnDtoStart.setStationType(subInfoTime.getStationType());
 									 trainStns.add(stnDtoStart);
 								 }
 								 dto.setTrainStns(trainStns);
