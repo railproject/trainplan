@@ -50,11 +50,11 @@ public class AuditController {
     private ChartService chartService;
 
     @RequestMapping(value = "plan/runplan/{date}/{type}", method = RequestMethod.GET)
-    public ResponseEntity<List<RunPlanDTO>> getRunPlan(@PathVariable String date, @PathVariable int type) {
+    public ResponseEntity<List<RunPlanDTO>> getRunPlan(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         logger.debug("-X GET plan/runplan/");
         List<RunPlanDTO> result = new ArrayList<RunPlanDTO>();
-        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureauShortName(), type);
+        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureauShortName(), name, type);
         for(Map<String, Object> map: list) {
             result.add(new RunPlanDTO(map));
         }

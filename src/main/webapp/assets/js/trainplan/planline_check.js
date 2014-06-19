@@ -12,15 +12,18 @@ $(function() {
 function ApplicationModel() {
     var self = this;
 
-    var tableModel = new TableModel();
+    self.tableModel = ko.observable(new TableModel());
 
-    self.tableModel = ko.observable(tableModel);
-
-    self.paramModel = ko.observable(new ParamModel(tableModel));
+    self.paramModel = ko.observable(new ParamModel());
 
     self.allBtn = ko.observable(false);
 
     self.currCheckNbr = ko.observable(0);
+
+    self.seach = function() {
+        self.tableModel.loadTable();
+        self.paramModel.loadPies();
+    }
 
     self.checkStatus = ko.computed(function() {
         if(self.currCheckNbr() > 0 && self.currCheckNbr() < self.tableModel().planList().length) {
@@ -224,7 +227,7 @@ function ApplicationModel() {
 }
 
 // ########### 页面参数模型 ###############
-function ParamModel(tableModel) {
+function ParamModel() {
     var self = this;
 
     self.unknownRunLine = ko.observable(0);
@@ -235,10 +238,7 @@ function ParamModel(tableModel) {
 //        weekStart: 1,
         autoclose: true,
         todayBtn: 'linked',
-        language: 'zh-CN'}).on('changeDate', function (ev) {
-            tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
-            self.loadPies(moment(ev.date).format("YYYYMMDD"));
-    });;
+        language: 'zh-CN'});
     var date = $.url().param("date");
     if (date) {
         $("#date_selector").val(date);
@@ -246,7 +246,8 @@ function ParamModel(tableModel) {
         $("#date_selector").datepicker('setValue', new Date());
     };
 
-    self.loadPies = function(date) {
+    self.loadPies = function() {
+        var date = moment($("#date_selector").val()).format("YYYYMMDD");
         // 统计图
         $.ajax({
             url: "audit/plan/chart/traintype/" + date,
@@ -375,7 +376,7 @@ function ParamModel(tableModel) {
         })
     }
 
-    self.loadPies(moment($("#date_selector").val()).format("YYYYMMDD"));
+    self.loadPies();
 
 }
 
@@ -390,7 +391,7 @@ function TableModel() {
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         var type = $("#train_type").val();
         $.ajax({
-            url: "audit/plan/runplan/" + date + "/" + type,
+            url: "audit/plan/runplan/" + date + "/" + type + "?name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {

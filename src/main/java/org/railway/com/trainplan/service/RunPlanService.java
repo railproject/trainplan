@@ -68,11 +68,12 @@ public class RunPlanService {
         logger.info("init thread pool end");
     }
 
-    public List<Map<String, Object>> findRunPlan(String date, String bureau, int type) {
+    public List<Map<String, Object>> findRunPlan(String date, String bureau, String name, int type) {
         logger.debug("findRunPlan::::");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("date", date);
         map.put("bureau", bureau);
+        map.put("name", name);
         List<Map<String, Object>> list = Lists.newArrayList();
         switch(type) {
             case 0:

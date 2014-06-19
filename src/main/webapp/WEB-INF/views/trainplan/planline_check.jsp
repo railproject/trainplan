@@ -45,6 +45,9 @@
                                 <div class="input-group" style="width: 100%">
                                     <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
 
+                                    <label class="control-label paddingleftright5">车次:</label>
+                                    <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="输入车次" id="train_nbr">
+
                                     <label class="control-label paddingleftright5">列车类型:</label>
                                     <select id="train_type" class="form-control" style="width: 110px; margin-right: 10px; border-radius: 4px">
                                         <option value="0">全部</option>
@@ -53,6 +56,9 @@
                                         <option value="3">接入终到</option>
                                         <option value="4">接入交出</option>
                                     </select>
+
+                                    <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: tableModel().loadTable">查询</button>
+
                                     <shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: autoCheck, enable: canCheckLev1">校验</button>
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1, enable: canCheckLev1">客调审核</button>
