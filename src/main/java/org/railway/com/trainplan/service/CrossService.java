@@ -716,7 +716,7 @@ public class CrossService{
 	public List<TrainLineInfo> getTrainPlanLineInfoForPlanCrossId(String planCrossId,String bureauShortName){
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("planCrossId", planCrossId);
-		paramMap.put("bureauShortName", bureauShortName);
+		paramMap.put("bureauShortName", bureauShortName==null?"":bureauShortName);
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINPLANLINE_INFO_FOR_PLANCROSSID, paramMap);
 	}
 	

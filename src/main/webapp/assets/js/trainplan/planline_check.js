@@ -12,18 +12,25 @@ $(function() {
 function ApplicationModel() {
     var self = this;
 
-    var tableModel = new TableModel();
+    self.tableModel = ko.observable(new TableModel());
 
-    self.tableModel = ko.observable(tableModel);
-
-    self.paramModel = ko.observable(new ParamModel(tableModel));
+    self.paramModel = ko.observable(new ParamModel());
 
     self.allBtn = ko.observable(false);
 
     self.currCheckNbr = ko.observable(0);
 
+    self.search = function() {
+        self.tableModel().loadTable();
+        self.paramModel().loadPies();
+    }
+
     self.checkStatus = ko.computed(function() {
-        return "正在校验： " + self.currCheckNbr() + " / " + self.tableModel().planList().length;
+        if(self.currCheckNbr() > 0 && self.currCheckNbr() < self.tableModel().planList().length) {
+            return " | 正在校验： " + self.currCheckNbr() + " / " + self.tableModel().planList().length;
+        } else {
+            return "";
+        }
     })
 
     self.canCheckLev1 = ko.computed(function() {
@@ -220,7 +227,7 @@ function ApplicationModel() {
 }
 
 // ########### 页面参数模型 ###############
-function ParamModel(tableModel) {
+function ParamModel() {
     var self = this;
 
     self.unknownRunLine = ko.observable(0);
@@ -231,10 +238,7 @@ function ParamModel(tableModel) {
 //        weekStart: 1,
         autoclose: true,
         todayBtn: 'linked',
-        language: 'zh-CN'}).on('changeDate', function (ev) {
-            tableModel.loadTable(moment(ev.date).format("YYYYMMDD"));
-            self.loadPies(moment(ev.date).format("YYYYMMDD"));
-    });;
+        language: 'zh-CN'});
     var date = $.url().param("date");
     if (date) {
         $("#date_selector").val(date);
@@ -242,10 +246,11 @@ function ParamModel(tableModel) {
         $("#date_selector").datepicker('setValue', new Date());
     };
 
-    self.loadPies = function(date) {
+    self.loadPies = function() {
+        var date = moment($("#date_selector").val()).format("YYYYMMDD");
         // 统计图
         $.ajax({
-            url: "audit/plan/chart/traintype/" + date,
+            url: "audit/plan/chart/traintype/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
@@ -273,7 +278,7 @@ function ParamModel(tableModel) {
         })
 
         $.ajax({
-            url: "audit/plan/chart/planline/" + date,
+            url: "audit/plan/chart/planline/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
@@ -301,7 +306,7 @@ function ParamModel(tableModel) {
 
         if($("#chart_03").size() == 1) {
             $.ajax({
-                url: "audit/plan/chart/lev1check/" + date,
+                url: "audit/plan/chart/lev1check/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
                 method: "GET",
                 contentType: "application/json; charset=UTF-8"
             }).done(function(resp) {
@@ -327,7 +332,7 @@ function ParamModel(tableModel) {
             })
         } else if($("#chart_04").size() == 1) {
             $.ajax({
-                url: "audit/plan/chart/lev2check/" + date,
+                url: "audit/plan/chart/lev2check/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
                 method: "GET",
                 contentType: "application/json; charset=UTF-8"
             }).done(function(resp) {
@@ -371,7 +376,7 @@ function ParamModel(tableModel) {
         })
     }
 
-    self.loadPies(moment($("#date_selector").val()).format("YYYYMMDD"));
+    self.loadPies();
 
 }
 
@@ -384,8 +389,9 @@ function TableModel() {
     self.loadTable = function() {
         commonJsScreenLock();
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
+        var type = $("#train_type").val();
         $.ajax({
-            url: "audit/plan/runplan/" + date + "/1",
+            url: "audit/plan/runplan/" + date + "/" + type + "?name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {
@@ -422,6 +428,7 @@ function Plan(dto) {
     self.dailyLineId = ko.observable(dto.dailyLineId);
     self.lev1Checked = ko.observable(dto.lev1Checked);
     self.lev2Checked = ko.observable(dto.lev2Checked);
+    self.trainType = ko.observable(dto.trainType);
     self.isSelected = ko.observable(false);
 
     // 校验项 0：未校验，1：匹配，-1：不匹配
@@ -537,8 +544,24 @@ function Plan(dto) {
     });
 
     self.needLev2 = ko.computed(function() {
-        return self.checkLev1() == 2 && self.lev2Checked() == 0;
+        return (self.checkLev1() == 1 || self.checkLev1() == 2) && self.lev1Checked() == 1 && self.lev2Checked() == 0;
     });
+
+    self.lev1Status = ko.computed(function() {
+        if(self.lev1Checked() == 0) {
+            return "<i class=\"fa fa-times-circle text-danger\"></i>未审核";
+        } else {
+            return "<i class=\"fa fa-check-circle text-success\"></i>已审核";
+        }
+    });
+
+    self.lev2Status = ko.computed(function() {
+        if(self.lev2Checked() == 0) {
+            return "<i class=\"fa fa-times-circle text-danger\"></i>未审核";
+        } else {
+            return "<i class=\"fa fa-check-circle text-success\"></i>已审核";
+        }
+    })
 
     self._default = {
         autoOpen: false,

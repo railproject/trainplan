@@ -18,9 +18,16 @@ public class UnitCrossTrainSubInfoTime {
 	//停留时间，单位：分
 	private int stayTime;
 	private String trackName;
+	private String stationType;
 	
 	
 	
+	public String getStationType() {
+		return stationType;
+	}
+	public void setStationType(String stationType) {
+		this.stationType = stationType;
+	}
 	public int getStayTime() {
 		return stayTime;
 	}

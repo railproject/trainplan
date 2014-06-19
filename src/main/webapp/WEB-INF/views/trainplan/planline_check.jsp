@@ -36,19 +36,30 @@
 </ol>
 <section class="mainContent">
     <div class="row">
-        <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="col-xs-12 col-md-12 col-lg-12 paddingleftright5">
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <i class="fa fa-home"></i>审核
-                    <span class="pull-right">存在 <a style="color: #ff0000" data-bind="text: paramModel().unknownRunLine"></a> 条冗余运行线 | <span data-bind="text: checkStatus"></span></span>
-                </div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-12 col-md-12 col-lg-12">
                             <form class="form-inline" role="form">
-                                <div class="input-group">
+                                <div class="input-group" style="width: 100%">
                                     <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
-                                   	<shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
+
+                                    <label class="control-label paddingleftright5">车次:</label>
+                                    <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="输入车次" id="train_nbr">
+
+                                    <label class="control-label paddingleftright5">列车类型:</label>
+                                    <select id="train_type" class="form-control" style="width: 110px; margin-right: 10px; border-radius: 4px">
+                                        <option value="0">全部</option>
+                                        <option value="1">始发终到</option>
+                                        <option value="2">始发交出</option>
+                                        <option value="3">接入终到</option>
+                                        <option value="4">接入交出</option>
+                                    </select>
+
+                                    <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: search">查询</button>
+
+                                    <shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: autoCheck, enable: canCheckLev1">校验</button>
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1, enable: canCheckLev1">客调审核</button>
                                     </shiro:hasPermission>
@@ -56,7 +67,10 @@
                                     <shiro:hasPermission name="JHPT.RJH.ZBZRSP"><!-- 值班主任审批权限 -->
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev2, enable: canCheckLev2">值班主任审核</button>
 									</shiro:hasPermission>
+
+                                    <label class="control-label text-center pull-right paddingtop5">存在 <a style="color: #ff0000" data-bind="text: paramModel().unknownRunLine"></a> 条冗余运行线<span data-bind="text: checkStatus"></span></label>
                                 </div>
+
                             </form>
                         </div>
                     </div>
@@ -104,12 +118,15 @@
                                         <th rowspan="2" class="text-center">序号</th>
                                         <th rowspan="2" class="text-center">车次</th>
                                         <th rowspan="2" class="text-center">来源</th>
+                                        <th rowspan="2" class="text-center">类型</th>
                                         <th rowspan="2" class="text-center">是否高线</th>
                                         <th rowspan="2" class="text-center">始发站</th>
-                                        <th rowspan="2" class="text-center">始发时间</th>
+                                        <th rowspan="2" class="text-center">始发/接入时间</th>
                                         <th rowspan="2" class="text-center">终到站</th>
-                                        <th rowspan="2" class="text-center">终到时间</th>
+                                        <th rowspan="2" class="text-center">终到/交出时间</th>
                                         <th rowspan="2" class="text-center">是否上图</th>
+                                        <th rowspan="2" class="text-center">一级审核状态</th>
+                                        <th rowspan="2" class="text-center">二级审核状态</th>
                                         <th colspan="2" class="text-center">校验项</th>
 
                                     </tr>
@@ -130,12 +147,15 @@
                                         <td class="text-center" data-bind="text: $index() + 1"></td>
                                         <td class="text-center"><a href="#" data-bind="text: name"></a></td>
                                         <td class="text-center" data-bind="text: sourceType"></td>
+                                        <td class="text-center" data-bind="text: trainType"></td>
                                         <td class="text-center" data-bind="text: highLineFlag"></td>
                                         <td class="text-center" data-bind="text: startStn"></td>
                                         <td class="text-center" data-bind="text: startTime"></td>
                                         <td class="text-center" data-bind="text: endStn"></td>
                                         <td class="text-center" data-bind="text: endTime"></td>
                                         <td class="text-center" data-bind="text: dailyLineFlag"></td>
+                                        <td class="text-center" data-bind="html: lev1Status"></td>
+                                        <td class="text-center" data-bind="html: lev2Status"></td>
                                         <td class="text-center">
                                             <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTrainInfoMatchClass, text: isTrainInfoMatchText, click: showInfoComparePanel"></button>
                                         </td>

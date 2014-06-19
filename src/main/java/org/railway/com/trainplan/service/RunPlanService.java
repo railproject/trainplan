@@ -68,13 +68,33 @@ public class RunPlanService {
         logger.info("init thread pool end");
     }
 
-    public List<Map<String, Object>> findRunPlan(String date, String bureau, int type) {
+    public List<Map<String, Object>> findRunPlan(String date, String bureau, String name, int type) {
         logger.debug("findRunPlan::::");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("date", date);
         map.put("bureau", bureau);
-//        map.put("type", type);
-        return runPlanDao.findRunPlan(map);
+        map.put("name", name);
+        List<Map<String, Object>> list = Lists.newArrayList();
+        switch(type) {
+            case 0:
+                list = runPlanDao.findRunPlan_all(map);
+                break;
+            case 1:
+                list = runPlanDao.findRunPlan_sfzd(map);
+                break;
+            case 2:
+                list = runPlanDao.findRunPlan_sfjc(map);
+                break;
+            case 3:
+                list = runPlanDao.findRunPlan_jrzd(map);
+                break;
+            case 4:
+                list = runPlanDao.findRunPlan_jrjc(map);
+                break;
+            default:
+                break;
+        }
+        return list;
     }
 
     public List<Map<String, Object>> findPlanTimeTableByPlanId(String planId) {
@@ -260,6 +280,9 @@ public class RunPlanService {
         }
         if(current == 2 && isAllChecked(passBureau, checkedBureau)) {
             throw new WrongDataException("该计划已审核完毕，不能再次审核");
+        }
+        if(current != 2 && passBureau.contains(checkedBureau)) {
+            return 1;
         }
         return 0;
     }

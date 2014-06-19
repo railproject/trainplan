@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,16 +50,16 @@ public class AuditController {
     private ChartService chartService;
 
     @RequestMapping(value = "plan/runplan/{date}/{type}", method = RequestMethod.GET)
-    public List<RunPlanDTO> getRunPlan(@PathVariable String date, @PathVariable int type) {
+    public ResponseEntity<List<RunPlanDTO>> getRunPlan(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         logger.debug("-X GET plan/runplan/");
         List<RunPlanDTO> result = new ArrayList<RunPlanDTO>();
-        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureauShortName(), type);
+        List<Map<String, Object>> list =  runPlanService.findRunPlan(date, user.getBureauShortName(), name, type);
         for(Map<String, Object> map: list) {
             result.add(new RunPlanDTO(map));
         }
         logger.debug("getRunPlan end::::");
-        return result;
+        return new ResponseEntity<List<RunPlanDTO>>(result, HttpStatus.OK);
     }
 
     @RequestMapping(value = "plan/{planId}/line/{lineId}/check", method = RequestMethod.GET)
@@ -94,12 +95,14 @@ public class AuditController {
     }
 
 
-    @RequestMapping(value = "plan/chart/traintype/{date}", method = RequestMethod.GET)
-    public ResponseEntity<List<ChartDto>> getTrainType(@PathVariable String date) {
+    @RequestMapping(value = "plan/chart/traintype/{date}/{type}", method = RequestMethod.GET)
+    public ResponseEntity<List<ChartDto>> getTrainType(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         Map<String, Object> params = Maps.newHashMap();
         params.put("date", date);
         params.put("bureau", user.getBureauShortName());
+        params.put("type", type);
+        params.put("name", name);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> result = chartService.getPlanTypeChart(params);
@@ -127,12 +130,14 @@ public class AuditController {
         return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "plan/chart/planline/{date}", method = RequestMethod.GET)
-    public ResponseEntity<List<ChartDto>> getPlanLine(@PathVariable String date) {
+    @RequestMapping(value = "plan/chart/planline/{date}/{type}", method = RequestMethod.GET)
+    public ResponseEntity<List<ChartDto>> getPlanLine(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         Map<String, Object> params = Maps.newHashMap();
         params.put("date", date);
         params.put("bureau", user.getBureauShortName());
+        params.put("type", type);
+        params.put("name", name);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> result = chartService.getPlanLineCount(params);
@@ -179,12 +184,14 @@ public class AuditController {
         return new ResponseEntity<Integer>(i, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "plan/chart/lev1check/{date}", method = RequestMethod.GET)
-    public ResponseEntity<List<ChartDto>> getLev1CheckPie(@PathVariable String date) {
+    @RequestMapping(value = "plan/chart/lev1check/{date}/{type}", method = RequestMethod.GET)
+    public ResponseEntity<List<ChartDto>> getLev1CheckPie(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         Map<String, Object> params = Maps.newHashMap();
         params.put("date", date);
         params.put("bureau", user.getBureauShortName());
+        params.put("type", type);
+        params.put("name", name);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> result = chartService.getLev1CheckCount(params);
@@ -202,12 +209,14 @@ public class AuditController {
         return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "plan/chart/lev2check/{date}", method = RequestMethod.GET)
-    public ResponseEntity<List<ChartDto>> getLev2CheckPie(@PathVariable String date) {
+    @RequestMapping(value = "plan/chart/lev2check/{date}/{type}", method = RequestMethod.GET)
+    public ResponseEntity<List<ChartDto>> getLev2CheckPie(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         Map<String, Object> params = Maps.newHashMap();
         params.put("date", date);
         params.put("bureau", user.getBureauShortName());
+        params.put("type", type);
+        params.put("name", name);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> result = chartService.getLev2CheckCount(params);

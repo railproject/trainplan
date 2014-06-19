@@ -191,6 +191,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			var _obj = _stnArray[i];
 			_y = _startY + i*_stepY/_yScale + _stnOffsetY;//
 			myCanvasFillText(_context, {
+				font : "normal 14px Arial",
 				textAlign:"right",
 				text : _obj.stnName,
 				fromX : _fillTextStartX,
@@ -574,6 +575,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			var _y = 0;					//到达站和出发站的y坐标
 			var _arrTimeX = 0;//计算到达点x标
 			var _dptTimeX = 0;//计算出发点x标
+			var _parentDeptStn = {};	//上一站出发点x y坐标
 			var _len = this.obj.trainStns.length;
 	    	
 			//绘制起止标记
@@ -592,8 +594,10 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			for(var i=0; i<_len;i++) {
 				var _obj = this.obj.trainStns[i];
 				
+				console.log("###########	_obj.stationType="+_obj.stationType+"	 $.inArray(_obj.stationType, _stationTypeArray)="+$.inArray(_obj.stationType, _stationTypeArray));
 				//屏蔽不在显示要求范围内的数据
-				if (_stationTypeArray.length>0 && $.inArray(_obj.stationType, _stationTypeArray) < 0) {
+//				if ((_stationTypeArray.length>0 && $.inArray(_obj.stationType, _stationTypeArray) < 0)) {
+				if (getStnArcYIndex(_obj.stnName) < 0) {//该站不存在于纵坐标数组中 	当数据字典完善后，重新启用上面的注释条件
 					continue;
 				}
 				

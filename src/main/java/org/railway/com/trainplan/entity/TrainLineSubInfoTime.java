@@ -2,7 +2,7 @@ package org.railway.com.trainplan.entity;
 
 public class TrainLineSubInfoTime {
 
-	private String stationFlag;
+	private String stationType;
 	private int stnSort;
 	private String stnBureau;
 	private String stnName;
@@ -25,11 +25,12 @@ public class TrainLineSubInfoTime {
 	public void setPlanTrainStnId(String planTrainStnId) {
 		this.planTrainStnId = planTrainStnId;
 	}
-	public String getStationFlag() {
-		return stationFlag;
+	
+	public String getStationType() {
+		return stationType;
 	}
-	public void setStationFlag(String stationFlag) {
-		this.stationFlag = stationFlag;
+	public void setStationType(String stationType) {
+		this.stationType = stationType;
 	}
 	public int getStnSort() {
 		return stnSort;
