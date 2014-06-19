@@ -24,16 +24,19 @@ String basePath = request.getContextPath();
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>核查编制图定开行</title>
 <!-- Bootstrap core CSS -->
-<link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
+
 <!--font-awesome-->
 <link href="<%=basePath %>/assets/css/datepicker.css" rel="stylesheet">
 <link href="<%=basePath %>/assets/easyui/themes/default/easyui.css"
 	rel="stylesheet">
+<link href="<%=basePath %>/assets/easyui/themes/icon.css"
+	rel="stylesheet">
+<link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
 
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/cross/custom-bootstrap.css">
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/font-awesome.min.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/datepicker.css">
-<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/style.css">
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/style.css"> 
 	
 <link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
 <link type="text/css" rel="stylesheet" href="<%=basePath %>/assets/css/font-awesome.min.css" />
@@ -62,7 +65,7 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 	background-color: #ffffff;
 	border: 1px solid #dddddd;
 	margin-left: -1px;
-}
+} 
 .ckbox.disabled{
 	cursor: not-allowed;
 	pointer-events: none;
@@ -170,9 +173,9 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 												<label for="exampleInputEmail5" class="control-label pull-left">
 												显示开行情况</label>  
 											</div>
-										<!-- 	<div class="row"  style="margin-top: 5px;"> 
+										 <!--    <div class="row"  style="margin-top: 5px;"> 
 												<span style="margin-left: 20px;"><span style="">途经局:</span><span data-bind="text: '京郑武广'"></span><span style="margin-left:3px" data-bind="text: '已审核: 郑  ; 未审核 : 京武广'"></span></span>   
-											</div> -->
+											</div>  -->
 											<div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 20px;">
@@ -183,10 +186,9 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 													<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
 														data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成运行线</a>
 												</div> 
-												</div>
-											 
-									<div class="row" style="margin-top:10px">
-										   <div class="pull-left" style="width: 60%;">
+												</div> 
+									      <div class="row" style="margin-top:10px">
+										     <div class="pull-left" style="width: 60%;">
 										        <section class="panel panel-default">
 										          <div class="panel-heading"><span><input type="checkbox" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}">全选 车底交路名</span></div>
 										        	<div class="panel-body" style="height: 250px; overflow-y:auto"> 
@@ -197,7 +199,7 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 																	<tr data-bind=" visible: visiableRow" >
 																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
 																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 0 ? 'ckbox disabled' : ''},event:{change: $parent.selectCross}, checked: selected"></td>
-																		<td  data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().crossName() == crossName()  ? 'blue':''}, click: $parent.showTrains"></td>
+																		<td><i  data-bind="attr:{class: checkFlag() == 1 ? 'fa fa-check-square-o' : 'fa fa-pencil-square-o'}, style:{color: checkFlag() == 1 ? 'green' : 'red'}"></i><span data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().crossName() == crossName()  ? 'blue':''}, click: $parent.showTrains"></span></td>
 																	</tr> 
 																</tbody>  					 
 															</table>
@@ -320,9 +322,8 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 												id="plan_construction_input_trainNbr">
 										</div></td>
 								</tr>
-							</table> -->
-							<div class="pull-left" id="left_div">
-								<div class="row" style="margin: 0px 0 5px 0;"> 
+							</table> --> 
+							<div class="row" style="margin: 0px 0 5px 0;"> 
 										<label for="exampleInputEmail3"
 											class="control-label pull-left"> 车底交路名:&nbsp;</label>
 										<div class="pull-left" style="margin-left: 26px;">
@@ -354,233 +355,237 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 											混合</label> 
 								</div>
 								<div class="row" style="margin: 5px 0 0px 0;">
-								    <label for="exampleInputEmail3"
-											class="control-label pull-left"> 备用套跑交路名:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 470px;" data-bind="value: crossSpareName" disabled>
-									</div> 
-									<label for="exampleInputEmail5" style="margin-left: 40px;" class="control-label pull-left">
-										开行状态:</label>
-											
-									<div class="pull-left">
-										<input type="radio" class="pull-left" class="form-control"
-											value="1" data-bind="checked: spareFlag"
-											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control" disabled>
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										开行</label>
-
-									<div class="pull-left">
-										<input type="radio" class="pull-left" class="form-control"
-											value="2" data-bind="checked: spareFlag"
-											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control" disabled>
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										备用</label>
-									<div class="pull-left">
-										<input type="radio" class="pull-left" class="form-control"
-											value="0" data-bind="checked: spareFlag"
-											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control" disabled>
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										停运</label> 
+								   
+									    <label for="exampleInputEmail3"
+												class="control-label pull-left"> 备用套跑交路名:&nbsp;</label>
+										<div class="pull-left">
+											<input type="text" class="form-control" style="width: 470px;" data-bind="value: crossSpareName" disabled>
+										</div> 
+										<label for="exampleInputEmail5" style="margin-left: 40px;" class="control-label pull-left">
+											开行状态:</label>
+												
+										<div class="pull-left">
+											<input type="radio" class="pull-left" class="form-control"
+												value="1" data-bind="checked: spareFlag"
+												style="width: 20px; margin-left: 5px; margin-top: 5px"
+												class="form-control" disabled>
+										</div>
+										<label for="exampleInputEmail5" class="control-label pull-left">
+											开行</label>
+	
+										<div class="pull-left">
+											<input type="radio" class="pull-left" class="form-control"
+												value="2" data-bind="checked: spareFlag"
+												style="width: 20px; margin-left: 5px; margin-top: 5px"
+												class="form-control" disabled>
+										</div>
+										<label for="exampleInputEmail5" class="control-label pull-left">
+											备用</label>
+										<div class="pull-left">
+											<input type="radio" class="pull-left" class="form-control"
+												value="0" data-bind="checked: spareFlag"
+												style="width: 20px; margin-left: 5px; margin-top: 5px"
+												class="form-control" disabled>
+										</div>
+										<label for="exampleInputEmail5" class="control-label pull-left">
+											停运</label> 
+									
 								</div>
 								<div class="row" style="margin: 5px 0 0px 0;"> 
-									<label for="exampleInputEmail3"
-										class="control-label pull-left"> 组数:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 40px;" data-bind="value: groupTotalNbr" disabled>
-									</div> 
-									<label for="exampleInputEmail2" style="margin-left: 23px;" class="control-label pull-left">对数:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 40px;" data-bind="value: pairNbr">
-									</div>  
-									<div class="pull-left">
-										<input type="checkBox" class="pull-left" class="form-control"
-											value="1" data-bind="checked: cutOld"
-											style="width: 20px; margin-left: 23px; margin-top: 5px"
-											class="form-control">
+								    <div class="pull-left" style="width: 16%;"> 
+								       <div class="row" style="margin: 5px 0 0px 0;"> 
+											<label for="exampleInputEmail3"
+												class="control-label pull-left"> 组数:&nbsp;</label>
+											<div class="pull-left">
+												<input type="text" class="form-control" style="width: 40px;" data-bind="value: groupTotalNbr" disabled>
+											</div> 
+										</div>
+										<div class="row" style="margin: 5px 0 0px 0;"> 
+											<label for="exampleInputEmail2" class="control-label pull-left">对数:&nbsp;</label>
+											<input type="text" class="form-control" style="width: 40px;" data-bind="value: pairNbr">
+										 
+										</div> 
+										<div class="row" style="margin: 5px 0 0px 0;"> 
+											<label for="exampleInputEmail5"  class="control-label pull-left">
+												开始:&nbsp;</label> 
+											<input type="text" class="form-control" style="width: 70px;"
+													placeholder=""  data-bind="value: crossStartDate"> 
+										</div>
+										<div class="row" style="margin: 5px 0 0px 0;"> 
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												结束:&nbsp;</label> 
+											<input type="text" class="form-control" style="width: 70px;"
+													placeholder=""  data-bind="value: crossEndDate">
+											 
+										</div>
+										<div class="row" style="margin: 5px 0 0px 0;">  
+											<input type="checkBox" class="pull-left" class="form-control"
+												value="1" data-bind="checked: cutOld"
+												style="width: 20px; margin-top: 5px"
+												class="form-control"> 
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												截断原交路</label>
+										</div>
 									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										截断原交路</label>
-									
-									<label for="exampleInputEmail5"  style="margin-left: 40px;" class="control-label pull-left">
-										开始日期:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 140px;"
-											placeholder=""  data-bind="value: crossStartDate">
-									</div>
-									
-									<label for="exampleInputEmail5"  style="margin-left: 10px;" class="control-label pull-left">
-										结束日期:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 140px;"
-											placeholder=""  data-bind="value: crossEndDate">
-									</div>
-									
-								</div>
-								<div class="row" style="margin: 5px 0 0px 0;">
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										普线开行规律:</label>
-									<div class="pull-left">
-										<input type="radio" class="pull-left" class="form-control"
-											value="1" data-bind="checked: commonlineRule"
-											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										每日</label>
-									<div class="pull-left">
-										<input type="radio" class="pull-left" class="form-control"
-											value="2" data-bind="checked: commonlineRule"
-											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										隔日</label>
-									
-									<label for="exampleInputEmail5" style="margin-left: 30px;" class="control-label pull-left">
-										高线开行规律:</label>	
-									<div class="pull-left">
-										<input type="radio" class="pull-left" class="form-control"
-											value="1" data-bind="checked: highlineRule"
-											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										日常</label>
-									<div class="pull-left">
-										<input type="radio" class="pull-left" class="form-control"
-											value="2" data-bind="checked: highlineRule"
-											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										周末</label> 
-									<div class="pull-left">
-										<input type="radio" class="pull-left" class="form-control"
-											value="3" data-bind="checked: highlineRule"
-											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										高峰</label>  
-									<label for="exampleInputEmail5" style="margin-left: 30px;" class="control-label pull-left">
-										指定星期:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 71px;"
-											placeholder=""   data-bind="value: appointWeek">
-									</div>
-									
-									<label for="exampleInputEmail5"  style="margin-left: 10px;" class="control-label pull-left">
-										指定日期:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 140px;"
-											placeholder=""  data-bind="value: appointDay">
-									</div>  
-								</div>
-								
-								<div class="row" style="margin: 5px 0 0px 0;">
-									<label class="control-label pull-left"> 车辆担当局:&nbsp;</label>
+									 <div class="pull-left" style="width: 28%;"> 
+										 <div class="row" style="margin: 5px 0 0px 0;"> 
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												普线规律:</label> 
+											<input type="radio" class="pull-left" class="form-control"
+													value="1" data-bind="checked: commonlineRule"
+													style="width: 20px; margin-left: 5px; margin-top: 5px"
+													class="form-control"> 
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												每日</label> 
+											<input type="radio" class="pull-left" class="form-control"
+													value="2" data-bind="checked: commonlineRule"
+													style="width: 20px; margin-left: 5px; margin-top: 5px"
+													class="form-control"> 
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												隔日</label>
+										</div>
+										<div class="row" style="margin: 5px 0 0px 0;">  
+											<label for="exampleInputEmail5"  class="control-label pull-left">
+												高线规律:</label>	 
+											   <input type="radio" class="pull-left" class="form-control"
+													value="1" data-bind="checked: highlineRule"
+													style="width: 20px; margin-left: 5px; margin-top: 5px"
+													class="form-control"> 
+												<label for="exampleInputEmail5" class="control-label pull-left">
+												日常</label> 
+												<input type="radio" class="pull-left" class="form-control"
+													value="2" data-bind="checked: highlineRule"
+													style="width: 20px; margin-left: 5px; margin-top: 5px"
+													class="form-control"> 
+												<label for="exampleInputEmail5" class="control-label pull-left">
+													周末</label>  
+												<input type="radio" class="pull-left" class="form-control"
+														value="3" data-bind="checked: highlineRule"
+														style="width: 20px; margin-left: 5px; margin-top: 5px"
+														class="form-control">
+												 
+												<label for="exampleInputEmail5" class="control-label pull-left">
+													高峰</label>  
+										</div>
+										<div class="row" style="margin: 5px 0 0px 0;">  		
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												指定星期:&nbsp;</label>
+											<div class="pull-left">
+												<input type="text" class="form-control" style="width: 71px;"
+													placeholder=""   data-bind="value: appointWeek">
+											</div>
+										</div>
+										 <div class="row" style="margin: 5px 0 0px 0;">
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												指定日期:&nbsp;</label>
+											<div class="pull-left">
+												<input type="text" class="form-control" style="width: 140px;"
+													placeholder=""  data-bind="value: appointDay">
+											</div> 
+										</div> 
+										<div class="row" style="margin: 5px 0 0px 0;">
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												指定周期:&nbsp;</label>
+											<div class="pull-left">
+												<input type="text" class="form-control" style="width: 140px;"
+													placeholder=""  data-bind="value: appointPeriod">
+											</div> 
+										</div> 
+								   </div>
+								   
+								   <div class="pull-left" style="width: 25%;"> 
+								      <div class="row" style="margin: 5px 0 0px 0;">
+										<label class="control-label pull-left" style="margin-left: 5px;"> 车辆担当局:&nbsp;</label>
 										<div class="pull-left">
 											<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenVehBureau, optionsText: 'shortName', optionsValue:'code' , optionsCaption: ''"></select> -->
 											<input type="text" class="form-control" disabled  style="width: 50px;"  data-bind="value: tokenVehBureauShowValue">
 										</div>
-									<label  class="control-label pull-left" style=" margin-left: 20px;"> 车辆段/动车段:&nbsp;</label>
-										<div class="pull-left">
-											<input type="text" class="form-control" style="width: 100px;" data-bind="value: tokenVehDept">
+									  </div>
+									  <div class="row" style="margin: 5px 0 0px 0;">
+										<label  class="control-label pull-left" > 车辆/动车段:&nbsp;</label>
+											<div class="pull-left">
+												<input type="text" class="form-control" style="width: 90px;" data-bind="value: tokenVehDept">
+											</div>
+									   </div>
+									    <div class="row" style="margin: 5px 0 0px 0;">
+											<label  class="control-label pull-left" style="margin-left: 30px;"> 动车所:&nbsp;</label>
+												<div class="pull-left">
+													<input type="text" class="form-control" style="width: 90px;" data-bind="value: tokenVehDepot">
+												</div>
 										</div>
-									<label  class="control-label pull-left" style=" margin-left: 20px;" > 动车所:&nbsp;</label>
-										<div class="pull-left">
-											<input type="text" class="form-control" style="width: 100px;" data-bind="value: tokenVehDepot">
+										<div class="row" style="margin: 5px 0 0px 0;">
+											<label for="exampleInputEmail3" style="margin-left: 5px;"
+													class="control-label pull-left"> 客运担当局:&nbsp;</label>
+											<div class="pull-left">
+												<!-- <input type="text" class="form-control" style="width: 30px;" data-bind="value: tokenPsgDept"> -->
+												<input type="text" class="form-control disabled" style="width: 50px;" disabled  data-bind="value: tokenPsgBureauShowValue" >
+												<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select> -->
+											</div>
 										</div>
-									<label for="exampleInputEmail3"
-											class="control-label pull-left" style=" margin-left: 30px;" > 客运担当局:&nbsp;</label>
-									<div class="pull-left">
-										<!-- <input type="text" class="form-control" style="width: 30px;" data-bind="value: tokenPsgDept"> -->
-										<input type="text" class="form-control disabled" style="width: 50px;" disabled  data-bind="value: tokenPsgBureauShowValue" >
-										<!-- <select style="width: 50px" class="form-control" data-bind="options: $parent.gloabBureaus, value: tokenPsgBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select> -->
-									</div>
-									<label for="exampleInputEmail3"
-										class="control-label pull-left" style=" margin-left: 20px;" > 客运段:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 100px;" data-bind="value: tokenPsgDept">
-									</div>
-								</div>
-								<div class="row" style="margin: 5px 0 0px 0;"> 
-									<label for="exampleInputEmail3"
-										class="control-label pull-left" > 运行区段:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 200px;" data-bind="value: crossSection">
-									</div>
-									<label for="exampleInputEmail3" style=" margin-left: 20px;" 
-											class="control-label pull-left"> 机车类型:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 50px;" data-bind="value: locoType">
-									</div>
-									<label for="exampleInputEmail3"
-											class="control-label pull-left" style=" margin-left: 13px;"  > 动车组车型:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 80px;" data-bind="value: crhType">
-									</div>
-									<div class="pull-left">
+										<div class="row" style="margin: 5px 0 0px 0;">
+											<label for="exampleInputEmail3" style="margin-left: 30px;"
+												class="control-label pull-left"> 客运段:&nbsp;</label>
+											<div class="pull-left">
+												<input type="text" class="form-control" style="width: 90px;" data-bind="value: tokenPsgDept">
+											</div>
+										</div>
+								   </div>
+								   
+								   <div class="pull-left" style="width: 30%;"> 
+									   <div class="row" style="margin: 5px 0 0px 0;">
+											<label for="exampleInputEmail3"
+												class="control-label pull-left" > 运行区段:&nbsp;</label>
+											<input type="text" class="form-control" style="width: 182px;" data-bind="value: crossSection">
+										</div>
+										<div class="row" style="margin: 5px 0 0px 0;">
+											<label for="exampleInputEmail3"
+												class="control-label pull-left"  style="margin-left: 13px;" > 经由线:&nbsp;</label>
+											<input type="text" class="form-control" style="width: 182px;" data-bind="value: throughline">
+										</div> 
+										<div class="row" style="margin: 5px 0 0px 0;">
+											<label for="exampleInputEmail3" 
+													class="control-label pull-left"> 机车类型:&nbsp;</label> 
+											<input type="text" class="form-control pull-left" style="width: 40px;" data-bind="value: locoType">
+											<label for="exampleInputEmail3" style="margin-left:10px"
+													class="control-label pull-left"> 动车组车型:&nbsp;</label> 
+											<input type="text" class="form-control pull-left" style="width: 60px;" data-bind="value: crhType">
+										</div>
+									<div class="row" style="margin: 5px 0 0px 0;">
+									    <label for="exampleInputEmail3"  style="margin-left: 26px;"
+													class="control-label pull-left"> 其他:&nbsp;</label> 
 										<input type="checkbox" class="pull-left" class="form-control"
 											value="1" data-bind="checked: elecSupply"
-											style="width: 20px; margin-left: 25px; margin-top: 5px"
-											class="form-control">
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										供电</label>
-									<div class="pull-left">
+											style="width: 20px; margin-top: 5px;"
+											class="form-control"> 
+										<label for="exampleInputEmail5" class="control-label pull-left">
+											供电</label> 
 										<input type="checkbox" class="pull-left" class="form-control"
 											value="1" data-bind="checked: dejCollect"
 											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										集便</label>
-									<div class="pull-left">
+											class="form-control"> 
+										<label for="exampleInputEmail5" class="control-label pull-left">
+											集便</label> 
 										<input type="checkbox" class="pull-left" class="form-control"
 											value="1" data-bind="checked: airCondition"
 											style="width: 20px; margin-left: 5px; margin-top: 5px"
-											class="form-control">
-									</div>
-									<label for="exampleInputEmail5" class="control-label pull-left">
-										空调</label> 
-								
-								<!-- <div class="pull-left">
-									<input type="checkBox" class="pull-left" class="form-control"
-										name="exampleInputEmail5"
-										style="width: 20px; margin-left: 10px; margin-top: 5px"
-										class="form-control">
-								</div>
-								<label for="exampleInputEmail5" class="control-label pull-left">
-									是否切断久交路图</label> <label for="exampleInputEmail2"
-									class="control-label pull-left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;调整:&nbsp;</label>
-								<div class="pull-left">
-									<input type="text" class="form-control" style="width: 50px;"
-										placeholder="" id="plan_construction_selectdate">
-								</div> -->
-							</div>
-							<div class="row" style="margin: 5px 0 0px 0;">
-							    <label for="exampleInputEmail3"
-										class="control-label pull-left" > 经由线:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 214px;" data-bind="value: throughline">
+											class="form-control"> 
+										<label for="exampleInputEmail5" class="control-label pull-left">
+											空调</label> 
+									</div>  
+									<div class="row" style="margin: 5px 0 0px 0;">
+									     <label for="exampleInputEmail3"  style="margin-left: 26px;"
+												class="control-label pull-left"> 备注:&nbsp;</label>
+										<div class="pull-left">
+											<input type="text" class="form-control" style="width: 182px;" data-bind="value: note">
+										</div> 
 									</div> 
-								<label for="exampleInputEmail3"   style=" margin-left: 19px;" 
-											class="control-label pull-left"> 备注:&nbsp;</label>
-									<div class="pull-left">
-										<input type="text" class="form-control" style="width: 400px;" data-bind="value: note">
-									</div> 
-									  <a type="button" style="margin-left: 15px"
+								</div>   
+						    </div> 
+							<!-- <div class="row" style="margin: 5px 0 0px 0;">
+							      <a type="button" style="margin-left: 15px"
 										class="btn btn-success" data-toggle="modal" data-target="#"
 										id="cross_train_save" data-bind="attr:{class: $parent.searchModle().activeCurrentCrossFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: $parent.saveCrossInfo"> 保存</a>
-								</div>  
-							</div>
+							</div> -->
 							<!--col-md-3 col-sm-4 col-xs-4-->
 						</form>
 								    </div> 
