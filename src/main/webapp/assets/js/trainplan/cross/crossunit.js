@@ -35,45 +35,46 @@ function CrossModel() {
 	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle()); 
-	
+	self.defaultCrossTemp = {"crossId":"",
+		"crossName":"", 
+		"chartId":"",
+		"chartName":"",
+		"crossStartDate":"",
+		"crossEndDate":"",
+		"crossSpareName":"",
+		"alterNateDate":"",
+		"alterNateTranNbr":"",
+		"spareFlag":"",
+		"cutOld":"",
+		"groupTotalNbr":"",
+		"pairNbr":"",
+		"highlineFlag":"",
+		"highlineRule":"",
+		"commonlineRule":"",
+		"appointWeek":"",
+		"appointDay":"",
+		"crossSection":"",
+		"throughline":"",
+		"startBureau":"",
+		"tokenVehBureau":"",
+		"tokenVehDept":"",
+		"tokenVehDepot":"",
+		"tokenPsgBureau":"",
+		"tokenPsgDept":"",
+		"tokenPsgDepot":"",
+		"appointPeriod":"",
+		"locoType":"",
+		"crhType":"",
+		"elecSupply":"",
+		"dejCollect":"",
+		"airCondition":"",
+		"note":"", 
+		"createPeople":"", 
+		"createPeopleOrg":"",  
+		"createTime":""};
 	self.clearData = function(){
 		 self.crossRows.clear(); 
-		 self.currentCross(new CrossRow({"crossId":"",
-				"crossName":"", 
-				"chartId":"",
-				"chartName":"",
-				"crossStartDate":"",
-				"crossEndDate":"",
-				"crossSpareName":"",
-				"alterNateDate":"",
-				"alterNateTranNbr":"",
-				"spareFlag":"",
-				"cutOld":"",
-				"groupTotalNbr":"",
-				"pairNbr":"",
-				"highlineFlag":"",
-				"highlineRule":"",
-				"commonlineRule":"",
-				"appointWeek":"",
-				"appointDay":"",
-				"crossSection":"",
-				"throughline":"",
-				"startBureau":"",
-				"tokenVehBureau":"",
-				"tokenVehDept":"",
-				"tokenVehDepot":"",
-				"tokenPsgBureau":"",
-				"tokenPsgDept":"",
-				"tokenPsgDepot":"",
-				"locoType":"",
-				"crhType":"",
-				"elecSupply":"",
-				"dejCollect":"",
-				"airCondition":"",
-				"note":"", 
-				"createPeople":"", 
-				"createPeopleOrg":"",  
-				"createTime":""})); 
+		 self.currentCross(new CrossRow(self.defaultCrossTemp)); 
 		 self.times.remove(function(item){
 			return true;
 		 });
@@ -208,42 +209,7 @@ function CrossModel() {
 	}; 
 	 
 	//当前选中的交路对象
-	self.currentCross = ko.observable(new CrossRow({"crossId":"",
-		"crossName":"", 
-		"chartId":"",
-		"chartName":"",
-		"crossStartDate":"",
-		"crossEndDate":"",
-		"crossSpareName":"",
-		"alterNateDate":"",
-		"alterNateTranNbr":"",
-		"spareFlag":"",
-		"cutOld":"",
-		"groupTotalNbr":"",
-		"pairNbr":"",
-		"highlineFlag":"",
-		"highlineRule":"",
-		"commonlineRule":"",
-		"appointWeek":"",
-		"appointDay":"",
-		"crossSection":"",
-		"throughline":"",
-		"startBureau":"",
-		"tokenVehBureau":"",
-		"tokenVehDept":"",
-		"tokenVehDepot":"",
-		"tokenPsgBureau":"",
-		"tokenPsgDept":"",
-		"tokenPsgDepot":"",
-		"locoType":"",
-		"crhType":"",
-		"elecSupply":"",
-		"dejCollect":"",
-		"airCondition":"",
-		"note":"", 
-		"createPeople":"", 
-		"createPeopleOrg":"",  
-		"createTime":""})); 
+	self.currentCross = ko.observable(new CrossRow(self.defaultCrossTemp)); 
 	
 	self.showTrainTimes = function(row) {
 		self.currentTrain(row);
@@ -438,8 +404,7 @@ function CrossModel() {
 								rows.push(new CrossRow(crossInfo));  
 							});   
 							self.crossRows.loadPageRows(result.data.totalRecord, rows);
-						}  
-						 $("#cross_table_crossInfo").freezeHeader(); 
+						}   
 						 
 					} else {
 						showErrorDialog("获取交路单元信息失败");
@@ -824,6 +789,7 @@ function CrossRow(data) {
 	self.commonlineRule = ko.observable(data.commonlineRule);
 	self.appointWeek = ko.observable(data.appointWeek);
 	self.appointDay = ko.observable(data.appointDay);
+	self.appointPeriod = ko.observable(data.appointPeriod); 
 	self.crossSection = ko.observable(data.crossSection);
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 

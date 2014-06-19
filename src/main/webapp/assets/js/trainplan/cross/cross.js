@@ -88,6 +88,8 @@ function CrossModel() {
 		self.searchModle().filterTrainNbr(event.target.value.toUpperCase());
 	};
 	
+	
+	
 	self.setCurrentTrain = function(row){
 		self.currentTrain(row); 
 		$("#cross_train_time_dlg").dialog("setTitle", "详情时刻表     车次:" + self.currentTrain().trainNbr);
@@ -114,14 +116,24 @@ function CrossModel() {
 						row.loadTimes(result.data);  
 						$.each(row.times(), function(i, n){
 							self.times.push(n); 
-						});
+						}); 
 					}  
 				},
 				error : function() {
 					 
 				},
-				complete : function(){
-					 
+				complete : function(){ 
+//					var dataTr = $("#plan_runline_table_trainLine_data thead tr:first th"); 
+//					$("#plan_runline_table_trainLine thead tr:first th").each(function(i, n){   
+//						console.log("---------------------------------------------------");
+//						for(var j = 0; j < dataTr.length; j++){ 
+//							if(i == j){
+//								console.log(n.offsetWidth + "---------------------------------------------------" + dataTr[j].offsetWidth);
+//								dataTr[j].offsetWidth = n.offsetWidth;
+//								break;
+//							}
+//						} 
+//					}) ; 
 				}
 			}); 
 		} 
@@ -217,45 +229,46 @@ function CrossModel() {
 	        return true;
 	} ;
 	
-	 
+	self.defaultCrossTemp = {"crossId":"",
+			"crossName":"", 
+			"chartId":"",
+			"chartName":"",
+			"crossStartDate":"",
+			"crossEndDate":"",
+			"crossSpareName":"",
+			"alterNateDate":"",
+			"alterNateTranNbr":"",
+			"spareFlag":"",
+			"cutOld":"",
+			"groupTotalNbr":"",
+			"pairNbr":"",
+			"highlineFlag":"",
+			"highlineRule":"",
+			"commonlineRule":"",
+			"appointWeek":"",
+			"appointDay":"",
+			"crossSection":"",
+			"throughline":"",
+			"startBureau":"",
+			"tokenVehBureau":"",
+			"tokenVehDept":"",
+			"tokenVehDepot":"",
+			"tokenPsgBureau":"", 
+			"appointPeriod":"",
+			"tokenPsgDept":"",
+			"tokenPsgDepot":"",
+			"locoType":"",
+			"crhType":"",
+			"elecSupply":"",
+			"dejCollect":"",
+			"airCondition":"",
+			"note":"", 
+			"createPeople":"", 
+			"createPeopleOrg":"",  
+			"createTime":""}; 
 	
 	//当前选中的交路对象
-	self.currentCross = ko.observable(new CrossRow({"crossId":"",
-		"crossName":"", 
-		"chartId":"",
-		"chartName":"",
-		"crossStartDate":"",
-		"crossEndDate":"",
-		"crossSpareName":"",
-		"alterNateDate":"",
-		"alterNateTranNbr":"",
-		"spareFlag":"",
-		"cutOld":"",
-		"groupTotalNbr":"",
-		"pairNbr":"",
-		"highlineFlag":"",
-		"highlineRule":"",
-		"commonlineRule":"",
-		"appointWeek":"",
-		"appointDay":"",
-		"crossSection":"",
-		"throughline":"",
-		"startBureau":"",
-		"tokenVehBureau":"",
-		"tokenVehDept":"",
-		"tokenVehDepot":"",
-		"tokenPsgBureau":"",
-		"tokenPsgDept":"",
-		"tokenPsgDepot":"",
-		"locoType":"",
-		"crhType":"",
-		"elecSupply":"",
-		"dejCollect":"",
-		"airCondition":"",
-		"note":"", 
-		"createPeople":"", 
-		"createPeopleOrg":"",  
-		"createTime":""})); 
+	self.currentCross = ko.observable(new CrossRow(self.defaultCrossTemp)); 
 	 
 	//currentIndex 
 	self.currdate =function(){
@@ -366,7 +379,7 @@ function CrossModel() {
 		});  */
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag();
-		console.log(highlingFlag);
+		 
 		var trainNbr = self.searchModle().filterTrainNbr(); 
 		var checkFlag = self.searchModle().checkFlag();
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
@@ -533,44 +546,10 @@ function CrossModel() {
 //		});
 		
 	};
+	
 	self.clearData = function(){
 		 self.crossRows.clear(); 
-		 self.currentCross(new CrossRow({"crossId":"",
-				"crossName":"", 
-				"chartId":"",
-				"chartName":"",
-				"crossStartDate":"",
-				"crossEndDate":"",
-				"crossSpareName":"",
-				"alterNateDate":"",
-				"alterNateTranNbr":"",
-				"spareFlag":"",
-				"cutOld":"",
-				"groupTotalNbr":"",
-				"pairNbr":"",
-				"highlineFlag":"",
-				"highlineRule":"",
-				"commonlineRule":"",
-				"appointWeek":"",
-				"appointDay":"",
-				"crossSection":"",
-				"throughline":"",
-				"startBureau":"",
-				"tokenVehBureau":"",
-				"tokenVehDept":"",
-				"tokenVehDepot":"",
-				"tokenPsgBureau":"",
-				"tokenPsgDept":"",
-				"tokenPsgDepot":"",
-				"locoType":"",
-				"crhType":"",
-				"elecSupply":"",
-				"dejCollect":"",
-				"airCondition":"",
-				"note":"", 
-				"createPeople":"", 
-				"createPeopleOrg":"",  
-				"createTime":""})); 
+		 self.currentCross(new CrossRow(self.defaultCrossTemp)); 
 		 self.times.remove(function(item){
 			return true;
 		 });
@@ -861,6 +840,7 @@ function CrossRow(data) {
 	self.commonlineRule = ko.observable(data.commonlineRule);
 	self.appointWeek = ko.observable(data.appointWeek);
 	self.appointDay = ko.observable(data.appointDay);
+	self.appointPeriod = ko.observable(data.appointPeriod); 
 	self.crossSection = ko.observable(data.crossSection);
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 

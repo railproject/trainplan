@@ -94,9 +94,7 @@ function CrossModel() {
 					commonJsScreenUnLock();
 				}
 		    }); 
-	}
-	
-	
+	}; 
 	
 	self.trainRunPlanChange = function(row, event){ 
 		console.log(row);
@@ -294,6 +292,7 @@ function CrossModel() {
 		"tokenVehBureau":"",
 		"tokenVehDept":"",
 		"tokenVehDepot":"",
+		"appointPeriod":"",
 		"tokenPsgBureau":"",
 		"tokenPsgDept":"",
 		"tokenPsgDepot":"",
@@ -815,6 +814,7 @@ function CrossModel() {
 				"tokenVehBureau":"",
 				"tokenVehDept":"",
 				"tokenVehDepot":"",
+				"appointPeriod":"",
 				"tokenPsgBureau":"",
 				"tokenPsgDept":"",
 				"tokenPsgDepot":"",
@@ -1163,6 +1163,7 @@ function CrossRow(data) {
 	self.commonlineRule = ko.observable(data.commonlineRule);
 	self.appointWeek = ko.observable(data.appointWeek);
 	self.appointDay = ko.observable(data.appointDay);
+	self.appointPeriod = ko.observable(data.appointPeriod); 
 	self.crossSection = ko.observable(data.crossSection);
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 
