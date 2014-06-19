@@ -280,6 +280,9 @@ public class RunPlanService {
         if(current == 2 && isAllChecked(passBureau, checkedBureau)) {
             throw new WrongDataException("该计划已审核完毕，不能再次审核");
         }
+        if(current != 2 && passBureau.contains(checkedBureau)) {
+            return 1;
+        }
         return 0;
     }
 

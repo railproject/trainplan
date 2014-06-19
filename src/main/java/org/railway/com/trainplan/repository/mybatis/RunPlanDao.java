@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 计划dao
  * Created by star on 5/12/14.
  */
 @MyBatisRepository
@@ -28,36 +29,36 @@ public interface RunPlanDao {
 
     /**
      * 查询客运计划时刻表数据
-     * @param planId
-     * @return
+     * @param planId 计划id
+     * @return 计划时刻表
      */
     List<Map<String, Object>> findPlanTimeTableByPlanId(String planId);
 
     /**
      * 查询客运计划主体信息
-     * @param planId
-     * @return
+     * @param planId 计划id
+     * @return 计划主体信息
      */
     Map<String, Object> findPlanInfoByPlanId(String planId);
 
     /**
      * 一级审核
-     * @param list
-     * @return
+     * @param list 审核列表
+     * @return 审核结果
      */
     int addCheckHis(List<LevelCheck> list);
 
     /**
      * 更新审核状态和已审核局
-     * @param map
-     * @return
+     * @param map 审核信息
+     * @return 更新结果
      */
     int updateCheckInfo(Map<String, Object> map);
 
     /**
      * 根据计划id列表查询列车信息列表
-     * @param params
-     * @return
+     * @param params 计划id列表
+     * @return 查询结果
      */
     List<Map<String, Object>> findPlanInfoListByPlanId(List<String> params);
 
