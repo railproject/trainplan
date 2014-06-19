@@ -473,7 +473,7 @@ where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID order by sort
 	        <result column="dpt_time" property="dptTime"/>
 	        <result column="staytime" property="stayTime"/>
 	        <result column="track_Name" property="trackName"/>
-	        <result column="stationType" property="stationType"/>
+	        <result column="stationFlag" property="stationType"/>
 	        
 	       
     </resultMap>
