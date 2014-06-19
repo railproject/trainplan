@@ -23,7 +23,11 @@ function ApplicationModel() {
     self.currCheckNbr = ko.observable(0);
 
     self.checkStatus = ko.computed(function() {
-        return "正在校验： " + self.currCheckNbr() + " / " + self.tableModel().planList().length;
+        if(self.currCheckNbr() > 0 && self.currCheckNbr() < self.tableModel().planList().length) {
+            return " | 正在校验： " + self.currCheckNbr() + " / " + self.tableModel().planList().length;
+        } else {
+            return "";
+        }
     })
 
     self.canCheckLev1 = ko.computed(function() {
@@ -384,8 +388,9 @@ function TableModel() {
     self.loadTable = function() {
         commonJsScreenLock();
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
+        var type = $("#train_type").val();
         $.ajax({
-            url: "audit/plan/runplan/" + date + "/0",
+            url: "audit/plan/runplan/" + date + "/" + type,
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {
