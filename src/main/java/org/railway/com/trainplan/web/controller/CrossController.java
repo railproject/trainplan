@@ -455,8 +455,11 @@ public class CrossController {
 								
 									 trainStns.add(stnDto);
 									//合并始发站和终到站
-									 if(!stationList.contains(trainTime.getStnName())){
-										 stationList.add(trainTime.getStnName());
+									 String stationType = trainTime.getStationType();
+									 String stnName = trainTime.getStnName();
+									 //0:表示起始站和终到站
+									 if(!stationList.contains(stnName) && "0".equals(stationType)){
+										 stationList.add(stnName);
 									 }
 								 }
 								 dto.setTrainStns(trainStns) ;
@@ -476,10 +479,10 @@ public class CrossController {
 					 String myJlData = objectMapper.writeValueAsString(dataList);
 					  //图形数据
 					  result.addObject("myJlData",myJlData);
-					  logger.debug("myJlData==" + myJlData);
+					  logger.info("myJlData==" + myJlData);
 					  //System.err.println("myJlData==" + myJlData);
 					String gridStr = objectMapper.writeValueAsString(grid);
-					logger.debug("gridStr==" + gridStr);
+					logger.info("gridStr==" + gridStr);
 					//System.err.println("gridStr==" + gridStr);
 					result.addObject("gridData",gridStr);
 
@@ -662,7 +665,11 @@ public class CrossController {
 			  
 				for(String stationName : stationsInfo){
 				    if(stationName != null){
-				    	planLineGridYList.add(new PlanLineGridY(stationName));
+				    	//planLineGridYList.add(new PlanLineGridY(stationName));
+				    	planLineGridYList.add(new PlanLineGridY(
+				    			stationName,
+				    			0,
+				    			"0"));
 				    }
 					
 				}
