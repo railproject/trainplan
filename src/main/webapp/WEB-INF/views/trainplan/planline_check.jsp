@@ -48,7 +48,7 @@
                                     <label class="control-label paddingleftright5">车次:</label>
                                     <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="输入车次" id="train_nbr">
 
-                                    <label class="control-label paddingleftright5">列车类型:</label>
+                                    <label class="control-label paddingleftright5">运行方式:</label>
                                     <select id="train_type" class="form-control" style="width: 110px; margin-right: 10px; border-radius: 4px">
                                         <option value="0">全部</option>
                                         <option value="1">始发终到</option>
@@ -74,37 +74,8 @@
                             </form>
                         </div>
                     </div>
-                    <div class="row paddingtop5">
-                        <div class="panel panel-default marginbottom0">
-                            <div class="panel-body paddingbottom0">
-                                <%--
-                                <p>客运计划共709条，其中停运8条，热备52条，需下达709条。</p>
-                                <p>已生成运行线709条，未生成0条，调整0条。</p>
-                                <p>客调已审核709条，值班主任已审核12条。</p>
-                                --%>
-                                <div class="row">
-                                    <div class="col-xs-4 col-md-4  col-sm-4">
-                                        <div id="chart_01" style="height:253px; margin: 0 auto;"></div>
-                                    </div>
-                                    <div class="col-xs-4 col-md-4  col-sm-4 ">
-                                        <div id="chart_02" style="height:253px; margin:0 auto;"></div>
-                                    </div>
-                                    <shiro:hasPermission name="JHPT.RJH.KDSP">
-                                        <div class="col-xs-4 col-md-4  col-sm-4 ">
-                                            <div id="chart_03" style="height:270px; margin:0 auto;"></div>
-                                        </div>
-                                    </shiro:hasPermission>
-                                    <shiro:hasPermission name="JHPT.RJH.ZBZRSP">
-                                        <div class="col-xs-4 col-md-4  col-sm-4 ">
-                                            <div id="chart_04" style="height:270px; margin:0 auto;"></div>
-                                        </div>
-                                    </shiro:hasPermission>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row">
-                        <div class="col-xs-12 col-md-12 col-lg-12 paddingleft0 paddingtop5 paddingright0">
+                        <div class="col-xs-11 col-md-11 col-lg-11 paddingleft0 paddingtop5">
                             <div class="table-responsive">
                                 <table id="plan_table" class="table table-bordered table-striped table-hover tableradius" data-bind="with: tableModel">
                                     <thead>
@@ -120,17 +91,19 @@
                                         <th rowspan="2" class="text-center">来源</th>
                                         <th rowspan="2" class="text-center">类型</th>
                                         <th rowspan="2" class="text-center">是否高线</th>
-                                        <th rowspan="2" class="text-center">始发站</th>
-                                        <th rowspan="2" class="text-center">始发/接入时间</th>
-                                        <th rowspan="2" class="text-center">终到站</th>
-                                        <th rowspan="2" class="text-center">终到/交出时间</th>
-                                        <th rowspan="2" class="text-center">是否上图</th>
-                                        <th rowspan="2" class="text-center">一级审核状态</th>
-                                        <th rowspan="2" class="text-center">二级审核状态</th>
+                                        <th colspan="2" class="text-center">始发/接入</th>
+                                        <th colspan="2" class="text-center">终到/交出</th>
+                                        <th rowspan="2" class="text-center">上图状态</th>
+                                        <th rowspan="2" class="text-center">一审</th>
+                                        <th rowspan="2" class="text-center">二审</th>
                                         <th colspan="2" class="text-center">校验项</th>
 
                                     </tr>
                                     <tr>
+                                        <th class="text-center">站名</th>
+                                        <th class="text-center">时间</th>
+                                        <th class="text-center">站名</th>
+                                        <th class="text-center">时间</th>
                                         <th class="text-center">列车</th>
                                         <th class="text-center">时刻</th>
                                         <%--<th class="text-center">经由</th>--%>
@@ -168,6 +141,30 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                        <div class="col-xs-1 col-md-1 col-lg-1 paddingtop5 paddingright0">
+                            <div class="row paddingtop30">
+                                <div class="col-xs-12 col-md-12  col-sm-12">
+                                    <div id="chart_01" style="height:253px; margin: 0 auto;"></div>
+                                </div>
+                            </div>
+                            <div class="row paddingtop30">
+                                <div class="col-xs-12 col-md-12  col-sm-12">
+                                    <div id="chart_02" style="height:253px; margin:0 auto;"></div>
+                                </div>
+                            </div>
+                            <div class="row paddingtop30">
+                                <shiro:hasPermission name="JHPT.RJH.KDSP">
+                                    <div class="col-xs-12 col-md-12  col-sm-12">
+                                        <div id="chart_03" style="height:270px; margin:0 auto;"></div>
+                                    </div>
+                                </shiro:hasPermission>
+                                <shiro:hasPermission name="JHPT.RJH.ZBZRSP">
+                                    <div class="col-xs-12 col-md-12  col-sm-12">
+                                        <div id="chart_04" style="height:270px; margin:0 auto;"></div>
+                                    </div>
+                                </shiro:hasPermission>
                             </div>
                         </div>
                     </div>
