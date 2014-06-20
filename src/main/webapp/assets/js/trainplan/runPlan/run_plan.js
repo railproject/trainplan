@@ -14,7 +14,7 @@ var highlingrules = [{"value": "1", "text": "平日"},{"value": "2", "text": "�
 var commonlinerules = [{"value": "1", "text": "每日"},{"value": "2", "text": "隔日"}];
  
 var _cross_role_key_pre = "JHPT.KYJH.JHBZ.";
-function hasActiveRole(bureau){
+function hasActiveRole(bureau){ 
 	var roleKey = _cross_role_key_pre + bureau;
 	return all_role.indexOf(roleKey) > -1; 
 }
@@ -35,6 +35,8 @@ function CrossModel() {
 	self.planDays = ko.observableArray(); 
 	
 	self.gloabBureaus = [];  
+	
+	self.times = ko.observableArray();
 	
 	self.runPlanCanvasPage = new RunPlanCanvasPage(self);
 	
@@ -92,9 +94,7 @@ function CrossModel() {
 					commonJsScreenUnLock();
 				}
 		    }); 
-	}
-	
-	
+	}; 
 	
 	self.trainRunPlanChange = function(row, event){ 
 		console.log(row);
@@ -109,15 +109,39 @@ function CrossModel() {
 	
 
 	
-	self.loadStns = function(stns){ 
-		self.stns.remove(function(item) {
-			return true;
-		});   
-		if(stns){
-			 $.each(stns, function(z, n){
-				 self.stns.push(new TrainTimeRow(n));
-			 }); 
-		};
+	self.loadStns = function(trainId){  
+		 $.ajax({ 
+				url : "jbtcx/queryPlanLineTrainTimes",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({
+					trainId: trainId
+				}),
+				success : function(result) {    
+					if (result != null && result != "undefind" && result.code == "0") {
+						if (result != null && result != "undefind" && result.code == "0") {  
+							$.each(result.data, function(i, n){
+								self.times.push(new TrainTimeRow(n)); 
+							});
+						}  
+					} else {
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					} 
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					initFlag++;
+					if(initFlag == 2){
+						commonJsScreenUnLock();
+					}
+					
+				}
+		    }); 
+		// $("#run_plan_train_times").dialog("open");
 	};
 	self.setCurrentTrain = function(train){
 		self.currentTrain(train); 
@@ -268,6 +292,7 @@ function CrossModel() {
 		"tokenVehBureau":"",
 		"tokenVehDept":"",
 		"tokenVehDepot":"",
+		"appointPeriod":"",
 		"tokenPsgBureau":"",
 		"tokenPsgDept":"",
 		"tokenPsgDepot":"",
@@ -328,7 +353,7 @@ function CrossModel() {
 //		   });
 //		
 //		
-//		$("#run_plan_train_times").dialog("close"); 
+		$("#run_plan_train_times").dialog("close"); 
 //		$("#cross_train_time_dlg").dialog("close");
 //		$("#cross_map_dlg").dialog("close"); 
 //		$("#cross_train_dlg").dialog("close");
@@ -620,14 +645,13 @@ function CrossModel() {
 //		diag.show();
 	};
 	
-	self.showCrossMapDlg = function(){ 
-		if(!self.currentCross().crossId || self.currentCross().crossId == ''){
-			return;
+	self.showRunPlans = function(){  
+		if($('#learn-more-content').is(":visible")){
+			$('#learn-more-content').hide();
+		}else{
+			 $('#learn-more-content').show(); 
 		}
-		var crossId = self.currentCross().crossId; 
-		if(self.searchModle().showCrossMap() == 0){  
-			$('#cross_map_dlg').dialog({ title: self.currentCross().crossName(), autoOpen: true, height:600,width: 800, modal: false, draggable: false, resizable:true })
-		};
+	    
 	};
 	
 	self.showDialog = function(id, title){
@@ -790,6 +814,7 @@ function CrossModel() {
 				"tokenVehBureau":"",
 				"tokenVehDept":"",
 				"tokenVehDepot":"",
+				"appointPeriod":"",
 				"tokenPsgBureau":"",
 				"tokenPsgDept":"",
 				"tokenPsgDepot":"",
@@ -917,7 +942,7 @@ function CrossModel() {
 	};
 	self.showTrains = function(row) {   
 		self.setCurrentCross(row); 
-		commonJsScreenLock();
+		commonJsScreenLock(3);
 		self.createCrossMap(row);
 //		self.stns.remove(function(item) {
 //			return true;
@@ -932,39 +957,40 @@ function CrossModel() {
 			var row = new TrainRow({"trainNbr": trainNbr});
 			self.trains.push(row); 
 		}); 
+		 
+		self.loadRunPlans(row.planCrossId()); 
 		
-		self.loadRunPlans(row.planCrossId());
-//		 $.ajax({
-//				url : "runplan/getPlanCrossInfo",
-//				cache : false,
-//				type : "POST",
-//				dataType : "json",
-//				contentType : "application/json",
-//				data :JSON.stringify({  
-//					planCrossId : row.planCrossId  
-//				}),
-//				success : function(result) {    
-//					if (result != null && result != "undefind" && result.code == "0") {
-//						if (result.data !=null && result.data.length > 0) {   
-//							if(result.data[0].crossInfo != null){
-//								self.setCurrentCross(new CrossRow(result.data[0].crossInfo)); 
-//							}else{ 
-//								self.setCurrentCross(new CrossRow(self.defualtCross));
-//								showWarningDialog("没有找打对应的交路被找到");
-//							}  
-//						}
-//						 
-//					} else {
-//						showErrorDialog("获取列车列表失败");
-//					} 
-//				},
-//				error : function() {
-//					showErrorDialog("获取列车列表失败");
-//				},
-//				complete : function(){
-//					commonJsScreenUnLock();
-//				}
-//			}); 
+		 $.ajax({
+				url : "cross/getPlanCrossInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					planCrossId : row.planCrossId()
+				}),
+				success : function(result) {    
+					if (result != null && result != "undefind" && result.code == "0") {
+						if (result.data !=null && result.data.length > 0) {   
+							if(result.data[0].crossInfo != null){
+								self.setCurrentCross(new CrossRow(result.data[0].crossInfo)); 
+							}else{ 
+								self.setCurrentCross(new CrossRow(self.defualtCross));
+								showWarningDialog("没有找打对应的交路被找到");
+							}  
+						}
+						 
+					} else {
+						showErrorDialog("获取列车列表失败");
+					} 
+				},
+				error : function() {
+					showErrorDialog("获取列车列表失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
 		
 	};  
 	self.removeArrayValue = function(arr, value){
@@ -1006,6 +1032,8 @@ function searchModle(){
 	self = this;  
 	 
 	self.activeFlag = ko.observable(0);  
+	
+	self.activeCurrentCrossFlag = ko.observable(0);  
 	
 	self.drawFlags =ko.observableArray(['0']); 
 	
@@ -1135,11 +1163,31 @@ function CrossRow(data) {
 	self.commonlineRule = ko.observable(data.commonlineRule);
 	self.appointWeek = ko.observable(data.appointWeek);
 	self.appointDay = ko.observable(data.appointDay);
+	self.appointPeriod = ko.observable(data.appointPeriod); 
 	self.crossSection = ko.observable(data.crossSection);
 	self.throughline = ko.observable(data.throughline);
 	self.startBureau = ko.observable(data.startBureau); 
 	//车辆担当局 
 	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
+	//车辆担当局 
+	self.tokenVehBureauShowValue = ko.computed(function(){ 
+			var result = "";
+			 if(data.tokenVehBureau != null && data.tokenVehBureau != "null"){
+				 var bs = data.tokenVehBureau.split("、"); 
+				 result = data.tokenVehBureau;
+				 for(var j = 0; j < bs.length; j++){
+					 for(var i = 0; i < gloabBureaus.length; i++){
+						 if(bs[j] == gloabBureaus[i].code){
+							 result = result.replace(bs[j], gloabBureaus[i].shortName);
+							 break;
+						 }
+					 }
+				 } 
+			 }
+			 return result; 
+	});
+	
+	
 	self.activeFlag = ko.computed(function(){
 		return hasActiveRole(data.tokenVehBureau);
 	});  
@@ -1148,6 +1196,22 @@ function CrossRow(data) {
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
 	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
+	self.tokenPsgBureauShowValue = ko.computed(function(){ 
+		var result = "";
+		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
+			 var bs = data.tokenPsgBureau.split("、"); 
+			 result = data.tokenPsgBureau;
+			 for(var j = 0; j < bs.length; j++){
+				 for(var i = 0; i < gloabBureaus.length; i++){
+					 if(bs[j] == gloabBureaus[i].code){
+						 result = result.replace(bs[j], gloabBureaus[i].shortName);
+						 break;
+					 }
+				 }
+			 } 
+		 }
+		 return result; 
+	});
 	self.tokenPsgDept = ko.observable(data.tokenPsgDept);
 	self.tokenPsgDepot = ko.observable(data.tokenPsgDepot);
 	self.locoType = ko.observable(data.locoType);
@@ -1226,12 +1290,13 @@ function TrainTimeRow(data) {
 	self.index = data.childIndex + 1;
 	self.stnName = filterValue(data.stnName);
 	self.bureauShortName = filterValue(data.bureauShortName);
-	self.arrTime = data.arrTime != null ? data.arrTime.length > 8 ? data.arrTime.replace(/-/g,"").substring(4, 14) : data.arrTime: "--";
-	self.dptTime = data.dptTime != null ? data.dptTime.length > 8 ? data.dptTime.replace(/-/g,"").substring(4, 14) : data.dptTime: "--";
+	self.sourceTime = filterValue(data.arrTime);
+	self.targetTime = filterValue(data.dptTime);
 	self.stepStr = GetDateDiff(data); 
 	self.trackName = filterValue(data.trackName);  
-	self.runDays = data.runDays; 
-};
+	self.runDays = data.runDays;
+	 
+}; 
 function GetDateDiff(data)
 { 
 	if(data.childIndex == 0)

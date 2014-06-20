@@ -3,6 +3,7 @@ package org.railway.com.trainplan.repository.mybatis;
 import java.util.Map;
 
 /**
+ * 审核页面统计
  * Created by speeder on 2014/5/27.
  */
 @MyBatisRepository

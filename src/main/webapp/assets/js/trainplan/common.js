@@ -290,21 +290,33 @@ $(function(){
 });
 
 
-
+var commonLockNum = 1;
 /**
  * 屏幕解锁
  */
 function commonJsScreenUnLock() {
-	//屏幕解锁 Screen Lock FX screen unlock 
-	$("#common_div_screen_modal").modal('hide');
+	//屏幕解锁 Screen Lock FX screen unlock  
+	commonLockNum--;
+	if(commonLockNum > 0){
+		console.log("----------------commonLockNum---11----" + commonLockNum); 
+	}else{
+		console.log("----------------commonLockNum---00----" + commonLockNum); 
+		$("#common_div_screen_modal").modal('hide');
+	}  
 };
 
 
 /**
  * 屏幕锁定
  */
-function commonJsScreenLock() {
-	//屏幕锁定 
+function commonJsScreenLock(loackNum) {
+	//屏幕锁定  
+	if(commonLockNum == null){ 
+		commonLockNum = 1; 
+	}else{
+		commonLockNum = loackNum;
+	}  
+	console.log("----------------commonLockNum-------" + commonLockNum);
 	$("#common_div_screen_modal").modal('show').css({
         "margin-top": "230px"
     });

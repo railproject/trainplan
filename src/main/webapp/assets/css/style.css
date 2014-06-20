@@ -1107,7 +1107,7 @@ z-index: 1;
 		padding: 0px 5%;
 	}
 	.header {
-		padding: 0 5%;
+		padding: 0 1%;
 	}
 	nav .menu_one {
 		padding: 9px 12px;
@@ -1320,3 +1320,7 @@ z-index: 1;
 	display: block;
 }
 /*多级菜单     end*/
+
+.ui-dialog .ui-widget .ui-widget-content .ui-corner-all .ui-front .ui-draggable .ui-resizable {
+    z-index: 999;
+}
