@@ -151,7 +151,7 @@ public class CrossController {
 			
 			if(crossInfo != null){
 				//通过baseCrossId查询unitCross信息
-				List<CrossInfo> unitCrossInfoList = crossService.getUnitCrossInfosForCrossId(crossInfo.getBaseCrossId());
+				List<CrossInfo> unitCrossInfoList = crossService.getUnitCrossInfosForCrossId(baseCrossId);
 			    //删除unit_cross_train中的数据
 				if( unitCrossInfoList != null && unitCrossInfoList.size() > 0){
 					String[]  unitCrossIds = new String[10];
