@@ -453,6 +453,8 @@ function CrossModel() {
 	self.saveCrossInfo = function() {  
 		showConfirmDiv("提示", "你确定要保存修改?", function (r) { 
 			commonJsScreenLock();
+			var result = ko.toJSON(self.currentCross);
+			console.log(result);
 			if(r){
 				$.ajax({
 					url : "cross/editBaseCorssInfo",
@@ -460,7 +462,7 @@ function CrossModel() {
 					type : "POST",
 					dataType : "json",
 					contentType : "application/json",
-					data :JSON.stringify(ko.toJSON(self.currentCross)),
+					data :result,
 					success : function(result) {     
 						if (result != null && result.code == "0") { 
 							// $("#cross_table_crossInfo").freezeHeader();  
@@ -811,9 +813,7 @@ function CrossRow(data) {
  
 
 function CrossRow(data) {
-	var self = this; 
-	
-	self.data = data;
+	var self = this;  
 	
 	self.visiableRow =  ko.observable(true); 
 	
@@ -864,9 +864,9 @@ function CrossRow(data) {
 	//车辆担当局 
 	self.tokenVehBureauShowValue = ko.computed(function(){ 
 			var result = "";
-			 if(self.data.tokenVehBureau != null && self.data.tokenVehBureau != "null"){
-				 var bs = self.data.tokenVehBureau.split("、"); 
-				 result = self.data.tokenVehBureau;
+			 if(data.tokenVehBureau != null && data.tokenVehBureau != "null"){
+				 var bs = data.tokenVehBureau.split("、"); 
+				 result = data.tokenVehBureau;
 				 for(var j = 0; j < bs.length; j++){
 					 for(var i = 0; i < gloabBureaus.length; i++){
 						 if(bs[j] == gloabBureaus[i].code){
@@ -890,9 +890,9 @@ function CrossRow(data) {
 	
 	self.tokenPsgBureauShowValue = ko.computed(function(){ 
 		var result = "";
-		 if(self.data.tokenPsgBureau != null && self.data.tokenPsgBureau != "null"){
-			 var bs = self.data.tokenPsgBureau.split("、"); 
-			 result = self.data.tokenPsgBureau;
+		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
+			 var bs = data.tokenPsgBureau.split("、"); 
+			 result = data.tokenPsgBureau;
 			 for(var j = 0; j < bs.length; j++){
 				 for(var i = 0; i < gloabBureaus.length; i++){
 					 if(bs[j] == gloabBureaus[i].code){
@@ -907,10 +907,10 @@ function CrossRow(data) {
 	
 	self.relevantBureauShowValue =  ko.computed(function(){ 
 		var result = "";
-		 if(self.data.relevantBureau != null && self.data.relevantBureau != "null"){  
-			 for(var j = 0; j < self.data.relevantBureau.length; j++){
+		 if(data.relevantBureau != null && data.relevantBureau != "null"){  
+			 for(var j = 0; j < data.relevantBureau.length; j++){
 				 for(var i = 0; i < gloabBureaus.length; i++){
-					 if(self.data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
+					 if(data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
 						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
 						 break;
 					 }
