@@ -61,11 +61,11 @@
 
                                     <shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: autoCheck, enable: canCheckLev1">校验</button>
-                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1, enable: canCheckLev1">客调审核</button>
+                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1, enable: canCheckLev1">审核</button>
                                     </shiro:hasPermission>
                                     
                                     <shiro:hasPermission name="JHPT.RJH.ZBZRSP"><!-- 值班主任审批权限 -->
-                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev2, enable: canCheckLev2">值班主任审核</button>
+                                        <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev2, enable: canCheckLev2">审核（下达）</button>
 									</shiro:hasPermission>
 
                                     <label class="control-label text-center pull-right paddingtop5">存在 <a style="color: #ff0000" data-bind="text: paramModel().unknownRunLine"></a> 条冗余运行线<span data-bind="text: checkStatus"></span></label>
@@ -81,21 +81,21 @@
                                     <thead>
                                     <tr>
                                         <shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
-                                            <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev1"/></th>
+                                            <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev1, enable: $root.canCheckLev1"/></th>
                                         </shiro:hasPermission>
                                        <shiro:hasPermission name="JHPT.RJH.ZBZRSP"><!-- 值班主任审批权限 -->
-                                            <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev2"/></th>
+                                            <th rowspan="2" class="text-center"><input class="checkbox-inline" type="checkbox" data-bind="checked: $root.allBtn, click: $root.selectAllLev2, enable: $root.canCheckLev2"/></th>
                                         </shiro:hasPermission>
-                                        <th rowspan="2" class="text-center">序号</th>
-                                        <th rowspan="2" class="text-center">车次</th>
-                                        <th rowspan="2" class="text-center">来源</th>
-                                        <th rowspan="2" class="text-center">类型</th>
-                                        <th rowspan="2" class="text-center">是否高线</th>
+                                        <th rowspan="2" class="text-center" style="vertical-align: middle">序号</th>
+                                        <th rowspan="2" class="text-center" style="vertical-align: middle">车次</th>
+                                        <th rowspan="2" class="text-center" style="vertical-align: middle">来源</th>
+                                        <th rowspan="2" class="text-center" style="vertical-align: middle">运行方式</th>
+                                        <th rowspan="2" class="text-center" style="vertical-align: middle">是否高线</th>
                                         <th colspan="2" class="text-center">始发/接入</th>
                                         <th colspan="2" class="text-center">终到/交出</th>
-                                        <th rowspan="2" class="text-center">上图状态</th>
-                                        <th rowspan="2" class="text-center">一审</th>
-                                        <th rowspan="2" class="text-center">二审</th>
+                                        <th rowspan="2" class="text-center" style="vertical-align: middle">上图状态</th>
+                                        <th rowspan="2" class="text-center" style="vertical-align: middle">一审</th>
+                                        <th rowspan="2" class="text-center" style="vertical-align: middle">二审</th>
                                         <th colspan="2" class="text-center">校验项</th>
 
                                     </tr>
@@ -143,25 +143,25 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-xs-1 col-md-1 col-lg-1 paddingtop5 paddingright0">
-                            <div class="row paddingtop30">
-                                <div class="col-xs-12 col-md-12  col-sm-12">
+                        <div class="col-xs-1 col-md-1 col-lg-1 paddingtop5 paddingright0 paddingleft0">
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12  col-sm-12 padding0">
                                     <div id="chart_01" style="height:253px; margin: 0 auto;"></div>
                                 </div>
                             </div>
                             <div class="row paddingtop30">
-                                <div class="col-xs-12 col-md-12  col-sm-12">
+                                <div class="col-xs-12 col-md-12  col-sm-12 padding0">
                                     <div id="chart_02" style="height:253px; margin:0 auto;"></div>
                                 </div>
                             </div>
                             <div class="row paddingtop30">
                                 <shiro:hasPermission name="JHPT.RJH.KDSP">
-                                    <div class="col-xs-12 col-md-12  col-sm-12">
+                                    <div class="col-xs-12 col-md-12  col-sm-12 padding0">
                                         <div id="chart_03" style="height:270px; margin:0 auto;"></div>
                                     </div>
                                 </shiro:hasPermission>
                                 <shiro:hasPermission name="JHPT.RJH.ZBZRSP">
-                                    <div class="col-xs-12 col-md-12  col-sm-12">
+                                    <div class="col-xs-12 col-md-12  col-sm-12 padding0">
                                         <div id="chart_04" style="height:270px; margin:0 auto;"></div>
                                     </div>
                                 </shiro:hasPermission>
