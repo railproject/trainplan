@@ -113,7 +113,7 @@
     <nav class="Navigation">
         <ul>
             <li>
-                <a href="http://10.1.186.116:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor:default;"><i class="fa fa-list-ol"></i>计划看板 </a>
+                <a href="http://10.1.186.116:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor: hand;"><i class="fa fa-list-ol"></i>计划看板 </a>
             </li>
             <li>
                <a target="contentFrame" class="menu_one"><i class="fa fa-bar-chart-o"></i>计划查询<i class="fa fa-caret-down pull-right"></i></a>
