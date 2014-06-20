@@ -112,41 +112,22 @@
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">
-            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            	AND t.RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
             </if>
         </if>
         <if test="checkFlag == 1 ">
             AND t.check_time is not null
-        </if>
-<<<<<<< HEAD
-     <!--    <if test="unitCreateFlag == 0 ">
-            AND CREAT_PLAN_TIME is null
         </if> 
-        <if test="unitCreateFlag == 1 ">
-            AND CREAT_PLAN_TIME is not null
-        </if> -->
-      <!--   <if test="startTime != null">  
-            AND ((CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
-        </if> -->
-        
-=======
->>>>>>> eecd86c8944c932ddc47c0afac1f5fffae01ae6e
+ 
        	<if test="startTime != null">  
        	      AND 
        	       <if test="endTime != null"> 
        	          ((
-       	       </if>
-<<<<<<< HEAD
-       	       (CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
-      	     <if test="endTime != null">  
-      	         AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime}))
-          		OR (CROSS_START_DATE &lt;= #{startTime} AND CROSS_END_DATE >=  #{endTime}))
-=======
-       	       (t.CROSS_START_DATE >= #{startTime} or t.CROSS_END_DATE >=  #{startTime})
+       	       </if> 
+       	       (t.CROSS_START_DATE >= #{startTime} or t.CROSS_END_DATE >=  #{startTime}) 
       	     <if test="endTime != null">  
       	         AND (t.CROSS_START_DATE &lt;= #{endTime} or t.CROSS_END_DATE &lt;=  #{endTime}))
-          		OR (t.CROSS_START_DATE &lt;= #{startTime} AND t.CROSS_END_DATE >=  #{endTime}))
->>>>>>> eecd86c8944c932ddc47c0afac1f5fffae01ae6e
+          		OR (t.CROSS_START_DATE &lt;= #{startTime} AND t.CROSS_END_DATE >=  #{endTime})) 
           	 </if> 
         </if> 
         <if test="startTime == null"> 

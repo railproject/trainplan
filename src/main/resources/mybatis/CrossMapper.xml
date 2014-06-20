@@ -195,13 +195,10 @@
         ELEC_SUPPLY,
         DEJ_COLLECT,
         AIR_CONDITION,
-        NOTE,
-<<<<<<< HEAD
-        CREAT_TIME 
-=======
-        RELEVANT_BUREAU,
-        CREAT_TIME
->>>>>>> eecd86c8944c932ddc47c0afac1f5fffae01ae6e
+        NOTE, 
+        CREAT_TIME, 
+        RELEVANT_BUREAU
+        
         )
         (
 

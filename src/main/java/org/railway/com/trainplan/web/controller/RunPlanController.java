@@ -15,10 +15,9 @@ import org.railway.com.trainplan.entity.PlanCheckInfo;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.RunPlanService;
 import org.railway.com.trainplan.service.ShiroRealm;
-<<<<<<< HEAD
-=======
+ 
 import org.railway.com.trainplan.service.dto.ParamDto;
->>>>>>> eecd86c8944c932ddc47c0afac1f5fffae01ae6e
+ 
 import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
@@ -68,14 +67,10 @@ public class RunPlanController {
 	 public Result getPlanCross(@RequestBody Map<String,Object> reqMap) throws Exception{
 		 Result result = new Result();
 		 try{ 
-<<<<<<< HEAD
 			 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 	    	if(user.getBureau() != null){
 	    		reqMap.put("currentBureau", user.getBureau());
-	    	}
-	    	
-=======
->>>>>>> eecd86c8944c932ddc47c0afac1f5fffae01ae6e
+	    	} 
 			 List<PlanCrossDto> runPlans = runPlanService.getPlanCross(reqMap);
 			 result.setData(runPlans);
 		 }catch(Exception e){
