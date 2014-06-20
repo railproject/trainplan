@@ -142,6 +142,15 @@
                     </ul>
                 </li>
 
+                <li>
+                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>日历运行图<i class="fa fa-caret-down pull-right"></i></a>
+                    <ul>
+                        <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-level-down"></i>始发统计</a></li>
+                        <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-level-up"></i>接入统计</a></li>
+                        <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-search"></i>明细查询</a></li>
+                    </ul>
+                </li>
+
                 <li><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="contentFrame" class="menu_one"><i class="fa fa-file"></i>技术资料 </a></li>
 	            <!-- 消息测试  发布时需要注释 -->
 	            <%-- <li><a target="contentFrame" class="menu_one"><i class="fa fa-road"></i>消息测试<i class="fa fa-caret-down pull-right"></i> </a>
