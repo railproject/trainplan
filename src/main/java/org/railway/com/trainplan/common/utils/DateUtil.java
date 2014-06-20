@@ -8,17 +8,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import org.hibernate.type.LocaleType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Duration;
-import org.joda.time.Interval;
+import org.joda.time.Hours;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.DateTimeFormat;
@@ -245,9 +246,38 @@ public class DateUtil {
 	}
 	
 	
+	/**
+	 * 计算两个时间的差值
+	 * @param dateStart 格式yyyy-MM-dd HH:mm:ss
+	 * @param dateStop 格式yyyy-MM-dd HH:mm:ss
+	 * @return
+	 */
+	public static int getBetweenMinite(String dateStart,String dateStop){
+		//String dateStart = "2012-01-14 09:30:58";
+	    //String dateStop = "2012-01-14 10:30:48";
+        int result = 0;
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	    Date d100 = null;
+	    Date d200 = null;
+
+	    try {
+	    	d100 = format.parse(dateStart);
+	    	d200 = format.parse(dateStop);
+
+	        DateTime dt100 = new DateTime(d100);
+	        DateTime dt200 = new DateTime(d200);
+
+	        result = Minutes.minutesBetween(dt100, dt200).getMinutes();
+	     } catch (Exception e) {
+	        e.printStackTrace();
+	     }
+           return result;
+	  }
 	
 	public static void main(String[] args) {
 	
+		System.err.println("length==" + "PFNYW".length());
 		
 		/**
 		 * 1.构造一个时间
@@ -371,9 +401,9 @@ public class DateUtil {
 	   /**
 	    * 8.日期的比较
 	    */
-		DateTime d10 = new DateTime("2012-02-28");  
-		DateTime d11 = new DateTime("2012-03-01");  
-		  
+		DateTime d10 = new DateTime("2014-06-19");  
+		DateTime d11 = new DateTime("2014-06-19");  
+		
 		//和系统时间比  
 		boolean b1 = d10.isAfterNow();  
 		boolean b2 = d10.isBeforeNow();  
@@ -407,41 +437,40 @@ public class DateUtil {
 		
 		//System.err.println(format(parseDate("2014-06-07 10:20:30"),"yyyy-MM-dd"));
 		//System.err.println(da.toString("yyyy-MM-dd"));
-		List<String> list = new ArrayList<String>();
-		List<String> list1  = new ArrayList<String>();
-		list1.add("A");
-		list1.add("B");
-		list1.add("C");
-		list1.add("E");
-		list1.add("F");
-		list1.add("G");
-		List<String> list2  = new ArrayList<String>();
-		list2.add("A");
-		list2.add("B");
-		list2.add("C");
-		list2.add("D");
-		list2.add("F");
-		list2.add("G");
 		
-		for(int i = 0 ;i<list1.size();i++){
-			String temp1 = list1.get(i);
-			list.add(temp1);
-			for(int k = 0;k<list2.size();k++){
-				String temp2 = list2.get(k);
-				if(!list1.contains(temp2)){
-					list.add(temp2);	
-				}
-			}
-		}
 		
-		System.err.println(list);
+		
+		String dateStart = "2012-01-14 11:30:58";
+	    String dateStop = "2012-01-14 10:30:48";
+
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	    Date d100 = null;
+	    Date d200 = null;
+
+	    try {
+	    	d100 = format.parse(dateStart);
+	    	d200 = format.parse(dateStop);
+
+	        DateTime dt100 = new DateTime(d100);
+	        DateTime dt200 = new DateTime(d200);
+
+	       // System.out.print(Days.daysBetween(dt100, dt200).getDays() + " days, ");
+	        //System.out.print(Hours.hoursBetween(dt100, dt200).getHours()+ " hours, ");
+	        System.out.print(Minutes.minutesBetween(dt100, dt200).getMinutes() + " minutes, ");
+	       
+	     } catch (Exception e) {
+	        e.printStackTrace();
+	     }
+
+	  }
+	
+	  
+	
 	}
 		
 		
 	
-	
-	
-}
 
 
 

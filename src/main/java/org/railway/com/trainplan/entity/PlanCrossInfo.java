@@ -38,6 +38,7 @@ public class PlanCrossInfo {
 		private String createTime;
 		private String vehicle1;
 		private String vehicle2;
+		private String relevantBureau;//相关局局码
 		private int groupTotalNbr;
 		private int elecSupply;
 		private int dejCollect;
@@ -45,6 +46,12 @@ public class PlanCrossInfo {
 		private int checkType;
 		
 		
+		public String getRelevantBureau() {
+			return relevantBureau;
+		}
+		public void setRelevantBureau(String relevantBureau) {
+			this.relevantBureau = relevantBureau;
+		}
 		public String getTokenVehBureau() {
 			return tokenVehBureau;
 		}

@@ -17,6 +17,7 @@ import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.entity.*;
 import org.railway.com.trainplan.exceptions.*;
 import org.railway.com.trainplan.repository.mybatis.*;
+import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -330,8 +331,8 @@ public class RunPlanService {
 			runPlans.addAll(runPlanTrainMap.values());   
 			return runPlans;
 	}
-
-	public List<RunPlanTrainDto> getPlanCross(Map<String, Object> reqMap) {
+	        
+	public List<PlanCrossDto> getPlanCross(Map<String, Object> reqMap) {
 		
 		return baseDao.selectListBySql(Constants.GET_PLAN_CROSS, reqMap);
 	}
@@ -571,6 +572,40 @@ public class RunPlanService {
 		
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
 	}
+	
+	/**
+	 * 保存PlanCheckInfo到数据库plan_check中
+	 * @param planCheckInfo
+	 * @return
+	 */
+	public int savePlanCheckInfo(PlanCheckInfo planCheckInfo){
+		return baseDao.insertBySql(Constants.CROSSDAO_INSERT_PLAN_CHECK_INFO, planCheckInfo);
+	}
+	
+	
+	/**
+	 * 通过planCrossId查询planCheckInfo对象
+	 * @param planCrossId
+	 * @return
+	 */
+	public List<PlanCheckInfo> getPlanCheckInfoForPlanCrossId(String planCrossId){
+		return baseDao.selectListBySql(Constants.CROSSDAO_GET_PLANCHECKINFO_FOR_PLANCROSSID, planCrossId);
+	}
+	
+	/**
+	 * 更新表plan_cross中checkType的值
+	 * @param planCrossId
+	 * @param checkType 审核状态（0:未审核1:部分局审核2:途经局全部审核）
+	 * @return
+	 */
+	public int updateCheckTypeForPlanCrossId(String planCrossId,int checkType){
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("planCrossId", planCrossId);
+		reqMap.put("checkType", checkType);
+		return baseDao.updateBySql(Constants.CROSSDAO_UPDATE_CHECKTYPE_FOR_PLANCROSSID, reqMap);
+	}
+	
+	
 	
 	private int deletePlanTrainStnsByPlanCrossIds(String[] crossIdsArray) {
 		StringBuffer bf = new StringBuffer();

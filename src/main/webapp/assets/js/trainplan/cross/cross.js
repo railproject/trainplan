@@ -42,6 +42,8 @@ function CrossModel() {
 	
 	self.times = ko.observableArray();
 	
+	self.currentTrainInfoMessage = ko.observable("");
+	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
 	
@@ -90,9 +92,13 @@ function CrossModel() {
 	
 	
 	
-	self.setCurrentTrain = function(row){
+	self.setCurrentTrain = function(row, e){
+		console.log("---------------------------------------");
+		console.log(e);
 		self.currentTrain(row); 
-		$("#cross_train_time_dlg").dialog("setTitle", "详情时刻表     车次:" + self.currentTrain().trainNbr);
+		
+		self.currentTrainInfoMessage("车次：" + row.trainNbr + "&nbsp;&nbsp;&nbsp;" + row.startStn + "——" + row.endStn);
+		//$("#cross_train_time_dlg").dialog("setTitle", "详情时刻表     车次:" + self.currentTrain().trainNbr);
 		self.times.remove(function(item){
 			return true;
 		});
@@ -447,7 +453,7 @@ function CrossModel() {
 			commonJsScreenLock();
 			if(r){
 				$.ajax({
-					url : "cross/saveCrossInfo",
+					url : "cross/editBaseCorssInfo",
 					cache : false,
 					type : "POST",
 					dataType : "json",
@@ -478,19 +484,16 @@ function CrossModel() {
 		$("#file_upload_dlg").dialog("open"); 
 	};
 	
-	self.showCrossMapDlg = function(n, e){ 
+	self.showCrossMapDlg = function(n){ 
 		if(!self.currentCross().crossId || self.currentCross().crossId == ''){ 
-			if(e.target.checked){
-				e.target.checked = false;
-				showErrorDialog("没有选中记录");
-			} 
+			showWarningDialog("请先选择交路"); 
 			return;
-		}
-		var crossId = self.currentCross().crossId; 
-		if(self.searchModle().showCrossMap() == 0){ 
+		} 
+		var crossId = self.currentCross().crossId;  
+		if($('#cross_map_dlg').is(":hidden")){  
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + crossId);
 			$('#cross_map_dlg').dialog({ title: "基本交路图     交路名:" + self.currentCross().crossName(), autoOpen: true, modal: false, draggable: true, resizable:true });
-		};
+		}
 	};  
 	
 	self.showCrossTrainDlg = function(){
@@ -499,19 +502,26 @@ function CrossModel() {
 	
 	self.showCrossTrainTimeDlg = function(){   
 		if(self.currentTrain() == null){
+			showWarningDialog("请先选择列车");
 			return;
 		}
-		$("#cross_train_time_dlg").dialog({title: "详情时刻表     车次:" + self.currentTrain().trainNbr,draggable: true, resizable:true});
+		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true});
 		  
 	};
 	
 	self.deleteCrosses = function(){  
 		var crossIds = "";
 		var crosses = self.crossRows.rows(); 
+		var scrollTop = $("#crossInfo_Data").scrollTop();
+		$("#crossInfo_Data").resize(function(){ 
+			$("#crossInfo_Data").scrollTop(scrollTop);
+		});
+		 
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].crossId; 
+				
 			}; 
 		} 
 		if(crossIds == ""){
@@ -531,7 +541,7 @@ function CrossModel() {
 					}),
 					success : function(result) {     
 						if(result.code == 0){ 
-							self.crossRows.reFresh();
+							self.crossRows.reFresh(); 
 							showSuccessDialog("删除交路成功"); 
 						}else{
 							showErrorDialog("删除交路失败");
@@ -541,9 +551,9 @@ function CrossModel() {
 	        }
 	        
 		});
-//		showSuccessDialogWithFunc(" 确定要执行删除操作?", function(){
-//		
-//		});
+		showSuccessDialogWithFunc(" 确定要执行删除操作?", function(){
+		
+		});
 		
 	};
 	
@@ -1073,6 +1083,7 @@ function TrainTimeRow(data) {
 	self.stepStr = GetDateDiff(data); 
 	self.trackName = filterValue(data.trackName);  
 	self.runDays = data.runDays;
+	self.stationFlag = data.stationFlag
 	 
 }; 
 

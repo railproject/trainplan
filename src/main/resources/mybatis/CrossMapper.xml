@@ -195,6 +195,7 @@
         DEJ_COLLECT,
         AIR_CONDITION,
         NOTE,
+        RELEVANT_BUREAU,
         CREAT_TIME
         )
         (
@@ -234,6 +235,7 @@
 	        #{item.dejCollect,jdbcType=NUMERIC},
 	        #{item.airCondition,jdbcType=NUMERIC},
 	        #{item.note,jdbcType=VARCHAR},
+	        #{item.relevantBureau,jdbcType=VARCHAR},
 	        sysdate
 	      
 	       from dual
@@ -244,7 +246,27 @@
 
     </insert>
 
-
+  <insert id="insertPlanCheckInfo" parameterType="org.railway.com.trainplan.entity.PlanCheckInfo">
+   insert into plan_check (
+          PLAN_CHECK_ID,
+          PLAN_CROSS_ID,
+          START_DATE,
+          END_DATE,
+          CHECK_PEOPLE,
+          CHECK_TIME,
+          CHECK_DEPT,
+          CHECK_BUREAU)values(
+            #{planCheckId},
+            #{planCrossId},
+            #{startDate},
+            #{endDate},
+            #{checkPeople},
+            sysdate,
+            #{checkDept},
+            #{checkBureau}
+	       )
+  
+  </insert>
   <update id="updateBaseCross" parameterType="org.railway.com.trainplan.entity.CrossInfo">
   
     update base_cross

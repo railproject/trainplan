@@ -40,6 +40,7 @@ import org.railway.com.trainplan.entity.BaseCrossTrainInfo;
 import org.railway.com.trainplan.entity.BaseTrainInfo;
 import org.railway.com.trainplan.entity.CrossInfo;
 import org.railway.com.trainplan.entity.CrossTrainInfo;
+import org.railway.com.trainplan.entity.PlanCheckInfo;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.SubCrossInfo;
 import org.railway.com.trainplan.entity.TrainLineInfo;
@@ -791,6 +792,7 @@ public class CrossService{
 		}
 		return baseCrossDto;
 	}
+	
 	
 	
 	public void actionExcel(InputStream inputStream, String chartId, String startDay, String chartName, String addFlag) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {

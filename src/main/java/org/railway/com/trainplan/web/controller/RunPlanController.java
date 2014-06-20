@@ -2,12 +2,17 @@ package org.railway.com.trainplan.web.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.PlanCheckInfo;
 import org.railway.com.trainplan.service.RunPlanService;
+import org.railway.com.trainplan.service.ShiroRealm;
+import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +54,7 @@ public class RunPlanController {
 	 public Result getPlanCross(@RequestBody Map<String,Object> reqMap) throws Exception{
 		 Result result = new Result();
 		 try{ 
-			 List<RunPlanTrainDto> runPlans = runPlanService.getPlanCross(reqMap);
+			 List<PlanCrossDto> runPlans = runPlanService.getPlanCross(reqMap);
 			 result.setData(runPlans);
 		 }catch(Exception e){
 			 result.setCode("-1");
@@ -77,5 +82,56 @@ public class RunPlanController {
 		 return result;
 	} 
 	 
-
+	/**
+	 * 审核交路
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkCrossRunLine", method = RequestMethod.POST)
+	public Result checkCrossRunLine(@RequestBody Map<String,Object> reqMap){
+		 Result result = new Result();
+		 try{
+			 String planCrossId = StringUtil.objToStr(reqMap.get("planCrossId"));
+			 //计划审核起始时间（格式：yyyymmdd）
+			 String startDate = StringUtil.objToStr(reqMap.get("startTime"));
+			 //计划审核终止时间（格式：yyyymmdd）
+			 String endDate = StringUtil.objToStr(reqMap.get("endTime"));
+			 //相关局局码
+			 String relevantBureau = StringUtil.objToStr(reqMap.get("relevantBureau"));
+			 
+			 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+			 PlanCheckInfo planCheckInfo = new PlanCheckInfo();
+			 planCheckInfo.setPlanCheckId(UUID.randomUUID().toString());
+			 planCheckInfo.setPlanCrossId(planCrossId);
+			 planCheckInfo.setStartDate(startDate);
+			 planCheckInfo.setEndDate(endDate);
+			 planCheckInfo.setCheckBureau(user.getBureau());
+			 planCheckInfo.setCheckDept(user.getDeptName());
+			 planCheckInfo.setCheckPeople(user.getUsername());
+			 int count = runPlanService.savePlanCheckInfo(planCheckInfo); 
+			 //根据planCrossid查询planCheckinfo对象
+			 List<PlanCheckInfo> list = runPlanService.getPlanCheckInfoForPlanCrossId(planCrossId);
+			 if(list != null && list.size() > 0 ){
+				 if(relevantBureau.length() == list.size()){
+					 //途经局已经全部审核
+					 runPlanService.updateCheckTypeForPlanCrossId(planCrossId,2);
+				 }else{
+					 //部分局已经审核
+					 runPlanService.updateCheckTypeForPlanCrossId(planCrossId,1);
+				 }
+			 }
+			 logger.info("checkCrossRunLine~~~~count==" + count);
+		 }catch(Exception e){
+			 logger.error("deleteUnitCorssInfo error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	 
+		 }
+		 return result;
+	} 
+	
+	
+	
+	
+	
 }
