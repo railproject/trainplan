@@ -20,6 +20,11 @@ function ApplicationModel() {
 
     self.currCheckNbr = ko.observable(0);
 
+    self.openOuterTrainLine = function() {
+        var url = "outer/trainline/" + $("#date_selector").val();
+        top._getDialog(url, {title: "冗余运行线", height: $(window).height(), width: 1300}).dialog("open");
+    }
+
     self.search = function() {
         self.tableModel().loadTable();
         self.paramModel().loadPies();

@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>铁路运输调度计划平台</title>
+    <link type="text/css" href="${ctx}/assets/css/minified/jquery-ui.min.css" rel="stylesheet"/>
     <link href="${ctx}/assets/css/custom-bootstrap.css" rel="stylesheet">
     <!--font-awesome-->
     <link  type="text/css" rel="stylesheet" href="${ctx}/assets/css/font-awesome.min.css"/>
@@ -16,7 +17,9 @@
     <link href="${ctx}/assets/css/style.css" rel="stylesheet">
     <script src="${ctx}/assets/js/html5.js"></script>
     <script src="${ctx}/assets/js/jquery.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/minified/jquery-ui.min.js"></script>
     <script src="${ctx}/assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/trainplan/trainplan_dialog.js"></script>
     <script type="text/javascript" defer="defer">
 
         //被嵌入的Iframe根据不同的屏幕高度自适应

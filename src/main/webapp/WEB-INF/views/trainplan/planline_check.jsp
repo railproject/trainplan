@@ -68,7 +68,7 @@
                                         <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev2, enable: canCheckLev2">审核（下达）</button>
 									</shiro:hasPermission>
 
-                                    <label class="control-label text-center pull-right paddingtop5">存在 <a style="color: #ff0000" data-bind="text: paramModel().unknownRunLine"></a> 条冗余运行线<span data-bind="text: checkStatus"></span></label>
+                                    <label class="control-label text-center pull-right paddingtop5">存在 <a style="color: #ff0000" href="#" data-bind="text: paramModel().unknownRunLine, click: openOuterTrainLine"></a> 条冗余运行线<span data-bind="text: checkStatus"></span></label>
                                 </div>
 
                             </form>

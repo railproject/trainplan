@@ -205,4 +205,11 @@ public class IndexController {
 
         return modelAndView;
     }
+
+    @RequestMapping(value = "outer/trainline/{date}", method = RequestMethod.GET)
+    public ModelAndView outerTrainLine(@PathVariable String date, ModelAndView modelAndView) {
+        modelAndView.setViewName("trainplan/outer_train_line");
+
+        return modelAndView;
+    }
 }
