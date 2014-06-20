@@ -197,7 +197,7 @@ var all_role = "<%=userRolesString %>";
 												<tbody style="padding:0">
 													 <tr style="padding:0">
 													   <td colspan="6" style="padding:0">
-															 <div style="height: 450px; overflow-y:auto;"> 
+															 <div id="crossInfo_Data" style="height: 450px; overflow-y:auto;"> 
 																<table class="table table-bordered table-striped table-hover" >
 																	<tbody data-bind="foreach: crossRows.rows">
 																		<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}" >
@@ -552,11 +552,22 @@ var all_role = "<%=userRolesString %>";
 				<div class="row" style="margin: 15px 10px 10px 10px;">
 					<div class="pull-left" style="width: 100%;">
 					<section class="panel panel-default" >
-				         <div class="panel-heading"><i class="fa fa-table"></i>列车信息</div>
+				         <div class="panel-heading">
+				         
+				         <span>
+			              <i class="fa fa-table"></i>列车信息   
+			                           
+										<a  type="button" style="margin-left: 15px;margin-top: -5px" class="btn btn-success" data-toggle="modal" data-target="#"
+										id="cross_train_save" data-bind="
+										click: showCrossMapDlg">交路图</a>
+										<a  type="button" style="margin-left: 15px;margin-top: -5px" class="btn btn-success" data-toggle="modal" data-target="#"
+										id="cross_train_save" data-bind="click: showCrossTrainTimeDlg">时刻表</a>
+					   </span>
+				         </div>
 				          <div class="panel-body" style="overflow-y:auto">
 							<div class="table-responsive">
 								
-								<div class="row" style="margin: 5px 5px 5px 5px;">
+							<!-- 	<div class="row" style="margin: 5px 5px 5px 5px;">
 									    <a type="button"  
 											class="btn btn-success pull-left" data-toggle="modal" data-target="#"
 											id="cross_train_delete" data-bind="click: showCrossTrainTimeDlg">时刻表</a>  
@@ -567,7 +578,7 @@ var all_role = "<%=userRolesString %>";
 												class="form-control"> 
 											<label for="exampleInputEmail5" class="control-label pull-left">
 											 显示交路图</label>  
-								</div>
+								</div> -->
 								
 								<table class="table table-bordered table-striped table-hover"
 									id="cross_trainInfo">
@@ -700,18 +711,19 @@ var all_role = "<%=userRolesString %>";
 	</div>  
 	</div> 
 	<!--详情时刻表--> 
-	<div id="cross_train_time_dlg" class="easyui-dialog" title="详情时刻表"
+	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 600px; height: 500px; padding: 10px; "> 
+		style="width: 500px; height: 500px; padding: 10px; "> 
 			      <!--panle-heading-->
 			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 				       <ul class="nav nav-tabs" >
-						  <li class="active"><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
-						  <li><a style="padding:3px 10px;" href="#someTimes" data-toggle="tab">简点</a></li> 
+						  <li class="active"><a style="padding:3px 10px;" href="#simpleTimes" data-toggle="tab">简点</a></li> 
+						  <li><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
+						  <li style="float:right" ><span style="font: -webkit-small-control;" data-bind="html: currentTrainInfoMessage()"></span></li>
 						</ul> 
 						<!-- Tab panes -->
 						<div class="tab-content" >
-						  <div class="tab-pane active" id="allTimes" > 
+						  <div class="tab-pane active" id="simpleTimes" > 
 					      	<div class="table-responsive" > 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
@@ -719,9 +731,9 @@ var all_role = "<%=userRolesString %>";
 							          <th style="width:5%">序号</th>
 					                  <th style="width:20%">站名</th>
 					                  <th style="width:5%">路局</th>
-					                  <th style="width:15%">到达时间</th>
-					                  <th style="width:15%">出发时间</th>
-					                  <th style="width:15%">停留时间</th>
+					                  <th style="width:15%">到达</th>
+					                  <th style="width:15%">出发</th>
+					                  <th style="width:15%">停时</th>
 					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
 					                 </tr>
@@ -732,15 +744,15 @@ var all_role = "<%=userRolesString %>";
 												 <div style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: times">
-												           <tr>  
-															<td style="width:6.5%" align="center" data-bind=" text: $index() + 1"></td>
+												           <tr data-bind="visible: stationFlag != 'BTZ'">  
+															<td style="width:7.5%" align="center" data-bind=" text: $index() + 1"></td>
 															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
-															<td style="width:6.5%" align="center" data-bind="text: bureauShortName"></td>
-															<td style="width:15.3%" align="center" data-bind="text: sourceTime"></td>
-															<td style="width:15.3%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:7.5%" align="center" data-bind="text: bureauShortName"></td>
+															<td style="width:14.3%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:14.3%" align="center" data-bind="text: targetTime"></td>
 															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
 															<td style="width:10%" align="center" data-bind="text: runDays"></td>
-															<td style="width:12%" align="center" data-bind="text: trackName"></td>
+															<td style="width:10%" align="center" data-bind="text: trackName"></td>
 												        	</tr>
 												        </tbody>
 													</table> 
@@ -751,7 +763,7 @@ var all_role = "<%=userRolesString %>";
 						        </table>
 			        		</div>   
 			        	</div>
-			        	<div class="tab-pane" id="someTimes" > 
+			        	<div class="tab-pane" id="allTimes" > 
 					      	<div class="table-responsive" > 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
@@ -773,14 +785,14 @@ var all_role = "<%=userRolesString %>";
 													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: times">
 												           <tr>  
-															<td style="width:6.5%" align="center" data-bind=" text: $index() + 1"></td>
+															<td style="width:7.5%" align="center" data-bind=" text: $index() + 1"></td>
 															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
-															<td style="width:6.5%" align="center" data-bind="text: bureauShortName"></td>
-															<td style="width:15.3%" align="center" data-bind="text: sourceTime"></td>
-															<td style="width:15.3%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:7.5%" align="center" data-bind="text: bureauShortName"></td>
+															<td style="width:14.3%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:14.3%" align="center" data-bind="text: targetTime"></td>
 															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
 															<td style="width:10%" align="center" data-bind="text: runDays"></td>
-															<td style="width:12%" align="center" data-bind="text: trackName"></td>
+															<td style="width:10%" align="center" data-bind="text: trackName"></td>
 												        	</tr>
 												        </tbody>
 													</table> 

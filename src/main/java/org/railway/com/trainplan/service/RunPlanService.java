@@ -17,6 +17,7 @@ import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.entity.*;
 import org.railway.com.trainplan.exceptions.*;
 import org.railway.com.trainplan.repository.mybatis.*;
+import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -331,7 +332,7 @@ public class RunPlanService {
 			return runPlans;
 	}
 
-	public List<RunPlanTrainDto> getPlanCross(Map<String, Object> reqMap) {
+	public List<PlanCrossDto> getPlanCross(Map<String, Object> reqMap) {
 		
 		return baseDao.selectListBySql(Constants.GET_PLAN_CROSS, reqMap);
 	}
