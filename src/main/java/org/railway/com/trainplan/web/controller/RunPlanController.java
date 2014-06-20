@@ -12,6 +12,7 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.PlanCheckInfo;
 import org.railway.com.trainplan.service.RunPlanService;
 import org.railway.com.trainplan.service.ShiroRealm;
+import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class RunPlanController {
 	 public Result getPlanCross(@RequestBody Map<String,Object> reqMap) throws Exception{
 		 Result result = new Result();
 		 try{ 
-			 List<RunPlanTrainDto> runPlans = runPlanService.getPlanCross(reqMap);
+			 List<PlanCrossDto> runPlans = runPlanService.getPlanCross(reqMap);
 			 result.setData(runPlans);
 		 }catch(Exception e){
 			 result.setCode("-1");
