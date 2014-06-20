@@ -1,5 +1,6 @@
 package org.railway.com.trainplan.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -8,13 +9,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
+import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.PlanCheckInfo;
+import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.RunPlanService;
 import org.railway.com.trainplan.service.ShiroRealm;
+import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +33,12 @@ public class RunPlanController {
 	 private static Log logger = LogFactory.getLog(CrossController.class.getName());
 	 @Autowired
 	 private RunPlanService runPlanService;
+	 
+	 @Autowired
+	 private CommonService commonService ;
+	 
+	 @Autowired
+	 private AmqpTemplate amqpTemplate;
 	 
 	 @RequestMapping(method = RequestMethod.GET)
      public String runPlan() {
@@ -131,6 +142,47 @@ public class RunPlanController {
 	} 
 	
 	
+	/**
+	 * 按照交路生成开行计划
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/handleTrainLinesWithCross", method = RequestMethod.POST)
+	public Result handleTrainLinesWithCross(@RequestBody Map<String,Object> reqMap){
+		Result result  = new Result();
+		try{
+			
+			String startDate = DateUtil.format(DateUtil.parse(StringUtil.objToStr(reqMap.get("startDate"))), "yyyyMMdd");
+			String endDate = DateUtil.format(DateUtil.parse(StringUtil.objToStr(reqMap.get("endDate"))), "yyyyMMdd");
+			String planCrossIds = StringUtil.objToStr(reqMap.get("planCrossIds"));
+			logger.debug("startDate==" + startDate);
+			logger.debug("endDate==" + endDate);
+			logger.debug("planCrossIds==" + planCrossIds);
+			if(planCrossIds != null && planCrossIds.length() > 0){
+				List<String> planCrossIdList = new ArrayList<String>();
+				String[] planCrossIdsArray = planCrossIds.split(",");
+				for(String planCrossId : planCrossIdsArray){
+					planCrossIdList.add(planCrossId);
+				}
+				List<ParamDto> listDto = runPlanService.getTotalTrainsForPlanCrossIds(startDate,endDate,planCrossIdList);
+				if(listDto != null && listDto.size() > 0){
+					String jsonStr = commonService.combinationMessage(listDto);
+					//向rabbit发送消息
+					amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+						
+				}	
+			}
+			
+			
+	    }catch(Exception e){
+	    	logger.error("handleTrainLines error==" + e.getMessage());
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+	    }
+		
+		return result;
+	}
 	
 	
 	

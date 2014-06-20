@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.javasimon.aop.Monitored;
@@ -14,6 +18,7 @@ import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.TrainType;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.repository.mybatis.LjzdMybatisDao;
+import org.railway.com.trainplan.service.dto.ParamDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,6 +127,42 @@ public class CommonService {
        }
     
     
-	    
+       /**
+   	 * 组装发送到rabbit_MQ的字符串
+   	 * @param listDto
+   	 * @return
+   	 */
+   	public  String  combinationMessage(List<ParamDto> listDto) throws Exception{
+   	
+   		    JSONArray  jsonArray = new JSONArray();
+               if(listDto != null && listDto.size() > 0){
+   				
+   				for(ParamDto dto : listDto){
+   					
+   					//TODO 判断表plan_train中字段CHECK_LEV1_TYPE，当CHECK_LEV1_TYPE=2时才能生成运行线
+   					
+   					//组装发往rabbit的报文
+   					JSONObject  temp = new JSONObject();
+   					temp.put("sourceEntityId", dto.getSourceEntityId());
+   					temp.put("planTrainId", dto.getPlanTrainId());
+   					temp.put("time", dto.getTime());
+   					temp.put("source", dto.getSource());
+   					temp.put("action", dto.getAction());
+   					jsonArray.add(temp);
+   				}
+   			}
+             //组装发送报文
+   			JSONObject  json = new JSONObject();
+   			JSONObject head = new JSONObject();
+   			head.put("event", "trainlineEvent");
+   			head.put("requestId", UUID.randomUUID().toString());
+   			head.put("batch", 1);
+   			head.put("user", "test");
+   			json.put("head", head);
+   			json.put("param", jsonArray);
+   			
+   			return json.toString();
+   	}
+   	
 	    
 }

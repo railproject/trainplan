@@ -62,6 +62,8 @@ public class Constants {
 	public static final String TRAINPLANDAO_UPDATE_PLANFLAG = "trainPlanDao.updatePlanTrainDaylyPlanFlag";
 	//根据路局名称和运行时间查询列车
 	public static final String TRAINPLANDAO_GET_TOTALTRAINS = "trainPlanDao.getTotalTrains";
+	//根据planCrossId查询需要上图的列车信息
+	public static final String TRAINPLANDAO_GET_TOTALTRAINS_FOR_PLAN_CROSS_ID = "trainPlanDao.getTotalTrainsForPlanCrossId";  
 	//  getTrainShortInfo
 	public static final String TRAINPLANDAO_GET_TRAIN_SHORTINFO = "trainPlanDao.getTrainShortInfo";
 	//对表train_plan插入计划数据 addTrainPlan
