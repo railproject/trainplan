@@ -14,8 +14,18 @@ public class PlanCrossDto {
 	//审核状态（0:未审核1:部分局审核2:途经局全部审核）
 	private int checkType; 
     private String relevantBureau;
-	
+    //已审核局列表，以逗号分隔，比如：B,C,D
+	private String checkedBureau;
     
+	
+	public String getCheckedBureau() {
+		return checkedBureau;
+	}
+
+	public void setCheckedBureau(String checkedBureau) {
+		this.checkedBureau = checkedBureau;
+	}
+
 	public String getRelevantBureau() {
 		return relevantBureau;
 	}
