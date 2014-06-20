@@ -345,6 +345,7 @@
         NOTE  as  note,
         CREAT_PEOPLE  as createPeople ,
         CREAT_PEOPLE_ORG  as createPeopleOrg ,
+        RELEVANT_BUREAU as relevantBureau,
         CREAT_TIME  as  createTime 
         from base_cross where 1=1
         <if test="crossId != null">
@@ -889,7 +890,9 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         TOKEN_VEH_BUREAU,TOKEN_VEH_DEPT,TOKEN_VEH_DEPOT,TOKEN_PSG_BUREAU,
         TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
         DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
-        CREAT_PEOPLE_ORG,CREAT_TIME)
+        CREAT_PEOPLE_ORG,
+        RELEVANT_BUREAU,
+        CREAT_TIME)
         (<foreach collection="list" item="item" index="index"
                   separator="UNION">
         SELECT
@@ -904,6 +907,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
         #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
         #{item.createPeopleOrg,jdbcType=VARCHAR},
+        #{item.relevantBureau,jdbcType=VARCHAR},
         sysdate
         from dual
     </foreach>
