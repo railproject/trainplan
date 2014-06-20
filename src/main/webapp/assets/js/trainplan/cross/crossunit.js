@@ -752,7 +752,6 @@ function BureausRow(data) {
 
 function CrossRow(data) {
 	var self = this; 
-	self.data = data;
 	self.visiableRow =  ko.observable(true); 
 	
 	self.selected =  ko.observable(0); 
@@ -846,10 +845,10 @@ function CrossRow(data) {
 	});
 	self.relevantBureauShowValue =  ko.computed(function(){ 
 		var result = "";
-		 if(self.data.relevantBureau != null && self.data.relevantBureau != "null"){  
-			 for(var j = 0; j < self.data.relevantBureau.length; j++){
+		 if(data.relevantBureau != null && data.relevantBureau != "null"){  
+			 for(var j = 0; j < data.relevantBureau.length; j++){
 				 for(var i = 0; i < gloabBureaus.length; i++){
-					 if(self.data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
+					 if(data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
 						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
 						 break;
 					 }
