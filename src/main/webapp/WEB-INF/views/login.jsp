@@ -20,7 +20,7 @@
 <body>
 <div class="login">
     <div class="login_backgroud">
-        <div class="login_overlay">
+        <div class="login_overlay" style="width: 553px">
             <div class="login-logo"></div>
             <div class="login_input">
                 <div class="form-group paddingtop30">
