@@ -119,7 +119,7 @@
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>发布计划<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>开性计划审核</a></li>
+                        <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>开行计划审核</a></li>
                         <li><a href="#" target="contentFrame"><i class="fa fa-external-link"></i>交路/车底计划审核</a></li>
                         <li><a href="#" target="contentFrame"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
                         <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>日历计划发布</a></li>
