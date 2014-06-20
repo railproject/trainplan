@@ -298,9 +298,7 @@ function commonJsScreenUnLock() {
 	//屏幕解锁 Screen Lock FX screen unlock  
 	commonLockNum--;
 	if(commonLockNum > 0){
-		console.log("----------------commonLockNum---11----" + commonLockNum); 
 	}else{
-		console.log("----------------commonLockNum---00----" + commonLockNum); 
 		$("#common_div_screen_modal").modal('hide');
 	}  
 };
@@ -316,7 +314,6 @@ function commonJsScreenLock(loackNum) {
 	}else{
 		commonLockNum = loackNum;
 	}  
-	console.log("----------------commonLockNum-------" + commonLockNum);
 	$("#common_div_screen_modal").modal('show').css({
         "margin-top": "230px"
     });

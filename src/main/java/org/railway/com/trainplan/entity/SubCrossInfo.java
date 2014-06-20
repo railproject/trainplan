@@ -15,8 +15,15 @@ public class SubCrossInfo {
 	private String checkFlag;
 	private String createTime;
 	private String chartId;
+	private String relevantBureau;
 	
    
+	public String getRelevantBureau() {
+		return relevantBureau;
+	}
+	public void setRelevantBureau(String relevantBureau) {
+		this.relevantBureau = relevantBureau;
+	}
 	public String getChartId() {
 		return chartId;
 	}

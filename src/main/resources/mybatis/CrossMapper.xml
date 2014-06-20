@@ -46,6 +46,7 @@
 		unit_cross_id as unitCrossId,
 		base_cross_id as baseCrossId,
 		base_chart_id as baseChartId,
+		RELEVANT_BUREAU as relevantBureau,
 		base_chart_name as baseChartName,
 		cross_start_date as crossStartDate,
 		cross_end_date as crossEndDate,
@@ -119,7 +120,7 @@
         BASE_CHART_NAME as chartName,
         CROSS_START_DATE as crossStartDate,
         CROSS_END_DATE as crossEndDate,
-
+		RELEVANT_BUREAU as relevantBureau,
         CROSS_NAME as crossName,
         CROSS_SPARE_NAME as crossSpareName,
         ALTERNATE_DATE as alterNateDate,
@@ -175,7 +176,7 @@
         CROSS_SPARE_NAME,
         SPARE_FLAG,
         GROUP_TOTAL_NBR,
-        PAIR_NBR,
+        PAIR_NBR, 
         HIGHLINE_FLAG,
         HIGHLINE_RULE,
         COMMONLINE_RULE,
@@ -195,7 +196,7 @@
         DEJ_COLLECT,
         AIR_CONDITION,
         NOTE,
-        CREAT_TIME
+        CREAT_TIME 
         )
         (
 
@@ -233,7 +234,7 @@
 	        #{item.elecSupply,jdbcType=NUMERIC},
 	        #{item.dejCollect,jdbcType=NUMERIC},
 	        #{item.airCondition,jdbcType=NUMERIC},
-	        #{item.note,jdbcType=VARCHAR},
+	        #{item.note,jdbcType=VARCHAR} 
 	        sysdate
 	      
 	       from dual
@@ -281,7 +282,7 @@
         BASE_CHART_NAME as chartName,
         CROSS_START_DATE as crossStartDate,
         CROSS_END_DATE as crossEndDate,
-
+  		RELEVANT_BUREAU as relevantBureau,
         CROSS_NAME as crossName,
         CROSS_SPARE_NAME as crossSpareName,
         ALTERNATE_DATE as alterNateDate,
@@ -392,7 +393,8 @@ where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID order by sort
         NOTE  as  note,
         CREAT_PEOPLE  as createPeople ,
         CREAT_PEOPLE_ORG  as createPeopleOrg ,
-        CREAT_TIME  as  createTime
+        CREAT_TIME  as  createTime,
+         RELEVANT_BUREAU as relevantBureau
         from unit_cross where unit_cross_id=#{crossId}
 
     </select>
@@ -441,7 +443,8 @@ where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID order by sort
         NOTE  as  note,
         CREAT_PEOPLE  as createPeople ,
         CREAT_PEOPLE_ORG  as createPeopleOrg ,
-        CREAT_TIME  as  createTime
+        CREAT_TIME  as  createTime,
+         RELEVANT_BUREAU as relevantBureau
 
         from unit_cross where UNIT_CROSS_ID=#{unitCrossId}
     </select>
@@ -931,7 +934,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         (<foreach collection="list" item="item" index="index"
                   separator="UNION">
         SELECT
-        #{item.crossId,jdbcType=VARCHAR},#{item.relevantBureau,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
+        #{item.crossId,jdbcType=VARCHAR},#{item.,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
         #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
         #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
         #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
@@ -985,6 +988,11 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         <if test="crossName != null">
             AND cross_name = #{crossName}
         </if>
+         <if test="currentBureanFlag == 1">
+            <if test="currentBureau != null">
+            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            </if>
+        </if>
         <if test="startBureau != null">
             AND START_BUREAU = #{startBureau}
         </if>
@@ -1011,6 +1019,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
     <select id="getCrossInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.SubCrossInfo">
         select * from (select ROWNUM AS num, m.*  from  (select
         BASE_CHART_ID as chartId,
+        RELEVANT_BUREAU as relevantBureau,
         BASE_CROSS_ID as crossId,CROSS_NAME as crossName,TOKEN_VEH_BUREAU as tokenVehBureau ,START_BUREAU as startBureau,HIGHLINE_FLAG as highlineFlag,creat_time as createTime,
         case when CREAT_UNIT_TIME is not null  then '1' else '0' end as unitCreateFlag,
         case when check_time is not null  then '1' else '0' end as checkFlag
@@ -1024,6 +1033,11 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         </if>
          <if test="crossName != null">
             AND cross_name = #{crossName}
+        </if>
+         <if test="currentBureanFlag == 1">
+            <if test="currentBureau != null">
+            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            </if>
         </if>
         <if test="trainNbr != null">
             AND cross_name like '%' || #{trainNbr} || '%'
@@ -1061,6 +1075,11 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         </if>
         <if test="startBureau != null">
             AND START_BUREAU = #{startBureau}
+        </if>
+         <if test="currentBureanFlag == 1">
+            <if test="currentBureau != null">
+            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            </if>
         </if>
         <if test="highlineFlag != null">
             AND HIGHLINE_FLAG = #{highlineFlag}
@@ -1128,6 +1147,11 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         </if>
         <if test="chartId != null">
             AND BASE_CHART_ID= #{chartId}
+        </if>
+         <if test="currentBureanFlag == 1">
+            <if test="currentBureau != null">
+            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            </if>
         </if>
         <if test="highlineFlag != null">
             AND HIGHLINE_FLAG = #{highlineFlag}
@@ -1210,7 +1234,8 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         NOTE  as  note,
         CREAT_PEOPLE  as createPeople ,
         CREAT_PEOPLE_ORG  as createPeopleOrg ,
-        CREAT_TIME  as  createTime
+        CREAT_TIME  as  createTime,
+         RELEVANT_BUREAU as relevantBureau
         from unit_cross where base_cross_id=#{baseCrossId}
 	</select>  
 

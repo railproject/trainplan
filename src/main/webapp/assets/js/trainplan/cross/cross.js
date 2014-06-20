@@ -93,8 +93,6 @@ function CrossModel() {
 	
 	
 	self.setCurrentTrain = function(row, e){
-		console.log("---------------------------------------");
-		console.log(e);
 		self.currentTrain(row); 
 		
 		self.currentTrainInfoMessage("车次：" + row.trainNbr + "&nbsp;&nbsp;&nbsp;" + row.startStn + "——" + row.endStn);
@@ -155,7 +153,7 @@ function CrossModel() {
 		if(self.currentCross().crossId == ''){
 			return;
 		} 
-		if(self.searchModle().showCrossMap() == 1){   
+		if(!$('#cross_map_dlg').is(":hidden")){   
 			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
 //			$("#cross_map_dlg").dialog({title: "基本交路图      交路名:" + self.currentCross().crossName(),draggable: true, resizable:true,  position: [500,300]});
 			$('#cross_map_dlg').dialog("setTitle", "基本交路图     交路名:" + self.currentCross().crossName()); 
@@ -263,6 +261,7 @@ function CrossModel() {
 			"appointPeriod":"",
 			"tokenPsgDept":"",
 			"tokenPsgDepot":"",
+			"relevantBureau":"",
 			"locoType":"",
 			"crhType":"",
 			"elecSupply":"",
@@ -391,6 +390,8 @@ function CrossModel() {
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
 		var chart = self.searchModle().chart();
 		var startBureauCode = self.searchModle().startBureau();  
+		var currentBureanFlag = self.searchModle().currentBureanFlag() ? '1' : '0';   
+		
 		
 		if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
 			self.searchModle().activeFlag(1);  
@@ -419,7 +420,8 @@ function CrossModel() {
 							chartId : chart == null ? null: chart.chartId,
 					trainNbr : trainNbr,
 					rownumstart : startIndex, 
-					rownumend : endIndex
+					rownumend : endIndex,
+					currentBureanFlag : currentBureanFlag
 				}),
 				success : function(result) {    
  
@@ -449,7 +451,7 @@ function CrossModel() {
 	self.crossRows = new PageModle(200, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() {  
-		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
+		showConfirmDiv("提示", "你确定要保存修改?", function (r) { 
 			commonJsScreenLock();
 			if(r){
 				$.ajax({
@@ -464,11 +466,11 @@ function CrossModel() {
 							// $("#cross_table_crossInfo").freezeHeader();  
 							showSuccessDialog("保存交路信息成功"); 
 						} else {
-							showErrorDialog("获取交路基本信息失败");
+							showErrorDialog("保存交路信息失败");
 						};
 					},
 					error : function() {
-						showErrorDialog("获取交路基本信息失败");
+						showErrorDialog("保存交路信息失败");
 					},
 					complete : function(){
 						commonJsScreenUnLock();
@@ -512,22 +514,19 @@ function CrossModel() {
 	self.deleteCrosses = function(){  
 		var crossIds = "";
 		var crosses = self.crossRows.rows(); 
-		var scrollTop = $("#crossInfo_Data").scrollTop();
-		$("#crossInfo_Data").resize(function(){ 
-			$("#crossInfo_Data").scrollTop(scrollTop);
-		});
-		 
+		var delCrosses = [];
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].crossId; 
-				
+				delCrosses.push(crosses[i]); 
 			}; 
 		} 
 		if(crossIds == ""){
 			showErrorDialog("没有可删除的记录");
 			return;
 		}
+		commonJsScreenLock();
 		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
 	        if (r) { 
 				$.ajax({
@@ -541,20 +540,22 @@ function CrossModel() {
 					}),
 					success : function(result) {     
 						if(result.code == 0){ 
-							self.crossRows.reFresh(); 
+							self.crossRows.addLoadRows(delCrosses);  
 							showSuccessDialog("删除交路成功"); 
 						}else{
 							showErrorDialog("删除交路失败");
 						}; 
-					}
+					},
+					error : function() {
+						showErrorDialog("删除交路失败");
+					},
+					complete : function(){
+						commonJsScreenUnLock();
+					} 
 				}); 
 	        }
 	        
-		});
-		showSuccessDialogWithFunc(" 确定要执行删除操作?", function(){
-		
-		});
-		
+		}); 
 	};
 	
 	self.clearData = function(){
@@ -742,6 +743,7 @@ function searchModle(){
 	self.bureaus = ko.observableArray();  
 	self.startBureaus = ko.observableArray();
 	
+	self.currentBureanFlag = ko.observable(0);
 	
 	self.charts = ko.observableArray();
 	 
@@ -811,6 +813,8 @@ function CrossRow(data) {
 function CrossRow(data) {
 	var self = this; 
 	
+	self.data = data;
+	
 	self.visiableRow =  ko.observable(true); 
 	
 	self.selected =  ko.observable(0);
@@ -860,9 +864,9 @@ function CrossRow(data) {
 	//车辆担当局 
 	self.tokenVehBureauShowValue = ko.computed(function(){ 
 			var result = "";
-			 if(data.tokenVehBureau != null && data.tokenVehBureau != "null"){
-				 var bs = data.tokenVehBureau.split("、"); 
-				 result = data.tokenVehBureau;
+			 if(self.data.tokenVehBureau != null && self.data.tokenVehBureau != "null"){
+				 var bs = self.data.tokenVehBureau.split("、"); 
+				 result = self.data.tokenVehBureau;
 				 for(var j = 0; j < bs.length; j++){
 					 for(var i = 0; i < gloabBureaus.length; i++){
 						 if(bs[j] == gloabBureaus[i].code){
@@ -886,9 +890,9 @@ function CrossRow(data) {
 	
 	self.tokenPsgBureauShowValue = ko.computed(function(){ 
 		var result = "";
-		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
-			 var bs = data.tokenPsgBureau.split("、"); 
-			 result = data.tokenPsgBureau;
+		 if(self.data.tokenPsgBureau != null && self.data.tokenPsgBureau != "null"){
+			 var bs = self.data.tokenPsgBureau.split("、"); 
+			 result = self.data.tokenPsgBureau;
 			 for(var j = 0; j < bs.length; j++){
 				 for(var i = 0; i < gloabBureaus.length; i++){
 					 if(bs[j] == gloabBureaus[i].code){
@@ -901,6 +905,21 @@ function CrossRow(data) {
 		 return result; 
 	});
 	
+	self.relevantBureauShowValue =  ko.computed(function(){ 
+		var result = "";
+		 if(self.data.relevantBureau != null && self.data.relevantBureau != "null"){  
+			 for(var j = 0; j < self.data.relevantBureau.length; j++){
+				 for(var i = 0; i < gloabBureaus.length; i++){
+					 if(self.data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
+						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
+						 break;
+					 }
+				 }
+			 } 
+		 } 
+		 return  result == "" ? "" : "相关局：&nbsp;" + result; 
+	});
+	self.relevantBureau = ko.observable(data.relevantBureau);
 	self.tokenPsgDept = ko.observable(data.tokenPsgDept);
 	self.tokenPsgDepot = ko.observable(data.tokenPsgDepot);
 	self.locoType = ko.observable(data.locoType);

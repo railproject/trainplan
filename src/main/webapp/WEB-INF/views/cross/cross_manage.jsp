@@ -117,24 +117,30 @@ var all_role = "<%=userRolesString %>";
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												车辆担当局:</label>
 											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width:60px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
+												<select style="width:55px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
 											</div>
-											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
+											<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
 												始发路局:</label>
 											<div class="pull-left" style="margin-left: 5px; ">
-												<select style="width: 60px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
-											</div>  
+												<select style="width: 50px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
+											</div> 
+											<input type="checkBox" class="pull-left" class="form-control"
+												value="1" data-bind="checked: searchModle().currentBureanFlag"
+												style="width: 20px; margin-top: 5px; margin-left:15px"
+												class="form-control"> 
+											<label for="exampleInputEmail5" class="control-label pull-left">
+												本局相关</label> 
 										</div>    
 										<div class="row"  style="margin-top: 5px;">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
 												铁路线类型:</label>
 											<div class="pull-left" style="margin-left: 5px;">
-											    <select  style="width:60px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
+											    <select  style="width:55px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
 											</div>
-											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
+											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
 												 审核状态:</label>
 											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width:60px" id="input_cross_sure_flag"
+												<select style="width:50px" id="input_cross_sure_flag"
 													class="form-control" data-bind="options: searchModle().checkFlags, value: searchModle().checkFlag, optionsText: 'text' , optionsCaption: ''">
 												</select>
 											</div>
@@ -147,13 +153,13 @@ var all_role = "<%=userRolesString %>";
 										    <label for="exampleInputEmail3" class="control-label pull-left">
 												车次:&nbsp;</label>
 											<div class="pull-left">
-												<input type="text" class="form-control" style="width: 100px;"
+												<input type="text" class="form-control" style="width: 95px;"
 											 		 id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
 											</div> 
-											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;" >
+											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;" >
 												生成状态:</label>
 											<div class="pull-left" style="margin-left: 5px;">
-												<select style="width:60px" id="input_cross_sure_flag"
+												<select style="width:50px" id="input_cross_sure_flag"
 													class="form-control" data-bind="options: searchModle().unitCreateFlags, value: searchModle().unitCreateFlag, optionsText: 'text' , optionsCaption: '' ">
 												</select>
 											</div>
@@ -161,7 +167,7 @@ var all_role = "<%=userRolesString %>";
 														data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a>   
 											
 										</div> 
-										<hr style="margin-top: 8px;margin-bottom: 8px">  
+										<hr style="margin-top: 8px;margin-bottom: 0px">  
 										 
 									</div>
 								</div>
@@ -177,7 +183,8 @@ var all_role = "<%=userRolesString %>";
 												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成基本交路单元</a>
 											
 										</div> 
-										<table class="table table-bordered table-striped table-hover" 
+										<span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
+										<table class="table table-bordered table-striped table-hover" style="margin-top:5px;"
 												id="cross_table_crossInfo">
 												<thead>
 													<tr style="height: 25px"> 
@@ -203,7 +210,7 @@ var all_role = "<%=userRolesString %>";
 																		<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}" >
 																		    <td align="center" style="width: 9.5%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 0 ? 'ckbox disabled' : ''}, event:{change: $parent.selectCross}, checked: selected"></td>
 																			<td style="width: 10.5%" data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
-																			<td style="width: 8.5%" data-bind=" text: tokenVehBureauShowValue"></td>
+																			<td align="center" style="width: 8.5%" data-bind=" text: tokenVehBureauShowValue"></td>
 																			<td style="width: 48.5%" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
 																			<td style="width: 10.5%" align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
 																			<td style="width: 10%" align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
@@ -560,7 +567,7 @@ var all_role = "<%=userRolesString %>";
 										<a  type="button" style="margin-left: 15px;margin-top: -5px" class="btn btn-success" data-toggle="modal" data-target="#"
 										id="cross_train_save" data-bind="
 										click: showCrossMapDlg">交路图</a>
-										<a  type="button" style="margin-left: 15px;margin-top: -5px" class="btn btn-success" data-toggle="modal" data-target="#"
+										<a  type="button" style="margin-left: 5px;margin-top: -5px" class="btn btn-success" data-toggle="modal" data-target="#"
 										id="cross_train_save" data-bind="click: showCrossTrainTimeDlg">时刻表</a>
 					   </span>
 				         </div>

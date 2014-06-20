@@ -795,6 +795,11 @@ public class CrossController {
 		Result result = new Result(); 
 		List<SubCrossInfo> list = null;
 	    try{
+	    	ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+	    	if(user.getBureau() != null){
+	    		reqMap.put("currentBureau", user.getBureau());
+	    	}
+	    	
 	    	list = crossService.getUnitCrossInfo(reqMap);
 	    	PagingResult page = new PagingResult(crossService.getUnitCrossInfoCount(reqMap),list);
 	    	result.setData(page);
@@ -820,7 +825,12 @@ public class CrossController {
 		Result result = new Result(); 
 		List<CrossInfo> list = null;
 	    try{
-	    	list = crossService.getCrossInfo(reqMap);
+	    	ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+	    	if(user.getBureau() != null){
+	    		reqMap.put("currentBureau", user.getBureau());
+	    	}
+	    	
+	    	list = crossService.getCrossInfo(reqMap); 
 	    	PagingResult page = new PagingResult(crossService.getCrossInfoCount(reqMap),list);
 	    	result.setData(page);
 	    }catch(Exception e){

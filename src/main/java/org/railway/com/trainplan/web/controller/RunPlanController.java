@@ -5,9 +5,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.service.RunPlanService;
+import org.railway.com.trainplan.service.ShiroRealm;
+import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +52,20 @@ public class RunPlanController {
 	 public Result getPlanCross(@RequestBody Map<String,Object> reqMap) throws Exception{
 		 Result result = new Result();
 		 try{ 
-			 List<RunPlanTrainDto> runPlans = runPlanService.getPlanCross(reqMap);
+			 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+	    	if(user.getBureau() != null){
+	    		reqMap.put("currentBureau", user.getBureau());
+	    	}
+	    	
+			 List<PlanCrossDto> runPlans = runPlanService.getPlanCross(reqMap);
 			 result.setData(runPlans);
 		 }catch(Exception e){
 			 result.setCode("-1");
 			 result.setMessage("查询运行线出错:" + e.getMessage());
 		 } 
 		 return result; 
-     }
+     } 
+	 
 	 
 	@ResponseBody
 	@RequestMapping(value = "/deletePlanCrosses", method = RequestMethod.POST)

@@ -97,6 +97,15 @@ function PageModle(pageSize, fun, jg){
 			return true;
 		});
 		self.loadFunc(self.currentIndex(), self.currentIndex() + self.pageSize()); 
+	};
+	
+	self.addLoadRows = function(delItems){    
+		var len = delItems.length;
+		$.each(delItems, function(i, n){ 
+			self.rows.remove(n); 
+		}); 
+		self.loadFunc(parseInt(self.endIndex()) - len + 1, self.currentIndex() + self.pageSize()); 
+		
 	};  
 	
 	self.addRows = function(result){   

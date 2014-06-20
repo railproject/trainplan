@@ -31,6 +31,8 @@ function CrossModel() {
 	
 	self.currentTrain =  ko.observable();
 	
+	self.currentTrainInfoMessage = ko.observable("");
+	
 	self.times = ko.observableArray();
 	
 	//车辆担当局
@@ -87,7 +89,7 @@ function CrossModel() {
 	
 	self.setCurrentTrain = function(row){
 		self.currentTrain(row);
-		$("#cross_train_time_dlg").dialog("setTitle", "详情时刻表     车次:" + self.currentTrain().trainNbr);
+		self.currentTrainInfoMessage("车次：" + row.trainNbr + "&nbsp;&nbsp;&nbsp;" + row.startStn + "——" + row.endStn);
 		self.times.remove(function(item){
 			return true;
 		});
@@ -131,7 +133,7 @@ function CrossModel() {
 			self.searchModle().activeCurrentCrossFlag(0); 
 		} 
 		self.currentCross(cross);
-		if(self.searchModle().showCrossMap() == 1){
+		if(!$('#cross_map_dlg').is(":hidden")){
 			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + cross.unitCrossId);
 			$("#cross_map_dlg").dialog("setTitle", "交路单元图     交路名:" + self.currentCross().crossName());
 		}
@@ -363,6 +365,7 @@ function CrossModel() {
 		var checkFlag = self.searchModle().checkFlag();
 		var unitCreateFlag = self.searchModle().unitCreateFlag();
 		var startBureauCode = self.searchModle().startBureau();  
+		var currentBureanFlag = self.searchModle().currentBureanFlag() ? '1' : '0'; 
 		
 		var chart = self.searchModle().chart(); 
 		
@@ -393,7 +396,8 @@ function CrossModel() {
 							chartId : chart == null ? null: chart.chartId,
 					trainNbr : trainNbr,
 					rownumstart : startIndex, 
-					rownumend : endIndex
+					rownumend : endIndex,
+					currentBureanFlag : currentBureanFlag
 				}),
 				success : function(result) {    
  
@@ -438,14 +442,11 @@ function CrossModel() {
 	
 	self.showCrossMapDlg = function(n, e){ 
 		if(self.currentCross().unitCrossId == '' || self.currentCross().unitCrossId == undefined || self.currentCross().unitCrossId == "undefined"){
-			if(e.target.checked){
-				e.target.checked = false;
-				showErrorDialog("没有选中记录");
-			}  
+			showWarningDialog("请先选择交路单元");  
 			return;
 		}
 		var unitCrossId = self.currentCross().unitCrossId; 
-		if(self.searchModle().showCrossMap() == 0){
+		if($('#cross_map_dlg').is(":hidden")){
 			$("#cross_map_dlg").find("iframe").attr("src", "../cross/provideUnitCrossChartData?unitCrossId=" + unitCrossId);
 			$("#cross_map_dlg").dialog({title: "交路单元图     交路名:" + self.currentCross().crossName(),draggable: true, resizable:true});
 		};
@@ -457,18 +458,21 @@ function CrossModel() {
 	
 	self.showCrossTrainTimeDlg = function(){
 		if(self.currentTrain() == null){
+			showWarningDialog("请先选择列车");
 			return;
 		}
-		$("#cross_train_time_dlg").dialog({title: "详情时刻表     车次:" + self.currentTrain().trainNbr,draggable: true, resizable:true});
+		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true});
 	};
 	
 	self.deleteCrosses = function(){
 		var crossIds = "";
 		var crosses = self.crossRows.rows(); 
+		var delCrosses = [];
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].unitCrossId; 
+				delCrosses.push(crosses[i]);
 			}; 
 		} 
 		if(crossIds == ""){
@@ -488,7 +492,7 @@ function CrossModel() {
 					}),
 					success : function(result) {     
 						if(result.code == 0){ 
-							self.crossRows.reFresh();
+							self.crossRows.addLoadRows(delCrosses);  
 							showSuccessDialog("删除交路单元成功"); 
 						}else{
 							showErrorDialog("删除交路单元失败");
@@ -699,6 +703,8 @@ function searchModle(){
 	self.filterCheckFlag = ko.observable(0);
 	
 	self.filterUnitCreateFlag = ko.observable(0);
+	
+	self.currentBureanFlag = ko.observable(0);
 		
 	self.checkFlags = checkFlags;
 	
@@ -746,7 +752,7 @@ function BureausRow(data) {
 
 function CrossRow(data) {
 	var self = this; 
-	
+	self.data = data;
 	self.visiableRow =  ko.observable(true); 
 	
 	self.selected =  ko.observable(0); 
@@ -838,6 +844,21 @@ function CrossRow(data) {
 		 }
 		 return result; 
 	});
+	self.relevantBureauShowValue =  ko.computed(function(){ 
+		var result = "";
+		 if(self.data.relevantBureau != null && self.data.relevantBureau != "null"){  
+			 for(var j = 0; j < self.data.relevantBureau.length; j++){
+				 for(var i = 0; i < gloabBureaus.length; i++){
+					 if(self.data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
+						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
+						 break;
+					 }
+				 }
+			 } 
+		 } 
+		 return  result == "" ? "" : "相关局：&nbsp;" + result; 
+	});
+	self.relevantBureau = ko.observable(data.relevantBureau);
 	self.tokenPsgDept = ko.observable(data.tokenPsgDept);
 	self.tokenPsgDepot = ko.observable(data.tokenPsgDepot);
 	self.locoType = ko.observable(data.locoType);
@@ -1024,6 +1045,7 @@ function TrainTimeRow(data) {
 	self.stepStr = GetDateDiff(data); 
 	self.trackName = filterValue(data.trackName);  
 	self.runDays = data.runDays;
+	self.stationFlag = data.stationFlag;
 	 
 };
 
