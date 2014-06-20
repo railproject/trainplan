@@ -127,7 +127,7 @@ public class CrossController {
 		Result result = new Result();
 		try{
 			logger.info("editBaseCorssInfo~~~~reqMap==" + reqMap);
-			String baseCrossId =  StringUtil.objToStr(reqMap.get("baseCrossId"));
+			String baseCrossId =  StringUtil.objToStr(reqMap.get("crossId"));
 			//通过baseCrossId查询crossInfo对象
 			CrossInfo crossInfo = crossService.getCrossInfoForCrossid(baseCrossId);
 			crossInfo.setHighlineRule(StringUtil.objToStr(reqMap.get("highlineRule")));
