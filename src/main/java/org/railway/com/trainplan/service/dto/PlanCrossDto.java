@@ -11,6 +11,26 @@ public class PlanCrossDto {
 	private String tokenVehBureau;
 	
 	private String startBureau;
+	//审核状态（0:未审核1:部分局审核2:途经局全部审核）
+	private int checkType; 
+    private String relevantBureau;
+	
+    
+	public String getRelevantBureau() {
+		return relevantBureau;
+	}
+
+	public void setRelevantBureau(String relevantBureau) {
+		this.relevantBureau = relevantBureau;
+	}
+
+	public int getCheckType() {
+		return checkType;
+	}
+
+	public void setCheckType(int checkType) {
+		this.checkType = checkType;
+	}
 
 	public String getTokenVehBureau() {
 		return tokenVehBureau;

@@ -142,7 +142,8 @@ public class Constants {
     //更新base_cross的creat_unit_time  
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossUnitCreateTime";
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME_TO_NULL = "crossDao.updateCrossUnitCreateTimeToNull";
-    
+    //对表plan_check添加一条数据
+    public static final String CROSSDAO_INSERT_PLAN_CHECK_INFO = "crossDao.insertPlanCheckInfo";
     public static final String CROSSDAO_UPDATE_Unit_CROSS_CREATETIME = "crossDao.updateUnitCrossUnitCreateTime";
     //根据plan_cross_id查询运行线
     public static final String CROSSDAO_GET_TRAINPLANLINE_INFO_FOR_PLANCROSSID="crossDao.getTrainPlanLineInfoForPlanCrossId";
@@ -194,5 +195,7 @@ public class Constants {
 	public static final String CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanCrossByPlanCrossIds";
 	public static final String CROSSDAO_DELETE_PLANTRAIN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainsByPlanCrossIds";
 	public static final String CROSSDAO_DELETE_PLANTRAINSTN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainStnsByPlanCrossIds";
-	
+	public static final String CROSSDAO_GET_PLANCHECKINFO_FOR_PLANCROSSID="org.railway.com.trainplan.repository.mybatis.RunPlanDao.getPlanCheckInfoForPlanCrossId";
+    public static final String CROSSDAO_UPDATE_CHECKTYPE_FOR_PLANCROSSID="org.railway.com.trainplan.repository.mybatis.RunPlanDao.updateCheckTypeForPlanCrossId";
+
 }

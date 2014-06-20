@@ -88,7 +88,10 @@
 			  t.base_cross_id baseCrossId,
               t.cross_name planCrossName, 
               t.TOKEN_VEH_BUREAU as tokenVehBureau ,
-              t.START_BUREAU as startBureau
+              t.START_BUREAU as startBureau,
+              t.CHECK_TYPE  as checkType,
+              t.RELEVANT_BUREAU   as relevantBureau
+              
       from plan_cross t
       where  1=1 
       <if test="trainNbr != null">
@@ -398,4 +401,22 @@
         ORDER BY SPARE_FLAG, TRAIN_NBR, START_TIME
 
     </select>
+    
+    <select id="getPlanCheckInfoForPlanCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.PlanCheckInfo">
+       SELECT 
+        PLAN_CHECK_ID AS planCheckId,
+		PLAN_CROSS_ID AS planCrossId,
+		START_DATE AS startDate,
+		END_DATE AS endDate,
+		CHECK_PEOPLE AS checkPeople ,
+		CHECK_TIME AS checkTime,
+		CHECK_DEPT AS checkDept,
+		CHECK_BUREAU AS checkBureau
+      FROM  PLAN_CHECK WHERE PLAN_CROSS_ID=#{planCrossId}
+    </select>
+    
+    <update id="updateCheckTypeForPlanCrossId" parameterType="map" >
+       update plan_check
+       set check_type=#{checkType} where plan_cross_id=#{planCrossId}
+    </update>
 </mapper> 
