@@ -14,9 +14,12 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.common.utils.DateUtil;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.*;
 import org.railway.com.trainplan.exceptions.*;
 import org.railway.com.trainplan.repository.mybatis.*;
+import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -331,7 +334,7 @@ public class RunPlanService {
 			runPlans.addAll(runPlanTrainMap.values());   
 			return runPlans;
 	}
-
+	        
 	public List<PlanCrossDto> getPlanCross(Map<String, Object> reqMap) {
 		
 		return baseDao.selectListBySql(Constants.GET_PLAN_CROSS, reqMap);
@@ -573,6 +576,77 @@ public class RunPlanService {
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
 	}
 	
+	/**
+	 * 保存PlanCheckInfo到数据库plan_check中
+	 * @param planCheckInfo
+	 * @return
+	 */
+	public int savePlanCheckInfo(PlanCheckInfo planCheckInfo){
+		return baseDao.insertBySql(Constants.CROSSDAO_INSERT_PLAN_CHECK_INFO, planCheckInfo);
+	}
+	
+	
+	/**
+	 * 通过planCrossId查询planCheckInfo对象
+	 * @param planCrossId
+	 * @return
+	 */
+	public List<PlanCheckInfo> getPlanCheckInfoForPlanCrossId(String planCrossId){
+		return baseDao.selectListBySql(Constants.CROSSDAO_GET_PLANCHECKINFO_FOR_PLANCROSSID, planCrossId);
+	}
+	
+	/**
+	 * 更新表plan_cross中checkType的值
+	 * @param planCrossId
+	 * @param checkType 审核状态（0:未审核1:部分局审核2:途经局全部审核）
+	 * @return
+	 */
+	public int updateCheckTypeForPlanCrossId(String planCrossId,int checkType){
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("planCrossId", planCrossId);
+		reqMap.put("checkType", checkType);
+		return baseDao.updateBySql(Constants.CROSSDAO_UPDATE_CHECKTYPE_FOR_PLANCROSSID, reqMap);
+	}
+	
+	
+	 /**
+     * 根据planCrossId列表和rundate的开始时间和结束时间查询上图的列车信息
+     * @param startDate 格式yyyyMMdd
+     * @param endDate 格式yyyyMMdd
+     * @param planCrossIdList
+     * @return
+     */
+    public  List<ParamDto>  getTotalTrainsForPlanCrossIds(String startDate,String endDate,List<String> planCrossIdList){
+	    List<ParamDto>  list = new ArrayList<ParamDto>();
+	    Map<String,String> paramMap = new HashMap<String,String>();
+	    paramMap.put("startDate", startDate);
+	    paramMap.put("endDate", endDate);
+	    StringBuffer bf = new StringBuffer();
+	    int size = planCrossIdList.size();
+		for(int i = 0 ;i<size;i++){
+			bf.append("'").append(planCrossIdList.get(i)).append("'");
+			if(i != size - 1){
+				bf.append(",");
+			}
+		}
+		paramMap.put("planCrossIds", bf.toString());
+	    List<Map<String,Object>> mapList = baseDao.selectListBySql(Constants.TRAINPLANDAO_GET_TOTALTRAINS_FOR_PLAN_CROSS_ID, paramMap);
+	    if(mapList != null && mapList.size() > 0){
+	    	 //System.err.println("mapList.size===" + mapList.size());
+	    	for(Map<String,Object> map :mapList ){
+	    		ParamDto dto = new ParamDto();
+	    		dto.setSourceEntityId(StringUtil.objToStr(map.get("BASE_TRAIN_ID")));
+	    		dto.setPlanTrainId(StringUtil.objToStr(map.get("PLAN_TRAIN_ID")));
+	    		String time = StringUtil.objToStr(map.get("RUN_DATE"));
+	    		dto.setTime(DateUtil.formateDate(time));
+	    		list.add(dto);
+	    	}
+	    }
+	    return list;
+}
+
+    
+    
 	private int deletePlanTrainStnsByPlanCrossIds(String[] crossIdsArray) {
 		StringBuffer bf = new StringBuffer();
 		Map<String,Object> reqMap = new HashMap<String,Object>();

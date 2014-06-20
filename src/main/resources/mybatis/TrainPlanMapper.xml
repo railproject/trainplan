@@ -36,6 +36,15 @@
 
 	</select>
 
+
+   <select id="getTotalTrainsForPlanCrossId" parameterType="map" resultType="map">
+     select base_train_id ,plan_train_id,
+		run_date,train_nbr
+		from plan_train
+		where run_date>=#{startDate} and run_date&lt;=#{endDate} and plan_cross_id in (#{planCrossIds})
+   </select>
+   
+   
 	<select id="getTrainShortInfo" parameterType="map" resultType="map">
 		select m.* from (select
 		PLAN_TRAIN_ID,RUN_DATE,TRAIN_NBR,START_STN,END_STN FROM PLAN_TRAIN

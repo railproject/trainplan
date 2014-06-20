@@ -88,23 +88,27 @@
 			  t.base_cross_id baseCrossId,
               t.cross_name planCrossName, 
               t.TOKEN_VEH_BUREAU as tokenVehBureau ,
-              t.START_BUREAU as startBureau
-      from plan_cross t
-      where  1=1 
+              t.START_BUREAU as startBureau,
+              t.CHECK_TYPE  as checkType,
+              t.RELEVANT_BUREAU   as relevantBureau,
+               WMSYS.WM_CONCAT(P.CHECK_BUREAU)  AS CHECKEDBUREAU
+              
+      from plan_cross t,plan_check P
+      where  1=1  P.PLAN_CROSS_ID = T.PLAN_CROSS_ID
       <if test="trainNbr != null">
-			AND cross_name like '%' || #{trainNbr} || '%'
+			AND t.cross_name like '%' || #{trainNbr} || '%'
 	  </if>
 	   <if test="tokenVehBureau != null">
-            AND TOKEN_VEH_BUREAU= #{tokenVehBureau}
+            AND t.TOKEN_VEH_BUREAU= #{tokenVehBureau}
         </if>
         <if test="startBureau != null">
-            AND START_BUREAU = #{startBureau}
+            AND t.START_BUREAU = #{startBureau}
         </if>
         <if test="highlineFlag != null">
-            AND HIGHLINE_FLAG = #{highlineFlag}
+            AND t.HIGHLINE_FLAG = #{highlineFlag}
         </if>
         <if test="checkFlag == 0 ">
-            AND check_time is null
+            AND t.check_time is null
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">
@@ -112,8 +116,9 @@
             </if>
         </if>
         <if test="checkFlag == 1 ">
-            AND check_time is not null
+            AND t.check_time is not null
         </if>
+<<<<<<< HEAD
      <!--    <if test="unitCreateFlag == 0 ">
             AND CREAT_PLAN_TIME is null
         </if> 
@@ -124,22 +129,39 @@
             AND ((CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
         </if> -->
         
+=======
+>>>>>>> eecd86c8944c932ddc47c0afac1f5fffae01ae6e
        	<if test="startTime != null">  
        	      AND 
        	       <if test="endTime != null"> 
        	          ((
        	       </if>
+<<<<<<< HEAD
        	       (CROSS_START_DATE >= #{startTime} or CROSS_END_DATE >=  #{startTime})
       	     <if test="endTime != null">  
       	         AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime}))
           		OR (CROSS_START_DATE &lt;= #{startTime} AND CROSS_END_DATE >=  #{endTime}))
+=======
+       	       (t.CROSS_START_DATE >= #{startTime} or t.CROSS_END_DATE >=  #{startTime})
+      	     <if test="endTime != null">  
+      	         AND (t.CROSS_START_DATE &lt;= #{endTime} or t.CROSS_END_DATE &lt;=  #{endTime}))
+          		OR (t.CROSS_START_DATE &lt;= #{startTime} AND t.CROSS_END_DATE >=  #{endTime}))
+>>>>>>> eecd86c8944c932ddc47c0afac1f5fffae01ae6e
           	 </if> 
         </if> 
         <if test="startTime == null"> 
 	        <if test="endTime != null ">
-	             AND (CROSS_START_DATE &lt;= #{endTime} or CROSS_END_DATE &lt;=  #{endTime})) 
+	             AND (t.CROSS_START_DATE &lt;= #{endTime} or t.CROSS_END_DATE &lt;=  #{endTime})) 
 	       	</if> 
 	    </if>
+	    GROUP BY 
+	     t.plan_cross_id ,
+			  t.base_cross_id ,
+              t.cross_name , 
+              t.TOKEN_VEH_BUREAU   ,
+              t.START_BUREAU  ,
+              t.CHECK_TYPE  ,
+              t.RELEVANT_BUREAU 
        order by t.cross_name 
     </select> 
 
@@ -419,4 +441,22 @@
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
     </select>
+    
+    <select id="getPlanCheckInfoForPlanCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.PlanCheckInfo">
+       SELECT 
+        PLAN_CHECK_ID AS planCheckId,
+		PLAN_CROSS_ID AS planCrossId,
+		START_DATE AS startDate,
+		END_DATE AS endDate,
+		CHECK_PEOPLE AS checkPeople ,
+		CHECK_TIME AS checkTime,
+		CHECK_DEPT AS checkDept,
+		CHECK_BUREAU AS checkBureau
+      FROM  PLAN_CHECK WHERE PLAN_CROSS_ID=#{planCrossId}
+    </select>
+    
+    <update id="updateCheckTypeForPlanCrossId" parameterType="map" >
+       update plan_check
+       set check_type=#{checkType} where plan_cross_id=#{planCrossId}
+    </update>
 </mapper> 

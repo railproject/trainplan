@@ -62,6 +62,8 @@ public class Constants {
 	public static final String TRAINPLANDAO_UPDATE_PLANFLAG = "trainPlanDao.updatePlanTrainDaylyPlanFlag";
 	//根据路局名称和运行时间查询列车
 	public static final String TRAINPLANDAO_GET_TOTALTRAINS = "trainPlanDao.getTotalTrains";
+	//根据planCrossId查询需要上图的列车信息
+	public static final String TRAINPLANDAO_GET_TOTALTRAINS_FOR_PLAN_CROSS_ID = "trainPlanDao.getTotalTrainsForPlanCrossId";  
 	//  getTrainShortInfo
 	public static final String TRAINPLANDAO_GET_TRAIN_SHORTINFO = "trainPlanDao.getTrainShortInfo";
 	//对表train_plan插入计划数据 addTrainPlan
@@ -142,7 +144,8 @@ public class Constants {
     //更新base_cross的creat_unit_time  
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME = "crossDao.updateCrossUnitCreateTime";
     public static final String CROSSDAO_UPDATE_CROSS_CREATETIME_TO_NULL = "crossDao.updateCrossUnitCreateTimeToNull";
-    
+    //对表plan_check添加一条数据
+    public static final String CROSSDAO_INSERT_PLAN_CHECK_INFO = "crossDao.insertPlanCheckInfo";
     public static final String CROSSDAO_UPDATE_Unit_CROSS_CREATETIME = "crossDao.updateUnitCrossUnitCreateTime";
     //根据plan_cross_id查询运行线
     public static final String CROSSDAO_GET_TRAINPLANLINE_INFO_FOR_PLANCROSSID="crossDao.getTrainPlanLineInfoForPlanCrossId";
@@ -194,5 +197,7 @@ public class Constants {
 	public static final String CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanCrossByPlanCrossIds";
 	public static final String CROSSDAO_DELETE_PLANTRAIN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainsByPlanCrossIds";
 	public static final String CROSSDAO_DELETE_PLANTRAINSTN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainStnsByPlanCrossIds";
-	
+	public static final String CROSSDAO_GET_PLANCHECKINFO_FOR_PLANCROSSID="org.railway.com.trainplan.repository.mybatis.RunPlanDao.getPlanCheckInfoForPlanCrossId";
+    public static final String CROSSDAO_UPDATE_CHECKTYPE_FOR_PLANCROSSID="org.railway.com.trainplan.repository.mybatis.RunPlanDao.updateCheckTypeForPlanCrossId";
+
 }

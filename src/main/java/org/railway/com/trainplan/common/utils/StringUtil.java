@@ -2,6 +2,10 @@ package org.railway.com.trainplan.common.utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -157,11 +161,95 @@ public class StringUtil {
 		}
 		return null;
 	}
+	
+	
+	public static List<String> mergeStation(List one,List two){
+		List<String> result = new ArrayList<String>();
+		List<String> shortList = null;
+		List<String> longList = null;
+		List<String> test = new LinkedList<String>();
+		
+		if(one.size()>=two.size()){
+			longList = one;
+			shortList = two;
+		}else {
+			longList = two;
+			shortList = one;
+		}
+		for(int i = 0;i<longList.size();i++){
+			String temp1 = longList.get(i);
+			if(!shortList.contains(temp1)){
+				result.add(temp1);
+			}else{
+				int indexTemp1 = shortList.indexOf(temp1);
+				
+				while((indexTemp1+1) >0 ){
+					result.add(shortList.get(0));
+					shortList.remove(0);
+					indexTemp1--;
+				}
+			}
+		}
+		if(shortList != null && shortList.size() > 0 ){
+			for(int j=0;j<shortList.size();j++){
+				result.add(shortList.get(j));
+			}
+		}
+		return result;
+	}
 	public static void main(String[] args){
 		//System.out.println(System.currentTimeMillis());
 		//System.out.println(new Date("2014-04-22 10:10:10"));
 		//System.out.println("" + handleTime("0:9:0:0"));
 		//System.out.println("0:9:0:0".substring(0,1));
 		//System.err.println(278910/1000);
+		List<String> list = new ArrayList<String>();
+		List<String> list1  = new ArrayList<String>();
+		List<String> list2  = new ArrayList<String>();
+	
+		list2.add("J");
+		list2.add("I");
+		list2.add("H");
+		list2.add("F");
+		list2.add("D");
+		list2.add("C");
+		list2.add("P");
+		
+		list1.add("K");
+		list1.add("J");
+		list1.add("I");
+		list1.add("H");
+		list1.add("G");
+		list1.add("E");
+		list1.add("D");
+		list1.add("C");
+		list1.add("B");
+		list1.add("A");
+	    //[K, J, I, H, G, E, F, D, C, B, A, P]
+		//[K, J, I, H, G, E, F, D, C, B, A, P]
+		for(int i = 0;i<list1.size();i++){
+			String temp1 = list1.get(i);
+			if(!list2.contains(temp1)){
+				list.add(temp1);
+			}else{
+				int indexTemp1 = list2.indexOf(temp1);
+				
+				while((indexTemp1+1) >0 ){
+					list.add(list2.get(0));
+					list2.remove(0);
+					indexTemp1--;
+				}
+			}
+		}
+		if(list2 != null && list2.size() > 0 ){
+			for(int j=0;j<list2.size();j++){
+				list.add(list2.get(j));
+			}
+		}
+		
+		//System.err.println(list);
+		System.err.println(list1);
+		Collections.reverse(list1);
+		System.err.println(list1);
 	}
 }

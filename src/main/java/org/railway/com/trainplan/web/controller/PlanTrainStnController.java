@@ -250,7 +250,7 @@ public class PlanTrainStnController {
 			System.err.println();
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull, trainNbr);
 			if(listDto != null && listDto.size() > 0){
-				String jsonStr = combinationMessage(listDto);
+				String jsonStr = commonService.combinationMessage(listDto);
 				logger.debug("jsonStr====" + jsonStr);
 				//System.err.println("jsonStr====" + jsonStr);
 				//向rabbit发送消息
@@ -288,7 +288,7 @@ public class PlanTrainStnController {
 			
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(runDate,startBureauFull,null);
 			if(listDto != null && listDto.size() > 0){
-				String jsonStr = combinationMessage(listDto);
+				String jsonStr = commonService.combinationMessage(listDto);
 				//向rabbit发送消息
 				amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
 					
@@ -415,42 +415,6 @@ public class PlanTrainStnController {
 	
 	
 	
-	/**
-	 * 组装发送到rabbit_MQ的字符串
-	 * @param listDto
-	 * @return
-	 */
-	private  String  combinationMessage(List<ParamDto> listDto) throws Exception{
-	
-		    JSONArray  jsonArray = new JSONArray();
-            if(listDto != null && listDto.size() > 0){
-				
-				for(ParamDto dto : listDto){
-					String base_plan_id = dto.getSourceEntityId();
-					//TODO 判断表plan_train中字段CHECK_LEV1_TYPE，当CHECK_LEV1_TYPE=2时才能生成运行线
-					
-					//组装发往rabbit的报文
-					JSONObject  temp = new JSONObject();
-					temp.put("sourceEntityId", dto.getSourceEntityId());
-					temp.put("planTrainId", dto.getPlanTrainId());
-					temp.put("time", dto.getTime());
-					temp.put("source", dto.getSource());
-					temp.put("action", dto.getAction());
-					jsonArray.add(temp);
-				}
-			}
-          //组装发送报文
-			JSONObject  json = new JSONObject();
-			JSONObject head = new JSONObject();
-			head.put("event", "trainlineEvent");
-			head.put("requestId", UUID.randomUUID().toString());
-			head.put("batch", 1);
-			head.put("user", "test");
-			json.put("head", head);
-			json.put("param", jsonArray);
-			
-			return json.toString();
-	}
 	
 	
 }
