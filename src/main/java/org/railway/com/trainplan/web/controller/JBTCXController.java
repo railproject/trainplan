@@ -47,23 +47,23 @@ public class JBTCXController {
      public String content() {
 		 return "plan/plan_runline_check";
      }
-	 
-		@ResponseBody
-		@RequestMapping(value = "/querySchemes", method = RequestMethod.POST)
-		public Result querySchemes(@RequestBody Map<String,Object> reqMap){
-			Result result = new Result();
-			try{
-				logger.info("querySchemes~~reqMap="+reqMap);
-				//调用后台接口
-				List<SchemeInfo> schemeInfos = schemeService.getSchemes();
-				result.setData(schemeInfos);
-			}catch(Exception e){
-				logger.error(e.getMessage(), e);
-				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
-				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
-			}
-			return result;
-		} 
+ 
+	@ResponseBody
+	@RequestMapping(value = "/querySchemes", method = RequestMethod.POST)
+	public Result querySchemes(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			logger.info("querySchemes~~reqMap="+reqMap);
+			//调用后台接口
+			List<SchemeInfo> schemeInfos = schemeService.getSchemes();
+			result.setData(schemeInfos);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		return result;
+	} 
 	 
 	/**
 	 * 统计路局运行车次信息

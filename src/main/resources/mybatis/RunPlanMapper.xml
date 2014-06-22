@@ -94,7 +94,7 @@
                WMSYS.WM_CONCAT(P.CHECK_BUREAU)  AS CHECKEDBUREAU
               
       from plan_cross t,plan_check P
-      where  1=1  P.PLAN_CROSS_ID = T.PLAN_CROSS_ID
+      where P.PLAN_CROSS_ID = T.PLAN_CROSS_ID
       <if test="trainNbr != null">
 			AND t.cross_name like '%' || #{trainNbr} || '%'
 	  </if>
