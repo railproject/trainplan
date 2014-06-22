@@ -750,32 +750,36 @@ function CrossModel() {
 		}); 
 	};
 	
-	self.createUnitCrossInfo = function(){ 
+	self.createTrainLines = function(){ 
 		commonJsScreenLock();
 		var crossIds = "";
 		var delCrosses = [];
-		var crosses = self.crossRows.rows();
+		var crosses = self.planCrossRows();
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].planCrossId;
+				crossIds += crosses[i].planCrossId();
 				delCrosses.push( crosses[i]);
 			}
 		} 
+		
+		 var planStartDate = $("#runplan_input_startDate").val();
+			
+		 var planEndDate =  $("#runplan_input_endDate").val();
+		 
 		 $.ajax({
-				url : "cross/completeUnitCrossInfo",
+				url : "runPlan/handleTrainLinesWithCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossIds : crossIds
+					planCrossIds : crossIds,
+					startDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
+					endDate : (planEndDate != null ? planEndDate : self.get40Date()).replace(/-/g, '')
 				}),
 				success : function(result) {     
-					if(result.code == 0){
-						$.each(delCrosses, function(i, n){ 
-							n.unitCreateFlag("1");
-						});
+					if(result.code == 0){ 
 						showSuccessDialog("生成交路单元成功");
 					}else{
 						showErrorDialog("生成交路单元失败");
@@ -1097,14 +1101,7 @@ function BureausRow(data) {
 	self.shortName = data.ljjc;   
 	self.code = data.ljpym;   
 	//方案ID 
-}
-
-function CrossRow(data) {
-	var self = this; 
-	self.id = data.chartId;
-	self.chartName = data.crossName; 
-	//方案ID 
-}
+} 
 
  
 
@@ -1187,6 +1184,39 @@ function CrossRow(data) {
 			 return result; 
 	});
 	
+	self.relevantBureauShowValue =  ko.computed(function(){ 
+		var result = "";
+		 if(data.relevantBureau != null && data.relevantBureau != "null"){  
+			 for(var j = 0; j < data.relevantBureau.length; j++){
+				 for(var i = 0; i < gloabBureaus.length; i++){
+					 if(data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
+						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
+						 break;
+					 }
+				 }
+			 } 
+		 } 
+		 return  result == "" ? "" : result; 
+	});
+	
+	
+	self.checkedBureauShowValue =  ko.computed(function(){ 
+		var result = "";
+		 if(data.relevantBureau != null && data.relevantBureau != "null"){  
+			 for(var j = 0; j < data.relevantBureau.length; j++){
+				 for(var i = 0; i < gloabBureaus.length; i++){
+					 if(data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
+						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
+						 break;
+					 }
+				 }
+			 } 
+		 } 
+		 return  result == "" ? "" : result; 
+	});
+	
+	
+	self.checkedBureau = ko.observable(data.checkedBureau);
 	
 	self.activeFlag = ko.computed(function(){
 		return hasActiveRole(data.tokenVehBureau);

@@ -88,11 +88,9 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 	   <div class="row" style="margin: 10px 10px 10px 10px;"> 
 	
 	<!--分栏框开始-->
-		<div class="pull-left" style="width: 28%;height:100%">
+		<div class="pull-left" style="width: 30%;height:100%">
 			<!--分栏框开始-->  
-			    <div class="row" style="margin: 5px 10px 10px 10px;">
-				    <section class="panel panel-default">
-				        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
+			    <div class="row" style="margin: 5px 10px 10px 10px;"> 
 				        	<div class="panel-body">
 								<form class="form-horizontal" role="form">  
 											<div class="row"  style="width: 100%; margin-top: 5px;">
@@ -101,7 +99,7 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 												<div class="pull-left" style="margin-left: 5px;">
 													<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 												</div>
-												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
+												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 13px;">
 													截至日期:</label>
 												<div class="pull-left" style="margin-left: 5px; ">
 													<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
@@ -111,24 +109,24 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													车辆担当局:</label>
 												<div class="pull-left" style="margin-left: 5px;">
-													<select style="width:60px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
+													<select style="width:55px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
 												</div>
 												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 													始发路局:</label>
 												<div class="pull-left" style="margin-left: 5px; ">
-													<select style="width: 60px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
+													<select style="width: 50px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
 												</div> 
 											</div>     
 											<div class="row"  style="margin-top: 5px;">
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													铁路线类型:</label>
 												<div class="pull-left" style="margin-left: 5px;">
-												    <select  style="width:60px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
+												    <select  style="width:55px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
 												</div>
 												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 													 审核状态:</label>
 												<div class="pull-left" style="margin-left: 5px;">
-													<select style="width:60px" id="input_cross_sure_flag"
+													<select style="width:50px" id="input_cross_sure_flag"
 														class="form-control" data-bind="options: searchModle().checkFlags, value: searchModle().checkFlag, optionsText: 'text' , optionsCaption: ''">
 													</select>
 												</div>
@@ -139,24 +137,22 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 											    <label for="exampleInputEmail3" class="control-label pull-left">
 													车次:&nbsp;</label>
 												<div class="pull-left">
-													<input type="text" class="form-control" style="width: 100px;"
+													<input type="text" class="form-control" style="width: 95px;"
 												 		 id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
 												</div> 
 												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;" >
 													生成状态:</label>
 												<div class="pull-left" style="margin-left: 5px;">
-													<select style="width:60px" id="input_cross_sure_flag"
+													<select style="width:50px" id="input_cross_sure_flag"
 														class="form-control" data-bind="options: searchModle().unitCreateFlags, value: searchModle().unitCreateFlag, optionsText: 'text' , optionsCaption: '' ">
 													</select>
 												</div>
-												
-											</div>
-											<div class="row"  style="margin-top: 5px;">
 												<div class="pull-left" style="margin-left: 20px;">
 														<a type="button" class="btn btn-success" data-toggle="modal"
 															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
 													</div> 
-											</div>
+												
+											</div> 
 										    <hr style="margin-top: 8px;margin-bottom: 8px">
 											<div class="row"  style="margin-top: 5px;">
 												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
@@ -184,13 +180,20 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 													<a  type="button" class="btn btn-success" data-toggle="modal"
 														data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
 													<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
-														data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成运行线</a>
+														data-target="#" id="btn_cross_createTrainLines" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createTrainLines">生成运行线</a>
 												</div> 
 												</div> 
+										  <span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
 									      <div class="row" style="margin-top:10px">
-										     <div class="pull-left" style="width: 60%;">
+										     <div class="pull-left" style="width: 80%;">
 										        <section class="panel panel-default">
-										          <div class="panel-heading"><span><input type="checkbox" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}">全选 车底交路名</span></div>
+										          <div class="panel-heading">
+										          			<span><input type="checkbox" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}">全选 车底交路名
+																<select class="form-control" style="vertical-align: top;margin-top:-1px;width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+																	 data-bind="options: [{'code': 1, 'text': '简称'},{'code': 2, 'text': '全称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+																</select>  
+															</span>
+										          </div>
 										        	<div class="panel-body" style="height: 250px; overflow-y:auto"> 
 														<div class="table-responsive"> 
 															<table class="table table-bordered table-striped table-hover" 
@@ -207,7 +210,7 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 												   </div>
 											   </section>
 											</div>
-											<div class="pull-right" style="width: 40%;">  
+											<div class="pull-right" style="width: 20%;">  
 											 <section class="panel panel-default">
 										          <div class="panel-heading">车次</div>
 										        	<div class="panel-body" style="height: 250px; overflow-y:auto "> 
@@ -226,11 +229,10 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 										</div> 
 								  </div> 
 							 </form>
+						 </div> 
 						 </div>
-				   </section>
-				</div>   
 		</div>
-		 <div class="pull-right" style="width: 72%;"> 
+		 <div class="pull-right" style="width: 70%;"> 
 		   
 		<!-- Nav tabs -->
 		<div class="pull-left" style="width: 100%;"> 

@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/runPlan")
 public class RunPlanController {
-	 private static Log logger = LogFactory.getLog(CrossController.class.getName());
+	 private static Log logger = LogFactory.getLog(RunPlanController.class.getName());
 	 @Autowired
 	 private RunPlanService runPlanService;
 	 
@@ -159,9 +159,9 @@ public class RunPlanController {
 	public Result handleTrainLinesWithCross(@RequestBody Map<String,Object> reqMap){
 		Result result  = new Result();
 		try{
-			
-			String startDate = DateUtil.format(DateUtil.parse(StringUtil.objToStr(reqMap.get("startDate"))), "yyyyMMdd");
-			String endDate = DateUtil.format(DateUtil.parse(StringUtil.objToStr(reqMap.get("endDate"))), "yyyyMMdd");
+			System.out.println(reqMap);
+			String startDate =StringUtil.objToStr( reqMap.get("startDate"));
+			String endDate = StringUtil.objToStr(reqMap.get("endDate"));
 			String planCrossIds = StringUtil.objToStr(reqMap.get("planCrossIds"));
 			logger.debug("startDate==" + startDate);
 			logger.debug("endDate==" + endDate);
