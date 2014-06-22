@@ -237,12 +237,8 @@
 	        #{item.elecSupply,jdbcType=NUMERIC},
 	        #{item.dejCollect,jdbcType=NUMERIC},
 	        #{item.airCondition,jdbcType=NUMERIC},
-<<<<<<< HEAD
 	        #{item.note,jdbcType=VARCHAR} 
-=======
-	        #{item.note,jdbcType=VARCHAR},
 	        #{item.relevantBureau,jdbcType=VARCHAR},
->>>>>>> eecd86c8944c932ddc47c0afac1f5fffae01ae6e
 	        sysdate
 	      
 	       from dual
