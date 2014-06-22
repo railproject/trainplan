@@ -23,6 +23,7 @@ String basePath = request.getContextPath();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>核查编制图定开行</title>
+<jsp:include page="/assets/commonpage/include-canvas-base.jsp" flush="true" />
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -255,19 +256,19 @@ var currentUserBureau = "<%=currentUserBureau %>";
 							                  <input type="text" class="form-control" style="width:120px;" placeholder="" id="canvas_runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
 								              <button class="btn btn-primary" type="button" id="canvas_event_btnQuery"><i class="fa fa-search"></i>查询</button>
 							              </div> -->
-							              <div class="row" style="margin:5px 0 10px 90px;"> 
-							                  <input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" style="margin-left:10px">简图
-								          	  &nbsp;&nbsp;<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示时刻
-	         								  &nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
-								          </div>
-							              <div class="row" style="margin:5px 0 10px 90px;"> 
-							                  <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
-								              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
-								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
-								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
+							              <div class="row" style="margin:5px 0 10px 50px;">
+								         		<button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_refresh"><i class="fa fa-refresh"></i>刷新</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
 								              
 								                                                比例：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
-								          </div>
+											<input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图
+								         	<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示时刻
+								         	&nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
+								         	  
+								         </div>
 							          </form>
 								    </div> 
 							        <div class="table-responsive" style="width:100%;height:430px;overflow-x:auto; overflow-y:auto;">
@@ -759,9 +760,6 @@ var currentUserBureau = "<%=currentUserBureau %>";
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
 <%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%>
 <script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue_data.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script>
 <script type="text/javascript">
 var basePath = "<%=basePath %>";

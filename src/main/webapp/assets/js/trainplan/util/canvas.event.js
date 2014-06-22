@@ -6,7 +6,9 @@ var CanvasEventComponent = function(canvasDivId) {
 	_canvasEventComponent = this;
 	var _canvas = document.getElementById(canvasDivId);
 	var _context = canvas.getContext('2d');
-	var _mouseCanvsPoint = {};	//鼠标在canvas图形中的位置
+//	var _mouseCanvsPoint = {};	//鼠标在canvas图形中的位置
+
+	var _currentTrainObj = null;	//保存右键菜单中选中对象
 	
 
 	init();
@@ -26,6 +28,7 @@ var CanvasEventComponent = function(canvasDivId) {
 		
 		//3.增加canvas监听事件
 		canvas.onmousedown = function(e) {
+			_currentTrainObj = null;//置空已选择对象
 			$("#"+canvasDivId).bind("contextmenu", function(e){ return false; });
 		  	$(".rightMenu").bind("contextmenu", function(e){ return false; });
 			//alert(e.which) // 1 = 鼠标左键 left; 2 = 鼠标中键; 3 = 鼠标右键
@@ -34,13 +37,14 @@ var CanvasEventComponent = function(canvasDivId) {
 	        var loc = windowToCanvas(canvas, e.clientX,e.clientY);
 	        var x = loc.x;
 	        var y = loc.y;
-	        _mouseCanvsPoint = {x:loc.x, y:loc.y};
+//	        _mouseCanvsPoint = {x:loc.x, y:loc.y};
 	        
 			if(3 == e.which){
 		        for(var i = 0; i < lineList.length; i++) {
 		            var c = lineList[i];
 		            if(c.isPointInStroke(context, x, y)) {
-		            	lineList[i] = c;//修改鼠标选中对象线状态
+		            	c.isCurrent = true;
+		            	_currentTrainObj = c;
 		            	
 		            	//显示右键菜单
 		    		    $(".rightMenu").show();
@@ -48,8 +52,11 @@ var CanvasEventComponent = function(canvasDivId) {
 		    			$(".rightMenu").css("left",e.pageX);
 		    			e.stopPropagation();
 		            	
-		            	break;
+//		            	break;
+		            } else {
+		            	c.isCurrent = false;
 		            }
+	            	lineList[i] = c;//修改鼠标选中对象线状态
 		        }
 				
 				
@@ -59,6 +66,7 @@ var CanvasEventComponent = function(canvasDivId) {
 		            if(c.isPointInStroke(context, x, y) || c.isCurrent) {
 		            	_self.reDraw({x:x, y:y,booleanShowTrainDetail:false});
 		            	
+		            	_currentTrainObj = c;
 		            	lineList[i] = c;//修改鼠标选中对象线状态
 		            	
 		            }
@@ -127,30 +135,122 @@ var CanvasEventComponent = function(canvasDivId) {
      * 交路突出显示
      */
 	this.highlightJl = function() {
-		console.log("交路		突出显示");
-		var _currentTrainObj = null;
-		for(var i = 0; i < lineList.length; i++) {
-            var c = lineList[i];
-            if(c.isPointInStroke(context, _mouseCanvsPoint.x, _mouseCanvsPoint.y)) {
-            	//_self.reDraw({x:x, y:y,booleanShowTrainDetail:false});
-            	c.isCurrent = true;
-            	lineList[i] = c;//修改鼠标选中对象线状态
-            	_currentTrainObj = c;
-            	
-            } else {
-            	c.isCurrent = false;
-            	lineList[i] = c;//修改鼠标选中对象线状态
-            }
-        }
+//		var _currentTrainObj = null;
+//		for(var i = 0; i < lineList.length; i++) {
+//            var c = lineList[i];
+//            if(c.isPointInStroke(context, _mouseCanvsPoint.x, _mouseCanvsPoint.y)) {
+//            	//_self.reDraw({x:x, y:y,booleanShowTrainDetail:false});
+//            	c.isCurrent = true;
+//            	lineList[i] = c;//修改鼠标选中对象线状态
+//            	_currentTrainObj = c;
+//            	
+//            } else {
+//            	c.isCurrent = false;
+//            	lineList[i] = c;//修改鼠标选中对象线状态
+//            }
+//        }
 		
 		
 
     	_self.reDraw({groupSerialNbr:_currentTrainObj.obj.groupSerialNbr, booleanShowTrainDetail:false});
     	$(".rightMenu").hide();
 		
-		
 	};
 	
+	
+    /**
+     * 显示时刻表
+     */
+	this.showTrainRunTime = function() {
+    	$(".rightMenu").hide();
+    	
+		showWarningDialog("抱歉！时刻表功能尚未开发，请耐心等待！");
+		return;
+	};
+
+    /**
+     * 停运
+     */
+	this.stopTrain = function() {
+    	$(".rightMenu").hide();
+    	
+		showWarningDialog("抱歉！停运功能尚未开发，请耐心等待！");
+		return;
+	};
+	
+
+    /**
+     * 调整路径
+     */
+	this.editTrainPath = function() {
+    	$(".rightMenu").hide();
+    	
+		showWarningDialog("抱歉！调整路径功能尚未开发，请耐心等待！");
+		return;
+	};
+	
+
+    /**
+     * 查看乘务信息
+     */
+	this.showTrainPersonnel = function() {
+    	$(".rightMenu").hide();
+    	
+		showWarningDialog("抱歉！查看乘务信息功能尚未开发，请耐心等待！");
+		return;
+	};
+	
+
+    /**
+     * 查看编组信息
+     */
+	this.showTrainGroup = function() {
+    	$(".rightMenu").hide();
+    	
+		showWarningDialog("抱歉！查看编组信息功能尚未开发，请耐心等待！");
+		return;
+	};
+	
+
+    /**
+     * x放大2倍
+     */
+	this.xMagnification = function() {
+    	$(".rightMenu").hide();
+    	
+    	$("#canvas_event_btn_x_magnification").click();
+	};
+	
+
+    /**
+     * x缩小2倍
+     */
+	this.xShrink = function() {
+    	$(".rightMenu").hide();
+    	
+    	$("#canvas_event_btn_x_shrink").click();
+	};
+	
+
+    /**
+     * y放大2倍
+     */
+	this.yMagnification = function() {
+    	$(".rightMenu").hide();
+    	
+    	$("#canvas_event_btn_y_magnification").click();
+	};
+	
+
+
+    /**
+     * y缩小2倍
+     */
+	this.yShrink = function() {
+    	$(".rightMenu").hide();
+    	
+    	$("#canvas_event_btn_y_shrink").click();
+	};
 
 	/**
 	 * 初始化右键出现的菜单
@@ -163,21 +263,22 @@ var CanvasEventComponent = function(canvasDivId) {
 		"<div class=' rightMenu'>" +
 		  "<ul>" +
 		  "<li><a href='javascript:_canvasEventComponent.highlightJl();'><i class='fa fa-crosshairs'></i>&nbsp;交路突出显示</a></li>" +
-		    "<li><a href='#'><i class='fa fa-caret-square-o-up'></i>&nbsp;停运</a></li>" +
-		    "<li><a href='#' data-toggle='modal' data-target='#myModal-update'><i class='fa fa-pencil'></i>&nbsp;调整径路</a></li>" +
+		    "<li><a href='javascript:_canvasEventComponent.stopTrain();'><i class='fa fa-caret-square-o-up'></i>&nbsp;停运</a></li>" +
+		    "<li><a href='javascript:_canvasEventComponent.editTrainPath();'><i class='fa fa-pencil'></i>&nbsp;调整径路</a></li>" +
+//		    "<li><a href='javascript:_canvasEventComponent.editTrainPath();' data-toggle='modal' data-target='#myModal-update'><i class='fa fa-pencil'></i>&nbsp;调整径路</a></li>" +
 		    "<li class='vm-list'><i class='fa fa-eye'></i>&nbsp;查看信息<i class='fa fa-caret-right pull-right vm-list-right'></i>" +
 		      "<ul class='vm-dropdown-menu'>" +
-		        "<li><a href='#' data-toggle='modal' data-target='#addDisk'><i class='fa fa-hdd-o'></i>&nbsp;时刻表</a></li>" +
-		        "<li><a href='#' data-toggle='modal' data-target='#uninstallDisk'><i class='fa fa-hdd-o'></i>&nbsp;乘务信息</a></li>" +
-		        "<li><a href='#' data-toggle='modal' data-target='#uninstallDisk'><i class='fa fa-hdd-o'></i>&nbsp;编组信息</a></li>" +
+		        "<li><a href='javascript:_canvasEventComponent.showTrainRunTime();'><i class='fa fa-hdd-o'></i>&nbsp;时刻表</a></li>" +
+		        "<li><a href='javascript:_canvasEventComponent.showTrainPersonnel();'><i class='fa fa-hdd-o'></i>&nbsp;乘务信息</a></li>" +
+		        "<li><a href='javascript:_canvasEventComponent.showTrainGroup();'><i class='fa fa-hdd-o'></i>&nbsp;编组信息</a></li>" +
 		      "</ul>" +
 		    "</li>" +
 		    "<li class='vm-list'><i class='fa fa-search'></i>&nbsp;缩放<i class='fa fa-caret-right pull-right vm-list-right'></i>" +
 		      "<ul class='vm-dropdown-menu'>" +
-		        "<li><a href='#' data-toggle='modal' data-target='#IOPS'><i class='fa fa-search-plus'></i>&nbsp;X+</a></li>" +
-		        "<li><a href='#' data-toggle='modal' data-target='#passwordVM'><i class='fa fa-search-minus'></i>&nbsp;X-</a></li>" +
-		        "<li><a href='#' data-toggle='modal' data-target='#updateSetting'><i class='fa fa-search-plus'></i>&nbsp;Y+</a></li>" +
-		        "<li><a href='#' data-toggle='modal' data-target='#updateSetting'><i class='fa fa-search-minus'></i>&nbsp;Y-</a></li>" +
+		        "<li><a href='javascript:_canvasEventComponent.xMagnification();'><i class='fa fa-search-plus'></i>&nbsp;X+</a></li>" +
+		        "<li><a href='javascript:_canvasEventComponent.xShrink();'><i class='fa fa-search-minus'></i>&nbsp;X-</a></li>" +
+		        "<li><a href='javascript:_canvasEventComponent.yMagnification();'><i class='fa fa-search-plus'></i>&nbsp;Y+</a></li>" +
+		        "<li><a href='javascript:_canvasEventComponent.yShrink();'><i class='fa fa-search-minus'></i>&nbsp;Y-</a></li>" +
 		      "</ul>" +
 		    "</li>" +
 		  "</ul>" +

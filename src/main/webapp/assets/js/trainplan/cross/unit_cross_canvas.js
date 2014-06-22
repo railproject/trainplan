@@ -173,7 +173,7 @@ var MyCanvas = function(){
 
 $(function(){
 	if(canvasData==null || canvasData.grid==null) {
-		showErrorDialog("当前不存在列车数据！");
+		showWarningDialog("当前不存在列车数据！");
 		dataIsNull = true;
 		return;
 	}
@@ -188,6 +188,11 @@ $(function(){
 	_MyCanvas = new MyCanvas();
 	_MyCanvas.drawGraph();
 	
+
+	//刷新按钮点击事件
+	$("#canvas_event_btn_refresh").click(function(){
+		_MyCanvas.drawGraph();
+	});
 	
 	//车底下拉框事件
 	$("#canvas_select_groupSerialNbr").change(function(){
@@ -199,7 +204,7 @@ $(function(){
 	//显示停站时刻 复选框事件
 	$("#canvas_checkbox_trainTime").click(function(){
 		if (dataIsNull) {
-			showErrorDialog("当前不存在列车数据！");
+			showWarningDialog("当前不存在列车数据！");
 			return;
 		}
 
@@ -217,11 +222,11 @@ $(function(){
 	//x放大2倍
 	$("#canvas_event_btn_x_magnification").click(function(){
 		if (currentXScaleCount == 32) {
-			showErrorDialog("当前已经不支持继续放大啦！");
+			showWarningDialog("当前已经不支持继续放大啦！");
 			return;
 		}
 		if (dataIsNull) {
-			showErrorDialog("当前不存在列车数据！");
+			showWarningDialog("当前不存在列车数据！");
 			return;
 		}
 		
@@ -238,11 +243,11 @@ $(function(){
 	//x缩小2倍
 	$("#canvas_event_btn_x_shrink").click(function(){
 		if (currentXScaleCount == 0.25) {
-			showErrorDialog("当前已经不支持继续缩小啦！");
+			showWarningDialog("当前已经不支持继续缩小啦！");
 			return;
 		}
 		if (dataIsNull) {
-			showErrorDialog("当前不存在列车数据！");
+			showWarningDialog("当前不存在列车数据！");
 			return;
 		}
 		
@@ -258,11 +263,11 @@ $(function(){
 	//y放大2倍
 	$("#canvas_event_btn_y_magnification").click(function(){
 		if (currentYScaleCount == 8) {
-			showErrorDialog("当前已经不支持继续放大啦！");
+			showWarningDialog("当前已经不支持继续放大啦！");
 			return;
 		}
 		if (dataIsNull) {
-			showErrorDialog("当前不存在列车数据！");
+			showWarningDialog("当前不存在列车数据！");
 			return;
 		}
 		
@@ -279,11 +284,11 @@ $(function(){
 	//y缩小2倍
 	$("#canvas_event_btn_y_shrink").click(function(){
 		if (currentYScaleCount == 0.25) {
-			showErrorDialog("当前已经不支持继续缩小啦！");
+			showWarningDialog("当前已经不支持继续缩小啦！");
 			return;
 		}
 		if (dataIsNull) {
-			showErrorDialog("当前不存在列车数据！");
+			showWarningDialog("当前不存在列车数据！");
 			return;
 		}
 		
