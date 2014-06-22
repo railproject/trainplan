@@ -8,7 +8,7 @@ boolean isZgsUser = false;	//当前用户是否为总公司用户
 if (user!=null && user.getBureau()==null) {
 	isZgsUser = true;
 }
-
+String currentUserBureau = user.getBureau();
 List<String> permissionList = user.getPermissionList();
 String userRolesString = "";
 for(String p : permissionList){
@@ -54,6 +54,7 @@ String basePath = request.getContextPath();
 var basePath = "<%=basePath %>";
 var all_role = "<%=userRolesString %>";
 var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
+var currentUserBureau = "<%=currentUserBureau %>";
 </script>
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
  <style type="text/css">
@@ -183,7 +184,7 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 														data-target="#" id="btn_cross_createTrainLines" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createTrainLines">生成运行线</a>
 												</div> 
 												</div> 
-										  <span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
+										  <span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue() + currentCross().checkedBureauShowValue()"></span> 
 									      <div class="row" style="margin-top:10px">
 										     <div class="pull-left" style="width: 80%;">
 										        <section class="panel panel-default">

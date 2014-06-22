@@ -863,28 +863,42 @@ function CrossModel() {
 	self.checkCrossInfo = function(){
 		commonJsScreenLock();
 		var crossIds = "";
-		var delCrosses = [];
-		var crosses = self.crossRows.rows();
+		var checkedCrosses = [];
+		var crosses = self.planCrossRows();
+		
 		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1 && crosses[i].checkFlag()){ 
-				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].crossId;
-				delCrosses.push(crosses[i]);
-			}
-		} 
+			if(crosses[i].checkFlag() == 2){
+				showWarningDialog("不能重复审核"); 
+				return;
+			}else if(crosses[i].checkFlag() == 1 && crosses[i].checkedBureau().indexOf(currentUserBureau) > -1 && crosses[i].selected() == 1){  
+				showWarningDialog("本局已审核"); 
+				return;
+			}else if(crosses[i].selected() == 1){
+				crossIds += (crossIds == "" ? "" : ";");
+				crossIds += crosses[i].planCrossId() + "#" +  crosses[i].relevantBureau;
+				checkedCrosses.push(crosses[i]); 
+			}; 
+		}  
+		if(crossIds == ""){
+			showErrorDialog("没有可审核的");
+			return;
+		}
 		 $.ajax({
-				url : "cross/checkCorssInfo",
+				url : "runPlan/checkCrossRunLine",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					crossIds : crossIds
+					startTime: "",
+					endTime:"",
+					planCrossIds : crossIds
 				}),
 				success : function(result) {     
 					if(result.code == 0){
-						$.each(delCrosses, function(i, n){ 
-							n.checkFlag("1");
+						$.each(checkedCrosses, function(i, n){
+							n.checkedBureau(n.checkedBureau() + "," + currentUserBureau);
+							console.log(n.checkedBureau());
 						});
 						showSuccessDialog("审核成功");
 					}else{
@@ -1196,23 +1210,24 @@ function CrossRow(data) {
 				 }
 			 } 
 		 } 
-		 return  result == "" ? "" : result; 
+		 return  result == "" ? "" : "相关局：" + result; 
 	});
 	
 	
 	self.checkedBureauShowValue =  ko.computed(function(){ 
 		var result = "";
-		 if(data.relevantBureau != null && data.relevantBureau != "null"){  
-			 for(var j = 0; j < data.relevantBureau.length; j++){
+		 if(data.checkedBureau != null && data.checkedBureau != "null"){  
+			 var bs = data.checkedBureau.split(","); 
+			 for(var j = 0; j < bs.length; j++){
 				 for(var i = 0; i < gloabBureaus.length; i++){
-					 if(data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
+					 if(bs[j] == gloabBureaus[i].code){
 						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
 						 break;
-					 }
-				 }
-			 } 
+					 };
+				 };
+			 };
 		 } 
-		 return  result == "" ? "" : result; 
+		 return  result == "" ? "" : "已审局：" + result; 
 	});
 	
 	
