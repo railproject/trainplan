@@ -117,28 +117,30 @@
             </li>
             <shiro:authenticated>
                 <li>
-                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>基本图<i class="fa fa-caret-down pull-right"></i></a>
+                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>发布计划<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="http://10.1.191.154/WebReport/ReportServer?reportlet=JHPT%2FJHPT_JBT%2Fjbt_kxlstj.cpt" target="contentFrame"><i class="fa fa-bar-chart-o"></i>汇总统计</a></li>
-                        <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>明细查询</a></li>
+                        <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>开行计划审核</a></li>
+                        <li><a href="#" target="contentFrame"><i class="fa fa-external-link"></i>交路/车底计划审核</a></li>
+                        <li><a href="#" target="contentFrame"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
+                        <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>日历计划发布</a></li>
                     </ul>
                 </li>
 
                 <li>
-                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>基本交路<i class="fa fa-caret-down pull-right"></i></a>
+                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>编制计划<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表管理</a>
-                        <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>交路单元管理</a></li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>开行计划<i class="fa fa-caret-down pull-right"></i></a>
-                    <ul>
-                        <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>计划发布</a></li>
-                        <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-list-alt"></i>计划管理</a></li>
+                        <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-list-alt"></i>开行/交路计划管理</a></li>
                         <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>计划上图</a></li>
                         <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-ol"></i>汇总统计</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>管理基本图<i class="fa fa-caret-down pull-right"></i></a>
+                    <ul>
+                        <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图管理</a></li>
+                        <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表管理</a>
+                        <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>交路单元管理</a></li>
                     </ul>
                 </li>
 

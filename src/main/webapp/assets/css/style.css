@@ -476,6 +476,7 @@ body {
 }
 
 .Iframe_body {
+    background: #ffffff;
 	padding: 11px 3%;
 }
 
@@ -1100,6 +1101,7 @@ z-index: 1;
 /*��*/
 @media all and (min-width:1280px) {
 	.Iframe_body {
+        background: #ffffff;
 		padding: 12px 5%;
 	}
 	.sidebar {
@@ -1323,4 +1325,7 @@ z-index: 1;
 
 .ui-dialog .ui-widget .ui-widget-content .ui-corner-all .ui-front .ui-draggable .ui-resizable {
     z-index: 999;
+}
+.Iframe-body {
+    background: #ffffff;
 }
