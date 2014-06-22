@@ -437,7 +437,7 @@
     </select>
     
     <update id="updateCheckTypeForPlanCrossId" parameterType="map" >
-       update plan_check
+       update plan_cross
        set check_type=#{checkType} where plan_cross_id=#{planCrossId}
     </update>
 </mapper> 
