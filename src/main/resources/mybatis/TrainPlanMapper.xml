@@ -41,7 +41,7 @@
      select base_train_id ,plan_train_id,
 		run_date,train_nbr
 		from plan_train
-		where run_date>=#{startDate} and run_date&lt;=#{endDate} and plan_cross_id in (#{planCrossIds})
+		where run_date>=#{startDate} and run_date&lt;=#{endDate} and plan_cross_id in (${planCrossIds})
    </select>
    
    

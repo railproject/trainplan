@@ -423,7 +423,7 @@ where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID order by sort
         CREAT_PEOPLE_ORG  as createPeopleOrg ,
         CREAT_TIME  as  createTime,
          RELEVANT_BUREAU as relevantBureau
-        from unit_cross where unit_cross_id=#{crossId}
+        from unit_cross where base_cross_id=#{crossId}
 
     </select>
 
