@@ -594,7 +594,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			for(var i=0; i<_len;i++) {
 				var _obj = this.obj.trainStns[i];
 				
-				console.log("###########	_obj.stationType="+_obj.stationType+"	 $.inArray(_obj.stationType, _stationTypeArray)="+$.inArray(_obj.stationType, _stationTypeArray));
+//				console.log("###########	_obj.stationType="+_obj.stationType+"	 $.inArray(_obj.stationType, _stationTypeArray)="+$.inArray(_obj.stationType, _stationTypeArray));
 				//屏蔽不在显示要求范围内的数据
 //				if ((_stationTypeArray.length>0 && $.inArray(_obj.stationType, _stationTypeArray) < 0)) {
 				if (getStnArcYIndex(_obj.stnName) < 0) {//该站不存在于纵坐标数组中 	当数据字典完善后，重新启用上面的注释条件
@@ -693,6 +693,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		 * 				y : 458,					 	//可选参数 当前鼠标y坐标
 		 * 				trainNbr : "K818",				//可选参数 车次号，外部传入条件，以便绘图时该车次高亮显示，类是鼠标选中效果
 		 * 				booleanShowTrainDetail : true, 	//可选参数 是否显示该车次详细信息
+		 * 				groupSerialNbr : "1" 			//可选参数 列车组号
 		 * 			}
 		 * 
 		 */
@@ -704,7 +705,9 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 
 			if(expandObj!=null && ((expandObj.x!="undefined" && expandObj.y!="undefined" && 
 								(ctx.isPointInStroke(expandObj.x, expandObj.y)||ctx.isPointInPath(expandObj.x, expandObj.y)))
-							|| (expandObj.trainNbr!="undefined" && expandObj.trainNbr == this.obj.trainName))) {
+							|| (expandObj.trainNbr!="undefined" && expandObj.trainNbr == this.obj.trainName)
+							|| (typeof expandObj.groupSerialNbr=="string" && expandObj.groupSerialNbr == this.obj.groupSerialNbr)
+							)) {
 				var currentColor = "#ff0000";
 				if ("#ff0000"==colorParam) {
 					currentColor = getRandomColor();//当前线条底色为红色时，鼠标选中颜色则重新随机产生

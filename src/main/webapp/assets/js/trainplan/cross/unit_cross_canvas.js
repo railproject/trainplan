@@ -2,6 +2,9 @@ var _MyCanvas = null;
 
 var canvas = null;
 var context = null;
+var myCanvasComponent = null;//绘图组件对象
+var lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
+var jlList = [];	//用于保存交路数据元素，以便重新绘图
 var _canvas_select_groupSerialNbr = null;
 var _currentGroupSerialNbr = "";		//当前组号
 
@@ -79,8 +82,13 @@ var MyCanvas = function(){
 	 * public
 	 */
 	this.clearChart = function() {
+		//清除数据
+		lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
+		jlList = [];	//用于保存交路数据元素，以便重新绘图
+		
 		//清除画布所有元素
 		context.clearRect(0,0,canvas.width,canvas.height);
+		
 	};
 	
 	
@@ -103,9 +111,9 @@ var MyCanvas = function(){
 		this.clearChart();
 		
 		var _groupSerialNbrComboxData = [];
-		
 		var booleanDrawJlStartAndEnd = true;	//是否绘制交路起止标记
-		var myCanvasComponent = new MyCanvasComponent(context, canvasData.grid.days, canvasData.grid.crossStns, getScale(scale));
+		scale = getScale(scale);				//获取过滤条件
+		myCanvasComponent = new MyCanvasComponent(context, canvasData.grid.days, canvasData.grid.crossStns, scale);
 		//1.绘制网格
 		myCanvasComponent.drawGrid("green");
 		
@@ -123,26 +131,31 @@ var MyCanvas = function(){
 				});
 			}
 			
-			
-			if (scale && scale.currentGroupSerialNbr && scale.currentGroupSerialNbr!="undefine"
+			if (typeof scale=="object" && scale.currentGroupSerialNbr!=null && typeof scale.currentGroupSerialNbr!="undefine"
 				&&scale.currentGroupSerialNbr!="" && scale.currentGroupSerialNbr!=_obj.groupSerialNbr) {
-				continue;
+				continue;	//当前组号下拉框条件存在，且值不等于交路数据中组 则跳过不绘制该交路图形		""表示查看所有
 			}
+			
 			
 			//2.1 绘制交路列车运行线
 			for (var j=0; j<_lenJlTrain; j++) {
-				new myCanvasComponent.drawTrainRunLine(false, _color, _obj.trains[j]).drawLine(context);
+				var line = new myCanvasComponent.drawTrainRunLine(false, _color, _obj.trains[j]);
+				line.drawLine(context);
+				//保存列车信息，以便重新绘图
+				lineList.push(line);
 			}
 			
 			//2.2 绘制交路接续关系
 			myCanvasComponent.drawJxgx(_color, _obj.jxgx, i);
 			
 			
+			//2.3绘制交路起止标识
 			if (booleanDrawJlStartAndEnd){
 				myCanvasComponent.drawJlStartAndEnd(_color, _obj.trains, i);
 			}
 			
-			
+			//保存交路对象，以便重新绘图
+			jlList.push({color:_color,data:_obj});
 		}
 		
 		
@@ -167,12 +180,16 @@ $(function(){
 	_canvas_select_groupSerialNbr = $("#canvas_select_groupSerialNbr");
 	canvas = document.getElementById("unit_cross_canvas");
 	context = canvas.getContext('2d');
+	
+	//初始化事件类
+	new CanvasEventComponent("unit_cross_canvas");
+	
 
 	_MyCanvas = new MyCanvas();
 	_MyCanvas.drawGraph();
 	
 	
-	
+	//车底下拉框事件
 	$("#canvas_select_groupSerialNbr").change(function(){
 		_currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();
 		
