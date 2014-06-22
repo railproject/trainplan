@@ -77,6 +77,7 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 <script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/util/canvas.event.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/cross/unit_cross_canvas.js"></script>
 
 </body>
