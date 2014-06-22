@@ -19,7 +19,7 @@
     <script src="${ctx}/assets/js/jquery.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/minified/jquery-ui.min.js"></script>
     <script src="${ctx}/assets/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/trainplan/trainplan_dialog.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/trainplan/common.js"></script>
     <script type="text/javascript" defer="defer">
 
         //被嵌入的Iframe根据不同的屏幕高度自适应
