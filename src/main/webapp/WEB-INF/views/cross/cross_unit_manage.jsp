@@ -87,9 +87,7 @@ console.log(all_role);
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 30%;">
 		<!--分栏框开始--> 
-			<div class="row" style="margin: 10px 10px 10px 10px;">
-			    <section class="panel panel-default">
-			        <div class="panel-heading"><i class="fa fa-table"></i>车底交路列表</div>
+			<div class="row" style="margin: 10px 10px 10px 10px;"> 
 			        <div class="panel-body">
 						<form class="form-horizontal" role="form">   
 						<!-- <select id="selectTest" class="easyui-combobox" name="organs"  style="width:200px;" multiple="multiple" valueField="id" textField="text" ></select> -->
@@ -219,8 +217,7 @@ console.log(all_role);
 									</div>
 								</div> 
 						</form>
-					 </div>
-			   </section>
+					 </div> 
 			</div> 
 	</div>
 	
