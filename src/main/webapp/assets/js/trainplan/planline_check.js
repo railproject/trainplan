@@ -647,6 +647,18 @@ function drawPie($div, chartName, data, colors) {
             pointFormat: '{series.name}: <b>{point.y}</b>',
             percentageDecimals: 1
         },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 50,
+            y: 50,
+            borderWidth: 0,
+            labelFormatter: function() {
+                return this.name+'&nbsp';
+            },
+            useHTML:true
+        },
         plotOptions: {
             pie: {
                 allowPointSelect: true,
