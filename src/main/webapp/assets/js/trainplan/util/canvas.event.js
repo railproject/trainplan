@@ -263,16 +263,16 @@ var CanvasEventComponent = function(canvasDivId) {
 		"<div class=' rightMenu'>" +
 		  "<ul>" +
 		  "<li><a href='javascript:_canvasEventComponent.highlightJl();'><i class='fa fa-crosshairs'></i>&nbsp;交路突出显示</a></li>" +
-		    "<li><a href='javascript:_canvasEventComponent.stopTrain();'><i class='fa fa-caret-square-o-up'></i>&nbsp;停运</a></li>" +
-		    "<li><a href='javascript:_canvasEventComponent.editTrainPath();'><i class='fa fa-pencil'></i>&nbsp;调整径路</a></li>" +
+//		    "<li><a href='javascript:_canvasEventComponent.stopTrain();'><i class='fa fa-caret-square-o-up'></i>&nbsp;停运</a></li>" +
+//		    "<li><a href='javascript:_canvasEventComponent.editTrainPath();'><i class='fa fa-pencil'></i>&nbsp;调整径路</a></li>" +
 //		    "<li><a href='javascript:_canvasEventComponent.editTrainPath();' data-toggle='modal' data-target='#myModal-update'><i class='fa fa-pencil'></i>&nbsp;调整径路</a></li>" +
-		    "<li class='vm-list'><i class='fa fa-eye'></i>&nbsp;查看信息<i class='fa fa-caret-right pull-right vm-list-right'></i>" +
-		      "<ul class='vm-dropdown-menu'>" +
-		        "<li><a href='javascript:_canvasEventComponent.showTrainRunTime();'><i class='fa fa-hdd-o'></i>&nbsp;时刻表</a></li>" +
-		        "<li><a href='javascript:_canvasEventComponent.showTrainPersonnel();'><i class='fa fa-hdd-o'></i>&nbsp;乘务信息</a></li>" +
-		        "<li><a href='javascript:_canvasEventComponent.showTrainGroup();'><i class='fa fa-hdd-o'></i>&nbsp;编组信息</a></li>" +
-		      "</ul>" +
-		    "</li>" +
+//		    "<li class='vm-list'><i class='fa fa-eye'></i>&nbsp;查看信息<i class='fa fa-caret-right pull-right vm-list-right'></i>" +
+//		      "<ul class='vm-dropdown-menu'>" +
+//		        "<li><a href='javascript:_canvasEventComponent.showTrainRunTime();'><i class='fa fa-hdd-o'></i>&nbsp;时刻表</a></li>" +
+//		        "<li><a href='javascript:_canvasEventComponent.showTrainPersonnel();'><i class='fa fa-hdd-o'></i>&nbsp;乘务信息</a></li>" +
+//		        "<li><a href='javascript:_canvasEventComponent.showTrainGroup();'><i class='fa fa-hdd-o'></i>&nbsp;编组信息</a></li>" +
+//		      "</ul>" +
+//		    "</li>" +
 		    "<li class='vm-list'><i class='fa fa-search'></i>&nbsp;缩放<i class='fa fa-caret-right pull-right vm-list-right'></i>" +
 		      "<ul class='vm-dropdown-menu'>" +
 		        "<li><a href='javascript:_canvasEventComponent.xMagnification();'><i class='fa fa-search-plus'></i>&nbsp;X+</a></li>" +
