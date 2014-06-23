@@ -1,7 +1,8 @@
-var canvasData = {}; 
+var canvasData = {};  
+var cross = null;
 $(function() { 
 	
-	var cross = new CrossModel();
+	cross = new CrossModel();
 	ko.applyBindings(cross); 
 	
 	cross.init();   
@@ -109,7 +110,8 @@ function CrossModel() {
 	
 
 	
-	self.loadStns = function(trainId){  
+	self.loadStns = function(currentTrain){  
+		commonJsScreenLock();
 		 $.ajax({ 
 				url : "jbtcx/queryPlanLineTrainTimes",
 				cache : false,
@@ -117,15 +119,22 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					trainId: trainId
+					trainId: currentTrain.obj.planTrainId
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
-						if (result != null && result != "undefind" && result.code == "0") {  
-							
-							//self.currentTrainInfoMessage("车次：" + row.trainNbr + "&nbsp;&nbsp;&nbsp;" + row.startStn + "——" + row.endStn);
+						if (result != null && result != "undefind" && result.code == "0") {   
+							var message = "车次：" + currentTrain.obj.trainName + "&nbsp;&nbsp;&nbsp;";
 							$.each(result.data, function(i, n){
 								self.times.push(new TrainTimeRow(n)); 
+								if(i == 0){
+									message += n.stnName;
+								}else if(i == result.data.length - 1){
+									self.currentTrainInfoMessage(message + "——" + n.stnName);
+									if($("#run_plan_train_times").is(":hidden")){
+										$("#run_plan_train_times").dialog({top:10, draggable: true, resizable:true});
+									} 
+								}  
 							});
 						}  
 					} else {
@@ -135,15 +144,11 @@ function CrossModel() {
 				error : function() {
 					showErrorDialog("接口调用失败");
 				},
-				complete : function(){
-					initFlag++;
-					if(initFlag == 2){
-						commonJsScreenUnLock();
-					}
-					
+				complete : function(){ 
+						commonJsScreenUnLock();  
 				}
 		    }); 
-		 $("#run_plan_train_times").dialog({top:10});
+		   
 		// $("#run_plan_train_times").dialog("open");
 	};
 	self.setCurrentTrain = function(train){ 
@@ -1383,8 +1388,8 @@ function TrainTimeRow(data) {
 	self.index = data.childIndex + 1;
 	self.stnName = filterValue(data.stnName);
 	self.bureauShortName = filterValue(data.bureauShortName);
-	self.sourceTime = filterValue(data.arrTime);
-	self.targetTime = filterValue(data.dptTime);
+	self.sourceTime = filterValue(data.arrTime != null ? data.arrTime.replace(/-/g, "").substring(4) : "");
+	self.targetTime = filterValue(data.dptTime != null ? data.dptTime.replace(/-/g, "").substring(4) : "");
 	self.stepStr = GetDateDiff(data); 
 	self.trackName = filterValue(data.trackName);  
 	self.runDays = data.runDays;

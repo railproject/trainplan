@@ -451,11 +451,11 @@ function CrossModel() {
 	self.crossRows = new PageModle(200, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() {  
-		showConfirmDiv("提示", "你确定要保存修改?", function (r) { 
-			commonJsScreenLock();
+		showConfirmDiv("提示", "你确定要保存修改?", function (r) {  
 			var result = ko.toJSON(self.currentCross);
 			console.log(result);
 			if(r){
+				commonJsScreenLock();
 				$.ajax({
 					url : "cross/editBaseCorssInfo",
 					cache : false,

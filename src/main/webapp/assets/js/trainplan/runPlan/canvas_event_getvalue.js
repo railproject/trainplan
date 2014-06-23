@@ -157,12 +157,11 @@ var RunPlanCanvasPage = function(cross) {
 //	            	console.log("---------------------faf-----------------");
 //	            	console.log(c);
 //	            	_self.app.loadStns(c.obj.planTrainId);
-////	            	if(c.obj.trainStns != null){
-////	            		$.each(c.obj.trainStns, function(z, n){
-////	            			 stns.push(n); 
-////	            		});
-////	            	}
-//	            	
+//	            	if(c.obj.trainStns != null){
+//	            		$.each(c.obj.trainStns, function(z, n){
+//	            			 stns.push(n); 
+//	            		});
+//	            	} 
 //	            }  
 //	        } 
 //	    };
