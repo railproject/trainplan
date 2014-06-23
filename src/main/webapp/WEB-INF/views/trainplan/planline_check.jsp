@@ -147,12 +147,12 @@
                             <div id="chart_01" style="margin: 0; height: 253px;"></div>
                         </div>
                     </div>
-                    <div class="row paddingtop30">
+                    <div class="row paddingtop100">
                         <div class="col-xs-12 col-md-12  col-sm-12 padding0">
                             <div id="chart_02" style="margin:0; height: 253px;"></div>
                         </div>
                     </div>
-                    <div class="row paddingtop30">
+                    <div class="row paddingtop100">
                         <shiro:hasPermission name="JHPT.RJH.KDSP">
                             <div class="col-xs-12 col-md-12  col-sm-12 padding0">
                                 <div id="chart_03" style="margin:0; height: 253px;"></div>
