@@ -37,17 +37,17 @@ public class RunLineService {
         return runLineDao.findLineInfoByLineId(lineId);
     }
 
-    public Map<String, Object> findUnknownRunLine(String bureau, String date) throws ParseException {
-        logger.debug("findUnknownRunLine::::::");
+    public Map<String, Object> findUnknownRunLineCount(String bureau, String date) throws ParseException {
+        logger.debug("findUnknownRunLineCount::::::");
         Map<String, Object> params = Maps.newHashMap();
         params.put("bureau", bureau);
         try {
             params.put("startDate", new Timestamp(DateUtils.parseDate(date + " 00:00:00", new String[] {"yyyy-MM-dd hh:mm:ss"}).getTime()));
             params.put("endDate", new Timestamp(DateUtils.parseDate(date + " 23:59:59", new String[] {"yyyy-MM-dd hh:mm:ss"}).getTime()));
         } catch (ParseException e) {
-            logger.error("findUnknownRunLine::::", e);
+            logger.error("findUnknownRunLineCount::::", e);
             throw e;
         }
-        return runLineDao.findUnknownRunLine(params);
+        return runLineDao.findUnknownRunLineCount(params);
     }
 }

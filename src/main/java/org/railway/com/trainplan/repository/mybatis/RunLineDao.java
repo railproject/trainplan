@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.repository.mybatis;
 
+import org.railway.com.trainplan.entity.RunLine;
+
 import java.util.List;
 import java.util.Map;
 
@@ -36,4 +38,11 @@ public interface RunLineDao {
      * @return 结果
      */
     Map<String, Object> findUnknownRunLineCount(Map<String, Object> params);
+
+    /**
+     * 查询单个运行线全部信息，包括点单
+     * @param lineId 运行线id
+     * @return 运行线
+     */
+    RunLine findRunLineById(String lineId);
 }

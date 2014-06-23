@@ -112,7 +112,7 @@
                                 <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="enable: needLev2, checked: isSelected"/></td>
                                 </shiro:hasPermission>
                                 <td class="text-center" data-bind="text: $index() + 1"></td>
-                                <td class="text-center"><a href="#" data-bind="text: name"></a></td>
+                                <td class="text-center"><a href="#" data-bind="text: name, click: showGraphic"></a></td>
                                 <td class="text-center" data-bind="text: sourceType"></td>
                                 <td class="text-center" data-bind="text: trainType"></td>
                                 <td class="text-center" data-bind="text: highLineFlag"></td>
