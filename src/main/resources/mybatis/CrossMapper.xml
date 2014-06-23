@@ -944,7 +944,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
     </insert>
 
 
-    <insert id="addCrossInfo"  parameterType="java.util.Map" >
+    <insert id="addCrossInfo"  parameterType="java.util.List" >
 
         insert into base_cross
         (BASE_CROSS_ID,RELEVANT_BUREAU,APPOINT_PERIOD,
@@ -957,7 +957,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
         DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
         CREAT_PEOPLE_ORG,CREAT_TIME)
-        (<foreach collection="crossList" item="item" index="index"
+        (<foreach collection="list" item="item" index="index"
                   separator="UNION">
         SELECT
         #{item.crossId,jdbcType=VARCHAR},#{item.relevantBureau,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
@@ -1315,17 +1315,31 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
     
     
      <delete id="deleteCrossInfoByChartId" parameterType="map">
-        delete from base_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus})
+        delete from base_cross where base_chart_ID=#{chartId} 
+        <if test="bureaus != null">
+         and TOKEN_VEH_BUREAU in (${bureaus})
+        </if> 
     </delete> 
     <delete id="deleteCrossTrainByChartId" parameterType="map">
-        delete from base_cross_train where BASE_CROSS_ID in (select base_cross_id from base_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus}))
+        delete from base_cross_train where BASE_CROSS_ID in (select base_cross_id from base_cross where base_chart_ID=#{chartId}
+         <if test="bureaus != null">
+         and TOKEN_VEH_BUREAU in (${bureaus})
+        </if> 
+        )
     </delete> 
-    <delete id="deleteUnitCrossTrainByChartId" parameterType="map">
-        delete from unit_cross_train where unit_cross_id in (select unit_cross_id from unit_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus}))
+    <delete id="deleteUnitCrossTrainByChartId" parameterType="map"> 
+        delete from unit_cross_train where unit_cross_id in (select unit_cross_id from unit_cross where base_chart_ID=#{chartId} 
+         <if test="bureaus != null">
+          and TOKEN_VEH_BUREAU in (${bureaus})
+        </if> 
+        ) 
 
     </delete> 
     <delete id="deleteUnitCrossInfoByChartId" parameterType="map">
-        delete from unit_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus})
+        delete from unit_cross where base_chart_ID=#{chartId} 
+         <if test="bureaus != null">
+          and TOKEN_VEH_BUREAU in (${bureaus})
+        </if>  
     </delete>
 
 

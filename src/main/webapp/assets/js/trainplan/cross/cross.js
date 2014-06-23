@@ -698,14 +698,19 @@ function CrossModel() {
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {  
-							self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
-//							self.currentCross(new CrossRow(result.data[0].crossInfo));
-							if(result.data[0].crossTrainInfo != null){
-								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
-									var row = new TrainRow(crossInfo);
-									self.trains.push(row); 
-								});
+							if(result.data[0].crossInfo == null){
+								showWarningDialog("交路信息已经不存在");
+							}else{
+								self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
+//								self.currentCross(new CrossRow(result.data[0].crossInfo));
+								if(result.data[0].crossTrainInfo != null){
+									$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
+										var row = new TrainRow(crossInfo);
+										self.trains.push(row); 
+									});
+								} 
 							}
+							
 						}
 						 
 					} else {

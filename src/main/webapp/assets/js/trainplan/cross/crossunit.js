@@ -595,16 +595,21 @@ function CrossModel() {
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {  
-							self.setCurrentCross(new CrossRow(result.data[0].crossinfo));
-//							self.currentCross(new CrossRow(result.data[0].crossInfo));
-							
-							if(result.data[0].unitCrossTrainInfo != null){
-								for(var i = 0; i < result.data[0].unitCrossTrainInfo.length; i++){
-									var row = new TrainRow(result.data[0].unitCrossTrainInfo[i]); 
-									self.trains.push(row); 
-								} 
+						if (result.data !=null && result.data.length > 0) {   
+							if(result.data[0].crossInfo == null){
+								showWarningDialog("交路单元信息已经不存在");
+							}else{
+								self.setCurrentCross(new CrossRow(result.data[0].crossinfo));
+//								self.currentCross(new CrossRow(result.data[0].crossInfo));
+								
+								if(result.data[0].unitCrossTrainInfo != null){
+									for(var i = 0; i < result.data[0].unitCrossTrainInfo.length; i++){
+										var row = new TrainRow(result.data[0].unitCrossTrainInfo[i]); 
+										self.trains.push(row); 
+									} 
+								}
 							}
+							
 						}
 						 
 					} else {
