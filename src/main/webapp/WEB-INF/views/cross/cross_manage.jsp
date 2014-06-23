@@ -89,14 +89,12 @@ var all_role = "<%=userRolesString %>";
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">对数表管理</a></li>
-	</ol> 
-   	<div id="plan_view_div_palnDayDetail" class="panel panel-default">
-	 <div class="row" style="margin: 5px 5px 5px 5px;"> 
-	
+	</ol>  
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 30%;">
+	   	<div class="panel panel-default"> 
 		<!--分栏框开始-->  
-			<div class="row" style="margin: 0px 10px 10px 10px;"> 
+			<div class="row" style="margin: 0px 5px 5px 5px;"> 
 			        <div class="panel-body">
 						<form class="form-horizontal" role="form">   
 						<!-- <select id="selectTest" class="easyui-combobox" name="organs"  style="width:200px;" multiple="multiple" valueField="id" textField="text" ></select> -->
@@ -228,9 +226,11 @@ var all_role = "<%=userRolesString %>";
 						</form>
 					 </div> 
 			</div> 
+		</div>
 	</div>
-	<div class="pull-right" style="width: 70%;"> 
-			<div class="row" style="margin: 10px 10px 10px 10px;">
+	<div class="pull-right" style="width: 69%;"> 
+	       <div class="panel panel-default"> 
+			<div class="row" style="margin: 10px 5px 5px 5px;">
 			   <section class="panel panel-default">
 			        <div class="panel-heading">
 			        	<span>
@@ -750,7 +750,7 @@ var all_role = "<%=userRolesString %>";
 										   <td colspan="9" style="padding:0">
 												 <div style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
-														 <tbody data-bind="foreach: times">
+														 <tbody data-bind="foreach: simpleTimes">
 												           <tr data-bind="visible: stationFlag != 'BTZ'">  
 															<td style="width:7.5%" align="center" data-bind=" text: $index() + 1"></td>
 															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>

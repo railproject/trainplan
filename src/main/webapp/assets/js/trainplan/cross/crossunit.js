@@ -35,6 +35,8 @@ function CrossModel() {
 	
 	self.times = ko.observableArray();
 	
+	self.simpleTimes = ko.observableArray();
+	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle()); 
 	self.defaultCrossTemp = {"crossId":"",
@@ -93,11 +95,16 @@ function CrossModel() {
 		self.times.remove(function(item){
 			return true;
 		});
+		self.simpleTimes.remove(function(item){
+			return true;
+		});
 		if(row.times().length > 0){ 
 			$.each(row.times(), function(i, n){
 				self.times.push(n); 
 			}) ;
-			 
+			$.each(row.simpleTimes(), function(i, n){
+				self.simpleTimes.push(n); 
+			}) ; 
 		}else{
 			$.ajax({
 				url : "../jbtcx/queryTrainTimes",
@@ -113,7 +120,10 @@ function CrossModel() {
 						row.loadTimes(result.data);  
 						$.each(row.times(), function(i, n){
 							self.times.push(n); 
-						});
+						}) ;
+						$.each(row.simpleTimes(), function(i, n){
+							self.simpleTimes.push(n); 
+						}) ; 
 					}  
 				},
 				error : function() {
@@ -596,7 +606,7 @@ function CrossModel() {
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {   
-							if(result.data[0].crossInfo == null){
+							if(result.data[0].crossinfo == null){
 								showWarningDialog("交路单元信息已经不存在");
 							}else{
 								self.setCurrentCross(new CrossRow(result.data[0].crossinfo));
@@ -893,9 +903,14 @@ function TrainRow(data) {
 	self.marshallingName = data.marshallingName;
 	
 	self.times = ko.observableArray();  
+	self.simpleTimes = ko.observableArray(); 
 	self.loadTimes = function(times){
 		$.each(times, function(i, n){ 
-			self.times.push(new TrainTimeRow(n));
+			var timeRow = new TrainTimeRow(n);
+			self.times.push(timeRow);
+			if(n.stationFlag != 'BTZ'){
+				self.simpleTimes.push(timeRow);
+			}
 		});
 	}; 
 	

@@ -39,6 +39,8 @@ function CrossModel() {
 	
 	self.times = ko.observableArray();
 	
+	self.simpleTimes = ko.observableArray();
+	
 	self.runPlanCanvasPage = new RunPlanCanvasPage(self);
 	self.currentTrainInfoMessage = ko.observable("");
 	self.currentTrain = ko.observable();
@@ -126,7 +128,11 @@ function CrossModel() {
 						if (result != null && result != "undefind" && result.code == "0") {   
 							var message = "车次：" + currentTrain.obj.trainName + "&nbsp;&nbsp;&nbsp;";
 							$.each(result.data, function(i, n){
-								self.times.push(new TrainTimeRow(n)); 
+								var timeRow = new TrainTimeRow(n);
+								self.times.push(timeRow); 
+								if(n.stationFlag != 'BTZ'){
+									self.simpleTimes.push(timeRow); 
+								}
 								if(i == 0){
 									message += n.stnName;
 								}else if(i == result.data.length - 1){
@@ -1350,9 +1356,14 @@ function TrainRow(data) {
 	self.startStn = data.startStn;//START_STN
 	
 	self.times = ko.observableArray(); 
+	self.simpleTimes = ko.observableArray(); 
 	self.loadTimes = function(times){
 		$.each(times, function(i, n){ 
-			self.times.push(new TrainTimeRow(n));
+			var timeRow = new TrainTimeRow(n);
+			self.times.push(timeRow);
+			if(n.stationFlag != 'BTZ'){
+				self.simpleTimes.push(timeRow);
+			}
 		});
 	}; 
 	//self.startBureau = data.startBureau;//START_BUREAU  
@@ -1399,7 +1410,7 @@ function RunPlanRow(data){
 
 function TrainTimeRow(data) { 
 	var self = this; 
-	self.index = data.childIndex + 1;
+	self.index = data.childIndex + 1; 
 	self.stnName = filterValue(data.stnName);
 	self.bureauShortName = filterValue(data.bureauShortName);
 	self.sourceTime = filterValue(data.arrTime != null ? data.arrTime.replace(/-/g, "").substring(4) : "");
