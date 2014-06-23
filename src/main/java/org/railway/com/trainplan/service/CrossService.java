@@ -715,9 +715,12 @@ public class CrossService{
 	 * @return
 	 */
 	public List<TrainLineInfo> getTrainPlanLineInfoForPlanCrossId(String planCrossId,String bureauShortName){
+		System.err.println("bureauShortName===" + (bureauShortName == null));
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("planCrossId", planCrossId);
-		paramMap.put("bureauShortName", bureauShortName==null?"":bureauShortName);
+		//如果是总局简称为：总
+		paramMap.put("bureauShortName", bureauShortName == null ? "Z" : bureauShortName);
+		 
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_TRAINPLANLINE_INFO_FOR_PLANCROSSID, paramMap);
 	}
 	
@@ -729,7 +732,7 @@ public class CrossService{
 	public List<Map<String,Object>> getStationListForPlanCrossId(String planCrossId,String stnBureau){
 		Map<String,Object> reqMap = new HashMap<String,Object>();
 		reqMap.put("planCrossId",planCrossId );
-		reqMap.put("stnBureau",stnBureau );
+		reqMap.put("stnBureau",stnBureau==null ? "Z" : stnBureau);
 		return  baseDao.selectListBySql(Constants.CROSSDAO_GET_STATIONLIST_FOR_PLANCROSSID, reqMap);
 	}
 	
