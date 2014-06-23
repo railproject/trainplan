@@ -474,66 +474,68 @@ public class CrossService{
 		
 		//通过crossId查询cross_train信息
 	    List<CrossTrainInfo> crossTrainList = getCrossTrainInfoForCrossid( crossInfo.getCrossId());
-	    CrossTrainInfo crossTrain = crossTrainList.get(0); 
-	    String marshallingNamePre = crossTrain.getStartStn() == null ? crossTrain.getTrainNbr() +"-" : crossTrain.getStartStn().substring(0,1) + "开" + "-" + crossTrain.getTrainNbr() +"-"; 
-		//高线标记
-		int highlineFlag = 0;
-		//高线开行规律
-		int highlineRule = 0;
-		//普线开行规律,普线开行规律（1:每日;2:隔日）
-		int commonlineRule = 1;
-		
-		if(!StringUtil.strIsNull(crossInfo.getHighlineFlag())){
-			highlineFlag = Integer.valueOf(crossTrain.getHighlineFlag());
-		}
-		if(!StringUtil.strIsNull(crossInfo.getHighlineRule())){
-			highlineRule = Integer.valueOf(crossTrain.getHighlineRule());
-			highlineRule = highlineRule == 0 ? 1 : highlineRule;
-		}
-		if(!StringUtil.strIsNull(crossInfo.getCommonlineRule())){
-			commonlineRule = Integer.valueOf(crossTrain.getCommonLineRule());
-			commonlineRule  = commonlineRule == 0 ? 1 : commonlineRule;
-		}  
-		 
-		CrossInfo preUnitCross = null;
-		String crossStartDate = crossInfo.getCrossStartDate();
-		String crossEndDate = crossInfo.getCrossEndDate();
-		if(groupTotalNbr > 0 ){
-			for(int i = 0; i < groupTotalNbr; i++){
-				CrossInfo tempInfo = new CrossInfo(); 
-				if(preUnitCross != null){
-					/**计算下一个交路单元的开始日期，在上一个交路单元的终到日期的基础上再加上间隔天数**/
-					//上一个交路单元的终到日期,格式为yyyyMMdd
-					String preCrossStartDate = preUnitCross.getCrossStartDate(); 
-					String preCrossEndDate =  preUnitCross.getCrossEndDate();  
-					//高线标记（1:高线；0:普线；2:混合）
-					if(highlineFlag == 0 || highlineFlag == 2){
-						crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -commonlineRule); 
-						crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -commonlineRule); 
-						 
-					}else {
-						//高线开行规律（1:平日;2:周末;3:高峰）
-						if(highlineRule == 1){
-							crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -highlineRule);	
-							crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -highlineRule);
-						}else if(highlineRule == 2 || highlineRule ==3 ){
-							//TODO 暂时不处理   默认向后推1天
-							crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -1);	
-							crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -1);
-						}else{
-							crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -1);	
-							crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -1);
-						} 
-					} 
-				}
-				tempInfo.setCrossStartDate(crossStartDate.replaceAll("-", ""));
-				tempInfo.setCrossEndDate(crossEndDate.replaceAll("-", ""));
-				tempInfo.setGroupSerialNbr((i + 1));
-				tempInfo.setMarshallingName(marshallingNamePre + (i + 1)); 
-				list.add(tempInfo);
-				preUnitCross = tempInfo;
+	    if(crossTrainList != null && crossTrainList.size() > 0){
+		    CrossTrainInfo crossTrain = crossTrainList.get(0); 
+		    String marshallingNamePre = crossTrain.getStartStn() == null ? crossTrain.getTrainNbr() +"-" : crossTrain.getStartStn().substring(0,1) + "开" + "-" + crossTrain.getTrainNbr() +"-"; 
+			//高线标记
+			int highlineFlag = 0;
+			//高线开行规律
+			int highlineRule = 0;
+			//普线开行规律,普线开行规律（1:每日;2:隔日）
+			int commonlineRule = 1;
+			
+			if(!StringUtil.strIsNull(crossInfo.getHighlineFlag())){
+				highlineFlag = Integer.valueOf(crossTrain.getHighlineFlag());
 			}
-		} 
+			if(!StringUtil.strIsNull(crossInfo.getHighlineRule())){
+				highlineRule = Integer.valueOf(crossTrain.getHighlineRule());
+				highlineRule = highlineRule == 0 ? 1 : highlineRule;
+			}
+			if(!StringUtil.strIsNull(crossInfo.getCommonlineRule())){
+				commonlineRule = Integer.valueOf(crossTrain.getCommonLineRule());
+				commonlineRule  = commonlineRule == 0 ? 1 : commonlineRule;
+			}  
+			 
+			CrossInfo preUnitCross = null;
+			String crossStartDate = crossInfo.getCrossStartDate();
+			String crossEndDate = crossInfo.getCrossEndDate();
+			if(groupTotalNbr > 0 ){
+				for(int i = 0; i < groupTotalNbr; i++){
+					CrossInfo tempInfo = new CrossInfo(); 
+					if(preUnitCross != null){
+						/**计算下一个交路单元的开始日期，在上一个交路单元的终到日期的基础上再加上间隔天数**/
+						//上一个交路单元的终到日期,格式为yyyyMMdd
+						String preCrossStartDate = preUnitCross.getCrossStartDate(); 
+						String preCrossEndDate =  preUnitCross.getCrossEndDate();  
+						//高线标记（1:高线；0:普线；2:混合）
+						if(highlineFlag == 0 || highlineFlag == 2){
+							crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -commonlineRule); 
+							crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -commonlineRule); 
+							 
+						}else {
+							//高线开行规律（1:平日;2:周末;3:高峰）
+							if(highlineRule == 1){
+								crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -highlineRule);	
+								crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -highlineRule);
+							}else if(highlineRule == 2 || highlineRule ==3 ){
+								//TODO 暂时不处理   默认向后推1天
+								crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -1);	
+								crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -1);
+							}else{
+								crossStartDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossStartDate), -1);	
+								crossEndDate = DateUtil.getDateByDay(DateUtil.getFormateDay(preCrossEndDate), -1);
+							} 
+						} 
+					}
+					tempInfo.setCrossStartDate(crossStartDate.replaceAll("-", ""));
+					tempInfo.setCrossEndDate(crossEndDate.replaceAll("-", ""));
+					tempInfo.setGroupSerialNbr((i + 1));
+					tempInfo.setMarshallingName(marshallingNamePre + (i + 1)); 
+					list.add(tempInfo);
+					preUnitCross = tempInfo;
+				}
+			} 
+	    }
 		
 		return list;
 	}

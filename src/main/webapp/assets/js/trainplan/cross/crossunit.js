@@ -564,12 +564,14 @@ function CrossModel() {
 						if(result.data.length == 0){
 							showErrorDialog("更新失败");
 							return;
-						}else if(result.data.length < delCrosses.length)  
+						}else if(result.data.length < delCrosses.length){  
 						    showSuccessDialog("部分更新成功");  
 					   }else{
 						   showSuccessDialog("更新成功");  
 					   }
-					  
+					}else{
+						showSuccessDialog("更新失败");  
+					} 
 				},
 				error : function() {
 					showErrorDialog("接口调用失败");

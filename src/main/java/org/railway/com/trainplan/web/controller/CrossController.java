@@ -856,16 +856,16 @@ public class CrossController {
 		String unitCrossId = (String)reqMap.get("unitCrossId");
 		logger.debug("unitCrossId==" + unitCrossId);
 		 try{
-		    	//先获取unitcross基本信息
-			 CrossInfo crossinfo = crossService.getUnitCrossInfoForUnitCrossid(unitCrossId);
-			 //再获取unitcrosstrainInfo信息
-			 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossId(unitCrossId);
-		     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
-		     Map<String,Object> dataMap = new HashMap<String,Object>();
-		     dataMap.put("crossinfo", crossinfo);
-		     dataMap.put("unitCrossTrainInfo", list);
-		     dataList.add(dataMap);
-			 result.setData(dataList);
+			    	//先获取unitcross基本信息
+				 CrossInfo crossinfo = crossService.getUnitCrossInfoForUnitCrossid(unitCrossId);
+				 //再获取unitcrosstrainInfo信息
+				 List<CrossTrainInfo> list = crossService.getUnitCrossTrainInfoForUnitCrossId(unitCrossId);
+			     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
+			     Map<String,Object> dataMap = new HashMap<String,Object>();
+			     dataMap.put("crossinfo", crossinfo);
+			     dataMap.put("unitCrossTrainInfo", list);
+			     dataList.add(dataMap);
+				 result.setData(dataList);
 		    }catch(Exception e){
 				logger.error("getUnitCrossTrainInfo error==" + e.getMessage());
 				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
@@ -888,16 +888,16 @@ public class CrossController {
 		String crossId = (String)reqMap.get("crossId");
 		logger.debug("crossId==" + crossId);
 		 try{
-		    	//先获取cross基本信息
-			 CrossInfo crossinfo = crossService.getCrossInfoForCrossid(crossId);
-			 //再获取crosstrainInfo信息
-			 List<CrossTrainInfo> list = crossService.getCrossTrainInfoForCrossid(crossId);
-		     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
-		     Map<String,Object> dataMap = new HashMap<String,Object>();
-		     dataMap.put("crossInfo", crossinfo);
-		     dataMap.put("crossTrainInfo", list);
-		     dataList.add(dataMap);
-			 result.setData(dataList);
+			    	//先获取cross基本信息
+				 CrossInfo crossinfo = crossService.getCrossInfoForCrossid(crossId);
+				 //再获取crosstrainInfo信息
+				 List<CrossTrainInfo> list = crossService.getCrossTrainInfoForCrossid(crossId);
+			     List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
+			     Map<String,Object> dataMap = new HashMap<String,Object>();
+			     dataMap.put("crossInfo", crossinfo);
+			     dataMap.put("crossTrainInfo", list);
+			     dataList.add(dataMap);
+				 result.setData(dataList);
 		    }catch(Exception e){
 				logger.error("getCrossTrainInfo error==" + e.getMessage());
 				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
@@ -936,22 +936,34 @@ public class CrossController {
 	@RequestMapping(value = "/completeUnitCrossInfo", method = RequestMethod.POST)
 	public Result completeUnitCrossInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result();
+		String message = "";
 		try{
 			//crossid以逗号分隔
 			String crossId = StringUtil.objToStr(reqMap.get("crossIds"));
 			logger.debug("crossId==" + crossId);
 			if(crossId != null){
 				String[] crossIds = crossId.split(",");
-				for(String crossid :crossIds){
-					//根据crossid生成交路单元
-					crossService.completeUnitCrossInfo(crossid);
-				}
 				List<String> crossIdsList = new ArrayList<String>();
-				for(int i = 0;i<crossIds.length;i++){
-					crossIdsList.add(crossIds[i]);
-				}
+				JSONArray resultArr = new JSONArray();
+				for(String crossid :crossIds){ 
+					//根据crossid生成交路单元
+					try{
+						JSONObject obj = new JSONObject();
+						crossService.completeUnitCrossInfo(crossid);
+						crossIdsList.add(crossid);
+						obj.put("crossId", crossid);
+						obj.put("flag", 1); 
+						resultArr.add(obj);
+					}catch(Exception e){
+						  
+					} 
+					
+				} 
 				//生成交路单元完成后，更改表base_cross中的creat_unit_time字段的值
-				crossService.updateCrossUnitCreateTime(crossIdsList);
+				if(crossIdsList.size() > 0){
+					crossService.updateCrossUnitCreateTime(crossIdsList);
+				}
+				result.setData(resultArr);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

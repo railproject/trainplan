@@ -628,10 +628,20 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){
-						$.each(delCrosses, function(i, n){ 
-							n.unitCreateFlag("1");
-						});
-						showSuccessDialog("生成交路单元成功");
+						for(var j = 0; j < result.data.length; j++){
+							for(var i = 0; i < delCrosses.length; i++){
+								if(result.data[j].crossId == delCrosses[i].crossId){
+									delCrosses[i].unitCreateFlag(result.data[j].flag);
+								 };
+							};
+						}; 
+						if(result.data.length == 0){
+							showErrorDialog("全部生成失败");  
+						}else if(result.data.length < delCrosses.length){  
+						    showSuccessDialog("部分生成成功");  
+					   }else{
+						   showSuccessDialog("生成成功");  
+					   } 
 					}else{
 						showErrorDialog("生成交路单元失败");
 					}
