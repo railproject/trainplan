@@ -887,8 +887,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         TOKEN_VEH_BUREAU,TOKEN_VEH_DEPT,TOKEN_VEH_DEPOT,TOKEN_PSG_BUREAU,
         TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
         DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
-        CREAT_PEOPLE_ORG,
-        RELEVANT_BUREAU,
+        CREAT_PEOPLE_ORG, 
         CREAT_TIME)
         (<foreach collection="list" item="item" index="index"
                   separator="UNION">
@@ -903,8 +902,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         #{item.tokenVehBureau,jdbcType=VARCHAR},#{item.tokenVehDept,jdbcType=VARCHAR},#{item.tokenVehDepot,jdbcType=VARCHAR},#{item.tokenPsgBureau,jdbcType=VARCHAR},
         #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
         #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
-        #{item.createPeopleOrg,jdbcType=VARCHAR},
-        #{item.relevantBureau,jdbcType=VARCHAR},
+        #{item.createPeopleOrg,jdbcType=VARCHAR}, 
         sysdate
         from dual
     </foreach>
@@ -946,7 +944,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
     </insert>
 
 
-    <insert id="addCrossInfo"  parameterType="java.util.List" >
+    <insert id="addCrossInfo"  parameterType="java.util.Map" >
 
         insert into base_cross
         (BASE_CROSS_ID,RELEVANT_BUREAU,APPOINT_PERIOD,
@@ -959,10 +957,10 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
         DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
         CREAT_PEOPLE_ORG,CREAT_TIME)
-        (<foreach collection="list" item="item" index="index"
+        (<foreach collection="crossList" item="item" index="index"
                   separator="UNION">
         SELECT
-        #{item.crossId,jdbcType=VARCHAR},#{item.,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
+        #{item.crossId,jdbcType=VARCHAR},#{item.relevantBureau,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
         #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
         #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
         #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},

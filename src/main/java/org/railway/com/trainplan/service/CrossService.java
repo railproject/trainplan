@@ -1202,8 +1202,10 @@ public class CrossService{
 			//保存交路信息
 			ArrayList<CrossInfo> crossList = new ArrayList<CrossInfo>();
 			crossList.add(this.cross);
+			Map<String , Object> map = new HashMap<String, Object>();
 			
-			 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO, crossList); 
+			map.put("crossList", crossList);
+			this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO, map); 
 			 
 			System.out.println(this.cross.getCrossName() + " ===crossTrains===" + crossTrains.size());
         	//保存列车
@@ -1361,18 +1363,17 @@ public class CrossService{
 		   String routeBureauShortNames = "";
 		   for(int i=0; i < crossTrains.size(); i++){
 			   CrossTrainInfo crossTrain = crossTrains.get(i);
-			   trainInfoFromPain(crossTrains.get(i));
-			   
+			   trainInfoFromPain(crossTrains.get(i)); 
 				//设置交路的开始日期和结束日期
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
 //					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
-					cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8));
-					routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
-				}   
-			   
+					cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8)); 
+				} 
+				routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
 		   } 
-	 
+		  
+	 System.out.println("-----------------routeBureauShortNames-------------------" + routeBureauShortNames);
 		  if(!"".equals(routeBureauShortNames)){ 
 			  String rbsPY = "";
 			  String py = "";
@@ -1433,10 +1434,9 @@ public class CrossService{
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
 //					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
-					cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8));
-					routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
+					cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8)); 
 				}   
-			   
+//				routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
 		   } 
 			 
 		   setDayGapForTrains(crossSpareTrains); 
