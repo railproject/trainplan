@@ -2,7 +2,6 @@
 <% 
 String basePath = request.getContextPath();
 %>
-<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/rightmenu.css">
 
 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>

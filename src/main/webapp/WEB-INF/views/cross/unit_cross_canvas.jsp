@@ -22,7 +22,6 @@ Object grid =  request.getAttribute("gridData");
 <head>
 <title>交路单元</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
-<jsp:include page="/assets/commonpage/include-canvas-base.jsp" flush="true" />
 </head>
 <body >
 <!--分栏框开始-->
@@ -49,12 +48,10 @@ Object grid =  request.getAttribute("gridData");
 	      </form>
 	    </div>
    
-      <div style="width:100%;height:100%">
-        <div class="table-responsive" style="overflow: auto;width:100%;height:100%">
+        <div class="table-responsive" style="overflow: auto;">
         	<canvas id="unit_cross_canvas">您的浏览器不支持HTML5</canvas>
         </div>
         
-      </div>
       <!--panel-body--> 
     </div>
     <!--分栏框结束--> 
@@ -76,6 +73,10 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 
 
 
+<script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/cross/unit_cross_canvas_rightmenu.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/cross/unit_cross_canvas.js"></script>
 
 </body>
