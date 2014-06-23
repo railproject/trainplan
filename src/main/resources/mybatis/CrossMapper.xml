@@ -42,47 +42,48 @@
 
    <select id="getPlanCrossInfoForPlanCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.PlanCrossInfo">
    select     
-		plan_cross_id as planCrossId,
-		unit_cross_id as unitCrossId,
-		base_cross_id as baseCrossId,
-		base_chart_id as baseChartId,
-		RELEVANT_BUREAU as relevantBureau,
-		base_chart_name as baseChartName,
-		cross_start_date as crossStartDate,
-		cross_end_date as crossEndDate,
-		cross_name as crossName,
-		cross_spare_name as crossSpareName,
-		SPARE_FLAG as spareFlag,
-		GROUP_TOTAL_NBR as groupTotalNbr,
-		PAIR_NBR as pairNbr,
-		HIGHLINE_FLAG as highlineFlag,
-		HIGHLINE_RULE as highlineRule,
-		COMMONLINE_RULE as commonlineRule,
-		APPOINT_WEEK as appointWeek,
-		APPOINT_DAY as appointDay,
-		CROSS_SECTION as crossSection,
-		THROUGH_LINE as throughline,
-		START_BUREAU as startBureau,
-		TOKEN_VEH_BUREAU as tokenVehBureau,
-		TOKEN_VEH_DEPT as tokenVehDept,
-		TOKEN_VEH_DEPOT as tokenVehDepot,
-		TOKEN_PSG_BUREAU as tokenPsgBureau,
-		TOKEN_PSG_DEPT as tokenPsgDept,
-		LOCO_TYPE as locoType,
-		CRH_TYPE as crhType,
-		ELEC_SUPPLY as elecSupply,
-		DEJ_COLLECT as dejCollect,
-		AIR_CONDITION as airCondition,
-		NOTE as note,
-		CREAT_PEOPLE as createPeople,
-		CREAT_PEOPLE_ORG as createPeopleOrg,
-		CREAT_TIME as createTime,
-		CHECK_TYPE as checkType,
-		CHECK_PEOPLE as checkPeople,
-		CHECK_PEOPLE_ORG as checkPeopleOrg,
-		CHECK_TIME as checkTime
-	
-	from plan_cross where plan_cross_id=#{planCrossId}
+		t.plan_cross_id as planCrossId,
+		t.unit_cross_id as unitCrossId,
+		t.base_cross_id as baseCrossId,
+		t.base_chart_id as baseChartId,
+		t.RELEVANT_BUREAU as relevantBureau,
+		(select WMSYS.WM_CONCAT(P.CHECK_BUREAU) from plan_check P where P.plan_cross_id=#{planCrossId})  AS checkedBureau ,
+		t.base_chart_name as baseChartName,
+		t.cross_start_date as crossStartDate,
+		t.cross_end_date as crossEndDate,
+		t.cross_name as crossName,
+		t.cross_spare_name as crossSpareName,
+		t.SPARE_FLAG as spareFlag,
+		t.GROUP_TOTAL_NBR as groupTotalNbr,
+		t.PAIR_NBR as pairNbr,
+		t.HIGHLINE_FLAG as highlineFlag,
+		t.HIGHLINE_RULE as highlineRule,
+		t.COMMONLINE_RULE as commonlineRule,
+		t.APPOINT_WEEK as appointWeek,
+		t.APPOINT_DAY as appointDay,
+		t.CROSS_SECTION as crossSection,
+		t.THROUGH_LINE as throughline,
+		t.START_BUREAU as startBureau,
+		t.TOKEN_VEH_BUREAU as tokenVehBureau,
+		t.TOKEN_VEH_DEPT as tokenVehDept,
+		t.TOKEN_VEH_DEPOT as tokenVehDepot,
+		t.TOKEN_PSG_BUREAU as tokenPsgBureau,
+		t.TOKEN_PSG_DEPT as tokenPsgDept,
+		t.LOCO_TYPE as locoType,
+		t.CRH_TYPE as crhType,
+		t.ELEC_SUPPLY as elecSupply,
+		t.DEJ_COLLECT as dejCollect,
+		t.AIR_CONDITION as airCondition,
+		t.NOTE as note,
+		t.CREAT_PEOPLE as createPeople,
+		t.CREAT_PEOPLE_ORG as createPeopleOrg,
+		t.CREAT_TIME as createTime,
+		t.CHECK_TYPE as checkType,
+		t.CHECK_PEOPLE as checkPeople,
+		t.CHECK_PEOPLE_ORG as checkPeopleOrg,
+		t.CHECK_TIME as checkTime 
+	from plan_cross t
+      where t.plan_cross_id=#{planCrossId}
 	   
    
    </select>
@@ -886,8 +887,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         TOKEN_VEH_BUREAU,TOKEN_VEH_DEPT,TOKEN_VEH_DEPOT,TOKEN_PSG_BUREAU,
         TOKEN_PSG_DEPT,LOCO_TYPE,CRH_TYPE,ELEC_SUPPLY,
         DEJ_COLLECT,AIR_CONDITION,NOTE,CREAT_PEOPLE,
-        CREAT_PEOPLE_ORG,
-        RELEVANT_BUREAU,
+        CREAT_PEOPLE_ORG, 
         CREAT_TIME)
         (<foreach collection="list" item="item" index="index"
                   separator="UNION">
@@ -902,8 +902,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         #{item.tokenVehBureau,jdbcType=VARCHAR},#{item.tokenVehDept,jdbcType=VARCHAR},#{item.tokenVehDepot,jdbcType=VARCHAR},#{item.tokenPsgBureau,jdbcType=VARCHAR},
         #{item.tokenPsgDept,jdbcType=VARCHAR},#{item.locoType,jdbcType=VARCHAR},#{item.crhType,jdbcType=VARCHAR},#{item.elecSupply,jdbcType=NUMERIC},
         #{item.dejCollect,jdbcType=NUMERIC},#{item.airCondition,jdbcType=NUMERIC},#{item.note,jdbcType=VARCHAR},#{item.createPeople,jdbcType=VARCHAR},
-        #{item.createPeopleOrg,jdbcType=VARCHAR},
-        #{item.relevantBureau,jdbcType=VARCHAR},
+        #{item.createPeopleOrg,jdbcType=VARCHAR}, 
         sysdate
         from dual
     </foreach>
@@ -961,7 +960,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         (<foreach collection="list" item="item" index="index"
                   separator="UNION">
         SELECT
-        #{item.crossId,jdbcType=VARCHAR},#{item.,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
+        #{item.crossId,jdbcType=VARCHAR},#{item.relevantBureau,jdbcType=VARCHAR},#{item.appointPeriod,jdbcType=VARCHAR},
         #{item.chartId,jdbcType=VARCHAR},#{item.chartName,jdbcType=VARCHAR},#{item.crossStartDate,jdbcType=VARCHAR},#{item.crossEndDate,jdbcType=VARCHAR},
         #{item.crossName,jdbcType=VARCHAR},#{item.crossSpareName,jdbcType=VARCHAR},#{item.alterNateDate,jdbcType=VARCHAR},#{item.alterNateTranNbr,jdbcType=VARCHAR},
         #{item.spareFlag,jdbcType=VARCHAR},#{item.cutOld,jdbcType=NUMERIC},#{item.groupTotalNbr,jdbcType=NUMERIC},#{item.pairNbr,jdbcType=VARCHAR},
@@ -1316,17 +1315,31 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
     
     
      <delete id="deleteCrossInfoByChartId" parameterType="map">
-        delete from base_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus})
+        delete from base_cross where base_chart_ID=#{chartId} 
+        <if test="bureaus != null">
+         and TOKEN_VEH_BUREAU in (${bureaus})
+        </if> 
     </delete> 
     <delete id="deleteCrossTrainByChartId" parameterType="map">
-        delete from base_cross_train where BASE_CROSS_ID in (select base_cross_id from base_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus}))
+        delete from base_cross_train where BASE_CROSS_ID in (select base_cross_id from base_cross where base_chart_ID=#{chartId}
+         <if test="bureaus != null">
+         and TOKEN_VEH_BUREAU in (${bureaus})
+        </if> 
+        )
     </delete> 
-    <delete id="deleteUnitCrossTrainByChartId" parameterType="map">
-        delete from unit_cross_train where unit_cross_id in (select unit_cross_id from unit_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus}))
+    <delete id="deleteUnitCrossTrainByChartId" parameterType="map"> 
+        delete from unit_cross_train where unit_cross_id in (select unit_cross_id from unit_cross where base_chart_ID=#{chartId} 
+         <if test="bureaus != null">
+          and TOKEN_VEH_BUREAU in (${bureaus})
+        </if> 
+        ) 
 
     </delete> 
     <delete id="deleteUnitCrossInfoByChartId" parameterType="map">
-        delete from unit_cross where base_chart_ID=#{chartId} and TOKEN_VEH_BUREAU in (${bureaus})
+        delete from unit_cross where base_chart_ID=#{chartId} 
+         <if test="bureaus != null">
+          and TOKEN_VEH_BUREAU in (${bureaus})
+        </if>  
     </delete>
 
 

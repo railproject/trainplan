@@ -70,7 +70,7 @@ var RunPlanCanvasPage = function(cross) {
 				//_stationTypeArray.push($(this).val());
 			} else {
 				//显示所有 包含始发、终到、分界口、停站、不停站
-				_stationTypeArray = ["0","FJK","TZ","BT"];
+				_stationTypeArray = ["0","FJK","TZ"];//"0","FJK","TZ","BT"
 //				removeArrayValue(_stationTypeArray, $(this).val());
 			}
 	    });
@@ -121,6 +121,10 @@ var RunPlanCanvasPage = function(cross) {
 	 * public
 	 */
 	this.initPage = function() {
+
+		//初始化事件类
+		new CanvasEventComponent("canvas_event_getvalue");
+		
 		
 		$("#canvas_runplan_input_startDate").datepicker();
 		$("#canvas_runplan_input_endDate").datepicker();
@@ -133,35 +137,34 @@ var RunPlanCanvasPage = function(cross) {
 		//_self.drawChart({startX:60, yScale: 2});
 		
 		//3.增加canvas监听事件
-		canvas.onmousedown = function(e) {
-	        var loc = windowToCanvas(canvas, e.clientX,e.clientY);
-	        var x = loc.x;
-	        var y = loc.y;
-	        
-	        for(var i = 0; i < lineList.length; i++) {
-	            var c = lineList[i];
-	            if(c.isPointInStroke(context, x, y) || c.isCurrent) {
-	            	reDraw({x:x, y:y,booleanShowTrainDetail:false});
-	            	lineList[i] = c;
-	            	break;
-	            }
-	        }
-	       
-	        for(var i = 0; i < lineList.length; i++) {
-	            var c = lineList[i]; 
-	            if(c.isCurrent == true) { 
-	            	console.log("---------------------faf-----------------");
-	            	console.log(c);
-	            	_self.app.loadStns(c.obj.planTrainId);
+//		canvas.onmousedown = function(e) {
+//	        var loc = windowToCanvas(canvas, e.clientX,e.clientY);
+//	        var x = loc.x;
+//	        var y = loc.y;
+//	        
+//	        for(var i = 0; i < lineList.length; i++) {
+//	            var c = lineList[i];
+//	            if(c.isPointInStroke(context, x, y) || c.isCurrent) {
+//	            	reDraw({x:x, y:y,booleanShowTrainDetail:false});
+//	            	lineList[i] = c;
+//	            	break;
+//	            }
+//	        }
+//	       
+//	        for(var i = 0; i < lineList.length; i++) {
+//	            var c = lineList[i]; 
+//	            if(c.isCurrent == true) { 
+//	            	console.log("---------------------faf-----------------");
+//	            	console.log(c);
+//	            	_self.app.loadStns(c.obj.planTrainId);
 //	            	if(c.obj.trainStns != null){
 //	            		$.each(c.obj.trainStns, function(z, n){
 //	            			 stns.push(n); 
 //	            		});
-//	            	}
-	            	
-	            }  
-	        } 
-	    };
+//	            	} 
+//	            }  
+//	        } 
+//	    };
 	    
 		
 	    _canvas_select_groupSerialNbr = $("#canvas_select_groupSerialNbr");
@@ -169,6 +172,13 @@ var RunPlanCanvasPage = function(cross) {
 		$("#canvas_select_groupSerialNbr").change(function(){
 			_currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();
 			
+			_self.drawChart();
+		});
+		
+		
+
+		//刷新按钮点击事件
+		$("#canvas_event_btn_refresh").click(function(){
 			_self.drawChart();
 		});
 		
@@ -349,6 +359,11 @@ var RunPlanCanvasPage = function(cross) {
 	
 	
 	this.drawChart = function(scale) {
+		if(typeof canvasData != "object" || canvasData==null || canvasData.grid==null ) {
+			showWarningDialog("当前不存在列车数据！");
+			return;
+		}
+		
 		lineList = [];	//列车线对象封装类  用于保存列车线元素，以便重新绘图
 		jlList = [];	//用于保存交路数据元素，以便重新绘图
 		

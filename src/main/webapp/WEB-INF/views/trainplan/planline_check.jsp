@@ -30,11 +30,15 @@
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/planline_check.js"></script>
 </head>
 <body class="Iframe_body">
+<ol class="breadcrumb">
+    <span><i class="fa fa-anchor"></i>当前位置:</span>
+    <li><a href="#">开行计划审核</a></li>
+</ol>
 <section class="mainContent">
     <div class="row">
         <div class="col-xs-12 col-md-12 col-lg-12 paddingleftright5">
             <div class="row">
-                <div class="col-xs-12 col-md-12 col-lg-12">
+                <div class="col-xs-12 col-md-12 col-lg-12 paddingleftright5 paddingtop5 marginbottom5">
                     <form class="form-inline" role="form">
                         <div class="input-group" style="width: 100%">
                             <input type="text" class="form-control" style="width: 100px; margin-right: 10px; border-radius: 4px" placeholder="请选择日期" id="date_selector"/>
@@ -69,7 +73,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-10 col-md-10 col-lg-10 paddingleft0 paddingtop5">
+                <div class="col-xs-10 col-md-10 col-lg-10 paddingleftright5 paddingtop5 marginright5" style="background: #ffffff; width: 83%">
                     <div class="table-responsive">
                         <table id="plan_table" class="table table-bordered table-striped table-hover tableradius" data-bind="with: tableModel">
                             <thead>
@@ -112,7 +116,7 @@
                                 <td class="text-center"><input class="checkbox-inline" name="plan" type="checkbox" data-bind="enable: needLev2, checked: isSelected"/></td>
                                 </shiro:hasPermission>
                                 <td class="text-center" data-bind="text: $index() + 1"></td>
-                                <td class="text-center"><a href="#" data-bind="text: name"></a></td>
+                                <td class="text-center"><a href="#" data-bind="text: name, click: showGraphic"></a></td>
                                 <td class="text-center" data-bind="text: sourceType"></td>
                                 <td class="text-center" data-bind="text: trainType"></td>
                                 <td class="text-center" data-bind="text: highLineFlag"></td>
@@ -137,26 +141,26 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-xs-2 col-md-2 col-lg-2 paddingtop5 paddingright0 paddingleft0">
+                <div class="col-xs-2 col-md-2 col-lg-2 paddingtop5 paddingright0 paddingleft0 marginleft5" style="background: #ffffff; width: 16%">
                     <div class="row">
                         <div class="col-xs-12 col-md-12  col-sm-12 padding0">
-                            <div id="chart_01" style="height:253px; margin: 0 auto;"></div>
+                            <div id="chart_01" style="margin: 0;"></div>
                         </div>
                     </div>
                     <div class="row paddingtop30">
                         <div class="col-xs-12 col-md-12  col-sm-12 padding0">
-                            <div id="chart_02" style="height:253px; margin:0 auto;"></div>
+                            <div id="chart_02" style="margin:0;"></div>
                         </div>
                     </div>
                     <div class="row paddingtop30">
                         <shiro:hasPermission name="JHPT.RJH.KDSP">
                             <div class="col-xs-12 col-md-12  col-sm-12 padding0">
-                                <div id="chart_03" style="height:270px; margin:0 auto;"></div>
+                                <div id="chart_03" style="margin:0"></div>
                             </div>
                         </shiro:hasPermission>
                         <shiro:hasPermission name="JHPT.RJH.ZBZRSP">
                             <div class="col-xs-12 col-md-12  col-sm-12 padding0">
-                                <div id="chart_04" style="height:270px; margin:0 auto;"></div>
+                                <div id="chart_04" style="margin:0"></div>
                             </div>
                         </shiro:hasPermission>
                     </div>

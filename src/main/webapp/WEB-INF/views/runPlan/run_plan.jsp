@@ -8,7 +8,7 @@ boolean isZgsUser = false;	//当前用户是否为总公司用户
 if (user!=null && user.getBureau()==null) {
 	isZgsUser = true;
 }
-
+String currentUserBureau = user.getBureau();
 List<String> permissionList = user.getPermissionList();
 String userRolesString = "";
 for(String p : permissionList){
@@ -44,6 +44,7 @@ String basePath = request.getContextPath();
 <!-- Custom styles for this template --> 
 <link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
 <link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/rightmenu.css">
 
 
 
@@ -54,6 +55,7 @@ String basePath = request.getContextPath();
 var basePath = "<%=basePath %>";
 var all_role = "<%=userRolesString %>";
 var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
+var currentUserBureau = "<%=currentUserBureau %>";
 </script>
 <!--#include virtual="assets/js/trainplan/knockout.pagefooter.tpl"-->
  <style type="text/css">
@@ -74,6 +76,7 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 	-webkit-box-shadow: none;
 	box-shadow: none;
 }
+
  </style>
 
  
@@ -147,35 +150,20 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 														class="form-control" data-bind="options: searchModle().unitCreateFlags, value: searchModle().unitCreateFlag, optionsText: 'text' , optionsCaption: '' ">
 													</select>
 												</div>
-												<div class="pull-left" style="margin-left: 20px;">
+												<div class="pull-left" style="margin-left: 10px;">
 														<a type="button" class="btn btn-success" data-toggle="modal"
 															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
 													</div> 
 												
 											</div> 
-										    <hr style="margin-top: 8px;margin-bottom: 8px">
-											<div class="row"  style="margin-top: 5px;">
-												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
-													交路名:&nbsp;</label>
-												<div class="pull-left">
-													<select style="width: 66px" id="input_cross_filter_showFlag"
-														class="form-control" data-bind="options: [{'code': 1, 'text': '简称'},{'code': 2, 'text': '全称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
-													</select>
-												</div>
-												<div class="pull-left" style="margin-left: 32px" >
-													<input type="checkbox" class="pull-left" class="form-control" data-bind="event:{change: showRunPlans}"
-														class="form-control">
-												</div>
-												<label for="exampleInputEmail5" class="control-label pull-left">
-												显示开行情况</label>  
-											</div>
+										    <hr style="margin-top: 8px;margin-bottom: 8px"> 
 										 <!--    <div class="row"  style="margin-top: 5px;"> 
 												<span style="margin-left: 20px;"><span style="">途经局:</span><span data-bind="text: '京郑武广'"></span><span style="margin-left:3px" data-bind="text: '已审核: 郑  ; 未审核 : 京武广'"></span></span>   
 											</div>  -->
 											<div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 20px;">
-													<a type="button" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: checkCrossInfo"  data-toggle="modal"
+													<a type="button" data-bind="attr:{class: searchModle().checkActiveFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: checkCrossInfo"  data-toggle="modal"
 														data-target="#" id="btn_cross_sure">审核</a>
 													<a  type="button" class="btn btn-success" data-toggle="modal"
 														data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
@@ -183,9 +171,9 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 														data-target="#" id="btn_cross_createTrainLines" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createTrainLines">生成运行线</a>
 												</div> 
 												</div> 
-										  <span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
+										  <span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue() + currentCross().checkedBureauShowValue()"></span> 
 									      <div class="row" style="margin-top:10px">
-										     <div class="pull-left" style="width: 80%;">
+										     <div class="pull-left" style="width: 75%;">
 										        <section class="panel panel-default">
 										          <div class="panel-heading">
 										          			<span><input type="checkbox" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}">全选 车底交路名
@@ -194,15 +182,15 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 																</select>  
 															</span>
 										          </div>
-										        	<div class="panel-body" style="height: 250px; overflow-y:auto"> 
+										        	<div class="panel-body" style="height: 300px; overflow-y:auto"> 
 														<div class="table-responsive"> 
 															<table class="table table-bordered table-striped table-hover" 
 																id="cross_table_crossInfo"> 
 																<tbody data-bind="foreach: planCrossRows">
 																	<tr data-bind=" visible: visiableRow" >
 																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
-																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 0 ? 'ckbox disabled' : ''},event:{change: $parent.selectCross}, checked: selected"></td>
-																		<td><i  data-bind="attr:{class: checkFlag() == 1 ? 'fa fa-check-square-o' : 'fa fa-pencil-square-o'}, style:{color: checkFlag() == 1 ? 'green' : 'red'}"></i><span data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().crossName() == crossName()  ? 'blue':''}, click: $parent.showTrains"></span></td>
+																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td>
+																		<td><i  data-bind="attr:{class: checkCss}"></i><span data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().crossName() == crossName()  ? 'blue':''}, click: $parent.showTrains"></span></td>
 																	</tr> 
 																</tbody>  					 
 															</table>
@@ -210,10 +198,10 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 												   </div>
 											   </section>
 											</div>
-											<div class="pull-right" style="width: 20%;">  
+											<div class="pull-right" style="width: 25%;">  
 											 <section class="panel panel-default">
 										          <div class="panel-heading">车次</div>
-										        	<div class="panel-body" style="height: 250px; overflow-y:auto "> 
+										        	<div class="panel-body" style="height: 300px; overflow-y:auto "> 
 												      <div class="table-responsive" > 
 															<table class="table table-bordered table-striped table-hover"
 																id="cross_trainInfo" > 
@@ -239,6 +227,12 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 					<ul class="nav nav-tabs" >
 					  <li class="active"><a style="padding:3px 10px;" href="#home" data-toggle="tab">车底交路</a></li>
 					  <li><a style="padding:3px 10px;" href="#profile" data-toggle="tab">交路基本信息</a></li> 
+					  <li style="float:right">  					 
+						<input type="checkbox" class="pull-left" class="form-control" data-bind="event:{change: showRunPlans}"
+							class="form-control"> 
+										<label for="exampleInputEmail5" class="control-label pull-left">
+										显示开行情况</label>  
+									 </li>
 					</ul> 
 					<!-- Tab panes -->
 					<div class="tab-content" >
@@ -254,19 +248,19 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 							                  <input type="text" class="form-control" style="width:120px;" placeholder="" id="canvas_runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
 								              <button class="btn btn-primary" type="button" id="canvas_event_btnQuery"><i class="fa fa-search"></i>查询</button>
 							              </div> -->
-							              <div class="row" style="margin:5px 0 10px 90px;"> 
-							                  <input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" style="margin-left:10px">简图
-								          	  &nbsp;&nbsp;<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示时刻
-	         								  &nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
-								          </div>
-							              <div class="row" style="margin:5px 0 10px 90px;"> 
-							                  <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
-								              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
-								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
-								              <button type="button" class="btn btn-success" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
+							              <div class="row" style="margin:5px 0 10px 50px;">
+								         		<button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_refresh"><i class="fa fa-refresh"></i>刷新</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
 								              
 								                                                比例：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
-								          </div>
+											<input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图
+								         	<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示时刻
+								         	&nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
+								         	  
+								         </div>
 							          </form>
 								    </div> 
 							        <div class="table-responsive" style="width:100%;height:430px;overflow-x:auto; overflow-y:auto;">
@@ -627,68 +621,29 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 		 </div>
 	  </div> 
 	  <!--详情时刻表--> 
-	 <div id="run_plan_train_times" class="easyui-dialog" title="详情时刻表"
+	 <div id="run_plan_train_times" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 600px; height: 500px; padding: 10px; "> 
+		style="width: 608px; height: 500px; padding: 10px;"> 
 			      <!--panle-heading-->
 			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 				       <ul class="nav nav-tabs" >
-						  <li class="active"><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
-						  <li><a style="padding:3px 10px;" href="#someTimes" data-toggle="tab">简点</a></li> 
+						  <li class="active"><a style="padding:3px 10px;" href="#simpleTimes" data-toggle="tab">简点</a></li> 
+						  <li><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
+						  <li style="float:right" ><span style="font: -webkit-small-control;" data-bind="html: currentTrainInfoMessage()"></span></li>
 						</ul> 
 						<!-- Tab panes -->
 						<div class="tab-content" >
-						  <div class="tab-pane active" id="allTimes" > 
+						  <div class="tab-pane active" id="simpleTimes" > 
 					      	<div class="table-responsive" > 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
-							        <thead>
-							        <tr>
-							          <th style="width:5%">序号</th>
-					                  <th style="width:18%">站名</th>
+							        <thead> 
+							         <tr>
+							          <th style="width:7.5%">序号</th>
+					                  <th style="width:19%">站名</th>
 					                  <th style="width:7%">路局</th>
-					                  <th style="width:21%">到达时间</th>
-					                  <th style="width:21%">出发时间</th>
-					                  <th style="width:8%">停留时间</th>
-					                  <th style="width:5%">天数</th> 
-					                  <th style="width:15%" colspan="2">股道</th>  
-					                 </tr>
-							        </thead>
-							        <tbody style="padding:0">
-										 <tr style="padding:0">
-										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
-													<table class="table table-bordered table-striped table-hover" >
-														 <tbody data-bind="foreach: times">
-												           <tr>  
-															<td style="width:6%" align="center" data-bind=" text: $index() + 1"></td>
-															<td style="width:17%" data-bind="text: stnName, attr:{title: stnName}"></td>
-															<td style="width:7%" align="center" data-bind="text: bureauShortName"></td>
-															<td style="width:21%" align="center" data-bind="text: sourceTime"></td>
-															<td style="width:21%" align="center" data-bind="text: targetTime"></td>
-															<td style="width:8%" align="center" data-bind="text: stepStr"></td>
-															<td style="width:5%" align="center" data-bind="text: runDays"></td>
-															<td style="width:15%" align="center" data-bind="text: trackName"></td>
-												        	</tr>
-												        </tbody>
-													</table> 
-											 	</div>
-											</td>
-										</tr>
-									</tbody> 
-						        </table>
-			        		</div>   
-			        	</div>
-			        	<div class="tab-pane" id="someTimes" > 
-					      	<div class="table-responsive" > 
-					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
-							        <thead>
-							        <tr>
-							          <th style="width:5%">序号</th>
-					                  <th style="width:20%">站名</th>
-					                  <th style="width:5%">路局</th>
-					                  <th style="width:15%">到达时间</th>
-					                  <th style="width:15%">出发时间</th>
-					                  <th style="width:15%">停留时间</th>
+					                  <th style="width:14.5%">到达</th>
+					                  <th style="width:14.5%">出发</th>
+					                  <th style="width:14%">停时</th>
 					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
 					                 </tr>
@@ -699,15 +654,55 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 												 <div style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: times">
-												           <tr>  
-															<td style="width:6%" align="center" data-bind=" text: $index() + 1"></td>
+												           <tr data-bind="visible: stationFlag != 'BTZ'">  
+															<td style="width:7.5%" align="center" data-bind=" text: $index() + 1"></td>
 															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
-															<td style="width:7%" align="center" data-bind="text: bureauShortName"></td>
-															<td style="width:15%" align="center" data-bind="text: sourceTime"></td>
-															<td style="width:15%" align="center" data-bind="text: targetTime"></td>
-															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
+															<td style="width:7.5%" align="center" data-bind="text: bureauShortName"></td>
+															<td style="width:14.3%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:14.3%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:14%" align="center" data-bind="text: stepStr"></td>
 															<td style="width:10%" align="center" data-bind="text: runDays"></td>
-															<td style="width:15%" align="center" data-bind="text: trackName"></td>
+															<td style="width:10%" align="center" data-bind="text: trackName"></td>
+												        	</tr>
+												        </tbody>
+													</table> 
+											 	</div>
+											</td>
+										</tr>
+									</tbody> 
+						        </table>
+			        		</div>   
+			        	</div>
+			        	<div class="tab-pane" id="allTimes" > 
+					      	<div class="table-responsive" > 
+					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
+							        <thead> 
+							         <tr>
+							          <th style="width:7.5%">序号</th>
+					                  <th style="width:19%">站名</th>
+					                  <th style="width:7%">路局</th>
+					                  <th style="width:14.5%">到达</th>
+					                  <th style="width:14.5%">出发</th>
+					                  <th style="width:14%">停时</th>
+					                  <th style="width:10%">天数</th> 
+					                  <th style="width:15%" colspan="2">股道</th>  
+					                 </tr> 
+							        </thead>
+							        <tbody style="padding:0">
+										 <tr style="padding:0">
+										   <td colspan="9" style="padding:0">
+												 <div style="height: 400px; overflow-y:auto;"> 
+													<table class="table table-bordered table-striped table-hover" > 
+														 <tbody data-bind="foreach: times">
+												           <tr>  
+															<td style="width:7.5%" align="center" data-bind=" text: $index() + 1"></td>
+															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
+															<td style="width:7.5%" align="center" data-bind="text: bureauShortName"></td>
+															<td style="width:14.3%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:14.3%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:14%" align="center" data-bind="text: stepStr"></td>
+															<td style="width:10%" align="center" data-bind="text: runDays"></td>
+															<td style="width:10%" align="center" data-bind="text: trackName"></td>
 												        	</tr>
 												        </tbody>
 													</table> 
@@ -758,9 +753,11 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
 <%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%>
 <script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+
+<script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue_data.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_rightmenu.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script>
 <script type="text/javascript">
 var basePath = "<%=basePath %>";

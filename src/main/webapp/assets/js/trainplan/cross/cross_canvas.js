@@ -33,7 +33,7 @@ var MyCanvas = function(){
 				//_stationTypeArray.push($(this).val());
 			} else {
 				//显示所有 包含始发、终到、分界口、停站、不停站
-				_stationTypeArray = ["0","FJK","TZ"];//"0","FJK","TZ","BT"
+				_stationTypeArray = ["0","FJK","TZ","BT"];
 //				removeArrayValue(_stationTypeArray, $(this).val());
 			}
 	    });
@@ -173,7 +173,7 @@ var MyCanvas = function(){
 
 $(function(){
 	if(canvasData==null || canvasData.grid==null) {
-		showWarningDialog("当前不存在列车数据！");
+		showErrorDialog("当前不存在列车数据！");
 		dataIsNull = true;
 		return;
 	}
@@ -182,7 +182,7 @@ $(function(){
 	context = canvas.getContext('2d');
 	
 	//初始化事件类
-	new CanvasEventComponent("unit_cross_canvas");
+//	new CanvasEventComponent("unit_cross_canvas");
 	
 
 	_MyCanvas = new MyCanvas();
@@ -194,6 +194,7 @@ $(function(){
 		_MyCanvas.drawGraph();
 	});
 	
+	
 	//车底下拉框事件
 	$("#canvas_select_groupSerialNbr").change(function(){
 		_currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();
@@ -204,7 +205,7 @@ $(function(){
 	//显示停站时刻 复选框事件
 	$("#canvas_checkbox_trainTime").click(function(){
 		if (dataIsNull) {
-			showWarningDialog("当前不存在列车数据！");
+			showErrorDialog("当前不存在列车数据！");
 			return;
 		}
 
@@ -222,11 +223,11 @@ $(function(){
 	//x放大2倍
 	$("#canvas_event_btn_x_magnification").click(function(){
 		if (currentXScaleCount == 32) {
-			showWarningDialog("当前已经不支持继续放大啦！");
+			showErrorDialog("当前已经不支持继续放大啦！");
 			return;
 		}
 		if (dataIsNull) {
-			showWarningDialog("当前不存在列车数据！");
+			showErrorDialog("当前不存在列车数据！");
 			return;
 		}
 		
@@ -243,11 +244,11 @@ $(function(){
 	//x缩小2倍
 	$("#canvas_event_btn_x_shrink").click(function(){
 		if (currentXScaleCount == 0.25) {
-			showWarningDialog("当前已经不支持继续缩小啦！");
+			showErrorDialog("当前已经不支持继续缩小啦！");
 			return;
 		}
 		if (dataIsNull) {
-			showWarningDialog("当前不存在列车数据！");
+			showErrorDialog("当前不存在列车数据！");
 			return;
 		}
 		
@@ -263,11 +264,11 @@ $(function(){
 	//y放大2倍
 	$("#canvas_event_btn_y_magnification").click(function(){
 		if (currentYScaleCount == 8) {
-			showWarningDialog("当前已经不支持继续放大啦！");
+			showErrorDialog("当前已经不支持继续放大啦！");
 			return;
 		}
 		if (dataIsNull) {
-			showWarningDialog("当前不存在列车数据！");
+			showErrorDialog("当前不存在列车数据！");
 			return;
 		}
 		
@@ -284,11 +285,11 @@ $(function(){
 	//y缩小2倍
 	$("#canvas_event_btn_y_shrink").click(function(){
 		if (currentYScaleCount == 0.25) {
-			showWarningDialog("当前已经不支持继续缩小啦！");
+			showErrorDialog("当前已经不支持继续缩小啦！");
 			return;
 		}
 		if (dataIsNull) {
-			showWarningDialog("当前不存在列车数据！");
+			showErrorDialog("当前不存在列车数据！");
 			return;
 		}
 		

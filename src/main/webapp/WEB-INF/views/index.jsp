@@ -19,7 +19,7 @@
     <script src="${ctx}/assets/js/jquery.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/minified/jquery-ui.min.js"></script>
     <script src="${ctx}/assets/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="${ctx}/assets/js/trainplan/trainplan_dialog.js"></script>
+    <script type="text/javascript" src="${ctx}/assets/js/trainplan/common.js"></script>
     <script type="text/javascript" defer="defer">
 
         //被嵌入的Iframe根据不同的屏幕高度自适应
@@ -113,25 +113,25 @@
     <nav class="Navigation">
         <ul>
             <li>
-                <a href="http://10.1.186.116:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor: hand;"><i class="fa fa-bar-chart-o"></i>计划看板 </a>
+                <a href="http://10.1.186.116:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor: hand;"><i class="fa fa-bar-chart-o"></i>首页（看板） </a>
             </li>
             <shiro:authenticated>
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>发布计划<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
                         <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>开行计划审核</a></li>
-                        <li><a href="#" target="contentFrame"><i class="fa fa-external-link"></i>交路/车底计划审核</a></li>
-                        <li><a href="#" target="contentFrame"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
-                        <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>日历计划发布</a></li>
+                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>交路/车底计划审核</a></li>
+                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
+                        <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-external-link"></i>日历计划发布</a></li>
                     </ul>
                 </li>
 
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>编制计划<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-list-alt"></i>开行/交路计划管理</a></li>
-                        <li><a href="${ctx}/default/transfer/planRunlineBatch" target="contentFrame"><i class="fa fa-external-link"></i>计划上图</a></li>
-                        <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-list-ol"></i>汇总统计</a></li>
+                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-alt"></i>高铁图定开行计划</a></li>
+                        <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-external-link"></i>既有图定开行计划</a></li>
+                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-ol"></i>临客开行计划</a></li>
                     </ul>
                 </li>
 

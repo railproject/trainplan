@@ -32,7 +32,7 @@ Object grid =  request.getAttribute("gridData");
     
 	   	<div class="row" style="margin:5px 0 10px 0;">
 	      <form class="form-inline">
-	         <div class="row" style="margin:5px 0 10px 50px;">
+	         <div class="row" style="margin:5px 0 10px 90px;">
 	         	  <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_refresh"><i class="fa fa-refresh"></i>刷新</button>
 	              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 	              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
@@ -43,15 +43,17 @@ Object grid =  request.getAttribute("gridData");
 				<input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图
 	         	<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示时刻
 	         	&nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
-	         	  
+	         
 	         </div>
 	      </form>
 	    </div>
    
-        <div class="table-responsive" style="overflow: auto;">
+      <div>
+        <div class="table-responsive" style="overflow: auto;width:100%;height:100%">
         	<canvas id="unit_cross_canvas">您的浏览器不支持HTML5</canvas>
         </div>
         
+      </div>
       <!--panel-body--> 
     </div>
     <!--分栏框结束--> 
@@ -76,8 +78,7 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 <script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/cross/unit_cross_canvas_rightmenu.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/cross/unit_cross_canvas.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/cross/cross_canvas.js"></script>
 
 </body>
 </html>

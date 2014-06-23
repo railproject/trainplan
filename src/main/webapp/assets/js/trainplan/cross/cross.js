@@ -451,11 +451,11 @@ function CrossModel() {
 	self.crossRows = new PageModle(200, self.loadCrosseForPage);
 	
 	self.saveCrossInfo = function() {  
-		showConfirmDiv("提示", "你确定要保存修改?", function (r) { 
-			commonJsScreenLock();
+		showConfirmDiv("提示", "你确定要保存修改?", function (r) {  
 			var result = ko.toJSON(self.currentCross);
 			console.log(result);
 			if(r){
+				commonJsScreenLock();
 				$.ajax({
 					url : "cross/editBaseCorssInfo",
 					cache : false,
@@ -509,7 +509,7 @@ function CrossModel() {
 			showWarningDialog("请先选择列车");
 			return;
 		}
-		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true});
+		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true, top:50});
 		  
 	};
 	
@@ -588,11 +588,11 @@ function CrossModel() {
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){  
 			if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
-				showErrorDialog("你选择了未审核的记录，请先审核");
+				showWarningDialog("你选择了未审核的记录，请先审核");
 				commonJsScreenUnLock();
 				return;
 			}else if(crosses[i].unitCreateFlag() == 1 && crosses[i].selected() == 1){
-				showErrorDialog("不能重复生成");
+				showWarningDialog("不能重复生成");
 				commonJsScreenUnLock();
 				return;
 			}else if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){ 
@@ -602,7 +602,7 @@ function CrossModel() {
 			};
 		} 
 		if(crossIds == ""){
-			showErrorDialog("没有选中数据");
+			showWarningDialog("没有选中数据");
 			return;
 		}
 		commonJsScreenLock();
@@ -698,14 +698,19 @@ function CrossModel() {
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {  
-							self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
-//							self.currentCross(new CrossRow(result.data[0].crossInfo));
-							if(result.data[0].crossTrainInfo != null){
-								$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
-									var row = new TrainRow(crossInfo);
-									self.trains.push(row); 
-								});
+							if(result.data[0].crossInfo == null){
+								showWarningDialog("交路信息已经不存在");
+							}else{
+								self.setCurrentCross(new CrossRow(result.data[0].crossInfo));
+//								self.currentCross(new CrossRow(result.data[0].crossInfo));
+								if(result.data[0].crossTrainInfo != null){
+									$.each(result.data[0].crossTrainInfo,function(n, crossInfo){
+										var row = new TrainRow(crossInfo);
+										self.trains.push(row); 
+									});
+								} 
 							}
+							
 						}
 						 
 					} else {

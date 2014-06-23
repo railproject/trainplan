@@ -417,7 +417,7 @@ public class CrossController {
 	@ResponseBody
 	@RequestMapping(value = "/provideCrossChartData", method = RequestMethod.GET)
 	public ModelAndView  provideCrossChartData(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		    ModelAndView result = new ModelAndView("cross/unit_cross_canvas"); 
+		    ModelAndView result = new ModelAndView("cross/cross_canvas"); 
 		
 			String crossId = StringUtil.objToStr(request.getParameter("crossId"));
 			

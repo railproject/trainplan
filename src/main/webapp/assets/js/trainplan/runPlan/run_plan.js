@@ -1,7 +1,8 @@
-var canvasData = {}; 
+var canvasData = {};  
+var cross = null;
 $(function() { 
 	
-	var cross = new CrossModel();
+	cross = new CrossModel();
 	ko.applyBindings(cross); 
 	
 	cross.init();   
@@ -39,7 +40,7 @@ function CrossModel() {
 	self.times = ko.observableArray();
 	
 	self.runPlanCanvasPage = new RunPlanCanvasPage(self);
-	
+	self.currentTrainInfoMessage = ko.observable("");
 	self.currentTrain = ko.observable();
 	
 	//车辆担当局
@@ -109,7 +110,8 @@ function CrossModel() {
 	
 
 	
-	self.loadStns = function(trainId){  
+	self.loadStns = function(currentTrain){  
+		commonJsScreenLock();
 		 $.ajax({ 
 				url : "jbtcx/queryPlanLineTrainTimes",
 				cache : false,
@@ -117,13 +119,22 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					trainId: trainId
+					trainId: currentTrain.obj.planTrainId
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
-						if (result != null && result != "undefind" && result.code == "0") {  
+						if (result != null && result != "undefind" && result.code == "0") {   
+							var message = "车次：" + currentTrain.obj.trainName + "&nbsp;&nbsp;&nbsp;";
 							$.each(result.data, function(i, n){
 								self.times.push(new TrainTimeRow(n)); 
+								if(i == 0){
+									message += n.stnName;
+								}else if(i == result.data.length - 1){
+									self.currentTrainInfoMessage(message + "——" + n.stnName);
+									if($("#run_plan_train_times").is(":hidden")){
+										$("#run_plan_train_times").dialog({top:10, draggable: true, resizable:true});
+									} 
+								}  
 							});
 						}  
 					} else {
@@ -133,17 +144,14 @@ function CrossModel() {
 				error : function() {
 					showErrorDialog("接口调用失败");
 				},
-				complete : function(){
-					initFlag++;
-					if(initFlag == 2){
-						commonJsScreenUnLock();
-					}
-					
+				complete : function(){ 
+						commonJsScreenUnLock();  
 				}
 		    }); 
+		   
 		// $("#run_plan_train_times").dialog("open");
 	};
-	self.setCurrentTrain = function(train){
+	self.setCurrentTrain = function(train){ 
 		self.currentTrain(train); 
 	};
 	
@@ -163,10 +171,16 @@ function CrossModel() {
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0);
 				self.searchModle().activeFlag(0);
+				self.searchModle().checkActiveFlag(0); 
 			}else{
 				if(hasActiveRole(crossRow.tokenVehBureau())){ 
 					crossRow.selected(1); 
-					self.searchModle().activeFlag(1);
+					self.searchModle().activeFlag(1);  
+				}
+				//可以审核的
+				if(crossRow.checkActiveFlag() == 1){
+					crossRow.selected(1); 
+					self.searchModle().checkActiveFlag(1); 
 				}
 			}  
 		});  
@@ -175,24 +189,48 @@ function CrossModel() {
 	self.selectCross = function(row){ 
 //		self.crossAllcheckBox();  
 		if(row.selected() == 0){  
-			self.crossAllcheckBox(1);  
-			self.searchModle().activeFlag(1);
-			$.each(self.planCrossRows(), function(i, crossRow){  
-				if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
-					self.crossAllcheckBox(0);
-					return false;
-				}  
-			}); 
+			self.crossAllcheckBox(1);   
+			if(row.activeFlag() == 1){ 
+				self.searchModle().activeFlag(1);
+				$.each(self.planCrossRows(), function(i, crossRow){   
+					if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
+						self.crossAllcheckBox(0);
+						return false;
+					}  
+				}); 
+			} 
+			if(row.checkActiveFlag() == 1){
+				self.searchModle().checkActiveFlag(1);
+				$.each(self.planCrossRows(), function(i, crossRow){   
+					if(crossRow.selected() != 1 && crossRow != row && crossRow.checkActiveFlag() == 1){
+						self.crossAllcheckBox(0);
+						return false;
+					}  
+				}); 
+				 
+			};  
 		}else{
-			self.searchModle().activeFlag(0);  
 			self.crossAllcheckBox(0);
-			$.each(self.planCrossRows(), function(i, crossRow){  
-				if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
-					self.searchModle().activeFlag(1);
-					return false;
-				}  
-			}); 
-		} 
+			if(row.activeFlag() == 1){
+				self.searchModle().activeFlag(0); 
+				$.each(self.planCrossRows(), function(i, crossRow){   
+					if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
+						self.searchModle().activeFlag(1);  
+						 return false;
+						//可以审核的  
+					}  
+				}); 
+			}
+			if(row.checkActiveFlag() == 1){
+				self.searchModle().checkActiveFlag(0);
+				$.each(self.planCrossRows(), function(i, crossRow){   
+					if(crossRow.selected() == 1 && crossRow != row && crossRow.checkActiveFlag() == 1){
+						self.searchModle().checkActiveFlag(1);   
+						return false;
+					};  
+				}); 
+			}; 
+		}; 
 	};
 	
 	
@@ -563,7 +601,7 @@ function CrossModel() {
 		 var planStartDate = $("#runplan_input_startDate").val();
 			
 		 var planEndDate =  $("#runplan_input_endDate").val();
-		 
+		 self.searchModle().checkActiveFlag(0); 
 		 if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
 			self.searchModle().activeFlag(1);  
 		}else if(!hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 1){
@@ -664,7 +702,7 @@ function CrossModel() {
 	
 	self.showCrossTrainTimeDlg = function(){
 		
-		$("#cross_train_time_dlg").dialog("open");
+		$("#run_plan_train_times").dialog({inline: false, top:10});
 	};
 	
 	self.trainNbrChange = function(n,  event){
@@ -860,31 +898,47 @@ function CrossModel() {
 	};
 	
 	//审核
-	self.checkCrossInfo = function(){
-		commonJsScreenLock();
+	self.checkCrossInfo = function(){ 
 		var crossIds = "";
-		var delCrosses = [];
-		var crosses = self.crossRows.rows();
+		var checkedCrosses = [];
+		var crosses = self.planCrossRows();
 		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1 && crosses[i].checkFlag()){ 
-				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].crossId;
-				delCrosses.push(crosses[i]);
-			}
-		} 
+			if(crosses[i].checkFlag() == 2){ 
+				showWarningDialog("不能重复审核"); 
+				return;
+			}else if(crosses[i].checkFlag() == 1 && crosses[i].checkedBureau().indexOf(currentUserBureau) > -1 && crosses[i].selected() == 1){  
+				showWarningDialog("本局已审核"); 
+				return;
+			}else if(crosses[i].selected() == 1){
+				crossIds += (crossIds == "" ? "" : ";");
+				crossIds += crosses[i].planCrossId() + crosses[i].relevantBureau();
+				checkedCrosses.push(crosses[i]); 
+			}; 
+		}  
+		var planStartDate = $("#runplan_input_startDate").val(); 
+		var planEndDate =  $("#runplan_input_endDate").val();
+		
+		if(crossIds == ""){
+			showWarningDialog("没有可审核的");
+			return;
+		}
+		commonJsScreenLock();
 		 $.ajax({
-				url : "cross/checkCorssInfo",
+				url : "runPlan/checkCrossRunLine",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
-				data :JSON.stringify({  
-					crossIds : crossIds
+				data :JSON.stringify({   
+					startTime : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
+					endTime : (planEndDate != null ? planEndDate : self.get40Date()).replace(/-/g, ''),
+					planCrossIds : crossIds
 				}),
 				success : function(result) {     
 					if(result.code == 0){
-						$.each(delCrosses, function(i, n){ 
-							n.checkFlag("1");
+						$.each(checkedCrosses, function(i, n){
+							n.checkedBureau(n.checkedBureau() + "," + currentUserBureau);
+							console.log(n.checkedBureau());
 						});
 						showSuccessDialog("审核成功");
 					}else{
@@ -1037,6 +1091,8 @@ function searchModle(){
 	 
 	self.activeFlag = ko.observable(0);  
 	
+	self.checkActiveFlag = ko.observable(0);  
+	
 	self.activeCurrentCrossFlag = ko.observable(0);  
 	
 	self.drawFlags =ko.observableArray(['0']); 
@@ -1140,7 +1196,7 @@ function CrossRow(data) {
 		
 	});  
 	
-	self.checkFlag = ko.observable(data.checkFlag);
+	self.checkFlag = ko.observable(data.checkType);
 	
 	self.unitCreateFlag = ko.observable(data.unitCreateFlag);
 	//方案ID
@@ -1196,33 +1252,59 @@ function CrossRow(data) {
 				 }
 			 } 
 		 } 
-		 return  result == "" ? "" : result; 
+		 return  result == "" ? "" : "相关局：" + result; 
 	});
 	
-	
-	self.checkedBureauShowValue =  ko.computed(function(){ 
-		var result = "";
-		 if(data.relevantBureau != null && data.relevantBureau != "null"){  
-			 for(var j = 0; j < data.relevantBureau.length; j++){
-				 for(var i = 0; i < gloabBureaus.length; i++){
-					 if(data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
-						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
-						 break;
-					 }
-				 }
-			 } 
-		 } 
-		 return  result == "" ? "" : result; 
-	});
-	
+	self.relevantBureau =  ko.observable(data.relevantBureau);
 	
 	self.checkedBureau = ko.observable(data.checkedBureau);
 	
+	self.checkedBureauShowValue =  ko.computed(function(){ 
+		var result = "";
+		 if(self.checkedBureau() != null && self.checkedBureau() != "null"){  
+			 var bs = self.checkedBureau().split(","); 
+			 for(var j = 0; j < bs.length; j++){
+				 for(var i = 0; i < gloabBureaus.length; i++){
+					 if(bs[j] == gloabBureaus[i].code){
+						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
+						 break;
+					 };
+				 };
+			 };
+		 } 
+		 return  result == "" ? "" : "已审局：" + result; 
+	}); 
 	self.activeFlag = ko.computed(function(){
 		return hasActiveRole(data.tokenVehBureau);
-	});  
+	});   
 	
+	self.checkActiveFlag = ko.computed(function(){
+//		return 1;
+		return data.relevantBureau != null ? (data.relevantBureau.indexOf(currentUserBureau) > -1 ? 1 : 0) : 0;
+	}); 
+//	'fa fa-check-square-o' : 'fa fa-pencil-square-o'
 	
+	self.checkCss = ko.computed(function(){
+		if(self.checkFlag() != 2 
+				&& data.relevantBureau != null 
+				&& data.relevantBureau.indexOf(currentUserBureau) > -1 
+				&&  self.checkedBureau() != null 
+				&& self.checkedBureau().indexOf(currentUserBureau) > -1){//和当前局相关并且被当前局审核过了的
+			return "fa fa-pencil-square-o green";
+		}else if(self.checkFlag() != 2 
+				&& data.relevantBureau != null
+				&& data.relevantBureau.indexOf(currentUserBureau) > -1
+				&&  (self.checkedBureau() == null || (self.checkedBureau() != null 
+				&& self.checkedBureau().indexOf(currentUserBureau) < 0))){//和当前局相关并且未被当前局审核过了的
+			return "fa fa-pencil-square-o red";
+		}else if(self.checkFlag() != 2 
+				&& (data.relevantBureau == null || (data.relevantBureau != null
+				&& data.relevantBureau.indexOf(currentUserBureau) < 0))){//和当前局无关 未被完全审核的
+			return "fa fa-pencil-square-o gray";
+		}else if(self.checkFlag() == 2){
+			return "fa fa-check-square-o green";
+		}  
+	}); 
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
 	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
@@ -1320,11 +1402,12 @@ function TrainTimeRow(data) {
 	self.index = data.childIndex + 1;
 	self.stnName = filterValue(data.stnName);
 	self.bureauShortName = filterValue(data.bureauShortName);
-	self.sourceTime = filterValue(data.arrTime);
-	self.targetTime = filterValue(data.dptTime);
+	self.sourceTime = filterValue(data.arrTime != null ? data.arrTime.replace(/-/g, "").substring(4) : "");
+	self.targetTime = filterValue(data.dptTime != null ? data.dptTime.replace(/-/g, "").substring(4) : "");
 	self.stepStr = GetDateDiff(data); 
 	self.trackName = filterValue(data.trackName);  
 	self.runDays = data.runDays;
+	self.stationFlag = data.stationFlag;
 	 
 }; 
 function GetDateDiff(data)
@@ -1334,8 +1417,8 @@ function GetDateDiff(data)
 	else if(data.dptTime == '-'){
 		return "";
 	} 
-	var startTime = new Date("1977-7-7 " + data.arrTime);
-	var endTime = new Date("1977-7-7 " + data.dptTime);  
+	var startTime = new Date(data.arrTime);
+	var endTime = new Date(data.dptTime);  
 	var result = "";
 	
 	var date3=endTime.getTime()-startTime.getTime(); //时间差的毫秒数 

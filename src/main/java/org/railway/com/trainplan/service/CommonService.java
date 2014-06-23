@@ -80,9 +80,9 @@ public class CommonService {
      * 从基础数据库中获取18个路局的基本信息
      * @return
      */ 
-     public Map<String, String> getStationJCMapping(){
-    	 List<Ljzd> list = getFullStationInfo();
+     public Map<String, String> getStationJCMapping(){ 
     	 if(jcMap.isEmpty()){
+    		 List<Ljzd> list = getFullStationInfo();
 	    	 for(Ljzd ljzd : list){
 	    		 jcMap.put(ljzd.getLjpym(), ljzd.getLjjc());
 	    	 }
@@ -95,9 +95,9 @@ public class CommonService {
       * 从基础数据库中获取18个路局的基本信息
       * @return
       */ 
-      public String getStationJC(String py){
-     	 List<Ljzd> list = getFullStationInfo();
+      public String getStationJC(String py){ 
      	 if(jcMap.isEmpty()){
+     		 List<Ljzd> list = getFullStationInfo();
  	    	 for(Ljzd ljzd : list){
  	    		 jcMap.put(ljzd.getLjpym(), ljzd.getLjjc());
  	    	 }
@@ -111,9 +111,9 @@ public class CommonService {
        * 从基础数据库中获取18个路局的基本信息
        * @return
        */ 
-       public String getStationPy(String jc){
-	      	 List<Ljzd> list = getFullStationInfo();
+       public String getStationPy(String jc){ 
 	      	 if(jcMap.isEmpty()){
+	      		 List<Ljzd> list = getFullStationInfo();
 	  	    	 for(Ljzd ljzd : list){
 	  	    		 jcMap.put(ljzd.getLjpym(), ljzd.getLjjc());
 	  	    	 }

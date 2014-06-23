@@ -894,7 +894,9 @@ public class CrossService{
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("chartId", chartId); 
 		ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal(); 
-		map.put("bureaus", user.getBureauShortName());
+		if(user.getBureau() != null){
+			map.put("bureaus", user.getBureau());
+		} 
 		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNITCROSSTRAIN_BY_CHARID, map);
 		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_UNITCROSS_INFO_BY_CHARID, map);
 		this.baseDao.deleteBySql(Constants.CROSSDAO_DELETE_CROSSTRAIN_BY_CHARID, map); 
@@ -1009,9 +1011,9 @@ public class CrossService{
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println(train2.getTrainNbr() + "--getTargetTime-" + train2.getTargetTime());
-			System.out.println(train1.getTrainNbr() + "--getSourceTargetTime-" + train1.getSourceTargetTime());
-			e.printStackTrace();
+			logger.error(train2.getTrainNbr() + "--getTargetTime-" + train2.getTargetTime());
+			logger.error(train1.getTrainNbr() + "--getSourceTargetTime-" + train1.getSourceTargetTime());
+			logger.error(e.getMessage(), e);
 		};
 		 
 	}
@@ -1202,10 +1204,10 @@ public class CrossService{
 			//保存交路信息
 			ArrayList<CrossInfo> crossList = new ArrayList<CrossInfo>();
 			crossList.add(this.cross);
-			
-			 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO, crossList); 
 			 
-			System.out.println(this.cross.getCrossName() + " ===crossTrains===" + crossTrains.size());
+			this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_INFO, crossList); 
+			 
+			logger.debug(this.cross.getCrossName() + " ===crossTrains===" + crossTrains.size());
         	//保存列车
 			if(crossTrains != null && crossTrains.size() > 0 ){
 				 this.baseDao.insertBySql(Constants.CROSSDAO_ADD_CROSS_TRAIN_INFO, crossTrains);
@@ -1361,18 +1363,16 @@ public class CrossService{
 		   String routeBureauShortNames = "";
 		   for(int i=0; i < crossTrains.size(); i++){
 			   CrossTrainInfo crossTrain = crossTrains.get(i);
-			   trainInfoFromPain(crossTrains.get(i));
-			   
+			   trainInfoFromPain(crossTrains.get(i)); 
 				//设置交路的开始日期和结束日期
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
 //					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
-					cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8));
-					routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
-				}   
-			   
+					cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8)); 
+				} 
+				routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
 		   } 
-	 
+		  
 		  if(!"".equals(routeBureauShortNames)){ 
 			  String rbsPY = "";
 			  String py = "";
@@ -1433,10 +1433,9 @@ public class CrossService{
 				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
 					cross.setStartBureau(crossTrain.getStartBureau());
 //					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
-					cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8));
-					routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
+					cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8)); 
 				}   
-			   
+//				routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
 		   } 
 			 
 		   setDayGapForTrains(crossSpareTrains); 
