@@ -911,7 +911,7 @@ function CrossModel() {
 				return;
 			}else if(crosses[i].selected() == 1){
 				crossIds += (crossIds == "" ? "" : ";");
-				crossIds += crosses[i].planCrossId() + crosses[i].relevantBureau;
+				crossIds += crosses[i].planCrossId() + crosses[i].relevantBureau();
 				checkedCrosses.push(crosses[i]); 
 			}; 
 		}  
@@ -1255,6 +1255,8 @@ function CrossRow(data) {
 		 return  result == "" ? "" : "相关局：" + result; 
 	});
 	
+	self.relevantBureau =  ko.observable(data.relevantBureau);
+	
 	self.checkedBureau = ko.observable(data.checkedBureau);
 	
 	self.checkedBureauShowValue =  ko.computed(function(){ 
@@ -1277,16 +1279,28 @@ function CrossRow(data) {
 	});   
 	
 	self.checkActiveFlag = ko.computed(function(){
-		return 1;
-		//return data.relevantBureau != null ? (data.relevantBureau.indexOf(currentUserBureau) > -1 ? 1 : 0) : 0;
+//		return 1;
+		return data.relevantBureau != null ? (data.relevantBureau.indexOf(currentUserBureau) > -1 ? 1 : 0) : 0;
 	}); 
 //	'fa fa-check-square-o' : 'fa fa-pencil-square-o'
 	
 	self.checkCss = ko.computed(function(){
-		if(self.checkFlag() == 1 && (self.checkedBureau() != null && self.checkedBureau().indexOf(currentUserBureau) > -1)){
+		if(self.checkFlag() != 2 
+				&& data.relevantBureau != null 
+				&& data.relevantBureau.indexOf(currentUserBureau) > -1 
+				&&  self.checkedBureau() != null 
+				&& self.checkedBureau().indexOf(currentUserBureau) > -1){//和当前局相关并且被当前局审核过了的
 			return "fa fa-pencil-square-o green";
-		}else if(self.checkedBureau()== null ||( self.checkedBureau() != null && self.checkedBureau().indexOf(currentUserBureau) < 0)){
+		}else if(self.checkFlag() != 2 
+				&& data.relevantBureau != null
+				&& data.relevantBureau.indexOf(currentUserBureau) > -1
+				&&  (self.checkedBureau() == null || (self.checkedBureau() != null 
+				&& self.checkedBureau().indexOf(currentUserBureau) < 0))){//和当前局相关并且未被当前局审核过了的
 			return "fa fa-pencil-square-o red";
+		}else if(self.checkFlag() != 2 
+				&& (data.relevantBureau == null || (data.relevantBureau != null
+				&& data.relevantBureau.indexOf(currentUserBureau) < 0))){//和当前局无关 未被完全审核的
+			return "fa fa-pencil-square-o gray";
 		}else if(self.checkFlag() == 2){
 			return "fa fa-check-square-o green";
 		}  
