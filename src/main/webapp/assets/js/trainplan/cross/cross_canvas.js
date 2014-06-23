@@ -188,6 +188,12 @@ $(function(){
 	_MyCanvas = new MyCanvas();
 	_MyCanvas.drawGraph();
 	
+
+	//刷新按钮点击事件
+	$("#canvas_event_btn_refresh").click(function(){
+		_MyCanvas.drawGraph();
+	});
+	
 	
 	//车底下拉框事件
 	$("#canvas_select_groupSerialNbr").change(function(){
