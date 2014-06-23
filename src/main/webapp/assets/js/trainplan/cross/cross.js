@@ -463,8 +463,7 @@ function CrossModel() {
 	
 	self.saveCrossInfo = function() {  
 		showConfirmDiv("提示", "你确定要保存修改?", function (r) {  
-			var result = ko.toJSON(self.currentCross);
-			console.log(result);
+			var result = ko.toJSON(self.currentCross); 
 			if(r){
 				commonJsScreenLock();
 				$.ajax({
@@ -539,9 +538,10 @@ function CrossModel() {
 			showErrorDialog("没有可删除的记录");
 			return;
 		}
-		commonJsScreenLock();
+		
 		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
 	        if (r) { 
+	        	commonJsScreenLock();
 				$.ajax({
 					url : "cross/deleteCorssInfo",
 					cache : false,
