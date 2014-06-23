@@ -239,7 +239,7 @@ public class AuditController {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         Map<String, Object> result;
         try {
-            result = runLineService.findUnknownRunLine(user.getBureauShortName(), date);
+            result = runLineService.findUnknownRunLineCount(user.getBureauShortName(), date);
         } catch (ParseException e) {
             logger.error("findUnknownRunLine", e);
             Map<String, Object> error = Maps.newHashMap();

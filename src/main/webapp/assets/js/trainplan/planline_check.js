@@ -606,6 +606,10 @@ function Plan(dto) {
         var url = "audit/compare/timetable/" + $("#bureau option:selected").val() + "/plan/" + self.id() + "/line/" + self.dailyLineId();
         self._getDialog(url, {title: "客运计划列车时刻表 vs 日计划列车时刻表", height: $(window).height(), width: 1300}).dialog("open");
     }
+
+    self.showGraphic = function() {
+        $(this).parents("tr").after("<tr><td colspan='15'><iframe src='' width='100%' height='100%' marginwidth='0' marginheight='0' scrolling='auto' frameborder='0px'></iframe></td></tr>")
+    }
 }
 
 
