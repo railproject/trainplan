@@ -642,11 +642,23 @@ function drawPie($div, chartName, data, colors) {
         },
         title: {
             text: chartName
+//            y: 100
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.y}</b>',
             percentageDecimals: 1
         },
+//        legend: {
+//            layout: 'vertical',
+//            align: 'right',
+//            verticalAlign: 'top',
+//            x: 0,
+//            y: 150,
+//            labelFormatter: function() {
+//                return this.name+'&nbsp';
+//            },
+//            useHTML:true
+//        },
         plotOptions: {
             pie: {
                 allowPointSelect: true,
