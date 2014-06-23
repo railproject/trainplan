@@ -4,8 +4,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -248,8 +250,11 @@ public class StringUtil {
 		}
 		
 		//System.err.println(list);
-		System.err.println(list1);
+		//System.err.println(list1);
 		Collections.reverse(list1);
-		System.err.println(list1);
+		//System.err.println(list1);
+		
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		System.err.println(objToStr(reqMap.get("test")));
 	}
 }
