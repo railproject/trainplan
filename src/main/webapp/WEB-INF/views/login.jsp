@@ -22,7 +22,7 @@
     <div class="login_backgroud">
         <div class="login_overlay" style="width: 553px">
             <div class="login-logo"></div>
-            <div class="login_input">
+            <div class="login_input" style="margin-left: 60px">
                 <div class="form-group paddingtop30">
                     <label for="inputUsername" class="col-sm-2 control-label">账号：</label>
                     <div class="col-sm-10">
