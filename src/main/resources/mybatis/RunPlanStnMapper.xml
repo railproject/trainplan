@@ -33,4 +33,8 @@
             #{item.runDays, jdbcType=VARCHAR} FROM DUAL
         </foreach>
     </insert>
+
+    <select id="getGrid" parameterType="map" resultType="map">
+
+    </select>
 </mapper> 
