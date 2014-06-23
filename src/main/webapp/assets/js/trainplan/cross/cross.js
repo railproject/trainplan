@@ -42,6 +42,8 @@ function CrossModel() {
 	
 	self.times = ko.observableArray();
 	
+	self.simpleTimes = ko.observableArray();
+	
 	self.currentTrainInfoMessage = ko.observable("");
 	
 	//车辆担当局
@@ -100,11 +102,17 @@ function CrossModel() {
 		self.times.remove(function(item){
 			return true;
 		});
+		
+		self.simpleTimes.remove(function(item){
+			return true;
+		});
 		if(row.times().length > 0){ 
 			$.each(row.times(), function(i, n){
 				self.times.push(n); 
 			}) ;
-			 
+			$.each(row.simpleTimes(), function(i, n){
+				self.simpleTimes.push(n); 
+			}) ; 
 		}else{
 			$.ajax({
 				url : "jbtcx/queryTrainTimes",
@@ -117,10 +125,13 @@ function CrossModel() {
 				}),
 				success : function(result) {  
 					if (result != null && result != "undefind" && result.code == "0") {  
-						row.loadTimes(result.data);  
+						row.loadTimes(result.data); 
 						$.each(row.times(), function(i, n){
 							self.times.push(n); 
-						}); 
+						}) ;
+						$.each(row.simpleTimes(), function(i, n){
+							self.simpleTimes.push(n); 
+						}) ; 
 					}  
 				},
 				error : function() {
@@ -953,9 +964,14 @@ function TrainRow(data) {
 	self.endDate = data.endDate;
 	
 	self.times = ko.observableArray();  
+	self.simpleTimes = ko.observableArray(); 
 	self.loadTimes = function(times){
 		$.each(times, function(i, n){ 
-			self.times.push(new TrainTimeRow(n));
+			var timeRow = new TrainTimeRow(n);
+			self.times.push(timeRow);
+			if(n.stationFlag != 'BTZ'){
+				self.simpleTimes.push(timeRow);
+			}
 		});
 	}; 
 	

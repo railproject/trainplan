@@ -87,13 +87,13 @@ var currentUserBureau = "<%=currentUserBureau %>";
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">客运计划管理</a></li>
 	</ol> 
-   	<div id="plan_view_div_palnDayDetail" class="panel panel-default">
-	   <div class="row" style="margin: 10px 10px 10px 10px;"> 
-	
-	<!--分栏框开始-->
-		<div class="pull-left" style="width: 30%;height:100%">
-			<!--分栏框开始-->  
-			    <div class="row" style="margin: 5px 10px 10px 10px;"> 
+   	<div>
+	   <div class="row" style="margin: 10px 10px 10px 10px;">  
+	        <!--分栏框开始-->
+		    <div class="pull-left" style="width: 30%;height:100%">
+			<!--分栏框开始-->
+			    <div class="panel panel-default" style="height:537px;">   
+			      <div class="row" style="margin: 5px 10px 10px 10px;"> 
 				        	<div class="panel-body">
 								<form class="form-horizontal" role="form">  
 											<div class="row"  style="width: 100%; margin-top: 5px;">
@@ -218,13 +218,13 @@ var currentUserBureau = "<%=currentUserBureau %>";
 								  </div> 
 							 </form>
 						 </div> 
-						 </div>
+					</div>
+				</div>
 		</div>
-		 <div class="pull-right" style="width: 70%;"> 
-		   
-		<!-- Nav tabs -->
-		<div class="pull-left" style="width: 100%;"> 
-					<ul class="nav nav-tabs" >
+		 <div class="pull-right" style="width: 69%;">  
+				<!-- Nav tabs -->
+				<div class="panel panel-default" >  
+					<ul class="nav nav-tabs" style="margin-top:10px;margin-left:5px;margin-right:5px;"  >
 					  <li class="active"><a style="padding:3px 10px;" href="#home" data-toggle="tab">车底交路</a></li>
 					  <li><a style="padding:3px 10px;" href="#profile" data-toggle="tab">交路基本信息</a></li> 
 					  <li style="float:right">  					 
@@ -237,7 +237,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 					<!-- Tab panes -->
 					<div class="tab-content" >
 					  <div class="tab-pane active" id="home"> 
-					       <div class="pull-left" style="width: 99%;"> 
+					       <div class="panel panel-default"> 
 							 <div class="panel-body" >
 							      	<div class="row" style="margin:5px 0 10px 0;">
 								      <form class="form-inline" role="form">
@@ -588,11 +588,13 @@ var currentUserBureau = "<%=currentUserBureau %>";
 							</div>
 				  	 </div>
 				  </div>  
-			 </div> 
+				 </div> 
+			</div>
 		</div>
-     </div> 
-   	 <div class="row" class="panel-collapse" style="margin: 10px 10px 10px 10px;" >  
-	 	  <div id="learn-more-content"  class="panel-collapse collapse">
+	    </div> 
+   	 	<div class="row" class="panel-collapse" style="margin: 10px 10px 10px 10px;" >  
+   	 	  <div class="panel panel-default">   
+	 	   <div id="learn-more-content"  class="panel-collapse collapse">
               <div class="panel-body">
 	 	   	    <ul class="nav nav-tabs" >
 				  <li class="active"><a style="padding:3px 10px;" href="#runPlan" data-toggle="tab">开行情况</a></li> 
@@ -602,22 +604,23 @@ var currentUserBureau = "<%=currentUserBureau %>";
 				  <div class="tab-pane active" id="runPlan" > 
 				  		 <div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
 								      <!--panle-heading-->
-								      <div class="panel-body" style="bapadding:10px;overflow: auto">
-								      	<div class="table-responsive" > 
-								          <table class="table table-bordered table-striped table-hover" id="run_plan_table">
-									      <thead> 
-									      	<tr data-bind="template: { name: 'runPlanTableDateHeader', foreach: planDays }"></tr>
-									      </thead>
-									      <tbody data-bind="template: { name: 'runPlanTableVlaues', foreach: trainPlans }"> 
-									      </tbody> 
-										  </table>
-								        </div>  
-								        </div>  
-								      </div>
+						      <div class="panel-body" style="bapadding:10px;overflow: auto">
+						      	<div class="table-responsive" > 
+						          <table class="table table-bordered table-striped table-hover" id="run_plan_table">
+							      <thead> 
+							      	<tr data-bind="template: { name: 'runPlanTableDateHeader', foreach: planDays }"></tr>
+							      </thead>
+							      <tbody data-bind="template: { name: 'runPlanTableVlaues', foreach: trainPlans }"> 
+							      </tbody> 
+								  </table>
+						        </div>  
+						        </div>  
+						      </div>
 							</div> 
 				  </div>
 				</div>
 			</div>
+		 </div>
 		 </div>
 	  </div> 
 	  <!--详情时刻表--> 
@@ -653,7 +656,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 										   <td colspan="9" style="padding:0">
 												 <div style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
-														 <tbody data-bind="foreach: times">
+														 <tbody data-bind="foreach: simpleTimes">
 												           <tr data-bind="visible: stationFlag != 'BTZ'">  
 															<td style="width:7.5%" align="center" data-bind=" text: $index() + 1"></td>
 															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
