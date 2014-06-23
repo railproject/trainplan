@@ -517,10 +517,10 @@ function CrossModel() {
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){
 			if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
-				showErrorDialog("你选择了未审核的记录，请先审核");
+				showWarningDialog("你选择了未审核的记录，请先审核");
 				return;
 			}else if(crosses[i].unitCreateFlag() == 1 && crosses[i].selected() == 1){
-				showErrorDialog("不能重复生成");
+				showWarningDialog("不能重复生成");
 				return;
 			}else if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){
 				crossIds += (crossIds == "" ? "" : ",");
@@ -529,7 +529,7 @@ function CrossModel() {
 			};
 		} 
 		if(crossIds == ""){
-			showErrorDialog("没有选中数据"); 
+			showWarningDialog("没有选中数据"); 
 			return;
 		} 
 		commonJsScreenLock();
@@ -628,7 +628,7 @@ function CrossModel() {
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){  
-				showErrorDialog("不能重复审核"); 
+				showWarningDialog("不能重复审核"); 
 				return;
 			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
 				crossIds += (crossIds == "" ? "" : ",");
@@ -637,7 +637,7 @@ function CrossModel() {
 			} 
 		}  
 		if(crossIds == ""){
-			showErrorDialog("没有可审核的");
+			showWarningDialog("没有可审核的");
 			return;
 		}
 		commonJsScreenLock(); 

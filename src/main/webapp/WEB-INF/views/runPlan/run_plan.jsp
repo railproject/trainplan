@@ -75,6 +75,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	-webkit-box-shadow: none;
 	box-shadow: none;
 }
+
  </style>
 
  
@@ -148,7 +149,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 														class="form-control" data-bind="options: searchModle().unitCreateFlags, value: searchModle().unitCreateFlag, optionsText: 'text' , optionsCaption: '' ">
 													</select>
 												</div>
-												<div class="pull-left" style="margin-left: 20px;">
+												<div class="pull-left" style="margin-left: 10px;">
 														<a type="button" class="btn btn-success" data-toggle="modal"
 															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
 													</div> 
@@ -176,7 +177,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 											<div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 20px;">
-													<a type="button" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: checkCrossInfo"  data-toggle="modal"
+													<a type="button" data-bind="attr:{class: searchModle().checkActiveFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: checkCrossInfo"  data-toggle="modal"
 														data-target="#" id="btn_cross_sure">审核</a>
 													<a  type="button" class="btn btn-success" data-toggle="modal"
 														data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
@@ -186,7 +187,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												</div> 
 										  <span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue() + currentCross().checkedBureauShowValue()"></span> 
 									      <div class="row" style="margin-top:10px">
-										     <div class="pull-left" style="width: 80%;">
+										     <div class="pull-left" style="width: 75%;">
 										        <section class="panel panel-default">
 										          <div class="panel-heading">
 										          			<span><input type="checkbox" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}">全选 车底交路名
@@ -195,15 +196,15 @@ var currentUserBureau = "<%=currentUserBureau %>";
 																</select>  
 															</span>
 										          </div>
-										        	<div class="panel-body" style="height: 250px; overflow-y:auto"> 
+										        	<div class="panel-body" style="height: 300px; overflow-y:auto"> 
 														<div class="table-responsive"> 
 															<table class="table table-bordered table-striped table-hover" 
 																id="cross_table_crossInfo"> 
 																<tbody data-bind="foreach: planCrossRows">
 																	<tr data-bind=" visible: visiableRow" >
 																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
-																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 0 ? 'ckbox disabled' : ''},event:{change: $parent.selectCross}, checked: selected"></td>
-																		<td><i  data-bind="attr:{class: checkFlag() == 1 ? 'fa fa-check-square-o' : 'fa fa-pencil-square-o'}, style:{color: checkFlag() == 1 ? 'green' : 'red'}"></i><span data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().crossName() == crossName()  ? 'blue':''}, click: $parent.showTrains"></span></td>
+																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td>
+																		<td><i  data-bind="attr:{class: checkCss}"></i><span data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().crossName() == crossName()  ? 'blue':''}, click: $parent.showTrains"></span></td>
 																	</tr> 
 																</tbody>  					 
 															</table>
@@ -211,10 +212,10 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												   </div>
 											   </section>
 											</div>
-											<div class="pull-right" style="width: 20%;">  
+											<div class="pull-right" style="width: 25%;">  
 											 <section class="panel panel-default">
 										          <div class="panel-heading">车次</div>
-										        	<div class="panel-body" style="height: 250px; overflow-y:auto "> 
+										        	<div class="panel-body" style="height: 300px; overflow-y:auto "> 
 												      <div class="table-responsive" > 
 															<table class="table table-bordered table-striped table-hover"
 																id="cross_trainInfo" > 
@@ -628,29 +629,30 @@ var currentUserBureau = "<%=currentUserBureau %>";
 		 </div>
 	  </div> 
 	  <!--详情时刻表--> 
-	 <div id="run_plan_train_times" class="easyui-dialog" title="详情时刻表"
+	 <div id="run_plan_train_times" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 600px; height: 500px; padding: 10px; "> 
+		style="width: 500px; height: 500px; padding: 10px;"> 
 			      <!--panle-heading-->
 			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 				       <ul class="nav nav-tabs" >
-						  <li class="active"><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
-						  <li><a style="padding:3px 10px;" href="#someTimes" data-toggle="tab">简点</a></li> 
+						  <li class="active"><a style="padding:3px 10px;" href="#simpleTimes" data-toggle="tab">简点</a></li> 
+						  <li><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
+						  <li style="float:right" ><span style="font: -webkit-small-control;" data-bind="html: currentTrainInfoMessage()"></span></li>
 						</ul> 
 						<!-- Tab panes -->
 						<div class="tab-content" >
-						  <div class="tab-pane active" id="allTimes" > 
+						  <div class="tab-pane active" id="simpleTimes" > 
 					      	<div class="table-responsive" > 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
 							        <tr>
 							          <th style="width:5%">序号</th>
-					                  <th style="width:18%">站名</th>
-					                  <th style="width:7%">路局</th>
-					                  <th style="width:21%">到达时间</th>
-					                  <th style="width:21%">出发时间</th>
-					                  <th style="width:8%">停留时间</th>
-					                  <th style="width:5%">天数</th> 
+					                  <th style="width:20%">站名</th>
+					                  <th style="width:5%">路局</th>
+					                  <th style="width:15%">到达</th>
+					                  <th style="width:15%">出发</th>
+					                  <th style="width:15%">停时</th>
+					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
 					                 </tr>
 							        </thead>
@@ -660,15 +662,15 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												 <div style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: times">
-												           <tr>  
-															<td style="width:6%" align="center" data-bind=" text: $index() + 1"></td>
-															<td style="width:17%" data-bind="text: stnName, attr:{title: stnName}"></td>
-															<td style="width:7%" align="center" data-bind="text: bureauShortName"></td>
-															<td style="width:21%" align="center" data-bind="text: sourceTime"></td>
-															<td style="width:21%" align="center" data-bind="text: targetTime"></td>
-															<td style="width:8%" align="center" data-bind="text: stepStr"></td>
-															<td style="width:5%" align="center" data-bind="text: runDays"></td>
-															<td style="width:15%" align="center" data-bind="text: trackName"></td>
+												           <tr data-bind="visible: stationFlag != 'BTZ'">  
+															<td style="width:7.5%" align="center" data-bind=" text: $index() + 1"></td>
+															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
+															<td style="width:7.5%" align="center" data-bind="text: bureauShortName"></td>
+															<td style="width:14.3%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:14.3%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
+															<td style="width:10%" align="center" data-bind="text: runDays"></td>
+															<td style="width:10%" align="center" data-bind="text: trackName"></td>
 												        	</tr>
 												        </tbody>
 													</table> 
@@ -679,7 +681,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 						        </table>
 			        		</div>   
 			        	</div>
-			        	<div class="tab-pane" id="someTimes" > 
+			        	<div class="tab-pane" id="allTimes" > 
 					      	<div class="table-responsive" > 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
@@ -698,17 +700,17 @@ var currentUserBureau = "<%=currentUserBureau %>";
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
 												 <div style="height: 400px; overflow-y:auto;"> 
-													<table class="table table-bordered table-striped table-hover" >
+													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: times">
 												           <tr>  
-															<td style="width:6%" align="center" data-bind=" text: $index() + 1"></td>
+															<td style="width:7.5%" align="center" data-bind=" text: $index() + 1"></td>
 															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
-															<td style="width:7%" align="center" data-bind="text: bureauShortName"></td>
-															<td style="width:15%" align="center" data-bind="text: sourceTime"></td>
-															<td style="width:15%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:7.5%" align="center" data-bind="text: bureauShortName"></td>
+															<td style="width:14.3%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:14.3%" align="center" data-bind="text: targetTime"></td>
 															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
 															<td style="width:10%" align="center" data-bind="text: runDays"></td>
-															<td style="width:15%" align="center" data-bind="text: trackName"></td>
+															<td style="width:10%" align="center" data-bind="text: trackName"></td>
 												        	</tr>
 												        </tbody>
 													</table> 

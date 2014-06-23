@@ -509,7 +509,7 @@ function CrossModel() {
 			showWarningDialog("请先选择列车");
 			return;
 		}
-		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true});
+		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true, top:50});
 		  
 	};
 	
@@ -588,11 +588,11 @@ function CrossModel() {
 		var crosses = self.crossRows.rows();
 		for(var i = 0; i < crosses.length; i++){  
 			if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
-				showErrorDialog("你选择了未审核的记录，请先审核");
+				showWarningDialog("你选择了未审核的记录，请先审核");
 				commonJsScreenUnLock();
 				return;
 			}else if(crosses[i].unitCreateFlag() == 1 && crosses[i].selected() == 1){
-				showErrorDialog("不能重复生成");
+				showWarningDialog("不能重复生成");
 				commonJsScreenUnLock();
 				return;
 			}else if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){ 
@@ -602,7 +602,7 @@ function CrossModel() {
 			};
 		} 
 		if(crossIds == ""){
-			showErrorDialog("没有选中数据");
+			showWarningDialog("没有选中数据");
 			return;
 		}
 		commonJsScreenLock();
