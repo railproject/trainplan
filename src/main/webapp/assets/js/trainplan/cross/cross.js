@@ -42,6 +42,8 @@ function CrossModel() {
 	
 	self.times = ko.observableArray();
 	
+	self.simpleTimes = ko.observableArray();
+	
 	self.currentTrainInfoMessage = ko.observable("");
 	
 	//车辆担当局
@@ -100,11 +102,17 @@ function CrossModel() {
 		self.times.remove(function(item){
 			return true;
 		});
+		
+		self.simpleTimes.remove(function(item){
+			return true;
+		});
 		if(row.times().length > 0){ 
 			$.each(row.times(), function(i, n){
 				self.times.push(n); 
 			}) ;
-			 
+			$.each(row.simpleTimes(), function(i, n){
+				self.simpleTimes.push(n); 
+			}) ; 
 		}else{
 			$.ajax({
 				url : "jbtcx/queryTrainTimes",
@@ -117,10 +125,13 @@ function CrossModel() {
 				}),
 				success : function(result) {  
 					if (result != null && result != "undefind" && result.code == "0") {  
-						row.loadTimes(result.data);  
+						row.loadTimes(result.data); 
 						$.each(row.times(), function(i, n){
 							self.times.push(n); 
-						}); 
+						}) ;
+						$.each(row.simpleTimes(), function(i, n){
+							self.simpleTimes.push(n); 
+						}) ; 
 					}  
 				},
 				error : function() {
@@ -452,8 +463,7 @@ function CrossModel() {
 	
 	self.saveCrossInfo = function() {  
 		showConfirmDiv("提示", "你确定要保存修改?", function (r) {  
-			var result = ko.toJSON(self.currentCross);
-			console.log(result);
+			var result = ko.toJSON(self.currentCross); 
 			if(r){
 				commonJsScreenLock();
 				$.ajax({
@@ -528,9 +538,10 @@ function CrossModel() {
 			showErrorDialog("没有可删除的记录");
 			return;
 		}
-		commonJsScreenLock();
+		
 		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
 	        if (r) { 
+	        	commonJsScreenLock();
 				$.ajax({
 					url : "cross/deleteCorssInfo",
 					cache : false,
@@ -617,10 +628,20 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){
-						$.each(delCrosses, function(i, n){ 
-							n.unitCreateFlag("1");
-						});
-						showSuccessDialog("生成交路单元成功");
+						for(var j = 0; j < result.data.length; j++){
+							for(var i = 0; i < delCrosses.length; i++){
+								if(result.data[j].crossId == delCrosses[i].crossId){
+									delCrosses[i].unitCreateFlag(result.data[j].flag);
+								 };
+							};
+						}; 
+						if(result.data.length == 0){
+							showErrorDialog("全部生成失败");  
+						}else if(result.data.length < delCrosses.length){  
+						    showSuccessDialog("部分生成成功");  
+					   }else{
+						   showSuccessDialog("生成成功");  
+					   } 
 					}else{
 						showErrorDialog("生成交路单元失败");
 					}
@@ -953,9 +974,14 @@ function TrainRow(data) {
 	self.endDate = data.endDate;
 	
 	self.times = ko.observableArray();  
+	self.simpleTimes = ko.observableArray(); 
 	self.loadTimes = function(times){
 		$.each(times, function(i, n){ 
-			self.times.push(new TrainTimeRow(n));
+			var timeRow = new TrainTimeRow(n);
+			self.times.push(timeRow);
+			if(n.stationFlag != 'BTZ'){
+				self.simpleTimes.push(timeRow);
+			}
 		});
 	}; 
 	

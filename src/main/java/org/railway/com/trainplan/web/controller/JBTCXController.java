@@ -76,7 +76,7 @@ public class JBTCXController {
 		Result result = new Result();
 		try{
 			logger.info("queryTrains~~reqMap="+reqMap);
-			 
+			reqMap.put("operation", "客运");
 			//调用后台接口
 			PagingResult page = new PagingResult(trainInfoService.getTrainInfoCount(reqMap), trainInfoService.getTrainsForPage(reqMap));
 			result.setData(page);
