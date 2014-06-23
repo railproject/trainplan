@@ -156,22 +156,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 													</div> 
 												
 											</div> 
-										    <hr style="margin-top: 8px;margin-bottom: 8px">
-											<div class="row"  style="margin-top: 5px;">
-												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
-													交路名:&nbsp;</label>
-												<div class="pull-left">
-													<select style="width: 66px" id="input_cross_filter_showFlag"
-														class="form-control" data-bind="options: [{'code': 1, 'text': '简称'},{'code': 2, 'text': '全称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
-													</select>
-												</div>
-												<div class="pull-left" style="margin-left: 32px" >
-													<input type="checkbox" class="pull-left" class="form-control" data-bind="event:{change: showRunPlans}"
-														class="form-control">
-												</div>
-												<label for="exampleInputEmail5" class="control-label pull-left">
-												显示开行情况</label>  
-											</div>
+										    <hr style="margin-top: 8px;margin-bottom: 8px"> 
 										 <!--    <div class="row"  style="margin-top: 5px;"> 
 												<span style="margin-left: 20px;"><span style="">途经局:</span><span data-bind="text: '京郑武广'"></span><span style="margin-left:3px" data-bind="text: '已审核: 郑  ; 未审核 : 京武广'"></span></span>   
 											</div>  -->
@@ -242,6 +227,12 @@ var currentUserBureau = "<%=currentUserBureau %>";
 					<ul class="nav nav-tabs" >
 					  <li class="active"><a style="padding:3px 10px;" href="#home" data-toggle="tab">车底交路</a></li>
 					  <li><a style="padding:3px 10px;" href="#profile" data-toggle="tab">交路基本信息</a></li> 
+					  <li style="float:right">  					 
+						<input type="checkbox" class="pull-left" class="form-control" data-bind="event:{change: showRunPlans}"
+							class="form-control"> 
+										<label for="exampleInputEmail5" class="control-label pull-left">
+										显示开行情况</label>  
+									 </li>
 					</ul> 
 					<!-- Tab panes -->
 					<div class="tab-content" >
@@ -632,7 +623,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	  <!--详情时刻表--> 
 	 <div id="run_plan_train_times" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 500px; height: 500px; padding: 10px;"> 
+		style="width: 608px; height: 500px; padding: 10px;"> 
 			      <!--panle-heading-->
 			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 				       <ul class="nav nav-tabs" >
@@ -645,14 +636,14 @@ var currentUserBureau = "<%=currentUserBureau %>";
 						  <div class="tab-pane active" id="simpleTimes" > 
 					      	<div class="table-responsive" > 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
-							        <thead>
-							        <tr>
-							          <th style="width:5%">序号</th>
-					                  <th style="width:20%">站名</th>
-					                  <th style="width:5%">路局</th>
-					                  <th style="width:15%">到达</th>
-					                  <th style="width:15%">出发</th>
-					                  <th style="width:15%">停时</th>
+							        <thead> 
+							         <tr>
+							          <th style="width:7.5%">序号</th>
+					                  <th style="width:19%">站名</th>
+					                  <th style="width:7%">路局</th>
+					                  <th style="width:14.5%">到达</th>
+					                  <th style="width:14.5%">出发</th>
+					                  <th style="width:14%">停时</th>
 					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
 					                 </tr>
@@ -669,7 +660,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 															<td style="width:7.5%" align="center" data-bind="text: bureauShortName"></td>
 															<td style="width:14.3%" align="center" data-bind="text: sourceTime"></td>
 															<td style="width:14.3%" align="center" data-bind="text: targetTime"></td>
-															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
+															<td style="width:14%" align="center" data-bind="text: stepStr"></td>
 															<td style="width:10%" align="center" data-bind="text: runDays"></td>
 															<td style="width:10%" align="center" data-bind="text: trackName"></td>
 												        	</tr>
@@ -685,17 +676,17 @@ var currentUserBureau = "<%=currentUserBureau %>";
 			        	<div class="tab-pane" id="allTimes" > 
 					      	<div class="table-responsive" > 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
-							        <thead>
-							        <tr>
-							          <th style="width:5%">序号</th>
-					                  <th style="width:20%">站名</th>
-					                  <th style="width:5%">路局</th>
-					                  <th style="width:15%">到达时间</th>
-					                  <th style="width:15%">出发时间</th>
-					                  <th style="width:15%">停留时间</th>
+							        <thead> 
+							         <tr>
+							          <th style="width:7.5%">序号</th>
+					                  <th style="width:19%">站名</th>
+					                  <th style="width:7%">路局</th>
+					                  <th style="width:14.5%">到达</th>
+					                  <th style="width:14.5%">出发</th>
+					                  <th style="width:14%">停时</th>
 					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
-					                 </tr>
+					                 </tr> 
 							        </thead>
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
@@ -709,7 +700,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 															<td style="width:7.5%" align="center" data-bind="text: bureauShortName"></td>
 															<td style="width:14.3%" align="center" data-bind="text: sourceTime"></td>
 															<td style="width:14.3%" align="center" data-bind="text: targetTime"></td>
-															<td style="width:15%" align="center" data-bind="text: stepStr"></td>
+															<td style="width:14%" align="center" data-bind="text: stepStr"></td>
 															<td style="width:10%" align="center" data-bind="text: runDays"></td>
 															<td style="width:10%" align="center" data-bind="text: trackName"></td>
 												        	</tr>
