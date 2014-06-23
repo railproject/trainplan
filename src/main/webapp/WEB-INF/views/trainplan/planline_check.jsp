@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-10 col-md-10 col-lg-10 paddingleftright5 paddingtop5 marginright5" style="background: #ffffff">
+                <div class="col-xs-10 col-md-10 col-lg-10 paddingleftright5 paddingtop5 marginright5" style="background: #ffffff; width: 83%">
                     <div class="table-responsive">
                         <table id="plan_table" class="table table-bordered table-striped table-hover tableradius" data-bind="with: tableModel">
                             <thead>
@@ -141,7 +141,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-xs-2 col-md-2 col-lg-2 paddingtop5 paddingright0 paddingleft0 marginleft5" style="background: #ffffff; width: 250px">
+                <div class="col-xs-2 col-md-2 col-lg-2 paddingtop5 paddingright0 paddingleft0 marginleft5" style="background: #ffffff; width: 16%">
                     <div class="row">
                         <div class="col-xs-12 col-md-12  col-sm-12 padding0">
                             <div id="chart_01" style="margin: 0;"></div>
