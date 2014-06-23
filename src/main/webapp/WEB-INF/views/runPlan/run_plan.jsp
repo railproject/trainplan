@@ -23,7 +23,6 @@ String basePath = request.getContextPath();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>核查编制图定开行</title>
-<jsp:include page="/assets/commonpage/include-canvas-base.jsp" flush="true" />
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -45,6 +44,7 @@ String basePath = request.getContextPath();
 <!-- Custom styles for this template --> 
 <link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
 <link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/rightmenu.css">
 
 
 
@@ -753,6 +753,11 @@ var currentUserBureau = "<%=currentUserBureau %>";
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
 <%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%>
 <script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+
+<script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_rightmenu.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script>
 <script type="text/javascript">
 var basePath = "<%=basePath %>";

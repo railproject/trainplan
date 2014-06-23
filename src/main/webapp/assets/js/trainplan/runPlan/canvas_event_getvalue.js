@@ -70,7 +70,7 @@ var RunPlanCanvasPage = function(cross) {
 				//_stationTypeArray.push($(this).val());
 			} else {
 				//显示所有 包含始发、终到、分界口、停站、不停站
-				_stationTypeArray = ["0","FJK","TZ","BT"];
+				_stationTypeArray = ["0","FJK","TZ"];//"0","FJK","TZ","BT"
 //				removeArrayValue(_stationTypeArray, $(this).val());
 			}
 	    });

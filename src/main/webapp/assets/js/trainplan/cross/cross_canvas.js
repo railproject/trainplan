@@ -182,7 +182,7 @@ $(function(){
 	context = canvas.getContext('2d');
 	
 	//初始化事件类
-	new CanvasEventComponent("unit_cross_canvas");
+//	new CanvasEventComponent("unit_cross_canvas");
 	
 
 	_MyCanvas = new MyCanvas();
