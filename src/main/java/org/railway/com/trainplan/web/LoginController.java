@@ -44,7 +44,11 @@ public class LoginController {
     @RequestMapping(value = "user/switch", method = RequestMethod.GET)
     public String logout() {
         Subject currentUser = SecurityUtils.getSubject();
-        String username = ((ShiroRealm.ShiroUser)currentUser.getPrincipal()).getUsername();
+        Object principal = currentUser.getPrincipal();
+        if(principal == null) {
+            return "redirect:../login";
+        }
+        String username = ((ShiroRealm.ShiroUser)principal).getUsername();
         currentUser.logout();
         logger.info("Logout:" + username + " logout!");
         return "redirect:../login";

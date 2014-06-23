@@ -22,6 +22,7 @@ Object grid =  request.getAttribute("gridData");
 <head>
 <title>交路单元</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
+<jsp:include page="/assets/commonpage/include-canvas-base.jsp" flush="true" />
 </head>
 <body >
 <!--分栏框开始-->
@@ -32,17 +33,18 @@ Object grid =  request.getAttribute("gridData");
     
 	   	<div class="row" style="margin:5px 0 10px 0;">
 	      <form class="form-inline">
-	         <div class="row" style="margin:5px 0 10px 90px;"> 
-	              <button type="button" class="btn btn-success" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
-	              <button type="button" class="btn btn-success" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
-	              <button type="button" class="btn btn-success" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
-	              <button type="button" class="btn btn-success" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
+	         <div class="row" style="margin:5px 0 10px 50px;">
+	         		<button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_refresh"><i class="fa fa-refresh"></i>刷新</button>
+	              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
+	              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
+	              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
+	              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
 	              
 	                                                比例：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
 				<input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图
 	         	<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示时刻
 	         	&nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
-	         
+	         	  
 	         </div>
 	      </form>
 	    </div>
@@ -74,10 +76,6 @@ var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 
 
 
-<script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/canvas.event.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/cross/unit_cross_canvas.js"></script>
 
 </body>

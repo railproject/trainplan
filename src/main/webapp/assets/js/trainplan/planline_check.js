@@ -22,7 +22,8 @@ function ApplicationModel() {
 
     self.openOuterTrainLine = function() {
         var url = "outer/trainline/" + $("#date_selector").val();
-        top._getDialog(url, {title: "冗余运行线", height: $(window).height(), width: 1300}).dialog("open");
+//        top._getDialog(url, {title: "冗余运行线", height: $(window).height(), width: 1300}).dialog("open");
+        top.modelDialog(url, {width: 1300, height: 600, title: "冗余运行线"});
     }
 
     self.search = function() {
