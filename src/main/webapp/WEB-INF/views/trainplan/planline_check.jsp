@@ -144,23 +144,23 @@
                 <div class="col-xs-2 col-md-2 col-lg-2 paddingtop5 paddingright0 paddingleft0 marginleft5" style="background: #ffffff; width: 16%">
                     <div class="row">
                         <div class="col-xs-12 col-md-12  col-sm-12 padding0">
-                            <div id="chart_01" style="margin: 0;"></div>
+                            <div id="chart_01" style="margin: 0; height: 253px;"></div>
                         </div>
                     </div>
                     <div class="row paddingtop30">
                         <div class="col-xs-12 col-md-12  col-sm-12 padding0">
-                            <div id="chart_02" style="margin:0;"></div>
+                            <div id="chart_02" style="margin:0; height: 253px;"></div>
                         </div>
                     </div>
                     <div class="row paddingtop30">
                         <shiro:hasPermission name="JHPT.RJH.KDSP">
                             <div class="col-xs-12 col-md-12  col-sm-12 padding0">
-                                <div id="chart_03" style="margin:0"></div>
+                                <div id="chart_03" style="margin:0; height: 253px;"></div>
                             </div>
                         </shiro:hasPermission>
                         <shiro:hasPermission name="JHPT.RJH.ZBZRSP">
                             <div class="col-xs-12 col-md-12  col-sm-12 padding0">
-                                <div id="chart_04" style="margin:0"></div>
+                                <div id="chart_04" style="margin:0; height: 253px;"></div>
                             </div>
                         </shiro:hasPermission>
                     </div>
