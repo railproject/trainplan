@@ -645,7 +645,9 @@ var all_role = "<%=userRolesString %>";
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 400px;">
-		 <iframe style="width: 100%; height: 350px;border: 0;overflow: hidden;" src=""></iframe>
+			<input id="parentParamIsShowJt" type="hidden" value="1">
+			<input id="parentParamIsShowTrainTime" type="hidden" value="0">
+		 <iframe width="800px" height="350px" style="border: 0;overflow: hidden;" src=""></iframe>
 	</div> 
 	
 	 <!--列车新增和修改--> 
