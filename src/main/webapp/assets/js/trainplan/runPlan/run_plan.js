@@ -922,7 +922,7 @@ function CrossModel() {
 				return;
 			}else if(crosses[i].selected() == 1){
 				crossIds += (crossIds == "" ? "" : ";");
-				crossIds += crosses[i].planCrossId() + crosses[i].relevantBureau();
+				crossIds += crosses[i].planCrossId() + "#" + crosses[i].relevantBureau();
 				checkedCrosses.push(crosses[i]); 
 			}; 
 		}  
@@ -948,8 +948,7 @@ function CrossModel() {
 				success : function(result) {     
 					if(result.code == 0){
 						$.each(checkedCrosses, function(i, n){
-							n.checkedBureau(n.checkedBureau() + "," + currentUserBureau);
-							console.log(n.checkedBureau());
+							n.checkedBureau(n.checkedBureau() + "," + currentUserBureau); 
 						});
 						showSuccessDialog("审核成功");
 					}else{
