@@ -632,9 +632,9 @@ console.log(all_role);
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 500px; height: 500px; padding: 10px; "> 
+		style="width: 608px; height: 500px; padding: 10px; "> 
 			      <!--panle-heading-->
-			      <div class="panel-body" style="padding:10px;margin-right:10px;height: 100%;">
+			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 				       <ul class="nav nav-tabs" >
 						  <li class="active"><a style="padding:3px 10px;" href="#simpleTimes" data-toggle="tab">简点</a></li> 
 						  <li><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
@@ -660,7 +660,7 @@ console.log(all_role);
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 99%; overflow-y:auto;"> 
+												 <div style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: simpleTimes">
 												           <tr data-bind="visible: stationFlag != 'BTZ'">  
@@ -683,7 +683,7 @@ console.log(all_role);
 			        		</div>   
 			        	</div>
 			        	<div class="tab-pane" id="allTimes" > 
-					      	<div class="table-responsive" style="height: 100%; "> 
+					      	<div class="table-responsive"> 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
 							        <tr>
@@ -700,7 +700,7 @@ console.log(all_role);
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 99%; overflow-y:auto;"> 
+												 <div style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: times">
 												           <tr>  

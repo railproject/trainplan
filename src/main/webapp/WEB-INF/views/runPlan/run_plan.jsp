@@ -183,7 +183,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 																</select>  
 															</span>
 										          </div>
-										        	<div class="panel-body" style="height: 300px; overflow-y:auto"> 
+										        	<div class="panel-body" style="height: 290px; overflow-y:auto"> 
 														<div class="table-responsive"> 
 															<table class="table table-bordered table-striped table-hover" 
 																id="cross_table_crossInfo"> 
@@ -202,7 +202,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 											<div class="pull-right" style="width: 25%;">  
 											 <section class="panel panel-default">
 										          <div class="panel-heading">车次</div>
-										        	<div class="panel-body" style="height: 300px; overflow-y:auto "> 
+										        	<div class="panel-body" style="height: 290px; overflow-y:auto "> 
 												      <div class="table-responsive" > 
 															<table class="table table-bordered table-striped table-hover"
 																id="cross_trainInfo" > 
