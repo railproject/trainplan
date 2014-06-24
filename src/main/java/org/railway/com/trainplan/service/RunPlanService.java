@@ -64,15 +64,6 @@ public class RunPlanService {
     @Value("#{restConfig['plan.generatr.thread']}")
     private int threadNbr;
 
-    private static ExecutorService executorService;
-
-    @PostConstruct
-    public void init() {
-        logger.info("init thread pool start");
-        executorService = Executors.newFixedThreadPool(threadNbr);
-        logger.info("init thread pool end");
-    }
-
     public List<Map<String, Object>> findRunPlan(String date, String bureau, String name, int type) {
         logger.debug("findRunPlan::::");
         Map<String, Object> map = new HashMap<String, Object>();
@@ -369,6 +360,7 @@ public class RunPlanService {
      * @return 生成了多少个plancross的计划
      */
     public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
+        ExecutorService executorService = Executors.newFixedThreadPool(threadNbr);
         List<PlanCross> planCrossList = null;
         try{
             planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
