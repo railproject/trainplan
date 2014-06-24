@@ -360,7 +360,7 @@ public class RunPlanService {
         try{
             planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
             for(PlanCross planCross: planCrossList) {
-                executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days));
+                executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days - 1));
             }
         } finally {
             executorService.shutdown();
