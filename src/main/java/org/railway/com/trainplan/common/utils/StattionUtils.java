@@ -15,194 +15,141 @@ public class StattionUtils {
 
 	
 	public static void main(String[] args){
-		/**
-		 *  List<LinkedList<Station>> list1 = new ArrayList<LinkedList<Station>>();
-		 *  
-		 * *****************************
-		 * 
-		 * 
-白银市|2014-06-23 07:18:00|0
-白银西|2014-06-23 07:30:00|0
-*****************************
-白银西|2014-06-23 08:34:00|0
-白银市|2014-06-23 08:45:00|0
-*****************************
-白银市|2014-06-23 10:50:00|0
-白银西|2014-06-23 11:02:00|0
-*****************************
-白银西|2014-06-23 20:35:00|0
-白银市|2014-06-23 20:46:00|0
-		 */
-		Station station1 = new Station("白银市","2014-06-23 07:18:00");
-		Station station2 = new Station("白银西","2014-06-23 07:30:00");
-		
-		Station station3 = new Station("白银西","2014-06-23 08:34:00");
-		Station station4 = new Station("白银市","2014-06-23 08:45:00");
-		
-		Station station5 = new Station("白银市","2014-06-23 10:50:00");
-		Station station6 = new Station("白银西","2014-06-23 11:02:00");
-		
-		Station station7 = new Station("白银西","2014-06-23 20:35:00");
-		Station station8 = new Station("白银市","2014-06-23 20:46:00");
+		/******第一种情况:02677-2678/5-2676/7-02678 ***************************/
+		/*Station station11 = new Station("桂林北一场","2014-06-24 08:36:00");
+		Station station12 = new Station("桂林北二场","2014-06-24 08:40:00");
+		Station station13 = new Station("桂林","2014-06-24 08:46:00");
 		
 		LinkedList<Station>  trainList1 = new LinkedList<Station>();
-		trainList1.add(station1);
-		trainList1.add(station2);
+		trainList1.add(station11);
+		trainList1.add(station12);
+		trainList1.add(station13);
+		
+		Station station21 = new Station("桂林","2014-06-24 09:25:00");
+		Station station22 = new Station("桂林北二场","2014-06-24 09:32:00");
+		Station station23 = new Station("桂林北一场","2014-06-24 09:34:00");
+		Station station24 = new Station("灵川","2014-06-24 09:39:00");
+		Station station26 = new Station("井山","2014-06-24 18:22:00");
+		Station station27 = new Station("钟山","2014-06-24 18:41:00");
+		Station station28 = new Station("贺州","2014-06-24 18:57:00");
 		
 		LinkedList<Station>  trainList2 = new LinkedList<Station>();
-		trainList2.add(station3);
-		trainList2.add(station4);
+		trainList2.add(station21);
+		trainList2.add(station22);
+		trainList2.add(station23);
+		trainList2.add(station24);
+		trainList2.add(station26);
+		trainList2.add(station27);
+		trainList2.add(station28);
+		
+		
+		Station station31 = new Station("贺州","2014-06-25 08:00:00");
+		Station station32 = new Station("钟山","2014-06-25 08:18:00");
+		Station station33 = new Station("井山","2014-06-25 08:32:00");
+		Station station34 = new Station("灵川","2014-06-25 16:40:00");
+		Station station35 = new Station("桂林北一场","2014-06-25 17:10:00");
+		Station station36 = new Station("桂林北二场","2014-06-25 17:14:00");
+		Station station37 = new Station("桂林","2014-06-25 17:20:00");
 		
 		LinkedList<Station>  trainList3 = new LinkedList<Station>();
-		trainList3.add(station5);
-		trainList3.add(station6);
+		trainList3.add(station31);
+		trainList3.add(station32);
+		trainList3.add(station33);
+		trainList3.add(station34);
+		trainList3.add(station35);
+		trainList3.add(station36);
+		trainList3.add(station37);
 		
+		Station station41 = new Station("桂林","2014-06-25 18:12:00");
+		Station station42 = new Station("桂林北二场","2014-06-25 18:19:00");
+		Station station43 = new Station("桂林北一场","2014-06-25 18:22:00");
+	
 		LinkedList<Station>  trainList4 = new LinkedList<Station>();
-		trainList4.add(station7);
-		trainList4.add(station8);
+		trainList4.add(station41);
+		trainList4.add(station42);
+		trainList4.add(station43);
 		
 		List<LinkedList<Station>> list1 = new ArrayList<LinkedList<Station>>();
+		list1.add(trainList1);
+		list1.add(trainList2);
+		list1.add(trainList3);
+		list1.add(trainList4);*/
 		
+		
+		/******第二种情况05505-5505-5506-05506   **************/
+		Station station11 = new Station("桂林北一场","2014-06-24 08:15:00");
+		Station station12 = new Station("桂林北二场","2014-06-24 08:19:00");
+		Station station13 = new Station("桂林","2014-06-24 08:25:00");
+		
+		LinkedList<Station>  trainList1 = new LinkedList<Station>();
+		trainList1.add(station11);
+		trainList1.add(station12);
+		trainList1.add(station13);
+		
+		Station station21 = new Station("桂林","2014-06-24 09:10:00");
+		Station station22 = new Station("二塘","2014-06-24 09:19:00");
+		Station station23 = new Station("横山","2014-06-24 09:27:00");
+		Station station24 = new Station("大溪河","2014-06-24 09:33:00");
+		Station station26 = new Station("塘堡","2014-06-24 09:38:00");
+		Station station27 = new Station("化州","2014-06-24 19:31:00");
+		Station station28 = new Station("山底岭","2014-06-24 20:07:00");
+		Station station29 = new Station("茂名","2014-06-24 20:20:00");
+		
+		LinkedList<Station>  trainList2 = new LinkedList<Station>();
+		trainList2.add(station21);
+		trainList2.add(station22);
+		trainList2.add(station23);
+		trainList2.add(station24);
+		trainList2.add(station26);
+		trainList2.add(station27);
+		trainList2.add(station28);
+		trainList2.add(station29);
+		
+		
+		Station station31 = new Station("茂名","2014-06-25 08:45:00");
+		Station station32 = new Station("山底岭","2014-06-25 08:57:00");
+		Station station33 = new Station("化州","2014-06-25 09:09:00");
+		Station station34 = new Station("塘堡","2014-06-25 18:34:00");
+		Station station35 = new Station("大溪河","2014-06-25 18:42:00");
+		Station station36 = new Station("横山","2014-06-25 19:06:00");
+		Station station37 = new Station("二塘","2014-06-25 19:15:00");
+		Station station38 = new Station("桂林","2014-06-25 19:25:00");
+		
+		LinkedList<Station>  trainList3 = new LinkedList<Station>();
+		trainList3.add(station31);
+		trainList3.add(station32);
+		trainList3.add(station33);
+		trainList3.add(station34);
+		trainList3.add(station35);
+		trainList3.add(station36);
+		trainList3.add(station37);
+		trainList3.add(station38);
+		
+		
+		Station station41 = new Station("桂林","2014-06-25 20:02:00");
+		Station station42 = new Station("桂林北二场","2014-06-25 20:09:00");
+		Station station43 = new Station("桂林北一场","2014-06-25 20:12:00");
+	
+		LinkedList<Station>  trainList4 = new LinkedList<Station>();
+		trainList4.add(station41);
+		trainList4.add(station42);
+		trainList4.add(station43);
+		
+		List<LinkedList<Station>> list1 = new ArrayList<LinkedList<Station>>();
 		list1.add(trainList1);
 		list1.add(trainList2);
 		list1.add(trainList3);
 		list1.add(trainList4);
 		
-		PlanLineGrid grid = getPlanLineGridForAll(list1,"2014-06-23","2014-06-24");
-		//System.err.println(grid.getCrossStns());
+		
+		
+		
+		PlanLineGrid grid = getPlanLineGridForAll(list1,"2014-06-23","2014-06-25");
 		List<PlanLineGridY> yList = grid.getCrossStns();
 		for(PlanLineGridY y : yList ){
-			System.err.println("" + y.getStnName());
+			System.err.println("" + y.getStnName() );
 		}
 		
-		/**
-		 * *****************************
-北京|2014-06-20 14:41:00|0
-北京南运转|2014-06-20 14:44:00|BT
-北京南普速场|2014-06-20 14:51:00|BT
-柳村线路所|2014-06-20 14:55:30|BT
-丰台|2014-06-20 15:01:00|BT
-西信号|2014-06-20 15:06:00|BT
-西道口|2014-06-20 15:10:00|BT
-石景山南|2014-06-20 15:18:00|TZ
-养马场|2014-06-20 15:25:00|BT
-养三|2014-06-20 15:29:00|BT
-三家店|2014-06-20 15:36:00|TZ
-斜河涧|2014-06-20 15:47:00|TZ
-落坡岭|2014-06-20 15:59:00|TZ
-安家庄|2014-06-20 16:43:00|TZ
-雁翅|2014-06-20 16:54:00|TZ
-珠窝东|2014-06-20 17:12:00|TZ
-沿河城西|2014-06-20 17:29:00|TZ
-旧庄窝(东)|2014-06-20 17:50:00|TZ
-官厅(西)|2014-06-20 18:09:00|TZ
-邢家堡|2014-06-20 18:23:00|TZ
-沙城|2014-06-20 18:42:00|TZ
-新保安|2014-06-20 18:54:00|TZ
-西八里|2014-06-20 19:03:00|TZ
-下花园|2014-06-20 19:14:00|TZ
-辛庄子|2014-06-20 19:28:00|TZ
-宣化|2014-06-20 19:43:00|TZ
-沙岭子|2014-06-20 19:58:00|TZ
-张家口南|2014-06-20 20:12:00|0
-*****************************
-张家口南|2014-06-21 07:40:00|0
-沙岭子|2014-06-21 07:54:00|TZ
-宣化|2014-06-21 08:12:00|TZ
-辛庄子|2014-06-21 08:26:00|TZ
-下花园|2014-06-21 08:41:00|TZ
-西八里|2014-06-21 08:51:00|TZ
-新保安|2014-06-21 09:03:00|TZ
-沙城|2014-06-21 09:29:00|TZ
-邢家堡|2014-06-21 09:43:00|TZ
-官厅(西)|2014-06-21 09:57:00|TZ
-旧庄窝(东)|2014-06-21 10:14:00|TZ
-沿河城西|2014-06-21 10:32:00|TZ
-珠窝东|2014-06-21 10:47:00|TZ
-雁翅|2014-06-21 11:05:00|TZ
-安家庄|2014-06-21 11:15:00|TZ
-落坡岭|2014-06-21 11:22:00|TZ
-斜河涧|2014-06-21 11:34:00|TZ
-三家店|2014-06-21 11:46:00|TZ
-养三|2014-06-21 11:51:00|BT
-养马场|2014-06-21 11:55:00|BT
-石景山南|2014-06-21 12:10:00|TZ
-西道口|2014-06-21 12:17:00|BT
-西信号|2014-06-21 12:21:00|BT
-丰台|2014-06-21 12:22:00|BT
-柳村线路所|2014-06-21 12:27:00|BT
-北京南普速场|2014-06-21 12:30:00|BT
-北京南运转|2014-06-21 12:37:00|BT
-北京|2014-06-21 12:42:00|0
-		 */
-		/*Station  station1 = new Station("北京","2014-06-20 12:10:00",30);
-		Station  station2 = new Station("北京","2014-06-20 12:10:00",20);
-		Station  station3 = new Station("北京","2014-06-20 12:10:00",40);
-		Station  station4 = new Station("北京","2014-06-20 12:10:00",10);
-		//System.err.println(station1.equals(station2));
-		List<Station> list = new ArrayList<Station>();
-		list.add(station1);
-		list.add(station2);
-		list.add(station3);
-		list.add(station4);
-		ComparatorStation comparator = new ComparatorStation();
-		Collections.sort(list, comparator);
-		for(Station station: list){
-			System.err.println("" + station.getMinites());
-		}*/
-		
-		LinkedList<Station> longList = new LinkedList<Station>();
-		LinkedList<Station> shortList = new LinkedList<Station>();
-		/*Station station1 = new Station("A","2014-06-20 12:10:00");
-		Station station2 = new Station("B","2014-06-20 12:50:00");
-		Station station3 = new Station("C","2014-06-21 20:10:00");
-		Station station4 = new Station("D","2014-06-21 22:10:00");
-		Station station5 = new Station("E","2014-06-21 23:10:00");
-		Station station6 = new Station("M","2014-06-22 02:10:00");
-		Station station7 = new Station("N","2014-06-22 04:10:00");
-		Station station8 = new Station("Q","2014-06-22 06:10:00");
-		Station station9 = new Station("G","2014-06-22 08:10:00");
-		longList.add(station1);
-		longList.add(station2);
-		longList.add(station3);
-		longList.add(station4);
-		longList.add(station5);
-		longList.add(station6);
-		longList.add(station7);
-		longList.add(station8);
-		longList.add(station9);
-		Collections.reverse(longList);*/
-		/*for(Station station :longList){
-			System.err.println("stnName==" + station.getStnName());
-			
-		}*/
-		Station test = new Station("z","2012-06-20 12:10:00");
-		System.err.println("isContains==" + longList.contains(test));
-		
-		//Station station11 = new Station("A","2014-06-20 12:10:00");
-		//Station station21 = new Station("B","2014-06-20 12:50:00");
-		//Station station31 = new Station("C","2014-06-21 20:10:00");
-		//Station station41 = new Station("D","2014-06-21 22:10:00");
-		//Station station51 = new Station("F","2014-06-21 23:10:00");
-		Station station61 = new Station("R","2014-06-22 02:10:00");
-		Station station71 = new Station("Z","2014-06-22 04:10:00");
-		Station station91 = new Station("G","2014-06-22 08:10:00");
-		
-		
-		//shortList.add(station11);
-		//shortList.add(station21);
-		//shortList.add(station31);
-		//shortList.add(station41);
-		//shortList.add(station51);
-		shortList.add(station61);
-		shortList.add(station71);
-		shortList.add(station91);
-		
-		/*List<Station> list = mergeStationTheSameDirection(longList,shortList);
-		for(Station station : list){
-			System.err.println(station.getStnName() + "|" + station.getDptTime()+"|" + station.getMinites());
-		}
-		*/
 	}
 	
 	/**
@@ -335,6 +282,9 @@ public class StattionUtils {
 					longListStation = current;
 				}
 				if(indexCurrent == 0){
+					if(tempLongList !=null && tempLongList.size() > 0){
+						result.addAll(tempLongList);
+					}
 					result.add(currentShort);
 					shortListStaion = currentShort;
 					shortList.remove(indexCurrent);
@@ -361,6 +311,9 @@ public class StattionUtils {
 				}
 	
 			}
+		}
+		if(tempLongList != null && tempLongList.size() > 0 ){
+			result.addAll(tempLongList);
 		}
 		/*if(shortList != null && shortList.size() > 0 ){
 			for(int j=0;j<shortList.size();j++){

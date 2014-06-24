@@ -1,6 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ page import="org.apache.shiro.SecurityUtils,org.railway.com.trainplan.service.ShiroRealm,java.util.List" %>
+<% 
+ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal(); 
+boolean isZgsyh = false;
+if (user !=null && user.getBureau()==null) {
+	isZgsyh = true;
+}
+%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,7 +71,7 @@
                 $("#contentLayerFrame").attr("src",src);
             }
 
-            $("#kanban").get(0).click();
+//            $("#kanban").get(0).click();
         });
         
         
@@ -141,6 +149,12 @@
                         <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图管理</a></li>
                         <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表管理</a>
                         <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>交路单元管理</a></li>
+                        
+                        <%
+                        if (isZgsyh) {
+                        %>
+                        <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>启用新图</a></li>
+                    	<% } %>
                     </ul>
                 </li>
 

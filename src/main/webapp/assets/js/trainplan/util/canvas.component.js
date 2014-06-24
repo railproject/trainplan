@@ -46,6 +46,8 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	var _isDrawTrainTime = false;	//是否绘制列车经由站到达及出发时间 		默认false
 	var _isChangeColorByUser = false;	//是否根据当前用户是否为总公司用户而改变网格X线颜色 		总公司用户不限制 false，路局用户则非管内站线变暗 true
 	
+	var _fjkFlagStr = "FJK";	//分界口标识字符串变量，定义为变量 方便后期维护更改	用于drawGridX
+	
 	initVariables();//初始化
 
 	
@@ -66,6 +68,12 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			_stationTypeArray = expandObj.stationTypeArray;
 		} else {
 			_stnArray = stnArray;
+		}
+		
+		
+		//当纵坐标数量大于3时， 纵向步长设置为50
+		if (_stnArray.length > 3) {
+			_stepY = 40;
 		}
 
 		
@@ -190,6 +198,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 		for(var i=0, _len = _stnArray.length;i<_len;i++) {
 			var _obj = _stnArray[i];
 			_y = _startY + i*_stepY/_yScale + _stnOffsetY;//
+			_context.lineWidth = 1;
 			myCanvasFillText(_context, {
 				font : "normal 14px Arial",
 				textAlign:"right",
@@ -198,14 +207,17 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				fromY : _y+5
 			});
 
-			//是否根据当前用户是否为总公司用户而改变网格X线颜色 		总公司用户不限制 false，路局用户则非管内站线变暗 true
-			if (!_isChangeColorByUser || (_obj.isCurrentBureau && _obj.isCurrentBureau == 1)) {//该站属于当前路局管内
+			if (_fjkFlagStr == _obj.stationType) {
+				_color = "#000000";
+				_context.lineWidth = 2;
+			} else if (!_isChangeColorByUser || (_obj.isCurrentBureau && _obj.isCurrentBureau == 1)) {//该站属于当前路局管内
+				//是否根据当前用户是否为总公司用户而改变网格X线颜色 		总公司用户不限制 false，路局用户则非管内站线变暗 true
 				_color = color;//#c101db
 			} else {
 				_color = "gray";//gray、浅绿#eefde3、#c101db
 			}
 			
-			_context.lineWidth = 1;
+			
 			_context.strokeStyle = _color;//"green";
 			_context.dashedLineTo(_startX-10, _y, _xDashedLineEnd, _y, 10);//横虚线     10:虚线间隔10px
 		}
@@ -506,7 +518,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	this.convertGroupSerialNbr = function(groupSerialNbr) {
 		for (var i=1;i<=9;i++) {
 			if(i.toString() == groupSerialNbr) {
-				return _groupSerialNbrArray[i-1]
+				return _groupSerialNbrArray[i-1];
 			}
 		}
 		
@@ -596,8 +608,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				
 //				console.log("###########	_obj.stationType="+_obj.stationType+"	 $.inArray(_obj.stationType, _stationTypeArray)="+$.inArray(_obj.stationType, _stationTypeArray));
 				//屏蔽不在显示要求范围内的数据
-//				if ((_stationTypeArray.length>0 && $.inArray(_obj.stationType, _stationTypeArray) < 0)) {
-				if (getStnArcYIndex(_obj.stnName) < 0) {//该站不存在于纵坐标数组中 	当数据字典完善后，重新启用上面的注释条件
+				if (getStnArcYIndex(_obj.stnName) < 0 || $.inArray(_obj.stationType, _stationTypeArray) < 0) {//该站不存在于纵坐标数组中或站类型不在显示范围内 	当数据字典完善后，重新启用上面的注释条件
 					continue;
 				}
 				

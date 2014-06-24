@@ -617,6 +617,8 @@ console.log(all_role);
 	<div id="cross_map_dlg" class="easyui-dialog" title="交路图"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 400px;">
+			<input id="parentParamIsShowJt" type="hidden" value="1">
+			<input id="parentParamIsShowTrainTime" type="hidden" value="0">
 		 <iframe style="width: 100%; height: 350px;border: 0;" src=""></iframe>
 	</div> 
 	
