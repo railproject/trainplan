@@ -63,7 +63,9 @@ public interface RunPlanDao {
     List<Map<String, Object>> findPlanInfoListByPlanId(List<String> params);
 
 
-    int addRunPlan(List<RunPlan> list);
+    int addRunPlanList(List<RunPlan> list);
+
+    int addRunPlan(RunPlan runPlan);
 
     /**
      * 根据日期和担当局查询始发终到
