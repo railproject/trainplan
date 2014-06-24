@@ -30,12 +30,12 @@ var MyCanvas = function(){
 			if($(this).is(":checked")) {
 				//查看简图 只包含始发、终到
 				_stationTypeArray = ["0"];
-//				parentParamIsShowJt = true;	//父窗口变量 为true时，图形中简图复选框则选中	用于第二次打开图形界面时初始值用
+				$("#parentParamIsShowJt", window.parent.document).val("1");//父窗口变量 为1时，图形中简图复选框则选中	用于第二次打开图形界面时初始值用
 				//_stationTypeArray.push($(this).val());
 			} else {
 				//显示所有 包含始发、终到、分界口、停站、不停站
-				_stationTypeArray = ["0","FJK","TZ"];//"0","FJK","TZ","BT"
-//				parentParamIsShowJt = false;	//父窗口变量 为true时，图形中简图复选框则选中	用于第二次打开图形界面时初始值用
+				_stationTypeArray = ["0","FJK","TZ"];
+				$("#parentParamIsShowJt", window.parent.document).val("0");//父窗口变量 为1时，图形中简图复选框则选中	用于第二次打开图形界面时初始值用
 //				removeArrayValue(_stationTypeArray, $(this).val());
 			}
 	    });
@@ -47,10 +47,10 @@ var MyCanvas = function(){
 		var _canvasIsDrawTrainTime = false;	//是否绘制列车经由站到达及出发时间
 		if($("#canvas_checkbox_trainTime").is(":checked")){
 			_canvasIsDrawTrainTime = true;
-//			parentParamIsShowTrainTime = true;// 为true时，图形中显示时刻复选框则选中	用于第二次打开图形界面时初始值用
+			$("#parentParamIsShowTrainTime", window.parent.document).val("1");//父窗口变量 为1时，图形中显示时刻复选框则选中	用于第二次打开图形界面时初始值用
 		} else {
 			_canvasIsDrawTrainTime = false;
-//			parentParamIsShowTrainTime = false;// 为true时，图形中显示时刻复选框则选中	用于第二次打开图形界面时初始值用
+			$("#parentParamIsShowTrainTime", window.parent.document).val("0");//父窗口变量 为1时，图形中显示时刻复选框则选中	用于第二次打开图形界面时初始值用
 		}
 		
 		
@@ -176,13 +176,16 @@ var MyCanvas = function(){
 
 
 $(function(){
-//	console.log("~~~~~~~~parentParamIsShowJt="+parentParamIsShowJt+" 	parentParamIsShowTrainTime="+parentParamIsShowTrainTime);
-//	if (parentParamIsShowJt) {
-//		$("#canvas_checkbox_stationType_jt").click();//为true时，图形中简图复选框则选中	用于第二次打开图形界面时初始值用
-//	}
-//	if (parentParamIsShowTrainTime) {
-//		$("#canvas_checkbox_trainTime").click();// 为true时，图形中显示时刻复选框则选中	用于第二次打开图形界面时初始值用
-//	}
+	if ("1" == $("#parentParamIsShowJt", window.parent.document).val()) {
+		$("#canvas_checkbox_stationType_jt").attr("checked",true);//为1时，图形中简图复选框则选中	用于第二次打开图形界面时初始值用
+	} else {
+		$("#canvas_checkbox_stationType_jt").attr("checked",false);
+	}
+	if ("1" == $("#parentParamIsShowTrainTime", window.parent.document).val()) {
+		$("#canvas_checkbox_trainTime").attr("checked",true);// 为1时，图形中显示时刻复选框则选中	用于第二次打开图形界面时初始值用
+	} else {
+		$("#canvas_checkbox_trainTime").attr("checked",false);
+	}
 	
 	if(canvasData==null || canvasData.grid==null) {
 		showWarningDialog("当前不存在列车数据！");

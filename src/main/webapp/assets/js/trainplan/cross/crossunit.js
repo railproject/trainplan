@@ -279,7 +279,23 @@ function CrossModel() {
 	$("#cross_map_dlg").dialog({
 	    onClose:function(){
 	    		self.searchModle().showCrossMap(0);
-	       }
+       },
+       onResize:function() {
+			var iframeBox = $("#cross_map_dlg").find("iframe");
+			var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+			var WH = $('#cross_map_dlg').height();
+			var WW = $('#cross_map_dlg').width();
+           if (isChrome) {
+           	iframeBox.css({ "height": (WH) + "px"});
+           	iframeBox.css({ "min-height": (WH) + "px"});
+           	iframeBox.attr("width", (WW));
+
+           }else{
+           	iframeBox.css({ "height": (WH)  + "px"});
+           	iframeBox.css({ "min-height": (WH) + "px"});
+           	iframeBox.attr("width", (WW));
+           }
+		}
 	 });
 	
 	
