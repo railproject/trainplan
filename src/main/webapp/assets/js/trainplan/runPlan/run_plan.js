@@ -1294,13 +1294,28 @@ function CrossRow(data) {
 	}); 
 //	'fa fa-check-square-o' : 'fa fa-pencil-square-o'
 	
-	self.checkCss = ko.computed(function(){
+	self.checkCss = ko.computed(function(){ 
 		if(self.checkFlag() != 2 
 				&& data.relevantBureau != null 
 				&& data.relevantBureau.indexOf(currentUserBureau) > -1 
-				&&  self.checkedBureau() != null 
-				&& self.checkedBureau().indexOf(currentUserBureau) > -1){//和当前局相关并且被当前局审核过了的
-			return "fa fa-pencil-square-o green";
+				){//和当前局相关并且被当前局审核过了的
+			if(self.checkedBureau() != null){
+				var checkedBureau = self.checkedBureau().split(",");
+				var temp = "";
+				for(var i = 0; i < self.relevantBureau().length; i++){
+					if(self.checkedBureau().indexOf(self.relevantBureau().substring(i, i + 1)) > -1){
+						temp += self.relevantBureau().substring(i, i + 1);
+					}
+				} 
+				if(temp == self.relevantBureau()){
+					self.checkFlag(2);
+					return "fa fa-check-square-o green";
+				}else{
+					return "fa fa-pencil-square-o green";
+				} 
+			}else{
+				return "fa fa-pencil-square-o red";
+			} 
 		}else if(self.checkFlag() != 2 
 				&& data.relevantBureau != null
 				&& data.relevantBureau.indexOf(currentUserBureau) > -1
