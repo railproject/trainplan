@@ -1038,13 +1038,20 @@ function filterValue(value){
 
 function GetDateDiff(data)
 { 
-	if(data.childIndex == 0)
-		return "";
-	else if(data.dptTime == '-'){
+	 if(data.childIndex == 0 
+			 || data.dptTime == '-' 
+			 || data.dptTime == null 
+			 || data.arrTime == null){
 		return "";
 	} 
 	var startTime = new Date("1977-7-7 " + data.arrTime);
-	var endTime = new Date("1977-7-7 " + data.dptTime);  
+	if(data.sourceDay != null){
+		startTime.setDate(startTime.getDate() + data.sourceDay);
+	}  
+	var endTime = new Date("1977-7-7 " + data.dptTime);   
+	if(data.targetDay != null){
+		endTime.setDate(startTime.getDate() + data.targetDay);
+	} 
 	var result = "";
 	
 	var date3=endTime.getTime()-startTime.getTime(); //时间差的毫秒数 

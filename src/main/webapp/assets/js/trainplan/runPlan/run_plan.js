@@ -113,6 +113,12 @@ function CrossModel() {
 
 	
 	self.loadStns = function(currentTrain){  
+		self.times.remove(function(item){
+			return true;
+		});
+		self.simpleTimes.remove(function(item){
+			return true;
+		});
 		commonJsScreenLock();
 		 $.ajax({ 
 				url : "jbtcx/queryPlanLineTrainTimes",
@@ -124,11 +130,11 @@ function CrossModel() {
 					trainId: currentTrain.obj.planTrainId
 				}),
 				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						if (result != null && result != "undefind" && result.code == "0") {   
+					if (result != null && result != "undefind" && result.code == "0") { 
 							var message = "车次：" + currentTrain.obj.trainName + "&nbsp;&nbsp;&nbsp;";
+							
 							$.each(result.data, function(i, n){
-								var timeRow = new TrainTimeRow(n);
+								var timeRow = new TrainTimeRow(n); 
 								self.times.push(timeRow); 
 								if(n.stationFlag != 'BTZ'){
 									self.simpleTimes.push(timeRow); 
@@ -141,8 +147,7 @@ function CrossModel() {
 										$("#run_plan_train_times").dialog({top:10, draggable: true, resizable:true});
 									} 
 								}  
-							});
-						}  
+							}); 
 					} else {
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
 					} 
@@ -1423,9 +1428,11 @@ function TrainTimeRow(data) {
 }; 
 function GetDateDiff(data)
 { 
-	if(data.childIndex == 0)
-		return "";
-	else if(data.dptTime == '-'){
+	 if(data.childIndex == 0 
+			 || data.dptTime == '-' 
+			 || data.dptTime == null 
+			 || data.arrTime == null
+			 || data.arrTime == '-'){
 		return "";
 	} 
 	var startTime = new Date(data.arrTime);
