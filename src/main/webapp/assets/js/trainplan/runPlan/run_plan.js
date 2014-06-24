@@ -824,13 +824,13 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){ 
-						showSuccessDialog("生成交路单元成功");
+						showSuccessDialog("生成运行线成功");
 					}else{
-						showErrorDialog("生成交路单元失败");
+						showErrorDialog("生成运行线失败");
 					}
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("生成运行线失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
