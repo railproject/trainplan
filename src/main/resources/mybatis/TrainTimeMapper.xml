@@ -29,7 +29,7 @@ end stationFlag ,
 
 T4.*
 FROM (
-select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t2.DPTTIME,t2.stnType,t2.rundays,t2.TRACKNAME
+select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t2.DPTTIME,t2.stnType,t2.sourceDay,t2.targetDay,t2.TRACKNAME
   from (SELECT t.parent_id as BASE_TRAIN_ID,
                t.parent_name as TRAINNBR,
                T.CHILD_INDEX AS childIndex,
@@ -39,7 +39,8 @@ select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t
                TO_CHAR(T.TIME, 'hh24:mi:SS') AS ARRTIME,
                TO_CHAR(T.TIME, 'hh24:mi:SS') AS DPTTIME,
                '0' as stnType,
-               0 as rundays,
+               0 as sourceDay,
+               0 as targetDay,
                T.TRACK_NAME AS TRACKNAME
           FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_SITEM T
         UNION all
@@ -52,7 +53,8 @@ select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t
                TO_CHAR(T.SOURCE_TIME, 'hh24:mi:SS') AS ARRTIME,
                TO_CHAR(T.TARGET_TIME, 'hh24:mi:SS') AS DPTTIME,
                '1' as stnType,
-               t.relative_source_time_day rundays,
+               t.relative_source_time_day sourceDay,
+               t.RELATIVE_TARGET_TIME_DAY targetDay,
                T.TRACK_NAME AS TRACKNAME
           FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_RITEM T
         UNION all
@@ -65,7 +67,8 @@ select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t
                TO_CHAR(T.TIME, 'hh24:mi:SS') AS ARRTIME,
                TO_CHAR(T.TIME, 'hh24:mi:SS') AS DPTTIME,
                '2' as stnType,
-               t.relative_time_day rundays,
+               t.relative_time_day sourceDay,
+               t.relative_time_day targetDay,
                T.TRACK_NAME AS TRACKNAME
           FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_TITEM T) t2,
        (select t.id BASE_TRAIN_ID
@@ -75,6 +78,7 @@ select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t
  order by t1.BASE_TRAIN_ID, childIndex
  ) T4
  )
+ 
  
    </select> 
    

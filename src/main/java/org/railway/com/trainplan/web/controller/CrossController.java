@@ -488,7 +488,7 @@ public class CrossController {
 					 dataList.add(crossMap);
 					
 					 /********fortest*********/
-					 /*if(list1 != null&&list1.size() > 0){
+					 if(list1 != null&&list1.size() > 0){
 						 for(LinkedList<Station> stationList : list1){
 							 System.err.println("*****************************");
 							 for(Station station :stationList){
@@ -496,7 +496,7 @@ public class CrossController {
 								 
 							 }
 						 }
-					 }*/
+					 }
 					 /*******************/
 					 grid = getPlanLineGridForAll(list1,trainInfo.getCrossStartDate(),trainInfo.getCrossEndDate());
 					 String myJlData = objectMapper.writeValueAsString(dataList);
