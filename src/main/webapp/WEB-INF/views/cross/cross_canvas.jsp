@@ -49,7 +49,7 @@ Object grid =  request.getAttribute("gridData");
 	    </div>
    
       <div>
-        <div class="table-responsive" style="overflow: auto;width:100%;height:100%">
+        <div class="table-responsive" style="overflow: auto;">
         	<canvas id="unit_cross_canvas">您的浏览器不支持HTML5</canvas>
         </div>
         

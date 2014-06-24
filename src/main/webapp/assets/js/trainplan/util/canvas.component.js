@@ -506,7 +506,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 	this.convertGroupSerialNbr = function(groupSerialNbr) {
 		for (var i=1;i<=9;i++) {
 			if(i.toString() == groupSerialNbr) {
-				return _groupSerialNbrArray[i-1]
+				return _groupSerialNbrArray[i-1];
 			}
 		}
 		
@@ -596,8 +596,7 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 				
 //				console.log("###########	_obj.stationType="+_obj.stationType+"	 $.inArray(_obj.stationType, _stationTypeArray)="+$.inArray(_obj.stationType, _stationTypeArray));
 				//屏蔽不在显示要求范围内的数据
-//				if ((_stationTypeArray.length>0 && $.inArray(_obj.stationType, _stationTypeArray) < 0)) {
-				if (getStnArcYIndex(_obj.stnName) < 0) {//该站不存在于纵坐标数组中 	当数据字典完善后，重新启用上面的注释条件
+				if (getStnArcYIndex(_obj.stnName) < 0 || $.inArray(_obj.stationType, _stationTypeArray) < 0) {//该站不存在于纵坐标数组中或站类型不在显示范围内 	当数据字典完善后，重新启用上面的注释条件
 					continue;
 				}
 				

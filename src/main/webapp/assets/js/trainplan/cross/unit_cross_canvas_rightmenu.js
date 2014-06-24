@@ -273,15 +273,15 @@ var CanvasEventComponent = function(canvasDivId) {
 //		        "<li><a href='javascript:_canvasEventComponent.showTrainGroup();'><i class='fa fa-hdd-o'></i>&nbsp;编组信息</a></li>" +
 //		      "</ul>" +
 //		    "</li>" +
-		    "<li class='vm-list'><i class='fa fa-search'></i>&nbsp;缩放<i class='fa fa-caret-right pull-right vm-list-right'></i>" +
-		      "<ul class='vm-dropdown-menu'>" +
-		        "<li><a href='javascript:_canvasEventComponent.xMagnification();'><i class='fa fa-search-plus'></i>&nbsp;X+</a></li>" +
-		        "<li><a href='javascript:_canvasEventComponent.xShrink();'><i class='fa fa-search-minus'></i>&nbsp;X-</a></li>" +
-		        "<li><a href='javascript:_canvasEventComponent.yMagnification();'><i class='fa fa-search-plus'></i>&nbsp;Y+</a></li>" +
-		        "<li><a href='javascript:_canvasEventComponent.yShrink();'><i class='fa fa-search-minus'></i>&nbsp;Y-</a></li>" +
-		      "</ul>" +
-		    "</li>" +
-		  "</ul>" +
+//		    "<li class='vm-list'><i class='fa fa-search'></i>&nbsp;缩放<i class='fa fa-caret-right pull-right vm-list-right'></i>" +
+//		      "<ul class='vm-dropdown-menu'>" +
+//		        "<li><a href='javascript:_canvasEventComponent.xMagnification();'><i class='fa fa-search-plus'></i>&nbsp;X+</a></li>" +
+//		        "<li><a href='javascript:_canvasEventComponent.xShrink();'><i class='fa fa-search-minus'></i>&nbsp;X-</a></li>" +
+//		        "<li><a href='javascript:_canvasEventComponent.yMagnification();'><i class='fa fa-search-plus'></i>&nbsp;Y+</a></li>" +
+//		        "<li><a href='javascript:_canvasEventComponent.yShrink();'><i class='fa fa-search-minus'></i>&nbsp;Y-</a></li>" +
+//		      "</ul>" +
+//		    "</li>" +
+//		  "</ul>" +
 		  "</ul>" +
 		"</div>";
 		$("body").append(menuStr);
