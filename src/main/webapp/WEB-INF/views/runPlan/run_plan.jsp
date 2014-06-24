@@ -171,7 +171,8 @@ var currentUserBureau = "<%=currentUserBureau %>";
 														data-target="#" id="btn_cross_createTrainLines" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createTrainLines">生成运行线</a>
 												</div> 
 												</div> 
-										  <span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue() + currentCross().checkedBureauShowValue()"></span> 
+										  <div style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue()"></div> 
+										  <div style="margin-bottom:5px;" data-bind="html:currentCross().checkedBureauShowValue()"></div> 
 									      <div class="row" style="margin-top:10px">
 										     <div class="pull-left" style="width: 75%;">
 										        <section class="panel panel-default">

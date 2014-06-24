@@ -92,14 +92,11 @@ var all_role = "<%=userRolesString %>";
 	</ol>  
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 30%;">
-	   	<div class="panel panel-default"> 
+	    
 		<!--分栏框开始-->  
-			<div class="row" style="margin: 0px 5px 5px 5px;"> 
-			        <div class="panel-body">
-						<form class="form-horizontal" role="form">   
+			<div class="row" style="margin: 0px 5px 5px 5px;">  
 						<!-- <select id="selectTest" class="easyui-combobox" name="organs"  style="width:200px;" multiple="multiple" valueField="id" textField="text" ></select> -->
-							<div class="row"> 
-									<div class="form-group"
+								<div class="form-group"
 										style="float: left; margin-left: 0px; margin-top: 0px;width: 100%"> 
 									  <div class="row" style="width: 100%;" >
 											<label for="exampleInputEmail3" class="control-label pull-left">
@@ -108,8 +105,7 @@ var all_role = "<%=userRolesString %>";
 												<select style="width: 320px" id="input_cross_chart_id"
 													class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name'">
 												</select>
-											</div>
-										
+											</div> 
 									   </div>  
 										<div class="row"  style="width: 100%; margin-top: 5px;">
 											<label for="exampleInputEmail3" class="control-label pull-left" >
@@ -164,15 +160,14 @@ var all_role = "<%=userRolesString %>";
 												<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 30px;"
 														data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a>   
 											
-										</div> 
-										<hr style="margin-top: 8px;margin-bottom: 0px">  
-										 
-									</div>
+										</div>  
+									 </div> 
 								</div>
 								<div class="row" >
+								  <div class="panel panel-default"> 
 									<div class="table-responsive">
 										<div class="form-group"
-											style="margin-left: 20px;">
+											style="margin-left: 20px; margin-top:10px">
 											<a type="button" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: checkCrossInfo"  data-toggle="modal"
 												data-target="#" id="btn_cross_sure">审核</a>
 											<a  type="button" class="btn btn-success" data-toggle="modal"
@@ -181,8 +176,8 @@ var all_role = "<%=userRolesString %>";
 												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成基本交路单元</a>
 											
 										</div> 
-										<span style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
-										<table class="table table-bordered table-striped table-hover" style="margin-top:5px;"
+										<span style="margin-bottom:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
+										<table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:98%"
 												id="cross_table_crossInfo">
 												<thead>
 													<tr style="height: 25px"> 
@@ -222,12 +217,9 @@ var all_role = "<%=userRolesString %>";
 											</table>
 										<div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }" style="margin-bottom: 5px"></div>
 									</div>
-								</div> 
-						</form>
-					 </div> 
-			</div> 
-		</div>
-	</div>
+								</div>
+							</div>  
+		</div> 
 	<div class="pull-right" style="width: 69%;"> 
 	       <div class="panel panel-default"> 
 			<div class="row" style="margin: 10px 5px 5px 5px;">
@@ -724,7 +716,7 @@ var all_role = "<%=userRolesString %>";
 		data-options="iconCls:'icon-save'"
 		style="width: 500px; height: 500px; padding: 10px; "> 
 			      <!--panle-heading-->
-			      <div class="panel-body" style="padding:10px;margin-right:10px;">
+			      <div class="panel-body" style="padding:10px;margin-right:10px;height: 100%;">
 				       <ul class="nav nav-tabs" >
 						  <li class="active"><a style="padding:3px 10px;" href="#simpleTimes" data-toggle="tab">简点</a></li> 
 						  <li><a style="padding:3px 10px;" href="#allTimes" data-toggle="tab">详点</a></li> 
@@ -733,7 +725,7 @@ var all_role = "<%=userRolesString %>";
 						<!-- Tab panes -->
 						<div class="tab-content" >
 						  <div class="tab-pane active" id="simpleTimes" > 
-					      	<div class="table-responsive" > 
+					      	<div class="table-responsive" style="height: 100%; "> 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
 							        <tr>
@@ -750,7 +742,7 @@ var all_role = "<%=userRolesString %>";
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
+												 <div style="height: 99%; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: simpleTimes">
 												           <tr data-bind="visible: stationFlag != 'BTZ'">  
@@ -773,7 +765,7 @@ var all_role = "<%=userRolesString %>";
 			        		</div>   
 			        	</div>
 			        	<div class="tab-pane" id="allTimes" > 
-					      	<div class="table-responsive" > 
+					      	<div class="table-responsive" style="height: 100%; "> 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
 							        <tr>
@@ -790,7 +782,7 @@ var all_role = "<%=userRolesString %>";
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
+												 <div style="height: 99%; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: times">
 												           <tr>  
