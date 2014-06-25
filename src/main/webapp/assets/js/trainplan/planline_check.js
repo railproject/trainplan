@@ -575,7 +575,7 @@ function Plan(dto) {
         } else if(self.dailyLineFlag() == 1) {
             return "<i class=\"fa fa-times-circle text-danger\"></i>未";
         } else {
-            return "未知";
+            return "<i class=\"fa fa-exclamation-triangle text-warning\"></i>未知";
         }
     });
 
