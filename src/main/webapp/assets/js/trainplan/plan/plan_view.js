@@ -332,8 +332,8 @@ var PlanViewPage = function(){
 	 * xx计划全部结束处理方法
 	 */
 	_self.finishPlan = function () {
-		showSuccessDialog(_param_days+"天开行计划已全部完成");//完成消息   提示框
-		 $("#plan_view_label_planCurrentStatus").text(_param_days+"天开行计划已全部完成");//界面顶端显示
+		//showSuccessDialog(_param_days+"天开行计划已全部完成");//完成消息   提示框
+		// $("#plan_view_label_planCurrentStatus").text(_param_days+"天开行计划已全部完成");//界面顶端显示
 	};
 	
 	

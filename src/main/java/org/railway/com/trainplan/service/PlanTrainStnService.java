@@ -172,8 +172,9 @@ public class PlanTrainStnService {
 				planCross.setCrossStartDate(startDate.replaceAll("-",""));
 				String crossStartDate = cross.getCrossStartDate();
 				String crossEndDate = cross.getCrossEndDate();
-				int crossDayGap = DateUtil.getDaysBetween(DateUtil.getFormateDay(crossStartDate), DateUtil.getFormateDay(crossEndDate));
-				planCross.setCrossEndDate(DateUtil.getDateByDay(startDate, -(Integer.valueOf(dayCount) + crossDayGap)));
+				//int crossDayGap = DateUtil.getDaysBetween(DateUtil.getFormateDay(crossStartDate), DateUtil.getFormateDay(crossEndDate));
+				//planCross.setCrossEndDate(DateUtil.getDateByDay(startDate, -(Integer.valueOf(dayCount) + crossDayGap)));
+				planCross.setCrossEndDate("20140930");
 				listPlanCross.add(planCross);
 			}
 		}
@@ -187,120 +188,5 @@ public class PlanTrainStnService {
 		return crossCount;
 	}
 
-	
-	/**
-	 * 根据方案id查询列车并根据列车id查询列车时刻表
-	 * @param schemeId 方案id
-	 * @param operation 货运 or 客运
-	 * @param runDate格式 yyyy-mm-dd
-	 * @return
-	 */
-	public List<TrainlineTemplateDto>  getTrainsWithSchemeId(String schemeId,String operation,String runDate){
-		   List<TrainlineTemplateDto> trainsList = new ArrayList<TrainlineTemplateDto>();
-		   //通过方案查询列车
-		   Map<String,Object> reqMap = new HashMap<String,Object>();
-		   reqMap.put("chartId",schemeId );
-		   reqMap.put("operation",operation );
-		   long time1 = System.currentTimeMillis();
-		   List<PlanTrain> list = trainInfoService.getTrains(reqMap);
-		   if(list != null && list.size() > 0){
-			  
-			   for(PlanTrain dto : list){
-				   TrainlineTemplateDto trainLineDto = new TrainlineTemplateDto();
-				   //车次
-				   trainLineDto.setTrainNbr(dto.getTrainNbr());
-				   //始发局全称
-				   trainLineDto.setStartBureauFull(dto.getStartBureauFull());
-				   //终到局全称
-				   trainLineDto.setEndBureauFull(dto.getEndBureauFull());
-				   //始发站名
-				   trainLineDto.setStartStn(dto.getStartStn());
-				   //终到站名
-				   trainLineDto.setEndStn(dto.getEndStn());
-				   //始发时间
-				   trainLineDto.setStartTime(runDate + " " + dto.getStartTimeStr());
-				   //开行日期
-				   trainLineDto.setRunDate(runDate);
-				   //运行天数
-				   int runDay = dto.getRelativeTargetTimeDay();
-				   String endDate = DateUtil.getDateByDay(runDate, -runDay);
-				   //终到时间
-				   trainLineDto.setEndTime(endDate + " " + dto.getEndTimeStr());
-				   String trainId = dto.getPlanTrainId();
-				   //System.err.println("trainId==" + trainId);
-				   trainLineDto.setBaseTrainId(trainId);
-				   if(trainId != null && !"".equals(trainId)){
-					   
-				   
-				   //获取列车时刻表信息
-				   List<TrainTimeInfo> subList = trainTimeService.getTrainTimes(trainId);
-				  // System.err.println("subList.size==" + subList.size());
-				   if(subList != null && subList.size() > 0){
-					   List<TrainlineTemplateSubDto> stationList = new ArrayList<TrainlineTemplateSubDto>();
-					   for(TrainTimeInfo subDto :subList ){
-						   TrainlineTemplateSubDto  tempDto = new TrainlineTemplateSubDto();
-						   //站点名称
-						   tempDto.setName(subDto.getStnName());
-						   int rundays = subDto.getRunDays();
-						   String date = DateUtil.getDateByDay(runDate, -rundays);
-						   //到站时间
-						   tempDto.setSourceTime(date + " " + subDto.getArrTime());
-						   //出发时间
-						   tempDto.setTargetTime(date + " " + subDto.getDptTime());
-						   tempDto.setTrackName(subDto.getTrackName());
-						   tempDto.setChildIndex(subDto.getChildIndex());
-						   stationList.add(tempDto);
-					   }
-					   //System.err.println("stationList.size==" + stationList.size());
-					   trainLineDto.setStationList(stationList);
-				   }
-			     }
-				   trainsList.add(trainLineDto);
-			   }
-		   }
-		   long time2 = System.currentTimeMillis();
-		   logger.debug("所花时间：" +(time2-time1)/1000);
-		   return trainsList;
-	}
-	
-
-	/**
-	 * 对站点设置基本信息
-	 * 
-	 * @param map
-	 * @param stationType
-	 * @return
-	 */
-	private TrainlineTemplateSubDto setSubDtoValue(Map<String, Object> map,
-			String stationType) {
-		TrainlineTemplateSubDto subDto = new TrainlineTemplateSubDto();
-		/**
-		 * String bureauName = StringUtil.objToStr(targetItemMap.get("bureauName"));
-								dto.setEndBureauFull(bureauName ==null? "":bureauName);
-		 */
-		subDto.setName(StringUtil.objToStr(map.get("name")));
-		
-		//subDto.setBureauName(bureauName ==null? "":bureauName);
-		subDto.setSourceTime(StringUtil.objToStr(map.get("sourceTimeDto2")));
-		subDto.setTargetTime(StringUtil.objToStr(map.get("targetTimeDto2")));
-		subDto.setIndex(StringUtil.strToInteger(StringUtil.objToStr(map
-				.get("index"))));
-		String bureauName = StringUtil.objToStr(map.get("bureauName"));
-		//subDto.setStnBureauFull(bureauName ==null? "":bureauName);
-		subDto.setStnBureauFull(bureauName);
-		// TODO:局码,现在后台报文还没这个字段
-		subDto.setStnBureau(StringUtil.objToStr(map.get("")));
-		// 站点类型 【1：始发 2：经由 3：终到】
-		subDto.setStationType(stationType);
-		//股道
-		subDto.setTrackName(StringUtil.objToStr(map.get("trackName")));
-		//运行天数
-		String sourceTime = StringUtil.objToStr(map.get("sourceTimeDto2"));
-		if(sourceTime != null && !"".equals(sourceTime)&& sourceTime.length()>0 ){
-			subDto.setRunDays(Integer.valueOf(sourceTime.substring(0,1)));
-		}
-		
-		return subDto;
-	}
 	
 }
