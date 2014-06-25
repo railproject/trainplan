@@ -742,7 +742,7 @@ var all_role = "<%=userRolesString %>";
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div id="simpleTimes_table" style="height: 400px; overflow-y:auto;"> 
+												 <div id="simpleTimes_table" style="height: 350px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: simpleTimes">
 												           <tr data-bind="visible: stationFlag != 'BTZ'">  
@@ -782,7 +782,7 @@ var all_role = "<%=userRolesString %>";
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div id="allTimes_table" style="height: 400px; overflow-y:auto;"> 
+												 <div id="allTimes_table" style="height: 350px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: times">
 												           <tr>  

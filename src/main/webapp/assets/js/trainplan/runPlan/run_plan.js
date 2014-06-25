@@ -144,7 +144,31 @@ function CrossModel() {
 								}else if(i == result.data.length - 1){
 									self.currentTrainInfoMessage(message + "——" + n.stnName);
 									if($("#run_plan_train_times").is(":hidden")){
-										$("#run_plan_train_times").dialog({top:10, draggable: true, resizable:true});
+										$("#run_plan_train_times").dialog({top:10, draggable: true, resizable:true, onResize:function() {
+											var simpleTimes_table = $("#simpleTimes_table");
+											var allTimes_table = $("#allTimes_table");
+											var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+											var WH = $('#run_plan_train_times').height() - 100;
+											var WW = $('#run_plan_train_times').width();
+								            if (isChrome) {
+								            	simpleTimes_table.css({ "height": (WH) + "px"});
+								            	simpleTimes_table.css({ "min-height": (WH) + "px"});
+								            	simpleTimes_table.attr("width", (WW));
+								            	
+								            	allTimes_table.css({ "height": (WH) + "px"});
+								            	allTimes_table.css({ "min-height": (WH) + "px"});
+								            	allTimes_table.attr("width", (WW));
+
+								            }else{
+								            	simpleTimes_table.css({ "height": (WH)  + "px"});
+								            	simpleTimes_table.css({ "min-height": (WH) + "px"});
+								            	simpleTimes_table.attr("width", (WW));
+								            	
+								            	allTimes_table.css({ "height": (WH) + "px"});
+								            	allTimes_table.css({ "min-height": (WH) + "px"});
+								            	allTimes_table.attr("width", (WW));
+								            }
+										}});
 									} 
 								}  
 							}); 
@@ -829,7 +853,7 @@ function CrossModel() {
 				}),
 				success : function(result) {     
 					if(result.code == 0){ 
-						showSuccessDialog("生成运行线成功");
+						showSuccessDialog("正在生成运行线");
 					}else{
 						showErrorDialog("生成运行线失败");
 					}

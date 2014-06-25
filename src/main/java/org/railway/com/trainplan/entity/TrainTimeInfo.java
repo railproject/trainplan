@@ -10,8 +10,15 @@ public class TrainTimeInfo {
 	 private int runDays; 
 	 private String stnBureauFull;
 	 private String stationFlag;
+	 private String nodeId;
 	 
 	 
+	public String getNodeId() {
+		return nodeId;
+	}
+	public void setNodeId(String nodeId) {
+		this.nodeId = nodeId;
+	}
 	public String getStnBureauFull() {
 		return stnBureauFull;
 	}

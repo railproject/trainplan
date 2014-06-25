@@ -487,7 +487,35 @@ function CrossModel() {
 			showWarningDialog("请先选择列车");
 			return;
 		}
-		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true});
+		if(self.currentTrain() == null){
+			showWarningDialog("请先选择列车");
+			return;
+		}
+		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true, top:50, onResize:function() {
+			var simpleTimes_table = $("#simpleTimes_table");
+			var allTimes_table = $("#allTimes_table");
+			var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+			var WH = $('#cross_train_time_dlg').height() - 100;
+			var WW = $('#cross_train_time_dlg').width();
+            if (isChrome) {
+            	simpleTimes_table.css({ "height": (WH) + "px"});
+            	simpleTimes_table.css({ "min-height": (WH) + "px"});
+            	simpleTimes_table.attr("width", (WW));
+            	
+            	allTimes_table.css({ "height": (WH) + "px"});
+            	allTimes_table.css({ "min-height": (WH) + "px"});
+            	allTimes_table.attr("width", (WW));
+
+            }else{
+            	simpleTimes_table.css({ "height": (WH)  + "px"});
+            	simpleTimes_table.css({ "min-height": (WH) + "px"});
+            	simpleTimes_table.attr("width", (WW));
+            	
+            	allTimes_table.css({ "height": (WH) + "px"});
+            	allTimes_table.css({ "min-height": (WH) + "px"});
+            	allTimes_table.attr("width", (WW));
+            }
+		}});
 	};
 	
 	self.deleteCrosses = function(){

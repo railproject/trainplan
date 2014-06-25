@@ -632,7 +632,7 @@ console.log(all_role);
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 608px; height: 500px; padding: 10px; "> 
+		style="width: 500px; height: 500px; padding: 10px; "> 
 			      <!--panle-heading-->
 			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 				       <ul class="nav nav-tabs" >
@@ -643,7 +643,7 @@ console.log(all_role);
 						<!-- Tab panes -->
 						<div class="tab-content" >
 						  <div class="tab-pane active" id="simpleTimes" > 
-					      	<div class="table-responsive" style="height: 100%; "> 
+					      	<div class="table-responsive"> 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
 							        <tr>
@@ -660,7 +660,7 @@ console.log(all_role);
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
+												 <div id="simpleTimes_table" style="height: 350px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: simpleTimes">
 												           <tr data-bind="visible: stationFlag != 'BTZ'">  
@@ -700,7 +700,7 @@ console.log(all_role);
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
+												 <div id="allTimes_table" style="height: 350px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: times">
 												           <tr>  
@@ -724,7 +724,7 @@ console.log(all_role);
 			        	</div>
 			        </div>
       		</div>
-	   </div>  
+	   </div> 
 	</div>
 </body>  
  <script type="text/html" id="tablefooter-short-template"> 
