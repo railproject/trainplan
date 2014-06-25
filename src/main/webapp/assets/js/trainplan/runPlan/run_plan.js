@@ -941,7 +941,7 @@ function CrossModel() {
 			if(crosses[i].checkFlag() == 2){ 
 				showWarningDialog("不能重复审核"); 
 				return;
-			}else if(crosses[i].checkFlag() == 1 && crosses[i].checkedBureau().indexOf(currentUserBureau) > -1 && crosses[i].selected() == 1){  
+			}else if(crosses[i].checkedBureau().indexOf(currentUserBureau) > -1 && crosses[i].selected() == 1){  
 				showWarningDialog("本局已审核"); 
 				return;
 			}else if(crosses[i].selected() == 1){
