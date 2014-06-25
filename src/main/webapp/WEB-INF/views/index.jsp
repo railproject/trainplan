@@ -137,7 +137,7 @@ if (user !=null && user.getBureau()==null) {
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>编制计划<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-alt"></i>高铁图定开行计划</a></li>
+                        <li><a href="${ctx}/runPlan/runPlanGt" target="contentFrame"><i class="fa fa-list-alt"></i>高铁图定开行计划</a></li>
                         <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-external-link"></i>既有图定开行计划</a></li>
                         <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-ol"></i>临客开行计划</a></li>
                     </ul>
