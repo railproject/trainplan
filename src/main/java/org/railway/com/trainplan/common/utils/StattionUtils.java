@@ -585,11 +585,11 @@ public class StattionUtils {
 		
 		
 		
-		PlanLineGrid grid = getPlanLineGridForAll(list1,"2014-06-23","2014-06-25");
+		/*PlanLineGrid grid = getPlanLineGridForAll(list1,"2014-06-23","2014-06-25");
 		List<PlanLineGridY> yList = grid.getCrossStns();
 		for(PlanLineGridY y : yList ){
 			System.err.println("" + y.getStnName() );
-		}
+		}*/
 		
 	}
 	
