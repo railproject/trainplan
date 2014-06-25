@@ -13,12 +13,6 @@ import java.util.Map;
  */
 @MyBatisRepository
 public interface RunPlanDao {
-    /**
-     * 查询审核表格数据
-     * @param map
-     * @return
-     */
-    List<Map<String, Object>> findRunPlan(Map<String, Object> map);
 
     /**
      * 校验列车信息

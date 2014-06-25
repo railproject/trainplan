@@ -114,7 +114,7 @@ public class AuditController {
         charts.add(chart1);
 
         ChartDto chart2 = new ChartDto();
-        chart2.setName("热备");
+        chart2.setName("备用");
         chart2.setCount(MapUtils.getIntValue(result, "BACKUP", 0));
         charts.add(chart2);
 
