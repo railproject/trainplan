@@ -67,7 +67,7 @@ function CrossModel() {
 			self.planDays.push({"day": self.dayHeader(currentTime)}); 
 		} 
 		 $.ajax({
-				url : "runPlan/getRunPlans",
+				url : "../runPlan/getRunPlans",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -121,7 +121,7 @@ function CrossModel() {
 		});
 		commonJsScreenLock();
 		 $.ajax({ 
-				url : "jbtcx/queryPlanLineTrainTimes",
+				url : "../jbtcx/queryPlanLineTrainTimes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -548,7 +548,7 @@ function CrossModel() {
 		var initFlag = 0;
 		//获取当期系统日期 
 		 $.ajax({
-				url : "jbtcx/querySchemes",
+				url : "../jbtcx/querySchemes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -576,7 +576,7 @@ function CrossModel() {
 		    }); 
 		 
 	    $.ajax({
-			url : "plan/getFullStationInfo",
+			url : "../plan/getFullStationInfo",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -653,7 +653,7 @@ function CrossModel() {
 			return true;
 		}); 
 		$.ajax({
-				url : "runPlan/getPlanCross",
+				url : "../runPlan/getPlanCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -802,7 +802,7 @@ function CrossModel() {
 			return;
 		}
 		$.ajax({
-			url : "runPlan/deletePlanCrosses",
+			url : "../runPlan/deletePlanCrosses",
 			cache : false,
 			type : "POST",
 			dataType : "json",
@@ -841,7 +841,7 @@ function CrossModel() {
 		 var planEndDate =  $("#runplan_input_endDate").val();
 		 
 		 $.ajax({
-				url : "runPlan/handleTrainLinesWithCross",
+				url : "../runPlan/handleTrainLinesWithCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -959,7 +959,7 @@ function CrossModel() {
 		}
 		commonJsScreenLock();
 		 $.ajax({
-				url : "runPlan/checkCrossRunLine",
+				url : "../runPlan/checkCrossRunLine",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -1000,7 +1000,7 @@ function CrossModel() {
 		 var planEndDate =  $("#runplan_input_endDate").val();
 		 
 		 $.ajax({
-				url : "cross/createCrossMap",
+				url : "../cross/createCrossMap",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -1053,7 +1053,7 @@ function CrossModel() {
 		self.loadRunPlans(row.planCrossId()); 
 		
 		 $.ajax({
-				url : "cross/getPlanCrossInfo",
+				url : "../cross/getPlanCrossInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
