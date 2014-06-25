@@ -63,7 +63,7 @@
                             </shiro:hasPermission>
 
                             <shiro:hasPermission name="JHPT.RJH.ZBZRSP"><!-- 值班主任审批权限 -->
-                            <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev2, enable: canCheckLev2">审核（下达）</button>
+                            <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev2, enable: canCheckLev2">审核</button>
                             </shiro:hasPermission>
 
                             <label class="control-label text-center pull-right paddingtop5">存在 <a style="color: #ff0000" href="#" data-bind="text: paramModel().unknownRunLine, click: openOuterTrainLine"></a> 条冗余运行线<span data-bind="text: checkStatus"></span></label>
@@ -87,6 +87,7 @@
                                 <th rowspan="2" class="text-center" style="vertical-align: middle">序号</th>
                                 <th rowspan="2" class="text-center" style="vertical-align: middle">车次</th>
                                 <th rowspan="2" class="text-center" style="vertical-align: middle">来源</th>
+                                <th rowspan="2" class="text-center" style="vertical-align: middle">开行状态</th>
                                 <th rowspan="2" class="text-center" style="vertical-align: middle">运行方式</th>
                                 <th rowspan="2" class="text-center" style="vertical-align: middle">是否高线</th>
                                 <th colspan="2" class="text-center">始发/接入</th>
@@ -94,7 +95,9 @@
                                 <th rowspan="2" class="text-center" style="vertical-align: middle">上图状态</th>
                                 <th rowspan="2" class="text-center" style="vertical-align: middle">一审</th>
                                 <th rowspan="2" class="text-center" style="vertical-align: middle">二审</th>
-                                <th colspan="2" class="text-center">校验项</th>
+                                <shiro:hasPermission name="JHPT.RJH.KDSP">
+                                    <th colspan="2" class="text-center">校验项</th>
+                                </shiro:hasPermission>
 
                             </tr>
                             <tr>
@@ -102,9 +105,10 @@
                                 <th class="text-center">时间</th>
                                 <th class="text-center">站名</th>
                                 <th class="text-center">时间</th>
-                                <th class="text-center">列车</th>
-                                <th class="text-center">时刻</th>
-                                <%--<th class="text-center">经由</th>--%>
+                                <shiro:hasPermission name="JHPT.RJH.KDSP">
+                                    <th class="text-center">列车</th>
+                                    <th class="text-center">时刻</th>
+                                </shiro:hasPermission>
                             </tr>
                             </thead>
                             <tbody data-bind="foreach: planList">
@@ -118,24 +122,24 @@
                                 <td class="text-center" data-bind="text: $index() + 1"></td>
                                 <td class="text-center"><a href="#" data-bind="text: name, click: showGraphic"></a></td>
                                 <td class="text-center" data-bind="text: sourceType"></td>
+                                <td class="text-center" data-bind="text: spareFlag"></td>
                                 <td class="text-center" data-bind="text: trainType"></td>
                                 <td class="text-center" data-bind="text: highLineFlag"></td>
                                 <td class="text-center" data-bind="text: startStn"></td>
                                 <td class="text-center" data-bind="text: startTime"></td>
                                 <td class="text-center" data-bind="text: endStn"></td>
                                 <td class="text-center" data-bind="text: endTime"></td>
-                                <td class="text-center" data-bind="text: dailyLineFlag"></td>
+                                <td class="text-center" data-bind="html: dailyLineFlagView"></td>
                                 <td class="text-center" data-bind="html: lev1Status"></td>
                                 <td class="text-center" data-bind="html: lev2Status"></td>
-                                <td class="text-center">
-                                    <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTrainInfoMatchClass, text: isTrainInfoMatchText, click: showInfoComparePanel"></button>
-                                </td>
-                                <td class="text-center">
-                                    <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTimeTableMatchClass, text: isTimeTableMatchText, click: showTimeTableComparePanel"></button>
-                                </td>
-                                <%--<td class="text-center">
-                                    <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isRoutingMatchClass, text: isRoutingMatchText"></button>
-                                </td>--%>
+                                <shiro:hasPermission name="JHPT.RJH.KDSP">
+                                    <td class="text-center">
+                                        <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTrainInfoMatchClass, text: isTrainInfoMatchText, click: showInfoComparePanel"></button>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn" style="padding: 0px 5px 0px 5px" data-bind="css: isTimeTableMatchClass, text: isTimeTableMatchText, click: showTimeTableComparePanel"></button>
+                                    </td>
+                                </shiro:hasPermission>
                             </tr>
                             </tbody>
                         </table>
