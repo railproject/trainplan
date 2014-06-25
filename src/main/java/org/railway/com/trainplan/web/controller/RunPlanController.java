@@ -183,7 +183,7 @@ public class RunPlanController {
 	public Result handleTrainLinesWithCross(@RequestBody Map<String,Object> reqMap){
 		Result result  = new Result();
 		try{
-			System.out.println(reqMap);
+			
 			String startDate =StringUtil.objToStr( reqMap.get("startDate"));
 			String endDate = StringUtil.objToStr(reqMap.get("endDate"));
 			String planCrossIds = StringUtil.objToStr(reqMap.get("planCrossIds"));

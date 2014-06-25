@@ -203,7 +203,7 @@ public class PlanTrainStnController {
 		crossInfo.setCrossStartDate("20140910");
 		crossInfo.setCrossEndDate("20141010");
 		int count = crossService.updateBaseCross(crossInfo);
-		System.err.println("count==" + count);
+		//System.err.println("count==" + count);
 		return result;
 	}
 	
@@ -247,7 +247,7 @@ public class PlanTrainStnController {
 		for(int i = 1;i<=count;i++){
 			String tempDate = DateUtil.getDateByDay(runDate, -(i-1));
 			tempDate = DateUtil.format(DateUtil.parse(tempDate), "yyyyMMdd");
-			System.err.println();
+			//System.err.println();
 			List<ParamDto> listDto = planTrainStnService.getTotalTrains(tempDate,startBureauFull, trainNbr);
 			if(listDto != null && listDto.size() > 0){
 				String jsonStr = commonService.combinationMessage(listDto);
