@@ -834,19 +834,28 @@ function CrossModel() {
 		var crossIds = "";
 		var delCrosses = [];
 		var crosses = self.planCrossRows();
-		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1 && hasActiveRole(crosses[i].tokenVehBureau())){ 
+		for(var i = 0; i < crosses.length; i++){  
+			if(crosses[i].selected() == 1 && crosses[i].checkFlag() == 2 && hasActiveRole(crosses[i].tokenVehBureau())){ 
 				crossIds += (crossIds == "" ? "" : ",");
 				crossIds += crosses[i].planCrossId();  
 				delCrosses.push(crosses[i]); 
-			}else if(crosses[i].selected() == 1 && !hasActiveRole(crosses[i].tokenVehBureau())){
-				showWarningDialog("你没有权限生成:" + crosses[i].crossName() + " 的运行线");
-				return;
-			}   
+			}else if(crosses[i].selected() == 1){
+				if(!hasActiveRole(crosses[i].tokenVehBureau())){
+					showWarningDialog("你没有权限生成:" + crosses[i].crossName() + " 的运行线");
+					return;
+				}else if(crosses[i].checkFlag() != 2){
+					showWarningDialog(crosses[i].crossName() + "经由局未全部审核");
+					return;
+				} 
+			}  
+			
 		}  
 		 var planStartDate = $("#runplan_input_startDate").val();
 			
 		 var planEndDate =  $("#runplan_input_endDate").val();
+		 if(crossIds == ""){
+			 showWarningDialog("未选中数据");
+		 }
 		 commonJsScreenLock();
 		 
 		 $.ajax({
