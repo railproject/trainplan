@@ -791,54 +791,63 @@ function CrossModel() {
 		var crosses = self.planCrossRows(); 
 		var delCrosses = [];
 		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1){ 
+			if(crosses[i].selected() == 1 && hasActiveRole(crosses[i].tokenVehBureau())){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].planCrossId(); 
+				crossIds += crosses[i].planCrossId();  
 				delCrosses.push(crosses[i]); 
+			}else if(crosses[i].selected() == 1 && !hasActiveRole(crosses[i].tokenVehBureau())){
+				showWarningDialog("你没有权限删除:" + crosses[i].crossName());
+				return;
 			}  
 		}
 		if(crossIds == ""){
 			showErrorDialog("没有可删除的记录");
 			return;
 		}
-		$.ajax({
-			url : "../runPlan/deletePlanCrosses",
-			cache : false,
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json",
-			data :JSON.stringify({  
-				planCrossIds : crossIds
-			}),
-			success : function(result) {     
-				if(result.code == 0){
-					$.each(delCrosses, function(i, n){ 
-						self.planCrossRows.remove(n); 
-					});
-					showSuccessDialog("删除车底交路成功"); 
-				}else{
-					showErrorDialog("删除车底交路失败");
-				}
-			}
-		}); 
+		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
+	        if (r) { 
+					$.ajax({
+						url : "../runPlan/deletePlanCrosses",
+						cache : false,
+						type : "POST",
+						dataType : "json",
+						contentType : "application/json",
+						data :JSON.stringify({  
+							planCrossIds : crossIds
+						}),
+						success : function(result) {     
+							if(result.code == 0){
+								$.each(delCrosses, function(i, n){ 
+									self.planCrossRows.remove(n); 
+								});
+								showSuccessDialog("删除车底交路成功"); 
+							}else{
+								showErrorDialog("删除车底交路失败");
+							}
+						}
+					}); 
+	        }
+		});
 	};
 	
 	self.createTrainLines = function(){ 
-		commonJsScreenLock();
 		var crossIds = "";
 		var delCrosses = [];
 		var crosses = self.planCrossRows();
 		for(var i = 0; i < crosses.length; i++){ 
-			if(crosses[i].selected() == 1){ 
+			if(crosses[i].selected() == 1 && hasActiveRole(crosses[i].tokenVehBureau())){ 
 				crossIds += (crossIds == "" ? "" : ",");
-				crossIds += crosses[i].planCrossId();
-				delCrosses.push( crosses[i]);
-			}
-		} 
-		
+				crossIds += crosses[i].planCrossId();  
+				delCrosses.push(crosses[i]); 
+			}else if(crosses[i].selected() == 1 && !hasActiveRole(crosses[i].tokenVehBureau())){
+				showWarningDialog("你没有权限生成:" + crosses[i].crossName() + " 的运行线");
+				return;
+			}   
+		}  
 		 var planStartDate = $("#runplan_input_startDate").val();
 			
 		 var planEndDate =  $("#runplan_input_endDate").val();
+		 commonJsScreenLock();
 		 
 		 $.ajax({
 				url : "../runPlan/handleTrainLinesWithCross",
