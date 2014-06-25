@@ -609,7 +609,7 @@ function CrossModel() {
 							showErrorDialog("更新失败");
 							return;
 						}else if(result.data.length < delCrosses.length){  
-						    showSuccessDialog("部分更新成功");  
+							showWarningDialog("部分更新成功");  
 					   }else{
 						   showSuccessDialog("更新成功");  
 					   }

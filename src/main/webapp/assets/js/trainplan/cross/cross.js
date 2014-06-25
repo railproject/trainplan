@@ -678,7 +678,7 @@ function CrossModel() {
 						if(result.data.length == 0){
 							showErrorDialog("全部生成失败");  
 						}else if(result.data.length < delCrosses.length){  
-						    showSuccessDialog("部分生成成功");  
+							showWarningDialog("部分生成成功");  
 					   }else{
 						   showSuccessDialog("生成成功");  
 					   } 
