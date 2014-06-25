@@ -1334,8 +1334,10 @@ function CrossRow(data) {
 				if(temp == self.relevantBureau()){
 					self.checkFlag(2);
 					return "fa fa-check-square-o green";
-				}else{
+				}else if(self.checkedBureau().indexOf(currentUserBureau) > -1){
 					return "fa fa-pencil-square-o green";
+				}else{
+					return "fa fa-pencil-square-o red";
 				} 
 			}else{
 				return "fa fa-pencil-square-o red";
@@ -1345,6 +1347,10 @@ function CrossRow(data) {
 				&& data.relevantBureau.indexOf(currentUserBureau) < 0))){//和当前局无关 未被完全审核的
 			return "fa fa-pencil-square-o gray";
 		}else if(self.checkFlag() == 2){
+			if(data.relevantBureau == null || (data.relevantBureau != null
+						&& data.relevantBureau.indexOf(currentUserBureau) < 0)){
+				return "fa fa-check-square-o gray";
+			}
 			return "fa fa-check-square-o green";
 		}  
 	}); 
