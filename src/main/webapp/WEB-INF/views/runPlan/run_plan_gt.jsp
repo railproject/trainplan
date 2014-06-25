@@ -750,7 +750,6 @@ var currentUserBureau = "<%=currentUserBureau %>";
 <script src="<%=basePath %>/assets/js/moment.min.js"></script>
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
 <%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%>
-<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
 
 <script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
