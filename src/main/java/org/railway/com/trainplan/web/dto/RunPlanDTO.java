@@ -36,7 +36,7 @@ public class RunPlanDTO {
     private String tele = "";
 
     // 上图标记 0: yes, 1: no
-    private String dailyLineFlag;
+    private int dailyLineFlag;
 
     // 上图时间 MM-dd hh:mm
     private String dailyLineTime = "";
@@ -74,7 +74,7 @@ public class RunPlanDTO {
         this.startSTN = MapUtils.getString(map, "START_STN");
         this.endSTN = MapUtils.getString(map, "END_STN", "");
         this.runDate = MapUtils.getString(map, "RUN_DATE");
-        this.dailyLineFlag = MapUtils.getString(map, "DAILYPLAN_FLAG");
+        this.dailyLineFlag = MapUtils.getIntValue(map, "DAILYPLAN_FLAG");
         this.dailyLineTime = MapUtils.getString(map, "DAILYPLAN_TIME");
         this.startTime = MapUtils.getString(map, "START_TIME");
         this.endTime = MapUtils.getString(map, "END_TIME");
@@ -161,11 +161,11 @@ public class RunPlanDTO {
         this.endTime = endTime;
     }
 
-    public String getDailyLineFlag() {
+    public int getDailyLineFlag() {
         return dailyLineFlag;
     }
 
-    public void setDailyLineFlag(String dailyLineFlag) {
+    public void setDailyLineFlag(int dailyLineFlag) {
         this.dailyLineFlag = dailyLineFlag;
     }
 
