@@ -258,7 +258,7 @@ function ParamModel() {
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         // 统计图
         $.ajax({
-            url: "audit/plan/chart/traintype/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
+            url: "audit/plan/chart/traintype/" + date + "/" + $("#train_type").val() + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
@@ -286,7 +286,7 @@ function ParamModel() {
         })
 
         $.ajax({
-            url: "audit/plan/chart/planline/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
+            url: "audit/plan/chart/planline/" + date + "/" + $("#train_type").val() + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
@@ -314,7 +314,7 @@ function ParamModel() {
 
         if($("#chart_03").size() == 1) {
             $.ajax({
-                url: "audit/plan/chart/lev1check/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
+                url: "audit/plan/chart/lev1check/" + date + "/" + $("#train_type").val() + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
                 method: "GET",
                 contentType: "application/json; charset=UTF-8"
             }).done(function(resp) {
@@ -340,7 +340,7 @@ function ParamModel() {
             })
         } else if($("#chart_04").size() == 1) {
             $.ajax({
-                url: "audit/plan/chart/lev2check/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
+                url: "audit/plan/chart/lev2check/" + date + "/" + $("#train_type").val() + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
                 method: "GET",
                 contentType: "application/json; charset=UTF-8"
             }).done(function(resp) {
@@ -396,7 +396,7 @@ function TableModel() {
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         var type = $("#train_type").val();
         $.ajax({
-            url: "audit/plan/runplan/" + date + "/" + type + "?name=" + $("#train_nbr").val(),
+            url: "audit/plan/runplan/" + date + "/" + type + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {

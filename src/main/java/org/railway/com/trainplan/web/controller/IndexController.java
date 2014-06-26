@@ -35,8 +35,10 @@ public class IndexController {
     private RunLineService runLineService;
 
     @RequestMapping(value = "audit", method = RequestMethod.GET)
-    public String audit() {
-        return "trainplan/planline_check";
+    public ModelAndView audit(@RequestParam(defaultValue = "") String train_type, ModelAndView modelAndView) {
+        modelAndView.setViewName("trainplan/planline_check");
+        modelAndView.addObject("train_type", train_type);
+        return modelAndView;
     }
 
     @RequestMapping(value = "audit/compare/traininfo/plan/{planId}/line/{lineId}", method = RequestMethod.GET)
