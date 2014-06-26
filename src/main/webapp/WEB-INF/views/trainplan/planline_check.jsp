@@ -35,10 +35,10 @@
 <body class="Iframe_body">
 <ol class="breadcrumb">
     <span><i class="fa fa-anchor"></i>当前位置:</span>
-    <c:if test="${train_type==1}">
+    <c:if test="${train_type==0}">
         <li><a href="#">既有开行计划审核</a></li>
     </c:if>
-    <c:if test="${train_type==2}">
+    <c:if test="${train_type==1}">
         <li><a href="#">高铁开行计划审核</a></li>
     </c:if>
 </ol>

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <% 
 String basePath = request.getContextPath();
 %>
@@ -14,7 +16,12 @@ String basePath = request.getContextPath();
 
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
-  <li><a href="#">开行计划汇总</a></li>
+    <c:if test="${train_type==0}">
+        <li><a href="#">既有日历计划发布</a></li>
+    </c:if>
+    <c:if test="${train_type==1}">
+        <li><a href="#">高铁日历计划发布</a></li>
+    </c:if>
 </ol>
 
 

@@ -136,10 +136,10 @@ if (user !=null && user.getBureau()==null) {
                         </shiro:hasPermission>
                         <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
                         <shiro:hasPermission name="JHPT.KYJH.JYXKD">
-                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-external-link"></i>既有日历计划发布</a></li>
+                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=0" target="contentFrame"><i class="fa fa-external-link"></i>既有日历计划发布</a></li>
                         </shiro:hasPermission>
                         <shiro:hasPermission name="JHPT.KYJH.GTKD">
-                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-external-link"></i>高铁日历计划发布</a></li>
+                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁日历计划发布</a></li>
                         </shiro:hasPermission>
                     </ul>
                 </li>
@@ -147,12 +147,12 @@ if (user !=null && user.getBureau()==null) {
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>编制计划<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <shiro:hasAnyRoles name="JHPT.KYJH.JYXKD">
+                        <shiro:hasPermission name="JHPT.KYJH.JYXKD">
                             <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-external-link"></i>既有图定开行计划</a></li>
-                        </shiro:hasAnyRoles>
-                        <shiro:hasAnyRoles name="JHPT.KYJH.GTKD">
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="JHPT.KYJH.GTKD">
                             <li><a href="${ctx}/runPlan/runPlanGt" target="contentFrame"><i class="fa fa-list-alt"></i>高铁图定开行计划</a></li>
-                        </shiro:hasAnyRoles>
+                        </shiro:hasPermission>
                         <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-ol"></i>临客开行计划</a></li>
                     </ul>
                 </li>
