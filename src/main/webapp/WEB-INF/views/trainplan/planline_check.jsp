@@ -28,11 +28,19 @@
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/common.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/common.security.js"></script>
     <script type="text/javascript" src="${ctx}/assets/js/trainplan/planline_check.js"></script>
+    <script type="text/javascript">
+        var isHighLine = <c:out value="${train_type}"></c:out>
+    </script>
 </head>
 <body class="Iframe_body">
 <ol class="breadcrumb">
     <span><i class="fa fa-anchor"></i>当前位置:</span>
-    <li><a href="#">开行计划审核</a></li>
+    <c:if test="${train_type==1}">
+        <li><a href="#">既有开行计划审核</a></li>
+    </c:if>
+    <c:if test="${train_type==2}">
+        <li><a href="#">高铁开行计划审核</a></li>
+    </c:if>
 </ol>
 <section class="mainContent">
     <div class="row">

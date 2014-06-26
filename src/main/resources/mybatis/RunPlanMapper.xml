@@ -201,6 +201,14 @@ FROM
         <if test="name != null">
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
     </select>
 
     <select id="findRunPlan_sfjc" parameterType="map" resultType="map">
@@ -231,6 +239,14 @@ FROM
         <if test="name != null">
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
     </select>
 
     <select id="findRunPlan_jrzd" parameterType="map" resultType="map">
@@ -261,6 +277,14 @@ FROM
         <if test="name != null">
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
     </select>
 
     <select id="findRunPlan_jrjc" parameterType="map" resultType="map">
@@ -303,6 +327,14 @@ FROM
         <if test="name != null">
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
     </select>
 
     <select id="findRunPlan_all" parameterType="map" resultType="map">
@@ -321,6 +353,14 @@ FROM
         <if test="name != null">
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
 
         UNION
 
@@ -351,6 +391,14 @@ FROM
         <if test="name != null">
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
 
         UNION
 
@@ -381,6 +429,14 @@ FROM
         <if test="name != null">
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
 
         UNION
 
@@ -423,6 +479,14 @@ FROM
         <if test="name != null">
             AND PT.TRAIN_NBR LIKE '%${name}%'
         </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
     </select>
     
     <select id="getPlanCheckInfoForPlanCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.PlanCheckInfo">
