@@ -59,12 +59,15 @@ public class RunPlanService {
     @Value("#{restConfig['plan.generatr.thread']}")
     private int threadNbr;
 
-    public List<Map<String, Object>> findRunPlan(String date, String bureau, String name, int type) {
+    public List<Map<String, Object>> findRunPlan(String date, String bureau, String name, int type, int trainType) {
         logger.debug("findRunPlan::::");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("date", date);
         map.put("bureau", bureau);
         map.put("name", name);
+        if(trainType == 1) {
+            map.put("trainType", trainType);
+        }
         List<Map<String, Object>> list = Lists.newArrayList();
         switch(type) {
             case 0:

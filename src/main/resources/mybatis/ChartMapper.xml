@@ -24,6 +24,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
             UNION
             SELECT 0 AS RUNNING, COUNT(DISTINCT PT.PLAN_TRAIN_ID) AS BACKUP, 0 AS STOPPED, 0 AS UNKNOWN FROM PLAN_TRAIN PT
             INNER JOIN PLAN_TRAIN_STN PTS ON PT.PLAN_TRAIN_ID = PTS.PLAN_TRAIN_ID
@@ -43,6 +51,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
             UNION
             SELECT 0 AS RUNNING, 0 AS BACKUP, COUNT(DISTINCT PT.PLAN_TRAIN_ID) AS STOPPED, 0 AS UNKNOWN FROM PLAN_TRAIN PT
             INNER JOIN PLAN_TRAIN_STN PTS ON PT.PLAN_TRAIN_ID = PTS.PLAN_TRAIN_ID
@@ -62,6 +78,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
             UNION
             SELECT 0 AS RUNNING, 0 AS BACKUP, 0 AS STOPPED, COUNT(DISTINCT PT.PLAN_TRAIN_ID) AS UNKNOWN FROM PLAN_TRAIN PT
             INNER JOIN PLAN_TRAIN_STN PTS ON PT.PLAN_TRAIN_ID = PTS.PLAN_TRAIN_ID
@@ -82,6 +106,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
         )
     </select>
 
@@ -106,6 +138,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
             UNION
             SELECT 0 AS LINE, COUNT(DISTINCT PT.PLAN_TRAIN_ID) AS PLAN, 0 AS UNKNOWN FROM PLAN_TRAIN PT
             INNER JOIN PLAN_TRAIN_STN PTS ON PT.PLAN_TRAIN_ID = PTS.PLAN_TRAIN_ID
@@ -126,6 +166,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
             UNION
             SELECT 0 AS LINE, 0 AS PLAN, COUNT(DISTINCT PT.PLAN_TRAIN_ID) AS UNKNOWN FROM PLAN_TRAIN PT
             INNER JOIN PLAN_TRAIN_STN PTS ON PT.PLAN_TRAIN_ID = PTS.PLAN_TRAIN_ID
@@ -146,6 +194,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
         )
     </select>
 
@@ -172,6 +228,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
             UNION
             SELECT 0 AS CHECKED, COUNT(DISTINCT PT.PLAN_TRAIN_ID) AS UNCHECKED
             FROM PLAN_TRAIN PT
@@ -194,6 +258,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
         )
     </select>
 
@@ -220,6 +292,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
             UNION
             SELECT 0 AS CHECKED, COUNT(DISTINCT PT.PLAN_TRAIN_ID) AS UNCHECKED
             FROM PLAN_TRAIN PT
@@ -242,6 +322,14 @@
             <if test="name != null">
                 AND PT.TRAIN_NBR LIKE '%${name}%'
             </if>
+            <choose>
+                <when test="trainType != null">
+                    AND PT.HIGHLINE_FLAG = 1
+                </when>
+                <otherwise>
+                    AND PT.HIGHLINE_FLAG &lt;> 1
+                </otherwise>
+            </choose>
         )
     </select>
 </mapper> 
