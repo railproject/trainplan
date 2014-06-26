@@ -90,6 +90,11 @@ FROM
         <if test="highlineFlag != null">
             AND t.HIGHLINE_FLAG = #{highlineFlag}
         </if>
+         <if test="currentBureanFlag == 1">
+            <if test="currentBureau != null">
+            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            </if>
+        </if>
         <if test="checkFlag == 0 ">
             AND t.check_time is null
         </if>
@@ -117,10 +122,9 @@ FROM
 	        <if test="endTime != null ">
 	             AND (t.CROSS_START_DATE &lt;= #{endTime} or t.CROSS_END_DATE &lt;=  #{endTime})) 
 	       	</if> 
-	    </if>
-       order by t.cross_name 
-       )M left join plan_check P on M.planCrossId=p.plan_cross_id    GROUP BY 
-      M.planCrossId, M.baseCrossId, M.planCrossName, M.tokenVehBureau,M.startBureau,M.checkType,M.relevantBureau 
+	    </if> 
+       )M left join plan_check P on M.planCrossId=p.plan_cross_id  GROUP BY 
+      M.planCrossId, M.baseCrossId, M.planCrossName, M.tokenVehBureau,M.startBureau,M.checkType,M.relevantBureau  order by M.planCrossName 
  
     </select> 
 

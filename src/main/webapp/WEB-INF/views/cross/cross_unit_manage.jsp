@@ -17,7 +17,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>基本交路单元管理</title>
+<title>交路单元管理</title>
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -80,7 +80,7 @@ console.log(all_role);
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">基本交路单元管理</a></li>
+		<li><a href="#">交路单元管理</a></li>
 	</ol>  
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 30%;">
@@ -164,7 +164,7 @@ console.log(all_role);
 											<a  type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
 											<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
-												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成基本交路单元</a>
+												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成车底</a>
 											
 										</div> 
 										<span style="margin-bottom:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
