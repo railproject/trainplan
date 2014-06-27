@@ -1,6 +1,6 @@
 package org.railway.com.trainplan.entity;
 
-public class CrewHighlineInfo {
+public class HighLineCrewInfo {
 
 	private String crewHighlineId;
 	private String crewDate;
