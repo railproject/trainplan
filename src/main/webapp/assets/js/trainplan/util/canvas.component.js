@@ -690,7 +690,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 					//绘制列车名称
 					this.firstX = _dptTimeX;
 					this.firstY = _y;
-					console.log("111111  _obj.groupSerialNbr="+this.obj.groupSerialNbr);
 					line_self.showTrainName(_context, colorParam, this.obj.groupSerialNbr);
 				} else {
 					//连接上一站出发点到本站到达点
@@ -747,7 +746,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
                 ctx.strokeStyle = currentColor;
                 ctx.fillStyle = currentColor;
                 this.isCurrent = true;
-				console.log("22222  this.obj.groupSerialNbr="+this.obj.groupSerialNbr);
                 line_self.showTrainName(_context, currentColor, this.obj.groupSerialNbr);
                 
                 //查看选中线 列车运行时刻信息
@@ -756,7 +754,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
                 }
             } else {
             	this.isCurrent = false;
-				console.log("333333  this.obj.groupSerialNbr="+this.obj.groupSerialNbr);
                 line_self.showTrainName(_context, colorParam, this.obj.groupSerialNbr);
                 ctx.strokeStyle = colorParam;
                 ctx.fillStyle = colorParam;
