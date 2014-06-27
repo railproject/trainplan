@@ -166,7 +166,9 @@ if (user !=null && user.getBureau()==null) {
                         <shiro:hasRole name="总公司客调">
                             <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>启用新图</a></li>
                         </shiro:hasRole>
+                        <!-- 
                         <li><a href="${ctx}/crossdict/mainpage" target="contentFrame"><i class="fa fa-retweet"></i>交路图字典管理</a></li>
+                         -->
                     </ul>
                 </li>
 
