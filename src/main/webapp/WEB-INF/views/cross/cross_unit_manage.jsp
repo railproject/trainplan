@@ -17,7 +17,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>基本交路单元管理</title>
+<title>交路单元管理</title>
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -80,7 +80,7 @@ console.log(all_role);
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">基本交路单元管理</a></li>
+		<li><a href="#">交路单元管理</a></li>
 	</ol>  
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 30%;">
@@ -164,7 +164,7 @@ console.log(all_role);
 											<a  type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
 											<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
-												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成基本交路单元</a>
+												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成车底</a>
 											
 										</div> 
 										<span style="margin-bottom:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
@@ -632,7 +632,7 @@ console.log(all_role);
 	<!--详情时刻表--> 
 	<div id="cross_train_time_dlg" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 608px; height: 500px; padding: 10px; "> 
+		style="width: 500px; height: 500px; padding: 10px; "> 
 			      <!--panle-heading-->
 			      <div class="panel-body" style="padding:10px;margin-right:10px;">
 				       <ul class="nav nav-tabs" >
@@ -643,7 +643,7 @@ console.log(all_role);
 						<!-- Tab panes -->
 						<div class="tab-content" >
 						  <div class="tab-pane active" id="simpleTimes" > 
-					      	<div class="table-responsive" style="height: 100%; "> 
+					      	<div class="table-responsive"> 
 					            <table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead>
 							        <tr>
@@ -660,7 +660,7 @@ console.log(all_role);
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
+												 <div id="simpleTimes_table" style="height: 350px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: simpleTimes">
 												           <tr data-bind="visible: stationFlag != 'BTZ'">  
@@ -700,7 +700,7 @@ console.log(all_role);
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
+												 <div id="allTimes_table" style="height: 350px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: times">
 												           <tr>  
@@ -724,7 +724,7 @@ console.log(all_role);
 			        	</div>
 			        </div>
       		</div>
-	   </div>  
+	   </div> 
 	</div>
 </body>  
  <script type="text/html" id="tablefooter-short-template"> 

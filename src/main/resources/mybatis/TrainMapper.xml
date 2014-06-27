@@ -296,10 +296,54 @@
 		<if test="startBureau != null">
 		   AND t.source_bureau_shortname = #{startBureauShortName}
 		</if> 
-		<if test="startBureau != null">
+		<if test="endBureau != null">
 		   AND t.target_bureau_shortname = #{endBureauShortName}
 		</if>
 		   order by trainNbr
+	</select>
+	
+	<select id="getTrainlineTotalCount" parameterType="map" resultType="map">
+	  select count(*) as count from jhpt_rjh.m_trainline t where 1=1 
+	  	<if test="operation != null">
+			AND t.operation= #{operation}
+		</if> 
+		<if test="startBureauShortName != null">
+		   AND t.source_bureau_shortname = #{startBureauShortName}
+		</if> 
+		<if test="startDate != null">
+		  and to_char(t.source_time, 'yyyymmdd') = #{startDate}
+		</if>
+	</select>
+ 
+	
+	<select id="getTrainlineForPage"  parameterType="map" resultType="org.railway.com.trainplan.entity.PlanTrain">
+	    select * from (select ROWNUM AS num, m.*  from  
+	    ( 
+		   select id as planTrainId,
+			    name as trainNbr,
+		        source_node_name as startStn, 
+		        target_node_name as endStn,
+		        source_bureau_shortname as startBureau, 
+		        target_bureau_shortname as endBureau,
+		        route_bureau_shortnames as routingBureauShortName, 
+		        source_bureau_name as startBureauFull,
+		        target_bureau_name as endBureauFull,
+		        to_char(source_time,'hh24:mi:ss') as startTimeStr,
+		        to_char(target_time,'hh24:mi:ss')  as endTimeStr,
+		        operation as operation
+		  from jhpt_rjh.m_trainline t
+		 where  1 = 1
+			<if test="operation != null">
+				AND t.operation= #{operation}
+			</if> 
+			<if test="startBureauShortName != null">
+			   AND t.source_bureau_shortname = #{startBureauShortName}
+			</if> 
+			<if test="startDate != null">
+			  and to_char(t.source_time, 'yyyymmdd') = #{startDate}
+			</if>
+		    order by trainNbr
+		     ) m  ) where num >=#{rownumstart} AND num &lt;=#{rownumend} 
 	</select>
 	
 	<select id="getTrainInfoForPage"  parameterType="map" resultType="org.railway.com.trainplan.entity.PlanTrain">

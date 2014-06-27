@@ -45,6 +45,11 @@ public class RunPlanController {
 		 return "runPlan/run_plan";
      }
 	 
+	 @RequestMapping(value="/runPlanGt" ,method = RequestMethod.GET)
+     public String runPlanGt() {
+		 return "runPlan/run_plan_gt";
+     }
+	 
 	 @ResponseBody
 	 @RequestMapping(value = "/getRunPlans", method = RequestMethod.POST)
 	 public Result getRunPlans(@RequestBody Map<String,Object> reqMap) throws Exception{

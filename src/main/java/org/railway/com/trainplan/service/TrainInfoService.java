@@ -380,4 +380,17 @@ public class TrainInfoService {
 		  }
 		  return count;
 	  }
+	public long getTrainLinesCount(Map<String, Object> reqMap) {
+		  List<Map<String,Object>> countList = baseDao.selectListBySql(Constants.GETTRAINLINES_JHPT_COUNT, reqMap);
+		  int count= 0;
+		  if(countList != null && countList.size() > 0){
+			  //只有一条数据
+			  Map<String,Object> map = countList.get(0);
+			  count = (( BigDecimal)map.get("COUNT")).intValue();
+		  }
+		  return count;
+	}
+	public Object getTrainLinesForPage(Map<String, Object> reqMap) {
+		 return baseDao.selectListBySql(Constants.GETTRAINLINES_JHPT, reqMap);
+	}
 }

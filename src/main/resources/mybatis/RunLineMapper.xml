@@ -67,9 +67,12 @@
 
     <select id="findUnknownRunLineCount" parameterType="map" resultType="map">
         SELECT COUNT(DISTINCT TL.ID) AS NUM
-        FROM JHPT_RJH.M_TRAINLINE TL WHERE  TL.SOURCE_BUREAU_SHORTNAME = #{bureau}
-        AND (TL.SOURCE_TIME > #{startDate} AND TL.SOURCE_TIME &lt;= #{endDate})
+        FROM JHPT_RJH.M_TRAINLINE TL
+        WHERE (TL.SOURCE_TIME > #{startDate} AND TL.SOURCE_TIME &lt;= #{endDate})
         AND NOT EXISTS (SELECT PT.PLAN_TRAIN_ID FROM PLAN_TRAIN PT WHERE TL.ID = PT.DAILYPLAN_ID)
+        <if test="bureau != null">
+            AND TL.SOURCE_BUREAU_SHORTNAME = #{bureau}
+        </if>
     </select>
 
     <select id="findUnknownRunLine" parameterType="map" resultType="map">

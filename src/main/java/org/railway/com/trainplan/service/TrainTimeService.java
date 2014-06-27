@@ -39,4 +39,8 @@ public class TrainTimeService {
 		  
 	  }
 
+	public List<TrainTimeInfo> getTrainLineTimes(String trainId) {
+		 return baseDao.selectListBySql(Constants.GET_TRAINLINES_BY_TRAINLINEID, trainId); 
+	}
+
 }

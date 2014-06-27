@@ -88,6 +88,30 @@ public class JBTCXController {
 		return result;
 	} 
 	
+	
+	/**
+	 * 统计路局运行车次信息
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/queryTrainLines", method = RequestMethod.POST)
+	public Result queryTrainLines(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			logger.info("queryTrains~~reqMap="+reqMap);
+			reqMap.put("operation", "客运");
+			//调用后台接口
+			PagingResult page = new PagingResult(trainInfoService.getTrainLinesCount(reqMap), trainInfoService.getTrainLinesForPage(reqMap));
+			result.setData(page);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		return result;
+	} 
+	
 	@ResponseBody
 	@RequestMapping(value = "/queryTrainTimes", method = RequestMethod.POST)
 	public Result queryTrainTimes(@RequestBody Map<String,Object> reqMap){
@@ -96,6 +120,24 @@ public class JBTCXController {
 			//调用后台接口
 			String trainId =  StringUtil.objToStr(reqMap.get("trainId"));
 			List<TrainTimeInfo> times = trainTimeService.getTrainTimes(trainId);
+			result.setData(times);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		return result;
+	} 
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/queryTrainLineTimes", method = RequestMethod.POST)
+	public Result queryTrainLineTimes(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			//调用后台接口
+			String trainId =  StringUtil.objToStr(reqMap.get("trainId"));
+			List<TrainTimeInfo> times = trainTimeService.getTrainLineTimes(trainId);
 			result.setData(times);
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);

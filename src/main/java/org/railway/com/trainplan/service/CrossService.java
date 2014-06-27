@@ -1384,89 +1384,86 @@ public class CrossService{
 				routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
 		   } 
 		  
-		  if(!"".equals(routeBureauShortNames)){ 
-			  String rbsPY = "";
-			  String py = "";
-			  for(int i = 0; i < routeBureauShortNames.length(); i++){
-				 py = commonService.getStationPy(routeBureauShortNames.substring(i, i + 1));
-				 if((py != null && rbsPY.indexOf(py) > -1) || py == null){
-					 continue;
-				 }
-				 rbsPY += py;
-			  }
-			  cross.setRelevantBureau(rbsPY);
-		  } 
+		   if(!"".equals(routeBureauShortNames)){ 
+			   String rbsPY = "";
+			   String py = "";
+			   for(int i = 0; i < routeBureauShortNames.length(); i++){
+				  py = commonService.getStationPy(routeBureauShortNames.substring(i, i + 1));
+				  if((py != null && rbsPY.indexOf(py) > -1) || py == null){
+					  continue;
+				  }
+				  rbsPY += py;
+			   }
+			   cross.setRelevantBureau(rbsPY);
+		   } 
 		  
-		 //设置列车的间隔时间
-		 setDayGapForTrains(crossTrains);
-		 //设置列车的结束日期
-		 setEndDateForCross(crossTrains, cross); 
+		   //设置列车的间隔时间
+		   setDayGapForTrains(crossTrains);
+		   //设置列车的结束日期
+		   setEndDateForCross(crossTrains, cross); 
 			
-		LinkedList<CrossTrainInfo> crossSpareTrains = new LinkedList<CrossTrainInfo>(); 
-		if(crossSpareNames != null){
-			for(int i = 0; i < crossSpareNames.length; i++){
-				try{
-					train = new CrossTrainInfo();
-					train.setCrossId(cross.getCrossId());
-					train.setTrainSort(i + 1);
-					train.setTrainNbr(crossSpareNames[i]); 
-					train.setSpareApplyFlage(1);  
-					train.setSpareFlag(2); 
-					//
-					if(alertNateDate != null ){
-						if(alertNateDate.length == 1){
-							train.setAlertNateTime(alertNateDate[0] + " 02:00:00"); 
-						}else{ 
-							train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
-						}  
-					} 
+		   LinkedList<CrossTrainInfo> crossSpareTrains = new LinkedList<CrossTrainInfo>(); 
+		   if(crossSpareNames != null){
+			   for(int i = 0; i < crossSpareNames.length; i++){
+				  try{
+					  train = new CrossTrainInfo();
+					  train.setCrossId(cross.getCrossId());
+					  train.setTrainSort(i + 1);
+					  train.setTrainNbr(crossSpareNames[i]); 
+					  train.setSpareApplyFlage(1);  
+					  train.setSpareFlag(2); 
+					  //
+					  if(alertNateDate != null ){
+							if(alertNateDate.length == 1){
+								train.setAlertNateTime(alertNateDate[0] + " 02:00:00"); 
+							}else{ 
+								train.setAlertNateTime(alertNateDate[i] + " 02:00:00");
+							}  
+					  } 
 
-					if(highlineFlag != null ){
-						if(highlineFlag.length == 1){ 
-							train.setHighlineFlag(Integer.parseInt(highlineFlag[0]));
-						}else{ 
-							train.setHighlineFlag(Integer.parseInt(highlineFlag[i])); 
-						}  
-					} 
+					  if(highlineFlag != null ){
+						  if(highlineFlag.length == 1){ 
+							  train.setHighlineFlag(Integer.parseInt(highlineFlag[0]));
+						  }else{ 
+							  train.setHighlineFlag(Integer.parseInt(highlineFlag[i])); 
+						  }  
+					  } 
 					 
-				}catch(Exception e){
+				  }catch(Exception e){
 					logger.error("创建列车信息出错:" , e); 
-				}
-				crossSpareTrains.add(train);
-			} 
+				  }
+				  crossSpareTrains.add(train);
+			  } 
 			
 		  
-		   for(int i=0; i < crossSpareTrains.size(); i++){
-			   CrossTrainInfo crossTrain = crossSpareTrains.get(i);
-			   trainInfoFromPain(crossTrain);
+		      for(int i=0; i < crossSpareTrains.size(); i++){
+			     CrossTrainInfo crossTrain = crossSpareTrains.get(i);
+			     trainInfoFromPain(crossTrain);
 			   
-				//设置交路的开始日期和结束日期
-				if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
-					cross.setStartBureau(crossTrain.getStartBureau());
+				  //设置交路的开始日期和结束日期
+				  if(cross.getCrossName().startsWith(crossTrain.getTrainNbr())){
+					  cross.setStartBureau(crossTrain.getStartBureau());
 //					cross.setCrossStartDate(crossTrain.getSourceTargetTime());
 					//cross.setCrossStartDate(crossTrain.getAlertNateTime().substring(0, 8)); 
-				}   
-//				routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
-		   } 
+				  }   
+//				  routeBureauShortNames += crossTrain.getRouteBureauShortNames() != null ? crossTrain.getRouteBureauShortNames() : ""; 
+		      } 
 			 
-		   setDayGapForTrains(crossSpareTrains); 
+		      setDayGapForTrains(crossSpareTrains); 
 		    
-		   //设置车次的开始和结束日期
-		   setStartAndEndTime(crossSpareTrains, cross); 
+		      //设置车次的开始和结束日期
+		      setStartAndEndTime(crossSpareTrains, cross); 
 			
-		   crossTrains.addAll(crossSpareTrains);
-		}
+		      crossTrains.addAll(crossSpareTrains);
+		   }
 		
 		
 			 
 //			String trains = crossName.split("-");
-		logger.debug(this.cross.getCrossName() + "==crossTrains=" + crossTrains.size());
+		 	logger.debug(this.cross.getCrossName() + "==crossTrains=" + crossTrains.size());
 		 
-		return crossTrains; 
-	}
-		
-		
-	
+		 	return crossTrains; 
+	    } 
 	} 
  
 }

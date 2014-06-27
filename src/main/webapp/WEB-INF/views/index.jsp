@@ -126,19 +126,33 @@ if (user !=null && user.getBureau()==null) {
             <shiro:authenticated>
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>发布计划<i class="fa fa-caret-down pull-right"></i></a>
-                    <ul>
-                        <li><a href="${ctx}/audit" target="contentFrame"><i class="fa fa-external-link"></i>开行计划审核</a></li>
-                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>交路/车底计划审核</a></li>
-                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
-                        <li><a href="${ctx}/default/transfer/planReviewAll" target="contentFrame"><i class="fa fa-external-link"></i>日历计划发布</a></li>
+                    <ul style="width: 200px">
+                        <shiro:hasPermission name="JHPT.KYJH.JYXKD">
+                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/audit?train_type=0" target="contentFrame"><i class="fa fa-external-link"></i>既有开行计划审核</a></li>
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="JHPT.KYJH.GTKD">
+                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/audit?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁开行计划审核</a></li>
+                            <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁交路/车底计划审核</a></li>
+                        </shiro:hasPermission>
+                        <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
+                        <shiro:hasPermission name="JHPT.KYJH.JYXKD">
+                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=0" target="contentFrame"><i class="fa fa-external-link"></i>既有日历计划发布</a></li>
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="JHPT.KYJH.GTKD">
+                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁日历计划发布</a></li>
+                        </shiro:hasPermission>
                     </ul>
                 </li>
 
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>编制计划<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-alt"></i>高铁图定开行计划</a></li>
-                        <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-external-link"></i>既有图定开行计划</a></li>
+                        <shiro:hasPermission name="JHPT.KYJH.JYXKD">
+                            <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-external-link"></i>既有图定开行计划</a></li>
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="JHPT.KYJH.GTKD">
+                            <li><a href="${ctx}/runPlan/runPlanGt" target="contentFrame"><i class="fa fa-list-alt"></i>高铁图定开行计划</a></li>
+                        </shiro:hasPermission>
                         <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-ol"></i>临客开行计划</a></li>
                     </ul>
                 </li>
@@ -146,15 +160,13 @@ if (user !=null && user.getBureau()==null) {
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>管理基本图<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图管理</a></li>
+                        <li><a href="${ctx}/jbtcx" target="contentFrame"><i class="fa fa-search"></i>基本图查询</a></li>
                         <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表管理</a>
                         <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>交路单元管理</a></li>
-                        
-                        <%
-                        if (isZgsyh) {
-                        %>
-                        <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>启用新图</a></li>
-                    	<% } %>
+                        <shiro:hasRole name="总公司客调">
+                            <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>启用新图</a></li>
+                        </shiro:hasRole>
+                        <li><a href="${ctx}/crossdict/mainpage" target="contentFrame"><i class="fa fa-retweet"></i>交路图字典管理</a></li>
                     </ul>
                 </li>
 

@@ -27,8 +27,10 @@ public class TransferController {
 	}
 	
 	@RequestMapping(value = "planReviewAll", method = RequestMethod.GET)
-	public String planReviewAll() {
-		return "plan/plan_review_all";
+	public ModelAndView planReviewAll(@RequestParam(defaultValue = "") String train_type, ModelAndView modelAndView) {
+        modelAndView.setViewName("plan/plan_review_all");
+        modelAndView.addObject("train_type", train_type);
+		return modelAndView;
 	}
 	
 	@RequestMapping(value = "planReview", method = RequestMethod.GET)

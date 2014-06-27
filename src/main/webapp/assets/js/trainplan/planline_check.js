@@ -67,7 +67,7 @@ function ApplicationModel() {
     self.autoCheck = function() {
         self.currCheckNbr(0);
         ko.utils.arrayForEach(self.tableModel().planList(), function(plan) {
-            if(plan.dailyLineFlag() != "已上图" || !plan.dailyLineId()) {
+            if(plan.dailyLineFlag() != 0 || !plan.dailyLineId()) {
                 self.currCheckNbr(self.currCheckNbr() + 1);
                 plan.isTrainInfoMatch(-1);
                 plan.isTimeTableMatch(-1);
@@ -160,6 +160,7 @@ function ApplicationModel() {
                 sticky: false,
                 time: 3000
             });
+            self.paramModel().loadPies();
         }).fail(function(resp) {
             $(this).prop( "disabled", false );
             $.gritter.add({
@@ -217,6 +218,7 @@ function ApplicationModel() {
                 sticky: false,
                 time: 3000
             });
+            self.paramModel().loadPies();
         }).fail(function(resp) {
             $(this).prop( "disabled", false );
             $.gritter.add({
@@ -256,7 +258,7 @@ function ParamModel() {
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         // 统计图
         $.ajax({
-            url: "audit/plan/chart/traintype/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
+            url: "audit/plan/chart/traintype/" + date + "/" + $("#train_type").val() + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
@@ -284,7 +286,7 @@ function ParamModel() {
         })
 
         $.ajax({
-            url: "audit/plan/chart/planline/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
+            url: "audit/plan/chart/planline/" + date + "/" + $("#train_type").val() + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(resp) {
@@ -312,7 +314,7 @@ function ParamModel() {
 
         if($("#chart_03").size() == 1) {
             $.ajax({
-                url: "audit/plan/chart/lev1check/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
+                url: "audit/plan/chart/lev1check/" + date + "/" + $("#train_type").val() + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
                 method: "GET",
                 contentType: "application/json; charset=UTF-8"
             }).done(function(resp) {
@@ -338,7 +340,7 @@ function ParamModel() {
             })
         } else if($("#chart_04").size() == 1) {
             $.ajax({
-                url: "audit/plan/chart/lev2check/" + date + "/" + $("#train_type").val() + "?name=" + $("#train_nbr").val(),
+                url: "audit/plan/chart/lev2check/" + date + "/" + $("#train_type").val() + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
                 method: "GET",
                 contentType: "application/json; charset=UTF-8"
             }).done(function(resp) {
@@ -394,7 +396,7 @@ function TableModel() {
         var date = moment($("#date_selector").val()).format("YYYYMMDD");
         var type = $("#train_type").val();
         $.ajax({
-            url: "audit/plan/runplan/" + date + "/" + type + "?name=" + $("#train_nbr").val(),
+            url: "audit/plan/runplan/" + date + "/" + type + "?trainType=" + isHighLine + "&name=" + $("#train_nbr").val(),
             method: "GET",
             contentType: "application/json; charset=UTF-8"
         }).done(function(list) {
@@ -433,6 +435,7 @@ function Plan(dto) {
     self.lev2Checked = ko.observable(dto.lev2Checked);
     self.trainType = ko.observable(dto.trainType);
     self.isSelected = ko.observable(false);
+    self.spareFlag = ko.observable(dto.spareFlag);
 
     // 校验项 0：未校验，1：匹配，-1：不匹配
     self.isTrainInfoMatch = ko.observable(0);
@@ -564,7 +567,17 @@ function Plan(dto) {
         } else {
             return "<i class=\"fa fa-check-circle text-success\"></i>已";
         }
-    })
+    });
+
+    self.dailyLineFlagView = ko.computed(function() {
+        if(self.dailyLineFlag() == 0) {
+            return "<i class=\"fa fa-check-circle text-success\"></i>已";
+        } else if(self.dailyLineFlag() == 1) {
+            return "<i class=\"fa fa-times-circle text-danger\"></i>未";
+        } else {
+            return "<i class=\"fa fa-exclamation-triangle text-warning\"></i>未知";
+        }
+    });
 
     self._default = {
         autoOpen: false,

@@ -22,7 +22,7 @@ String basePath = request.getContextPath();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>核查编制图定开行</title>
+<title>既有图定开行计划</title>
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -85,18 +85,15 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">客运计划管理</a></li>
-	</ol> 
-   	<div>
+		<li><a href="#">既有图定开行计划</a></li>
+	</ol>  
 	   <div class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
 		    <div class="pull-left" style="width: 30%;height:100%">
-			<!--分栏框开始-->
-			    <div class="panel panel-default" style="height:537px;">   
+			<!--分栏框开始--> 
 			      <div class="row" style="margin: 5px 10px 10px 10px;"> 
-				        	<div class="panel-body">
-								<form class="form-horizontal" role="form">  
-											<div class="row"  style="width: 100%; margin-top: 5px;">
+				        	<div class="panel-body"> 
+										<div class="row"  style="width: 100%;">
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													开始日期:</label>
 												<div class="pull-left" style="margin-left: 5px;">
@@ -121,12 +118,13 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												</div> 
 											</div>     
 											<div class="row"  style="margin-top: 5px;">
-												<label for="exampleInputEmail3" class="control-label pull-left" >
-													铁路线类型:</label>
-												<div class="pull-left" style="margin-left: 5px;">
-												    <select  style="width:55px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
-												</div>
-												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
+												 <input type="checkBox" class="pull-left" class="form-control"
+													value="1" data-bind="checked: searchModle().currentBureanFlag"
+													style="width: 20px; margin-top: 5px; margin-left:-1px"
+													class="form-control"> 
+												<label for="exampleInputEmail5" class="control-label pull-left">
+													本局相关</label> 
+												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 77px;">
 													 审核状态:</label>
 												<div class="pull-left" style="margin-left: 5px;">
 													<select style="width:50px" id="input_cross_sure_flag"
@@ -155,11 +153,12 @@ var currentUserBureau = "<%=currentUserBureau %>";
 															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
 													</div> 
 												
-											</div> 
-										    <hr style="margin-top: 8px;margin-bottom: 8px"> 
+											</div>  
 										 <!--    <div class="row"  style="margin-top: 5px;"> 
 												<span style="margin-left: 20px;"><span style="">途经局:</span><span data-bind="text: '京郑武广'"></span><span style="margin-left:3px" data-bind="text: '已审核: 郑  ; 未审核 : 京武广'"></span></span>   
 											</div>  -->
+										 
+										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:620px;margin-top:10px"> 
 											<div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 20px;">
@@ -170,58 +169,77 @@ var currentUserBureau = "<%=currentUserBureau %>";
 													<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
 														data-target="#" id="btn_cross_createTrainLines" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createTrainLines">生成运行线</a>
 												</div> 
-												</div> 
-										  <div style="margin-bottom:5px;" data-bind="html: currentCross().relevantBureauShowValue()"></div> 
-										  <div style="margin-bottom:5px;" data-bind="html:currentCross().checkedBureauShowValue()"></div> 
-									      <div class="row" style="margin-top:10px">
-										     <div class="pull-left" style="width: 75%;">
-										        <section class="panel panel-default">
-										          <div class="panel-heading">
-										          			<span><input type="checkbox" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}">全选 车底交路名
-																<select class="form-control" style="vertical-align: top;margin-top:-1px;width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
-																	 data-bind="options: [{'code': 1, 'text': '简称'},{'code': 2, 'text': '全称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
-																</select>  
-															</span>
-										          </div>
-										        	<div class="panel-body" style="height: 290px; overflow-y:auto"> 
-														<div class="table-responsive"> 
-															<table class="table table-bordered table-striped table-hover" 
-																id="cross_table_crossInfo"> 
-																<tbody data-bind="foreach: planCrossRows">
-																	<tr data-bind=" visible: visiableRow" >
-																	<!-- 	<td data-bind=" text: crossName , attr:{title: crossName}"></td> -->
-																	    <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td>
-																		<td><i  data-bind="attr:{class: checkCss}"></i><span data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName},style:{color: $parent.currentCross().crossName() == crossName()  ? 'blue':''}, click: $parent.showTrains"></span></td>
-																	</tr> 
-																</tbody>  					 
-															</table>
-														</div> 
-												   </div>
-											   </section>
-											</div>
-											<div class="pull-right" style="width: 25%;">  
-											 <section class="panel panel-default">
-										          <div class="panel-heading">车次</div>
-										        	<div class="panel-body" style="height: 290px; overflow-y:auto "> 
-												      <div class="table-responsive" > 
-															<table class="table table-bordered table-striped table-hover"
-																id="cross_trainInfo" > 
-																<tbody data-bind="foreach: trains" >
-																	<tr  data-bind="click: $parent.showTrainTimes, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
-																		<td style="width: 60px" data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
-																	</tr>
-																</tbody>
-															</table> 
-													   </div>
-											      </div>  
-											    </section>
+										   </div> 
+										  <div style="margin-left:5px;">相关局: <span style="margin-top:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue()"></span></div> 
+										  <div style="margin-left:5px;">已审局: <span style="margin-top:5px;margin-left:5px;" data-bind="html:currentCross().checkedBureauShowValue()"></span></div> 
+									      <div class="row" style="margin-left:5px; margin-right:5px">
+										     <div class="pull-left" style="width: 75%;"> 
+														<table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:98%"
+															id="cross_table_crossInfo">
+															<thead>
+																<tr style="height: 25px"> 
+																	<th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
+																	<th style="width: 8%" align="center">序号</th>
+																	<th style="width: 8%" align="center">局</th>
+																	<th align="center">  
+																		    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路名</label> 
+																			<select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+																				 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+																			</select>  
+																	</th> 
+																</tr>
+															</thead>
+															<tbody style="padding:0">
+																 <tr style="padding:0">
+																   <td colspan="6" style="padding:0">
+																		 <div id="plan_train_panel_body" style="height: 500px; overflow-y:auto;"> 
+																			<table class="table table-bordered table-striped table-hover" >
+																				<tbody data-bind="foreach: planCrossRows">
+																					<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().planCrossId == planCrossId ? 'blue':''}" >
+																						<td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td>
+																				        <td style="width: 10%" data-bind="text: $index() + 1"></td>
+																				        <td style="width: 10%" data-bind="text: tokenVehBureauShowValue"></td>
+																					    <td><i  data-bind="attr:{class: checkCss}"></i><span data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains"></span></td>
+																					</tr> 
+																				</tbody> 
+																			</table> 
+																	 	</div>
+																	</td>
+																</tr>
+															</tbody>				 
+														</table>
+														</div>  
+											<div class="pull-left" style="width: 25%;margin-left:-10px">  
+											<table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:98%"
+															id="cross_table_crossInfo">
+															<thead>
+																<tr style="height: 26px"> 
+																	<th style="width: 99%" align="center">车次</th> 
+																</tr>
+															</thead>
+															<tbody style="padding:0">
+																 <tr style="padding:0">
+																   <td colspan="6" style="padding:0">
+																		 <div id="plan_cross_panel_body" style="height: 500px; overflow-y:auto;"> 
+																			<table class="table table-bordered table-striped table-hover"
+																				id="cross_trainInfo" > 
+																				<tbody data-bind="foreach: trains" >
+																					<tr  data-bind="click: $parent.showTrainTimes, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
+																						<td data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
+																					</tr>
+																				</tbody>
+																			</table> 
+																	 	</div>
+																	</td>
+																</tr>
+															</tbody>				 
+														</table> 
 										</div> 
 								  </div> 
-							 </form>
+								 </div> 
 						 </div> 
 					</div>
-				</div>
-		</div>
+				</div> 
 		 <div class="pull-right" style="width: 69%;">  
 				<!-- Nav tabs -->
 				<div class="panel panel-default" >  
@@ -251,20 +269,19 @@ var currentUserBureau = "<%=currentUserBureau %>";
 							              </div> -->
 							              <div class="row" style="margin:5px 0 10px 50px;">
 								         		<button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_refresh"><i class="fa fa-refresh"></i>刷新</button>
-								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
+											  <span><input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图</span>
+								         	  <input type="checkbox" id="canvas_checkbox_trainTime" style="margin-left:10px;margin-top:2px"  value=""/>时刻
+								         	   &nbsp;&nbsp;车底：<select id="canvas_select_groupSerialNbr"></select>
+								              <button style="margin-left:10px" type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
-								              
-								                                                比例：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
-											<input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图
-								         	<input type="checkbox" id="canvas_checkbox_trainTime"  value=""/>显示时刻
-								         	&nbsp;&nbsp;选择车底：<select id="canvas_select_groupSerialNbr"></select>
-								         	  
+								                                                 比例：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
+								                       
 								         </div>
 							          </form>
 								    </div> 
-							        <div class="table-responsive" style="width:100%;height:430px;overflow-x:auto; overflow-y:auto;">
+							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:630px;overflow-x:auto; overflow-y:auto;">
 							        	<canvas id="canvas_event_getvalue"></canvas>
 							        </div> 
 							      </div> 
@@ -591,11 +608,10 @@ var currentUserBureau = "<%=currentUserBureau %>";
 				  </div>  
 				 </div> 
 			</div>
-		</div>
-	    </div> 
-   	 	<div class="row" class="panel-collapse" style="margin: 10px 10px 10px 10px;" >  
+		</div> 
+   	 	<div class="row" class="panel-collapse" style="margin: 10px 10px 10px 25px;" >  
    	 	  <div class="panel panel-default">   
-	 	   <div id="learn-more-content"  class="panel-collapse collapse">
+	 	    <div id="learn-more-content"  class="panel-collapse collapse">
               <div class="panel-body">
 	 	   	    <ul class="nav nav-tabs" >
 				  <li class="active"><a style="padding:3px 10px;" href="#runPlan" data-toggle="tab">开行情况</a></li> 
@@ -622,8 +638,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 				</div>
 			</div>
 		 </div>
-		 </div>
-	  </div> 
+	 </div> 
 	  <!--详情时刻表--> 
 	 <div id="run_plan_train_times" class="easyui-dialog" title="时刻表"
 		data-options="iconCls:'icon-save'"
@@ -655,7 +670,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
+												 <div id="simpleTimes_table" style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														 <tbody data-bind="foreach: simpleTimes">
 												           <tr data-bind="visible: stationFlag != 'BTZ'">  
@@ -695,7 +710,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 							        <tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="9" style="padding:0">
-												 <div style="height: 400px; overflow-y:auto;"> 
+												 <div id="allTimes_table" style="height: 400px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: times">
 												           <tr>  
@@ -755,8 +770,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 <script type="text/javascript" src="<%=basePath%>/assets/js/respond.min.js"></script>
 <script src="<%=basePath %>/assets/js/moment.min.js"></script>
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
-<%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%>
-<script src="<%=basePath %>/assets/js/trainplan/common.js"></script>
+<%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%> 
 
 <script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>

@@ -199,5 +199,15 @@ public class Constants {
 	public static final String CROSSDAO_DELETE_PLANTRAINSTN_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanTrainStnsByPlanCrossIds";
 	public static final String CROSSDAO_GET_PLANCHECKINFO_FOR_PLANCROSSID="org.railway.com.trainplan.repository.mybatis.RunPlanDao.getPlanCheckInfoForPlanCrossId";
     public static final String CROSSDAO_UPDATE_CHECKTYPE_FOR_PLANCROSSID="org.railway.com.trainplan.repository.mybatis.RunPlanDao.updateCheckTypeForPlanCrossId";
+	public static final String GETTRAINLINES_JHPT_COUNT = "trainInfoDao.getTrainlineTotalCount";
+	public static final String GETTRAINLINES_JHPT = "trainInfoDao.getTrainlineForPage";
+	public static String GET_TRAINLINES_BY_TRAINLINEID = "trainTimeDao.getTrainLineTimes";
+	
+	
+	
+	
+
+	//获取交路字典信息
+	public static final String SQL_ID_CROSSDICT_INFO = "crossDictDao.findCrossDictList";
 
 }

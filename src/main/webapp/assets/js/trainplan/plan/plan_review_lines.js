@@ -1,6 +1,301 @@
+$(function() { 
+	
+	var appModel = new ApplicationModel();
+	ko.applyBindings(appModel); 
+	 
+	appModel.init();   
+});  
 
-function GetDateDiff(startTime, endTime)
+function SelectCheckModle(){
+	var self = this; 
+	
+	self.crossAllcheckBox = ko.observable(0);
+	
+	self.setCurrentCross = function(cross){
+		self.currentCross(cross);
+		if(self.searchModle().showCrossMap() == 1){
+			$("#cross_map_dlg").find("iframe").attr("src", "cross/provideCrossChartData?crossId=" + cross.crossId);
+		}
+	}; 
+	
+	 
+	self.selectCross = function(row){
+//		self.crossAllcheckBox();
+		console.log(row.selected());
+		if(row.selected() == 0){
+			self.crossAllcheckBox(1);
+			$.each(self.crossRows.rows(), function(i, crossRow){ 
+				console.log("==="+ crossRow.selected());
+				if(crossRow.selected() != 1 && crossRow != row){
+					self.allcheckBox(0);
+					return false;
+				}  
+			}); 
+		}else{
+			self.crossAllcheckBox(0);
+		} 
+	}; 
+	
+}
+
+function ApplicationModel() {
+	
+	var self = this;
+	//列车列表
+	self.trains = ko.observableArray();
+	
+	self.trainLines = ko.observableArray();
+	//交路列表   
+	self.gloabBureaus = [];   
+	//车辆担当局
+	self.searchModle = ko.observable(new searchModle()); 
+	
+	self.currentTrain = ko.observable(); 
+	
+	self.currdate =function(){
+		var d = new Date();
+		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
+		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
+		var days = d.getDate(); 
+		month = ("" + month).length == 1 ? "0" + month : month;
+		days = ("" + days).length == 1 ? "0" + days : days;
+		return year+"-"+month+"-"+days;
+	};
+	
+	
+	
+	self.init = function(){     
+		$("#runplan_input_startDate").datepicker();
+		self.searchModle().planStartDate(self.currdate());
+		 
+	    $.ajax({
+			url : basePath + "/plan/getFullStationInfo",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					self.searchModle().loadBureau(result.data); 
+					if (result.data !=null) { 
+						$.each(result.data,function(n, bureau){  
+							self.gloabBureaus.push({"shortName": bureau.ljjc, "code": bureau.ljpym}); 
+						});
+					} 
+				} else {
+					showErrorDialog("");
+				} 
+			},
+			error : function() {
+				showErrorDialog("接口调用失败");
+			},
+			complete : function(){
+				commonJsScreenUnLock();
+			}
+	    });
+		
+		
+	};  
+	
+	self.trainNbrChange = function(n,  event){
+		self.searchModle().trainNbr(event.target.value.toUpperCase());
+	};
+	
+	self.loadTrains = function(){
+		self.trainRows.loadRows();
+	};
+	self.loadTrainsForPage = function(startIndex, endIndex) {   
+		var startBureauShortName = self.searchModle().startBureau();  
+		var chart = self.searchModle().chart(); 
+		var fuzzyFlag = self.searchModle().fuzzyFlag();
+		var startDate = $("#runplan_input_startDate").val(); 
+		 
+		$.ajax({
+				url : basePath + "/jbtcx/queryTrainLines",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					startBureauShortName : startBureauShortName, 
+					startDate : startDate.replace(/-/g, ''), 
+					rownumstart : startIndex,
+					rownumend : endIndex
+				}),
+				success : function(result) {  
+					console.log(result) 
+					if (result != null && result != "undefind" && result.code == "0") {  
+							if (result.data !=null) {   
+								var rows = [];
+								$.each(result.data.data,function(n, crossInfo){
+									rows.push(new TrainRow(crossInfo));  
+								}); 
+								 $("#plan_runline_table_trainInfo").freezeHeader();  
+								self.trainRows.loadPageRows(result.data.totalRecord, rows);
+//										var skarr = []; 
+//										if(temp.scheduleDto.sourceItemDto != null){
+//											skarr.push(temp.scheduleDto.sourceItemDto); 
+//										}   
+//										
+//										if(temp.scheduleDto.routeItemDtos != null && temp.scheduleDto.routeItemDtos.length > 0){
+//											$.each(temp.scheduleDto.routeItemDtos,function(i, a){ 
+//												skarr.push(a);
+//											});
+//										} 
+//										if(temp.scheduleDto.targetItemDto != null){
+//											skarr.push(temp.scheduleDto.targetItemDto);
+//										} 
+//										
+//										skarr.sort(function(a, b){  
+//											return a.index - b.index;
+//										}); 
+//										
+//										train.loadTimes(skarr); 
+							 
+							}
+						 
+						 
+					} else {
+						showErrorDialog("获取车底失败");
+					};
+				},
+				error : function() {
+					showErrorDialog("获取车底失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+	}; 
+	
+	self.trainRows = new PageModle(50, self.loadTrainsForPage);
+	 
+	self.showTrainTimes = function(row) { 
+		self.currentTrain(row);
+		self.trainLines.remove(function(item){
+			return true;
+		});
+		if(row.times().length > 0){ 
+			$.each(row.times(), function(i, n){
+				self.trainLines.push(n);
+				if(i == row.times().length - 1){
+					$("#plan_runline_table_trainLine").freezeHeader(); 
+				}
+			}) ;
+			 
+		}else{
+			commonJsScreenLock();
+			$.ajax({
+				url : basePath + "/jbtcx/queryTrainLineTimes",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({   
+					trainId : row.id
+				}),
+				success : function(result) {   
+					if (result != null && result != "undefind" && result.code == "0") {  
+						row.loadTimes(result.data);  
+						$.each(row.times(), function(i, n){
+							self.trainLines.push(n);
+							if(i == row.times().length - 1){
+								$("#plan_runline_table_trainLine").freezeHeader(); 
+							}
+						});
+					} else {
+						showErrorDialog("获取列车时刻表失败");
+					};
+				},
+				error : function() {
+					showErrorDialog("获取列车时刻表失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+		}
+		
+	};  
+	
+	self.fuzzyChange = function(){
+		console.log(self.searchModle().fuzzyFlag())
+		if(self.searchModle().fuzzyFlag() == 0){
+			self.searchModle().fuzzyFlag(1);
+		}else{
+			self.searchModle().fuzzyFlag(0);
+		}
+	};
+}
+
+function searchModle(){
+	
+	self = this;   
+	
+	self.startBureaus = ko.observableArray(); 
+	
+	self.endBureaus = ko.observableArray(); 
+	
+	self.charts = ko.observableArray(); 
+ 
+	self.startBureau = ko.observable();
+	
+	self.planStartDate = ko.observable();
+	
+	self.endBureau = ko.observable();
+	
+	self.trainNbr = ko.observable(); 
+	
+	self.chart = ko.observable(); 
+	
+	self.fuzzyFlag = ko.observable(1); 
+	
+	self.loadBureau = function(bureaus){   
+		for ( var i = 0; i < bureaus.length; i++) {   
+			console.log(bureaus[i]);
+			self.startBureaus.push(new BureausRow(bureaus[i]));  
+			self.endBureaus.push(new BureausRow(bureaus[i]));
+		} 
+	}; 
+	
+	self.loadChats = function(charts){   
+		for ( var i = 0; i < charts.length; i++) {   
+			self.charts.push({"chartId": charts[i].schemeId, "name": charts[i].schemeName});  
+		} 
+	}; 
+	
+}
+
+function BureausRow(data) {
+	var self = this;  
+	self.shortName = data.ljjc;   
+	self.code = data.ljpym;  
+} 
+
+function filterValue(value){
+	return value == null || value == "null" ? "--" : value;
+}
+function TrainTimeRow(data) { 
+	var self = this; 
+	self.index = data.childIndex + 1;
+	self.stnName = filterValue(data.stnName);
+	self.bureauShortName = filterValue(data.bureauShortName);
+	self.sourceTime = filterValue(data.arrTime);
+	self.targetTime = filterValue(data.dptTime);
+	self.stepStr = GetDateDiff(data); 
+	self.trackName = filterValue(data.trackName);  
+	self.runDays = data.runDays;
+	 
+}; 
+function GetDateDiff(data)
 { 
+	if(data.childIndex == 0)
+		return "";
+	else if(data.dptTime == '-'){
+		return "";
+	} 
+	var startTime = new Date("1977-7-7 " + data.arrTime);
+	var endTime = new Date("1977-7-7 " + data.dptTime);  
 	var result = "";
 	
 	var date3=endTime.getTime()-startTime.getTime(); //时间差的毫秒数 
@@ -26,416 +321,30 @@ function GetDateDiff(startTime, endTime)
 	
 	result += seconds > 0 ? seconds + "秒" : "";  
 	 
-	return result == "" ? "不停靠" : result; 
-} 
- 
-function filterValue(value){
-	return value == null || value == "null" ? "--" : value;
-}
-
-function TrainInfo(checkbox){
-	var _self = this;
-	_self.checkbox = checkbox;
-	_self.requestId = null;
-	_self.routLines = null;
-	_self.setLines = function(arr){
-		_self.routLines = arr;
-	}; 
-	_self.setRequestId = function(requestId){
-		_self.requestId = requestId;
-	};
-	
-}
-
-function Train(tr, lines){
-	var _self = this; 
-	_self.lines = lines;
-	_self.tr = tr; 
-	
-}
- 
-var PlanConstructionPage = function(){
-	
-
-	var _self = this; 
-	
-	_self.selectTrains = [];
-	
-	_self.trainLineMap = [];
-	
-	_self.results = {};
-	
-	
-	_self.pageselectCallback = function(page_index, jq){
-		_self.queryConstructionDetail(page_index+1);
-	    return false;
-	};
-
-	/** 
-	 * Callback function for the AJAX content loader.
-	 */
-	_self.initPagination = function(num_entries, page_index) { 
-	    // Create pagination element
-	    $("#Pagination").pagination(num_entries, {
-	        num_edge_entries: 5,
-	        num_display_entries: 6,
-	        prev_text:"<上一页",
-	        next_text:"下一页>",
-	        current_page: page_index-1, 
-	        callback: _self.pageselectCallback,
-	        items_per_page:15
-	    });
-	 };
-	
-	_self.showTable = function(skarr){
-		
-		_plan_review_table_trainLine.find("tr:gt(0)").remove();  
-		
-		$.each(skarr, function(i, trainObj){
-			var tr = $("<tr/>");
-			tr.append("<td>"+(trainObj.index+1)+"</td>");
-			tr.append("<td>"+filterValue(trainObj.name)+"</td>");
-			tr.append("<td>"+filterValue(trainObj.bureauShortName)+"</td>"); 
-			
-			if(trainObj.sourceTimeDto2 != null){
-				var a = trainObj.sourceTimeDto2.substring(5).replace(/-/, "");
-				tr.append("<td>"+a+"</td>");
-			}else{
-				tr.append("<td>--</td>");
-			}
-			
-			if(trainObj.targetTimeDto2 != null){
-				var a = trainObj.targetTimeDto2.substring(5).replace(/-/, "");
-				tr.append("<td>"+a+"</td>");
-			}else{
-				tr.append("<td>--</td>");
-			} 
-
-			if(trainObj.sourceTimeDto2 && trainObj.targetTimeDto2){
-			
-				var sourceTimeDto1 =  new Date(trainObj.sourceTimeDto2); 
-				
-				var targetTimeDto1 = new Date(trainObj.targetTimeDto2);  
-				 
-				tr.append("<td>"+GetDateDiff(sourceTimeDto1, targetTimeDto1)+"</td>");  
-			}else{
-				tr.append("<td>出发</td>"); 
-			}
-			
-			
-			tr.append("<td>"+filterValue(trainObj.trackName)+"</td>");
-			
-			 
-			_plan_review_table_trainLine.append(tr);   
-		});
-	}; 
-	_self.initLjSelectValue = function() {
-		_plan_runline_batch_select_lj.empty();//清除路局下拉控件值
-		$.ajax({
-			url : basePath+"/plan/getFullStationInfo",
-			cache : false,
-			type : "GET",
-			dataType : "json",
-			contentType : "application/json",
-			success : function(result) {
-				if (result != null && result != "undefind" && result.code == "0") {
-					if (result.data !=null) {
-						$.each(result.data,function(n,ljObj){
-							if (n==0) {
-								_plan_runline_batch_select_lj.append('<option selected="selected" value="'+ljObj.ljjc+'">'+ljObj.ljjc+'</option>');
-							} else {
-								_plan_runline_batch_select_lj.append('<option value="'+ljObj.ljjc+'">'+ljObj.ljjc+'</option>');
-							}
-						}); 
-					}
-				} else {
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-				}
-
-			},
-			error : function() {
-				showErrorDialog("接口调用失败");
-//				showErrorDialog("请求发送失败");
-//				showErrorDialog(portal.common.dialogmsg.REQUESTFAIL);
-			}
-		});
-	};
-	 
-	_self.logout = function() {
-		stompClient.disconnect();
-		window.location.href = "../logout.html";
-	};
-
-	//获取当期系统日期
-	this.currdate =function(){
-		var d = new Date();
-		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
-		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
-		var days = d.getDate(); 
-		return year+"-"+month+"-"+days;
-	};
-	
-	
-	this.initPage = function() {
-		//1.初始化日期控件值
-		_plan_construction_selectdate.datepicker();
-		_plan_construction_selectdate.val(this.currdate());//获取当期系统日期 
-		_self.initLjSelectValue();
-		_self.initPagination(0);
-	  
-	};
-	
-	_self.createConstructionPlain = function(){ 
-		
-		if(_plan_construction_selectdate.val() == null || _plan_construction_selectdate.val() == ""){
-			showErrorDialog("日期不能为空");
-			_plan_construction_selectdate.focus();
-			return;
-		}
-		if(_self.selectTrains.length <= 0){
-			showErrorDialog("请选中一行记录");
-			return
-		} 
-		for(var i = 0; i < _self.selectTrains.length; i++){
-			var train = _self.selectTrains[i];
-			 $(train).parent().parent().find("td:eq(7)").html("<span color=\'red\'>正在生成运行线</span>"); 
-			 var trainInfo = null;
-			 for(var z = 0; z < _self.trainLineMap.length; z++){
-				 if(_self.trainLineMap[z].checkbox == train){
-					 trainInfo = _self.trainLineMap[z];
-					 break;
-				 }
-			 } 
-			 if(trainInfo == null){
-				 trainInfo = new TrainInfo(train);
-			 }
-			 _self.trainLineMap.push(trainInfo);  
-			$.ajax({
-				url : basePath+"/construction/createConstructionPlain",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({
-					runDate : _plan_construction_selectdate.val(),//开行日期
-					trainNbr : train.value //车次号 
-				}),
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {  
-						var trainNbr = $.parseJSON(this.data).trainNbr;
-						var result1 = $.parseJSON(result.data.result); 
-						 
-						for(var j = 0; j < _self.trainLineMap.length; j++){
-							 
-							if(_self.trainLineMap[j].checkbox.value == trainNbr){
-								
-								_self.trainLineMap[j].setRequestId(result1.requestId);
-							}
-						}  
-					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-					} 
-				},
-				error : function() {
-					showErrorDialog("接口调用失败");
-				}
-			});
-		}
-	
-		
-	};
-	 
-	_self.queryConstructionDetail = function(currentPage) {
-		_plan_construction_btnQuery.attr("disabled", "disabled");
-		_plan_review_table_trainInfo.find("tr:gt(0)").remove();
-		_plan_review_table_trainLine.find("tr:gt(0)").remove();  
-		commonJsScreenLock();
-		
-		//_plan_construction_table.find("tr:gt(0)").remove();//清除车次详细信息列表所有数据
-		if(_plan_construction_selectdate.val() == null || _plan_construction_selectdate.val() == ""){
-			showErrorDialog("日期不能为空");
-			_plan_construction_selectdate.focus();
-			_myProgressModal.hide();
-			_plan_construction_btnQuery.removeAttr("disabled");
-			return;
-		}
-		
-		if(_plan_runline_batch_select_lj.val() == null || _plan_runline_batch_select_lj.val() == ""){
-			showErrorDialog("请选择路局");
-			_plan_runline_batch_select_lj.focus();
-			_myProgressModal.hide();
-			_plan_construction_btnQuery.removeAttr("disabled");
-			return;
-		}
-		
-		$.ajax({
-			url : basePath+"/construction/queryTrainForBureau",
-			cache : false,
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json",
-			data :JSON.stringify({ 
-				runDate : _plan_construction_selectdate.val(),//开行日期
-				bureauNrm : _plan_runline_batch_select_lj.val(),//车次号  
-				currentPage: currentPage,
-				pageSize: 15
-			}),
-			success : function(result) {   
-//	            <td><div style="text-align:center;margin:2px 0 10px 0;"><input type="checkbox"/></div></td> 
-				if (result != null && result != "undefind" && result.code == "0") {  
-					if (result.data !=null) {   
-						_self.trainLineMap=[];
-						$.each(result.data,function(n,constructionObj){   
-							var result = $.parseJSON(constructionObj); 
-							
-							if(result.resultCount == null || result.resultCount == 0){
-								var tr = $("<tr/>");
-								tr.append("<td colspan='8'>没有可现显示的数据</td>");
-								_plan_review_table_trainInfo.append(tr);     
-								return;
-							}
-							_self.initPagination(result.resultCount, currentPage);
-							
-							if(result.code == "-1"){
-								showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-								commonJsScreenUnLock();
-								return;
-							} 
-							
-							$.each(result.data, function(n,temp){ 
-								var tr = $("<tr/>"); 
-								tr.append("<td>"+filterValue(temp.name)+"</td>");
-								
-								if(temp.scheduleDto !=null){								 
-									var sourceItemDto = temp.scheduleDto.sourceItemDto;
-									var targetItemDto = temp.scheduleDto.targetItemDto; 
-									
-									if(sourceItemDto != null){
-										tr.append("<td>"+filterValue(sourceItemDto.bureauShortName)+"</td>");
-										tr.append("<td>"+sourceItemDto.name+"</td>"); 
-										if(sourceItemDto.sourceTimeDto2 != null){
-											var a = sourceItemDto.sourceTimeDto2.substring(5).replace(/-/, "");
-											tr.append("<td>"+a+"</td>"); 
-										}else{
-											tr.append("<td>--</td>");
-										}
-									}else{
-										tr.append("<td>--</td>");
-										tr.append("<td>--</td>");
-									}
-									if(targetItemDto != null){
-										tr.append("<td>"+targetItemDto.name+"</td>");
-										if(targetItemDto.sourceTimeDto2 != null){
-											var a = targetItemDto.sourceTimeDto2.substring(5).replace(/-/, "");
-											tr.append("<td>"+a+"</td>"); 
-										}else{
-											tr.append("<td>--</td>");
-										} 
-									}else{
-										tr.append("<td>--</td>");
-										tr.append("<td>--</td>");
-									}  
-									
-									var skarr = []; 
-									if(temp.scheduleDto.sourceItemDto != null){
-										skarr.push(temp.scheduleDto.sourceItemDto); 
-									}   
-									
-									if(temp.scheduleDto.routeItemDtos != null && temp.scheduleDto.routeItemDtos.length > 0){
-										$.each(temp.scheduleDto.routeItemDtos,function(i, a){ 
-											skarr.push(a);
-										});
-									} 
-									if(temp.scheduleDto.targetItemDto != null){
-										skarr.push(temp.scheduleDto.targetItemDto);
-									} 
-									
-									skarr.sort(function(a, b){  
-										return a.index - b.index;
-									});  
-									var train = new Train(tr[0], skarr);
-									
-									_self.trainLineMap.push(train); 
-									
-									tr.click(function(){
-										_plan_review_table_trainLine.find("tr:gt(0)").remove();  
-										for(var i = 0; i < _self.trainLineMap.length; i++){  
-											if(_self.trainLineMap[i].tr == this){   
-												if(_self.trainLineMap[i].lines != null){ 
-													_self.showTable(_self.trainLineMap[i].lines);
-												}
-												break;
-											}
-										} 
-									}); 
-									_plan_review_table_trainInfo.append(tr);
-								} 
-							}); 
-						}); 
-					} 
-				} else {
-					
-					showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-				} 
-
-			},
-			error : function() {
-				showErrorDialog("接口调用失败");
-			},
-			complete: function(){ 
-				_plan_construction_btnQuery.removeAttr("disabled");
-				commonJsScreenUnLock();
-			}
-		});
-	};  
+	return result == "" ? "" : result; 
 };
 
-
- 
-
-var _PlanViewPage = null;
-var _plan_construction_table = $("#plan_construction_table");
-var _plan_construction_btnQuery = $("#plan_construction_btnQuery");// 错误数总计 
-var _plan_construction_input_trainNbr = $("#plan_construction_input_trainNbr");// 车次详情div 车次号input
-var _plan_construction_selectdate = $("#plan_construction_selectdate");// 日期
-
-var _plan_construction_createRunLine = $("#plan_construction_createRunLine");// 
- 
- 
-var _plan_review_table_trainInLine = $("#plan_review_table_trainInLine");
- 
-var _plan_review_table_trainLine = $("#plan_review_table_trainLine");
- 
-var _plan_review_table_trainInfo = $("#plan_review_table_trainInfo");
-
-var _plan_runline_batch_select_lj = $("#plan_runline_batch_select_lj");
-
-var _myProgressModal =  $("#myProgressModal");
-var socket = null;
-var stompClient = null;
-$(function(){
-	_PlanConstructionPage = new PlanConstructionPage();  
-	
-	//车次详情div 车次查询按钮增加事件
-	_plan_construction_btnQuery.click(function(){
-		_PlanConstructionPage.queryConstructionDetail(1);
-	});
-	
-	_plan_construction_createRunLine.click(function(){
-		_PlanConstructionPage.createConstructionPlain();
-	});
+function TrainRow(data) {   
+	var self = this;  
+	console.log(data)
+	self.id = data.planTrainId;
+	self.name = data.trainNbr; 
+	self.times = ko.observableArray();  
+	self.selected  = ko.observable();  
+	self.startBureau = data.startBureau; 
+	self.startStn =  data.startStn; 
+	self.sourceTime = filterValue(data.startTimeStr); 
+	self.endStn = data.endStn; 
+	self.endBureau = data.endBureau; 
+	self.routingBureau = data.routingBureauShortName; 
+	self.runDays = data.relativeTargetTimeDay;  
 	 
+	self.targetTime =  filterValue(data.endTimeStr); 
 	
-//	 $("#checkAll").change(function() {
-//		 $('input[name="subBox"]').attr("checked", this.checked);
-//     });
-     
-	//创建websocket连接
-//	socket = new SockJS(basePath+'/portfolio');
-//    stompClient = Stomp.over(socket);
-    _PlanConstructionPage.initPage(); 
+	self.loadTimes = function(times){
+		$.each(times, function(i, n){ 
+			self.times.push(new TrainTimeRow(n));
+		});
+	}; 
 	
-});
-
-
-
+} ; 

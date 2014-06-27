@@ -118,4 +118,37 @@ FROM PLAN_TRAIN A,PLAN_TRAIN_STN B WHERE A.PLAN_TRAIN_ID = B.PLAN_TRAIN_ID AND  
 ) T1
    
    </select>
+   <select id="getTrainLineTimes" parameterType="string" resultType="org.railway.com.trainplan.entity.TrainTimeInfo">
+ select s.child_index childIndex,
+       s.name stnName,
+       s.bureau_shortname bureauShortName,
+       s.node_id nodeId,
+       s.track_name trackName,
+       '-' AS arrTime,
+       TO_CHAR(s.time, 'hh24:mi:SS') as dptTime
+  from jhpt_rjh.m_trainline_schedule_sitem s
+ where s.parent_id = #{trainId}
+UNION all
+select  r.child_index childIndex,
+       r.name stnName,
+       r.bureau_shortname bureauShortName,
+       r.node_id nodeId,
+       r.track_name trackName,
+       TO_CHAR(r.SOURCE_TIME, 'hh24:mi:SS') AS arrTime,
+       TO_CHAR(r.TARGET_TIME, 'hh24:mi:SS') AS dptTime
+  from jhpt_rjh.m_trainline_schedule_ritem r
+ where r.parent_id = #{trainId}
+UNION all
+select  t.child_index childIndex,
+       t.name stnName,
+       t.bureau_shortname bureauShortName,
+       t.node_id nodeId,
+      t.track_name trackName,
+       TO_CHAR(t.time, 'hh24:mi:SS') AS arrTime,
+       '-' as dptTime
+  from jhpt_rjh.m_trainline_schedule_titem t
+ where t.parent_id = #{trainId} order by childIndex
+   
+   </select>
+   
 </mapper>

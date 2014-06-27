@@ -537,9 +537,9 @@ function CrossModel() {
 		}
 		$("#cross_train_time_dlg").dialog({draggable: true, resizable:true, top:50, onResize:function() {
 			var simpleTimes_table = $("#simpleTimes_table");
-			var allTimes_table = $("#simpleTimes_table");
+			var allTimes_table = $("#allTimes_table");
 			var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
-			var WH = $('#cross_train_time_dlg').height();
+			var WH = $('#cross_train_time_dlg').height() - 100;
 			var WW = $('#cross_train_time_dlg').width();
             if (isChrome) {
             	simpleTimes_table.css({ "height": (WH) + "px"});
@@ -678,7 +678,7 @@ function CrossModel() {
 						if(result.data.length == 0){
 							showErrorDialog("全部生成失败");  
 						}else if(result.data.length < delCrosses.length){  
-						    showSuccessDialog("部分生成成功");  
+							showWarningDialog("部分生成成功");  
 					   }else{
 						   showSuccessDialog("生成成功");  
 					   } 
