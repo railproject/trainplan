@@ -82,7 +82,7 @@ function myCanvasFillTextWithColor(context, colorParam, textObj) {
 	}
 	
 	// 设置对齐方式
-	context.textAlign = "center";
+	context.textAlign = textObj.textAlign;//"center";
 	//context.textBaseline = "middle";	//垂直居中
 	context.fillText(textObj.text, textObj.fromX, textObj.fromY);
 };
@@ -97,7 +97,7 @@ function myCanvasFillText(context, textObj) {
 	}
 	
 	// 设置对齐方式
-	context.textAlign = textObj.textAlign,//"right";
+	context.textAlign = textObj.textAlign;//"right";
 	//context.textBaseline = "middle";	//垂直居中
 	context.fillText(textObj.text, textObj.fromX, textObj.fromY);
 };
