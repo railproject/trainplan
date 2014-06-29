@@ -49,7 +49,7 @@ public class HighLineCrewController {
         return new ResponseEntity<List<HighLineCrewInfo>>(list, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "add", method = RequestMethod.PUT)
+    @RequestMapping(value = "add", method = RequestMethod.POST)
     public ResponseEntity addHighLineCrewInfo(@RequestBody HighLineCrewInfo highLineCrewInfo) {
         logger.debug("addHighLineCrewInfo:::::::");
         highLineCrewInfo.setCrewHighlineId(UUID.randomUUID().toString());
@@ -57,7 +57,7 @@ public class HighLineCrewController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.POST)
+    @RequestMapping(value = "update", method = RequestMethod.PUT)
     public ResponseEntity updateHighLineCrewInfo(@RequestBody HighLineCrewInfo highLineCrewInfo) {
         logger.debug("updateHighLineCrewInfo:::::::");
         highLineCrewService.update(highLineCrewInfo);
