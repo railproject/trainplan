@@ -12,7 +12,7 @@ public class CrewController {
 	 * 车长乘务信息跳转
 	 * @return
 	 */
-	@RequestMapping(value = "/page/cz", method = RequestMethod.GET)
+	@RequestMapping(value = "page/cz", method = RequestMethod.GET)
 	public String pageCrewCz() {
 		return "crew/crew_cz";
 	}
@@ -21,7 +21,7 @@ public class CrewController {
 	 * 司机乘务信息跳转
 	 * @return
 	 */
-	@RequestMapping(value = "/page/sj", method = RequestMethod.GET)
+	@RequestMapping(value = "page/sj", method = RequestMethod.GET)
 	public String pageCrewSj() {
 		return "crew/crew_sj";
 	}
@@ -30,7 +30,7 @@ public class CrewController {
 	 * 机械师乘务信息跳转
 	 * @return
 	 */
-	@RequestMapping(value = "/page/jxs", method = RequestMethod.GET)
+	@RequestMapping(value = "page/jxs", method = RequestMethod.GET)
 	public String pageCrewJxs() {
 		return "crew/crew_jxs";
 	}

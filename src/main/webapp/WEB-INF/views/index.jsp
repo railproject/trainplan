@@ -180,6 +180,18 @@ if (user !=null && user.getBureau()==null) {
                         <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-search"></i>明细查询</a></li>
                     </ul>
                 </li>
+                
+                
+                
+                <li>
+                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>乘务计划<i class="fa fa-caret-down pull-right"></i></a>
+                    <ul>
+                        <li><a href="${ctx}/crew/page/sj" target="contentFrame"><i class="fa fa-external-link"></i>司机乘务计划</a></li>
+                        <li><a href="${ctx}/crew/page/cz" target="contentFrame"><i class="fa fa-external-link"></i>车长乘务计划</a></li>
+                        <li><a href="${ctx}/crew/page/jxs" target="contentFrame"><i class="fa fa-external-link"></i>机械师乘务计划</a></li>
+                    </ul>
+                </li>
+                
 
                 <li><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="contentFrame" class="menu_one"><i class="fa fa-file"></i>技术资料 </a></li>
 	            <!-- 消息测试  发布时需要注释 -->
