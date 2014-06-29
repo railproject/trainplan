@@ -71,9 +71,10 @@ public class HighLineCrewController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "{highLineId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteHighLineCrewInfo(@PathVariable String crewHighLineId) {
+    @RequestMapping(value = "deleteHighLineCrewInfo", method = RequestMethod.DELETE)
+    public ResponseEntity deleteHighLineCrewInfo(@RequestBody Map<String,Object> reqMap ) {
         logger.debug("deleteHighLineCrewInfo:::::::");
+        String crewHighLineId = StringUtil.objToStr(reqMap.get("crewHighLineId"));
         highLineCrewService.delete(crewHighLineId);
         return new ResponseEntity(HttpStatus.OK);
     }
