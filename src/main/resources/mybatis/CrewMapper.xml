@@ -76,8 +76,8 @@
 				 NEXT_TRAIN_ID AS nextTrainId,
 				 RUN_DATE AS runDate,
 				 TRAIN_NBR AS trainNbr,
-				 to_char(START_TIME,'yyyy-MM-dd hh24:mi:SS') AS startDateTime,
-				 to_char(END_TIME,'yyyy-MM-dd hh24:mi:SS') AS endDateTime,
+				 to_char(START_TIME,'yyyy-MM-dd hh24:mi:SS') AS startTimeStr,
+				 to_char(END_TIME,'yyyy-MM-dd hh24:mi:SS') AS endTimeStr,
 				 START_BUREAU AS startBureauShortName,
 				 START_BUREAU_FULL AS startBureauFullName,
 				 START_STN AS startStn,
@@ -104,11 +104,11 @@
 				 DAILYPLAN_TIMES AS dailyPlanTimes,
 				 DAILYPLAN_FLAG AS dailyPlanFlag
 				 
-				 FROM PLAN_TRAIN WHERE 1=1 AND RUN_DATE=#{runDate}
+				 FROM PLAN_TRAIN WHERE 1=1 AND RUN_DATE=#{runDate}  
 				 <if test="trainNbr !=null">
 				     AND TRAIN_NBR=#{trainNbr}
 				  </if>
- 
+                 order by TRAIN_NBR
 			)M
 		) P
 		WHERE P.NUM>=${rownumstart} AND P.NUM &lt;=${rownumend}
