@@ -58,64 +58,64 @@ var HightLineCrewSjPage = function () {
 	 */
 	function HighlineCrewModel() {
 		var _self = this;
-		var crewHighlineId = ko.observable();
-		var crewDate = ko.observable();
-		var crewBureau = ko.observable();
-		var crewType = ko.observable();
-		var crewCross = ko.observable();
-		var crewGroup = ko.observable();
-		var throughLine = ko.observable();
-		var name1 = ko.observable();
-		var tel1 = ko.observable();
-		var identity1 = ko.observable();
-		var name2 = ko.observable();
-		var tel2 = ko.observable();
-		var identity2 = ko.observable();
-		var note = ko.observable();
-		var recordPeople = ko.observable();
-		var recordPeopleOrg = ko.observable();
-		var recordTime = ko.observable();
-		var submitType = ko.observable();
+		_self.crewHighlineId = ko.observable();
+		_self.crewDate = ko.observable();
+		_self.crewBureau = ko.observable();
+		_self.crewType = ko.observable();
+		_self.crewCross = ko.observable();
+		_self.crewGroup = ko.observable();
+		_self.throughLine = ko.observable();
+		_self.name1 = ko.observable();
+		_self.tel1 = ko.observable();
+		_self.identity1 = ko.observable();
+		_self.name2 = ko.observable();
+		_self.tel2 = ko.observable();
+		_self.identity2 = ko.observable();
+		_self.note = ko.observable();
+		_self.recordPeople = ko.observable();
+		_self.recordPeopleOrg = ko.observable();
+		_self.recordTime = ko.observable();
+		_self.submitType = ko.observable();
 		
 		_self.update = function (obj) {
 			if (obj == null) {
-				crewHighlineId = "";
-				crewDate = "";
-				crewBureau = "";
-				crewType = "";
-				crewCross = "";
-				crewGroup = "";
-				throughLine = "";
-				name1 = "";
-				tel1 = "";
-				identity1 = "";
-				name2 = "";
-				tel2 = "";
-				identity2 = "";
-				note = "";
-				recordPeople = "";
-				recordPeopleOrg = "";
-				recordTime = "";
-				submitType = "";
+				_self.crewHighlineId("");
+				_self.crewDate("");
+				_self.crewBureau("");
+				_self.crewType("");
+				_self.crewCross("");
+				_self.crewGroup("");
+				_self.throughLine("");
+				_self.name1("");
+				_self.tel1("");
+				_self.identity1("");
+				_self.name2("");
+				_self.tel2("");
+				_self.identity2("");
+				_self.note("");
+				_self.recordPeople("");
+				_self.recordPeopleOrg("");
+				_self.recordTime("");
+				_self.submitType("");
 			} else {
-				crewHighlineId = obj.crewHighlineId;
-				crewDate = obj.crewDate;
-				crewBureau = obj.crewBureau;
-				crewType = obj.crewType;
-				crewCross = obj.crewCross;
-				crewGroup = obj.crewGroup;
-				throughLine = obj.throughLine;
-				name1 = obj.name1;
-				tel1 = obj.tel1;
-				identity1 = obj.identity1;
-				name2 = obj.name2;
-				tel2 = obj.tel2;
-				identity2 = obj.identity2;
-				note = obj.note;
-				recordPeople = obj.recordPeople;
-				recordPeopleOrg = obj.recordPeopleOrg;
-				recordTime = obj.recordTime;
-				submitType = obj.submitType;
+				_self.crewHighlineId(obj.crewHighlineId);
+				_self.crewDate(obj.crewDate);
+				_self.crewBureau(obj.crewBureau);
+				_self.crewType(obj.crewType);
+				_self.crewCross(obj.crewCross);
+				_self.crewGroup(obj.crewGroup);
+				_self.throughLine(obj.throughLine);
+				_self.name1(obj.name1);
+				_self.tel1(obj.tel1);
+				_self.identity1(obj.identity1);
+				_self.name2(obj.name2);
+				_self.tel2(obj.tel2);
+				_self.identity2(obj.identity2);
+				_self.note(obj.note);
+				_self.recordPeople(obj.recordPeople);
+				_self.recordPeopleOrg(obj.recordPeopleOrg);
+				_self.recordTime(obj.recordTime);
+				_self.submitType(obj.submitType);
 			}
 		};
 	};
@@ -160,18 +160,116 @@ var HightLineCrewSjPage = function () {
 		 * 新增页面打开时
 		 */
 		_self.onAddOpen = function() {
-			_self.hightLineCrewModel.update(null);
+			_self.hightLineCrewModel().update(null);
 		};
 		
 		
 		
 
 		/**
-		 * 新增页面打开时
+		 * 修改页面打开时
 		 */
 		_self.onEditOpen = function() {
-			_self.hightLineCrewModel.update(null);
+			var currentCrewHighlineId = "";
+			$("[name='crew_checkbox']").each(function(){
+				if($(this).is(":checked")) {
+					currentCrewHighlineId = $(this).val();
+					return false; //跳出循环
+				}
+		    });
+			
+			if (currentCrewHighlineId == "") {
+				showWarningDialog("请选择一条乘务计划记录");
+				return;
+			}
+			
+			commonJsScreenLock();
+			$.ajax({
+				url : basePath+"/crew/highline/getHighLineCrew",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({
+					crewHighLineId : currentCrewHighlineId
+				}),
+				success : function(result) {
+					if (result != null && typeof result == "object" && result.code == "0") {
+						_self.hightLineCrewModel().update(result.data);
+					} else {
+						showErrorDialog("获取司机乘务计划信息失败");
+					};
+				},
+				error : function() {
+					showErrorDialog("获取司机乘务计划信息失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			});
+			
+			
 		};
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/**
+		 * 删除
+		 */
+		_self.deleteHightLineCrew = function() {
+			var currentCrewHighlineId = "";
+			$("[name='crew_checkbox']").each(function(){
+				if($(this).is(":checked")) {
+					currentCrewHighlineId = $(this).val();
+					return false; //跳出循环
+				}
+		    });
+			
+			if (currentCrewHighlineId == "") {
+				showWarningDialog("请选择一条乘务计划记录");
+				return;
+			}
+			
+			commonJsScreenLock(2);
+			$.ajax({
+				url : basePath+"/crew/highline/deleteHighLineCrewInfo",
+				cache : false,
+				type : "DELETE",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({
+					crewHighLineId : currentCrewHighlineId
+				}),
+				success : function(result) {
+					if (result != null && typeof result == "object" && result.code == "0") {
+						//2.查询司机乘务计划信息
+						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
+						showSuccessDialog("成功删除司机乘务计划信息");
+					} else {
+						commonJsScreenUnLock(1);
+						showErrorDialog("删除司机乘务计划信息失败");
+					};
+				},
+				error : function() {
+					commonJsScreenUnLock(1);
+					showErrorDialog("删除司机乘务计划信息失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock(1);
+				}
+			});
+			
+			
+		};
+		
 		
 		
 
@@ -179,28 +277,29 @@ var HightLineCrewSjPage = function () {
 		 * 发布按钮事件
 		 */
 		_self.sendCrew = function(){
-			commonJsScreenLock();
+			commonJsScreenLock(2);
 			$.ajax({
-				url : basePath+"/crew/highline/send",
+				url : basePath+"/crew/highline/updateSubmitType",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
 					crewType : "2",//乘务类型（1车长、2司机、3机械师）
-					crewDate : _self.searchModle().runDate()
+					crewDate : $("#crew_input_rundate").val()//_self.searchModle().runDate()
 				}),
 				success : function(result) {
-
-					console.log("================result=================");
-					console.dir(result);
 					if (result != null && typeof result == "object" && result.code == "0") {
-						 
+						//2.查询司机乘务计划信息
+						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
+						showSuccessDialog("提交成功");
 					} else {
+						commonJsScreenUnLock(1);
 						showErrorDialog("提交司机乘务计划信息失败");
 					};
 				},
 				error : function() {
+					commonJsScreenUnLock(1);
 					showErrorDialog("提交司机乘务计划信息失败");
 				},
 				complete : function(){
@@ -216,7 +315,7 @@ var HightLineCrewSjPage = function () {
 		 * 新增乘务计划
 		 */
 		_self.addHightLineCrew = function(){
-			commonJsScreenLock();
+			commonJsScreenLock(2);
 			$.ajax({
 				url : basePath+"/crew/highline/add",
 				cache : false,
@@ -225,7 +324,7 @@ var HightLineCrewSjPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					crewType : "2",//乘务类型（1车长、2司机、3机械师）
-					crewDate : _self.searchModle().runDate(),
+					crewDate : $("#crew_input_rundate").val(),//_self.searchModle().runDate(),
 					crewCross : $("#add_crewCross").val(),
 					crewCross : $("#add_crewCross").val(),
 					crewGroup : $("#add_crewGroup").val(),
@@ -239,17 +338,18 @@ var HightLineCrewSjPage = function () {
 					note : $("#add_note").val()
 				}),
 				success : function(result) {
-
-					console.log("================result=================");
-					console.dir(result);
 					if (result != null && typeof result == "object" && result.code == "0") {
-						 
+						//2.查询司机乘务计划信息
+						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
+						showSuccessDialog("新增成功");
 					} else {
 						showErrorDialog("保存司机乘务计划信息失败");
+						commonJsScreenUnLock(1);
 					};
 				},
 				error : function() {
 					showErrorDialog("保存司机乘务计划信息失败");
+					commonJsScreenUnLock(1);
 				},
 				complete : function(){
 					commonJsScreenUnLock(1);
@@ -263,7 +363,7 @@ var HightLineCrewSjPage = function () {
 		 * 修改乘务计划
 		 */
 		_self.updateHightLineCrew = function(){
-			commonJsScreenLock();
+			commonJsScreenLock(2);
 			$.ajax({
 				url : basePath+"/crew/highline/update",
 				cache : false,
@@ -273,7 +373,7 @@ var HightLineCrewSjPage = function () {
 				data :JSON.stringify({
 					crewHighlineId : $("#update_crewHighlineId").val(),
 					crewType : "2",//乘务类型（1车长、2司机、3机械师）
-					crewDate : _self.searchModle().runDate(),
+					crewDate : $("#crew_input_rundate").val(),//_self.searchModle().runDate(),
 					crewCross : $("#add_crewCross").val(),
 					crewCross : $("#add_crewCross").val(),
 					crewGroup : $("#add_crewGroup").val(),
@@ -287,16 +387,17 @@ var HightLineCrewSjPage = function () {
 					note : $("#add_note").val()
 				}),
 				success : function(result) {
-
-					console.log("================result=================");
-					console.dir(result);
 					if (result != null && typeof result == "object" && result.code == "0") {
-						 
+						//2.查询司机乘务计划信息
+						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
+						showSuccessDialog("修改成功");
 					} else {
+						commonJsScreenUnLock(1);
 						showErrorDialog("保存司机乘务计划信息失败");
 					};
 				},
 				error : function() {
+					commonJsScreenUnLock(1);
 					showErrorDialog("保存司机乘务计划信息失败");
 				},
 				complete : function(){
@@ -311,11 +412,10 @@ var HightLineCrewSjPage = function () {
 		/**
 		 * 分页查询开行计划列表
 		 */
-		function loadPlanDataForPage() {
-			var _runDate = _self.searchModle().runDate();	//运行日期
-			var _trainNbr = _self.searchModle().trainNbr()!="undefined"?_self.searchModle().trainNbr():"";//车次
+		function loadPlanDataForPage(startIndex, endIndex) {
+			var _runDate = $("#crew_input_rundate").val();//_self.searchModle().runDate();	//运行日期
+			var _trainNbr =_self.searchModle().trainNbr()!="undefined"?_self.searchModle().trainNbr():"";//车次
 			
-			console.log("_runDate="+_runDate+"	_trainNbr="+_trainNbr);
 			
 			if(_runDate == null || typeof _runDate!="string"){
 				showErrorDialog("请选择日期!");
@@ -331,7 +431,9 @@ var HightLineCrewSjPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					runDate : _runDate,
-					trainNbr : _trainNbr
+					trainNbr : _trainNbr,
+					rownumstart : startIndex, 
+					rownumend : endIndex
 				}),
 				success : function(result) {
  
@@ -362,12 +464,11 @@ var HightLineCrewSjPage = function () {
 		/**
 		 * 分页查询司机乘务计划列表
 		 */
-		function loadHightLineCrewSjDataForPage() {
+		function loadHightLineCrewSjDataForPage(startIndex, endIndex) {
 			
-			var _runDate = _self.searchModle().runDate();	//运行日期
+			var _runDate = $("#crew_input_rundate").val();//_self.searchModle().runDate();	//运行日期
 			var _trainNbr = _self.searchModle().trainNbr();	//车次
 			
-			console.log("_runDate="+_runDate+"	_trainNbr="+_trainNbr);
 			
 			if(_runDate == null || typeof _runDate!="string"){
 				showErrorDialog("请选择日期!");
@@ -383,8 +484,10 @@ var HightLineCrewSjPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					crewType : "2",	//乘务类型（1车长、2司机、3机械师）
-					runDate : _runDate,
-					trainNbr : _trainNbr
+					crewDate : _runDate,
+					trainNbr : _trainNbr,
+					rownumstart : startIndex, 
+					rownumend : endIndex
 				}),
 				success : function(result) {
  
@@ -392,6 +495,13 @@ var HightLineCrewSjPage = function () {
 						var rows = [];
 						if(result.data.data != null){
 							$.each(result.data.data,function(n, obj){
+								if (obj.submitType != null && obj.submitType==0) {
+									obj.submitTypeStr = "<span class='label label-danger'>草稿</span>";
+								} else if (obj.submitType != null && obj.submitType==1) {
+									obj.submitTypeStr = "<span class='label label-success'>已提交</span>";
+								} else {
+									obj.submitTypeStr = "";
+								}
 								rows.push(obj);
 							});
 							_self.hightLineCrewSjRows.loadPageRows(result.data.totalRecord, rows);

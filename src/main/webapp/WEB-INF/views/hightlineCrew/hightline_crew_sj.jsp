@@ -27,7 +27,7 @@ String basePath = request.getContextPath();
     <div class="form-group" style="float:left;margin-left:30px;margin-bottom:0;">
       <label for="exampleInputEmail2" class="control-label pull-left"> 车次:&nbsp;</label>
       <div class="pull-left">
-        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().trainNbr">
+        <input id="crew_input_trainNbr" type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().trainNbr">
       </div>
     </div>
     <a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
@@ -63,11 +63,11 @@ String basePath = request.getContextPath();
             <tbody data-bind="foreach: planTrainRows.rows">
               <tr class="success">
                 <td data-bind=" text: ($index() + 1)"></td>
-                <td data-bind=" text: trainNbr"></td>
-                <td data-bind=" text: startStn"></td>
-                <td data-bind=" text: startTime"></td>
-                <td data-bind=" text: endStn"></td>
-                <td data-bind=" text: endTime"></td>
+                <td data-bind=" text: trainNbr, attr:{title: trainNbr}"></td>
+                <td data-bind=" text: startStn, attr:{title: startStn}"></td>
+                <td data-bind=" text: startTimeStr, attr:{title: startTimeStr}"></td>
+                <td data-bind=" text: endStn, attr:{title: endStn}"></td>
+                <td data-bind=" text: endTimeStr, attr:{title: endTimeStr}"></td>
               </tr>
             </tbody>
           </table>
@@ -104,7 +104,7 @@ String basePath = request.getContextPath();
         <div class="row" style="margin-bottom:10px;">
           <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#createHightLineCrewModal"><i class="fa fa-plus"></i>新增</button>
           <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#updateHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 编辑</button>
-          <button type="button" class="btn btn-success" ><i class="fa fa-minus-square"></i>移除</button>
+          <button type="button" class="btn btn-success"  data-bind="click : deleteHightLineCrew"><i class="fa fa-minus-square"></i>移除</button>
         </div>
         <div class="table-responsive table-hover">
           <table class="table table-bordered table-striped table-hover">
@@ -124,9 +124,9 @@ String basePath = request.getContextPath();
                 <th>状态</th>
               </tr>
             </thead>
-            <tbody data-bind="foreach: planTrainRows.rows">
-              <tr class="success">
-              	<td><input type="checkbox"></td>
+            <tbody data-bind="foreach: hightLineCrewSjRows.rows">
+              <tr data-bind="attr:{class : submitType==1? 'success':''}">
+              	<td><input name="crew_checkbox" type="checkbox" data-bind="value : crewHighlineId"></td>
                 <td data-bind=" text: ($index() + 1)"></td>
                 <td data-bind=" text: crewCross"></td>
                 <td data-bind=" text: crewGroup"></td>
@@ -137,7 +137,7 @@ String basePath = request.getContextPath();
                 <td data-bind=" text: name2"></td>
                 <td data-bind=" text: tel2"></td>
                 <td data-bind=" text: identity2"></td>
-                <td data-bind="html : submitType==1?'&lt;span class='label label-success'&gt;已提交&lt;/span&gt;' :	'&lt;span class='label label-success'&gt;草稿&lt;/span&gt;'"></td>
+                <td data-bind="html : submitTypeStr"></td>
               </tr>
             </tbody>
           </table>
@@ -260,34 +260,34 @@ String basePath = request.getContextPath();
 
 
 <!--修改弹出框-->
-<div class="modal fade" id="createHightLineCrewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateHightLineCrewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">新增司机乘务计划</h4>
+        <h4 class="modal-title">修改司机乘务计划</h4>
       </div>
       
       <!--panel-heading-->
       <div class="panel-body row">
-        <form id="hightLineCrewForm" class="bs-example form-horizontal" style="margin-top:10px;">
-          <input id="update_crewHighlineId" type="hidden">
+        <form id="hightLineCrewForm" class="bs-example form-horizontal" style="margin-top:10px;" data-bind="with : hightLineCrewModel">
+          <input id="update_crewHighlineId" type="hidden" data-bind="value : crewHighlineId">
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">乘务交路：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_crewCross" type="text" class="form-control">
+              <input id="update_crewCross" type="text" class="form-control" data-bind="value : crewCross">
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">车队组号：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_crewGroup" type="text" class="form-control">
+              <input id="update_crewGroup" type="text" class="form-control" data-bind="value : crewGroup">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">经由铁路线：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_throughLine" type="text" class="form-control">
+              <input id="update_throughLine" type="text" class="form-control" data-bind="value : throughLine">
                </div>
           </div>
           
@@ -295,43 +295,43 @@ String basePath = request.getContextPath();
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机1姓名：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_name1" type="text" class="form-control">
+              <input id="update_name1" type="text" class="form-control" data-bind="value : name1">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">电话：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_tel1" type="text" class="form-control">
+              <input id="update_tel1" type="text" class="form-control" data-bind="value : tel1">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">政治面貌：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_identity1" type="text" class="form-control">
+              <input id="update_identity1" type="text" class="form-control" data-bind="value : identity1">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机2姓名：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_name2" type="text" class="form-control">
+              <input id="update_name2" type="text" class="form-control" data-bind="value : name2">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">电话：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_tel2" type="text" class="form-control">
+              <input id="update_tel2" type="text" class="form-control" data-bind="value : tel2">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">政治面貌：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_identity2" type="text" class="form-control">
+              <input id="update_identity2" type="text" class="form-control" data-bind="value : identity2">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">备注：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <textarea id="update_note" class="form-control" rows="4"></textarea>
+              <textarea id="update_note" class="form-control" rows="4" data-bind="value : note"></textarea>
             </div>
           </div>
         </form>
