@@ -57,8 +57,8 @@
     </update>
     
     
-    <!-- 通过run_date（必输）和train_nbr（非必输）查询 -->
-     <select id="findRunPlanList" resultType="org.railway.com.trainplan.entity.RunPlan">
+    <!-- 通过run_date（必输）和train_nbr（非必输）查询表plan_train -->
+     <select id="findRunPlanList" parameterType="map" resultType="org.railway.com.trainplan.entity.RunPlan">
 		SELECT P.*
 		FROM 
 		(
@@ -104,33 +104,66 @@
 				 DAILYPLAN_TIMES AS dailyPlanTimes,
 				 DAILYPLAN_FLAG AS dailyPlanFlag
 				 
-				 FROM PLAN_TRAIN WHERE 1=1 AND RUN_DATE=#{run_date}
+				 FROM PLAN_TRAIN WHERE 1=1 AND RUN_DATE=#{runDate}
 				 <if test="trainNbr !=null">
-				     AND TRAIN_NBR=#{train_nbr}
+				     AND TRAIN_NBR=#{trainNbr}
 				  </if>
  
 			)M
 		) P
-		WHERE P.NUM>=#{rownumstart} AND P.NUM &lt;=#{rownumend}
+		WHERE P.NUM>=${rownumstart} AND P.NUM &lt;=${rownumend}
    </select>
 
 
-    <select id="findCrossDictList_COUNT" resultType="java.lang.Integer">
-    	SELECT
-		  COUNT(A.DRAW_GRAPH_ID)
-		  
-		FROM DRAW_GRAPH A 
-		INNER JOIN BASE_CROSS B
-		  	ON A.BASE_CROSS_ID = B.BASE_CROSS_ID
-	   		AND A.BASE_CHART_ID = #{baseChartId}
-	   	
-   			<if test="crossName != null">
-            	AND A.CROSS_NAME LIKE '%${crossName}%'
-        	</if>
-   			<if test="crossName != null">
-            	AND B.TOKEN_VEH_BUREAU = #{tokenVehBureau}	<!-- 担当局 -->
-        	</if>
-    	
+    <select id="findRunPlanList_COUNT" parameterType="map" resultType="java.lang.Integer">
+    	SELECT COUNT(PLAN_TRAIN_ID) FROM PLAN_TRAIN 
+    	WHERE 1=1 AND RUN_DATE = #{runDate}
+	   	 <if test="trainNbr !=null">
+			AND TRAIN_NBR=#{trainNbr}
+		 </if>
     </select>
+    
+    <!-- 通过run_date（必输）和train_nbr（非必输）查询表plan_train -->
+     <select id="findHighlineCrewList" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
+		SELECT P.*
+		FROM 
+		(
+			SELECT M.*, ROWNUM NUM
+			FROM (
+					    
+				SELECT    
+				  HIGHLINE_CREW_ID AS crewHighlineId,
+				  CREW_DATE AS crewDate,
+				  CREW_BUREAU AS crewBureau,
+				  CREW_TYPE AS crewType,
+				  CREW_CROSS AS crewCross,
+				  CREW_GROUP AS crewGroup,
+				  THROUGH_LINE AS throughLine,
+				  NAME1 AS name1,
+				  TEL1 AS tel1,
+				  IDENTITY1 AS identity1,
+				  NAME2 AS name2,
+				  TEL2 AS tel2,
+				  IDENTITY2 AS  identity2,
+				  NOTE AS note,
+				  RECORD_PEOPLE AS recordPeople,
+				  RECORD_PEOPLE_ORG AS recordPeopleOrg,
+				  RECORD_TIME AS recordTime,
+				  SUBMIT_TYPE AS submitType
+				
+				FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate}
+ 
+			)M
+		) P
+		WHERE P.NUM>=${rownumstart} AND P.NUM &lt;=${rownumend}
+   </select>
+
+
+    <select id="findHighlineCrewList_COUNT" parameterType="map" resultType="java.lang.Integer">
+    	SELECT COUNT(HIGHLINE_CREW_ID) FROM HIGHLINE_CREW 
+    	WHERE 1=1 AND CREW_DATE = #{crewDate}
+    </select>
+    
+    
     
 </mapper> 
