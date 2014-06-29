@@ -38,11 +38,11 @@ public class HighLineCrewController {
     @Autowired
     private HighLineCrewService highLineCrewService;
 
-    @RequestMapping(value = "{highLineId}", method = RequestMethod.GET)
-    public ResponseEntity<HighLineCrewInfo> getHighLineCrew(@PathVariable String crewHighLineId) {
+    @RequestMapping(value = "getHighLineCrew", method = RequestMethod.POST)
+    public ResponseEntity<HighLineCrewInfo> getHighLineCrew(@RequestBody Map<String,Object> reqMap) {
         logger.debug("getHighLineCrew:::::::");
         Map<String, Object> params = Maps.newHashMap();
-        params.put("crewHighLineId", crewHighLineId);
+        params.put("crewHighLineId", StringUtil.objToStr(reqMap.get("crewHighLineId")));
         HighLineCrewInfo highLineCrewInfo = highLineCrewService.findHighLineCrew(params);
         return new ResponseEntity<HighLineCrewInfo>(highLineCrewInfo, HttpStatus.OK);
     }
