@@ -87,9 +87,13 @@ public class HighLineCrewService {
 	/**
 	 * 更新submitType字段值为1
 	 * @param crewDate 格式yyyy-MM-dd
+	 * @param crewType 乘务类型（1车长、2司机、3机械师）
 	 * @return
 	 */
-	public int updateSubmitType(String crewDate){
-		return baseDao.updateBySql(Constants.HIGHLINECREWDAO_UPDATE_SUBMIT_TYPE, crewDate);
+	public int updateSubmitType(String crewDate,String crewType){
+		Map reqMap = new HashMap<String,String>();
+		reqMap.put("crewDate",crewDate );
+		reqMap.put("crewType", crewType);
+		return baseDao.updateBySql(Constants.HIGHLINECREWDAO_UPDATE_SUBMIT_TYPE, reqMap);
 	}
 }

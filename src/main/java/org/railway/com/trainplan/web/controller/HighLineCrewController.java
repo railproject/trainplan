@@ -84,6 +84,8 @@ public class HighLineCrewController {
              highLineCrewInfo.setCrewDate(crewDate);
              //所属局简称
              highLineCrewInfo.setCrewBureau(user.getBureauShortName());
+         	 highLineCrewInfo.setRecordPeople(user.getName());
+        	 highLineCrewInfo.setRecordPeopleOrg(user.getDeptName());
              highLineCrewService.addCrew(highLineCrewInfo);
         }catch(Exception e){
         	logger.error(e);
@@ -102,6 +104,8 @@ public class HighLineCrewController {
         	ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
         	//所属局简称
         	highLineCrewInfo.setCrewBureau(user.getBureauShortName());
+        	highLineCrewInfo.setRecordPeople(user.getName());
+        	highLineCrewInfo.setRecordPeopleOrg(user.getDeptName());
         	highLineCrewService.update(highLineCrewInfo);
         }catch(Exception e){
         	logger.error(e);
@@ -139,7 +143,9 @@ public class HighLineCrewController {
     	try{
     		logger.debug("updateSubmitType~~~~~reqMap="+reqMap);
     		String crewDate = StringUtil.objToStr(reqMap.get("crewDate"));
-    		highLineCrewService.updateSubmitType(crewDate);
+    		crewDate = DateUtil.getFormateDayShort(crewDate);
+    		String crewType =  StringUtil.objToStr(reqMap.get("crewType"));
+    		highLineCrewService.updateSubmitType(crewDate,crewType);
     	}catch(Exception e){
     		logger.error(e);
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
