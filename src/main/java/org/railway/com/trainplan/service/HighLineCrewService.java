@@ -84,5 +84,12 @@ public class HighLineCrewService {
 		return baseDao.selectListForPagingBySql(Constants.HIGHLINECREWDAO_FIND_HIGHLINE_CREW_LIST,reqMap);
 	}
     
-	
+	/**
+	 * 更新submitType字段值为1
+	 * @param crewDate 格式yyyy-MM-dd
+	 * @return
+	 */
+	public int updateSubmitType(String crewDate){
+		return baseDao.updateBySql(Constants.HIGHLINECREWDAO_UPDATE_SUBMIT_TYPE, crewDate);
+	}
 }

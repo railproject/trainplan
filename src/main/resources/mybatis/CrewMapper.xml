@@ -200,5 +200,8 @@
     </select>
     
     
+    <update id="updateSubmitType"  parameterType="string">
+     UPDATE HIGHLINE_CREW  SET SUBMIT_TYPE=1 WHERE CREW_DATE=#{crewDate}
     
+    </update>
 </mapper> 
