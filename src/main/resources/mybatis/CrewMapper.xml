@@ -151,7 +151,7 @@
 				  RECORD_TIME AS recordTime,
 				  SUBMIT_TYPE AS submitType
 				
-				FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate}
+				FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType}
  
 			)M
 		) P
@@ -161,7 +161,7 @@
 
     <select id="findHighlineCrewList_COUNT" parameterType="map" resultType="java.lang.Integer">
     	SELECT COUNT(HIGHLINE_CREW_ID) FROM HIGHLINE_CREW 
-    	WHERE 1=1 AND CREW_DATE = #{crewDate}
+    	WHERE 1=1 AND CREW_DATE = #{crewDate} AND CREW_TYPE=#{crewType}
     </select>
     
     

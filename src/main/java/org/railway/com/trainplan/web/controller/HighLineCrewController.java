@@ -112,9 +112,10 @@ public class HighLineCrewController {
 	    try{
 	    	logger.debug("getHighlineCrewListForRunDate~~~~~reqMap="+reqMap);
 	    	String crewDate = StringUtil.objToStr(reqMap.get("crewDate"));
+	    	String crewType = StringUtil.objToStr(reqMap.get("crewType"));
 	    	String rownumstart =  StringUtil.objToStr(reqMap.get("rownumstart"));
 	    	String rownumend =  StringUtil.objToStr(reqMap.get("rownumend"));
-	    	QueryResult queryResult = highLineCrewService.getHighlineCrewListForRunDate(crewDate, rownumstart, rownumend);
+	    	QueryResult queryResult = highLineCrewService.getHighlineCrewListForRunDate(crewDate,crewType, rownumstart, rownumend);
 	    	PagingResult page = new PagingResult(queryResult.getTotal(), queryResult.getRows());
 	    	result.setData(page);
 	    }catch(Exception e){

@@ -55,7 +55,7 @@ public class HighLineCrewService {
     
     /**
 	 * 查询PLAN_TRAIN信息
-	 * @param reqMap
+	 * @param 
 	 * @return
 	 * @throws Exception 
 	 */
@@ -71,13 +71,14 @@ public class HighLineCrewService {
 	
 	 /**
 	 * 查询乘务计划信息
-	 * @param reqMap
+	 * @param 
 	 * @return
 	 * @throws Exception 
 	 */
-	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String rownumstart,String rownumend ) throws Exception{
+	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String rownumstart,String rownumend ) throws Exception{
 		Map reqMap = new HashMap<String,String>();
 		reqMap.put("crewDate",crewDate );
+		reqMap.put("crewType",crewType );
 		reqMap.put("rownumstart",rownumstart );
 		reqMap.put("rownumend",rownumend );
 		return baseDao.selectListForPagingBySql(Constants.HIGHLINECREWDAO_FIND_HIGHLINE_CREW_LIST,reqMap);
