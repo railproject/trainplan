@@ -55,4 +55,82 @@
         SUBMIT_TYPE = #{submitType})
         WHERE HIGHLINE_CREW_ID = #{crewHighLineId}
     </update>
+    
+    
+    
+     <select id="findRunPlanList" resultType="org.railway.com.trainplan.entity.RunPlan">
+		SELECT P.*
+		FROM 
+		(
+			SELECT M.*, ROWNUM NUM
+			FROM (
+					    
+ SELECT   
+ PLAN_TRAIN_ID AS planTrainId,
+ PLAN_TRAIN_SIGN AS planTrainSign,
+ PLAN_CROSS_ID AS planCrossId,
+ MARSHALLING_NAME AS marshallingName,
+ GROUP_SERIAL_NBR AS groupSerialNbr,
+ TRAIN_SORT AS trainSort,
+ PRE_TRAIN_ID AS preTrainId,
+ NEXT_TRAIN_ID AS nextTrainId,
+ RUN_DATE AS runDate,
+ TRAIN_NBR AS trainNbr,
+ START_TIME AS startDateTime,
+ END_TIME AS endDateTime,
+ START_BUREAU AS startBureauShortName,
+ START_BUREAU_FULL AS startBureauFullName,
+ START_STN AS startStn,
+ END_BUREAU AS endBureauShortName,
+ END_BUREAU_FULL AS endBureauFullName,
+ END_STN AS endStn,
+ PASS_BUREAU AS passBureau,
+ TRAIN_SCOPE AS trainScope,
+ TRAIN_TYPE_ID AS trainTypeId,
+ HIGHLINE_FLAG AS highLineFlag,
+ BASE_CHART_ID AS baseChartId,
+ BASE_TRAIN_ID AS baseTrainId,
+ HIGHLINE_RULE AS hightLineRule,
+ COMMONLINE_RULE AS commonLineRule,
+ APPOINT_WEEK AS appointWeek,
+ APPOINT_DAY AS appointDay,
+ DAY_GAP AS dayGap,
+ SPARE_FLAG AS spareFlag,
+ SPARE_APPLY_FLAG AS spareApplyFlag,
+ CREAT_TYPE AS createType,
+ CREAT_TIME AS createDateTime,
+ CHECK_LEV1_TYPE AS checkLev1Type,
+ CHECK_LEV2_TYPE AS checkLev2Type,
+ DAILYPLAN_TIMES AS dailyPlanTimes,
+ DAILYPLAN_FLAG AS dailyPlanFlag
+ 
+ FROM PLAN_TRAIN WHERE 1=1 AND RUN_DATE=#{run_date}
+ <if test="trainNbr !=null">
+     AND TRAIN_NBR=#{train_nbr}
+  </if>
+ 
+			)M
+		) P
+		WHERE P.NUM>=#{rownumstart} AND P.NUM &lt;=#{rownumend}
+   </select>
+
+
+    <select id="findCrossDictList_COUNT" resultType="java.lang.Integer">
+    	SELECT
+		  COUNT(A.DRAW_GRAPH_ID)
+		  
+		FROM DRAW_GRAPH A 
+		INNER JOIN BASE_CROSS B
+		  	ON A.BASE_CROSS_ID = B.BASE_CROSS_ID
+	   		AND A.BASE_CHART_ID = #{baseChartId}
+	   	
+   			<if test="crossName != null">
+            	AND A.CROSS_NAME LIKE '%${crossName}%'
+        	</if>
+   			<if test="crossName != null">
+            	AND B.TOKEN_VEH_BUREAU = #{tokenVehBureau}	<!-- 担当局 -->
+        	</if>
+    	
+    </select>
+    
 </mapper> 
