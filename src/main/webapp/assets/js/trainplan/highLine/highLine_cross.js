@@ -20,7 +20,7 @@ function hasActiveRole(bureau){
 	return all_role.indexOf(roleKey) > -1; 
 }
 
-var gloabBureaus = [];
+var gloabBureaus = []; 
 
 function CrossModel() {
 	var self = this;
@@ -48,42 +48,84 @@ function CrossModel() {
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
 	
-	self.planCrossRows =  ko.observableArray();
+	self.highLineCrossRows =  ko.observableArray(); 
 	
-	self.loadRunPlans = function(crossId){ 
-		var startDate = $("#runplan_input_startDate").val(); 
-		var endDate =  $("#runplan_input_endDate").val();
+	self.vehicle1Change = function(row){
+		row.updateFlag(true);
+		var highLineCrossRows = self.highLineCrossRows();
+		if(row.vehicle1() != null && row.vehicle1() != ""){
+			for(var i = 0; i < highLineCrossRows.length; i++){
+				if(highLineCrossRows[i] != row && highLineCrossRows[i].vehicle1() == row.vehicle1()){
+					showConfirmDiv("提示", "当前车底被交路：" + highLineCrossRows[i].crossName() + "使用是否要重新绑定到当前交路?", function (r) { 
+				        if (r) { 
+				        	highLineCrossRows[i].vehicle1("");
+				        }else{
+				        	row.vehicle1("");
+				        }
+					});
+				}else if(highLineCrossRows[i].vehicle2() == row.vehicle1()){
+					showConfirmDiv("提示", "当前车底被交路：" + highLineCrossRows[i].crossName() + "使用是否要重新绑定到当前交路?", function (r) { 
+				        if (r) { 
+				        	highLineCrossRows[i].vehicle2("");
+				        }else{
+				        	row.vehicle1("");
+				        }
+					});
+				}
+			} 
+		}
+	};
+	self.vehicle2Change = function(row){ 
+		row.updateFlag(true);
+		var highLineCrossRows = self.highLineCrossRows();
+		if(row.vehicle2() != null && row.vehicle2() != ""){
+			for(var i = 0; i < highLineCrossRows.length; i++){
+				if(highLineCrossRows[i].vehicle1() == row.vehicle2()){
+					showConfirmDiv("提示", "当前车底被交路：" + highLineCrossRows[i].crossName() + "使用是否要重新绑定到当前交路?", function (r) { 
+				        if (r) { 
+				        	highLineCrossRows[i].vehicle1(""); 
+				        	highLineCrossRows[i].updateFlag(true);
+				        }else{
+				        	row.vehicle2("");
+				        	row.updateFlag(false);
+				        }
+					});
+					break;
+				}else if(highLineCrossRows[i] != row && highLineCrossRows[i].vehicle2() == row.vehicle2()){
+					showConfirmDiv("提示", "当前车底被交路：" + highLineCrossRows[i].crossName() + "使用是否要重新绑定到当前交路?", function (r) { 
+				        if (r) { 
+				        	highLineCrossRows[i].vehicle2("");
+				        	highLineCrossRows[i].updateFlag(true);
+				        }else{
+				        	row.vehicle2("");
+				        	row.updateFlag(false);
+				        }
+					});
+					break;
+				}
+			}
+	   }
 		
-		var currentTime = new Date(startDate);
-		var endTime = endDate.substring(5);  
-		self.planDays.remove(function(item) {
-			return true;
-		});   
-		self.planDays.push({"day": self.dayHeader(currentTime)}); 
-		while(self.dayHeader(currentTime) != endTime){
-			currentTime.setDate(currentTime.getDate() + 1); 
-			self.planDays.push({"day": self.dayHeader(currentTime)}); 
+	};
+	 
+	self.updateHighLineCrosses = function(){ 
+		var highLineCrossRows = self.highLineCrossRows();
+		updateCrossRows = [];
+		for(var i = 0; i < highLineCrossRows.length; i++){
+			if(highLineCrossRows[i].updateFlag()){
+				updateCrossRows.push({"highLineCrossId": highLineCrossRows[i].highLineCrossId(), "vehicle1":  highLineCrossRows[i].vehicle1(), "vehicle2":  highLineCrossRows[i].vehicle2()});
+			}
 		} 
 		 $.ajax({
-				url : "runPlan/getRunPlans",
+				url : "highLine/updateHighLineVehicle",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
-				data :JSON.stringify({
-					startDay:startDate.replace(/-/g, ""),
-					endDay: endDate.replace(/-/g, ""),
-					planCrossId: crossId
-				}),
+				data :JSON.stringify(updateCrossRows),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
-						self.trainPlans.remove(function(item) {
-							return true;
-						});   
-						$.each(result.data,function(i, n){
-							self.trainPlans.push(new TrainRunPlanRow(n));
-						});
-						 
+						showSuccessDialog("提交交动车交路计划成功"); 
 					} else {
 						showErrorDialog("获取运行规律失败");
 					} 
@@ -94,8 +136,8 @@ function CrossModel() {
 				complete : function(){
 					commonJsScreenUnLock();
 				}
-		    }); 
-	}; 
+		    });  
+	};
 	
 	self.trainRunPlanChange = function(row, event){ 
 		console.log(row);
@@ -198,9 +240,10 @@ function CrossModel() {
 	};
 	
 	
+	
 	self.selectCrosses = function(){
 //		self.crossAllcheckBox(); 
-		$.each(self.planCrossRows(), function(i, crossRow){ 
+		$.each(self.highLineCrossRows(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0);
 				self.searchModle().activeFlag(0);
@@ -225,7 +268,7 @@ function CrossModel() {
 			self.crossAllcheckBox(1);   
 			if(row.activeFlag() == 1){ 
 				self.searchModle().activeFlag(1);
-				$.each(self.planCrossRows(), function(i, crossRow){   
+				$.each(self.highLineCrossRows(), function(i, crossRow){   
 					if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
 						self.crossAllcheckBox(0);
 						return false;
@@ -234,7 +277,7 @@ function CrossModel() {
 			} 
 			if(row.checkActiveFlag() == 1){
 				self.searchModle().checkActiveFlag(1);
-				$.each(self.planCrossRows(), function(i, crossRow){   
+				$.each(self.highLineCrossRows(), function(i, crossRow){   
 					if(crossRow.selected() != 1 && crossRow != row && crossRow.checkActiveFlag() == 1){
 						self.crossAllcheckBox(0);
 						return false;
@@ -246,7 +289,7 @@ function CrossModel() {
 			self.crossAllcheckBox(0);
 			if(row.activeFlag() == 1){
 				self.searchModle().activeFlag(0); 
-				$.each(self.planCrossRows(), function(i, crossRow){   
+				$.each(self.highLineCrossRows(), function(i, crossRow){   
 					if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
 						self.searchModle().activeFlag(1);  
 						 return false;
@@ -256,7 +299,7 @@ function CrossModel() {
 			}
 			if(row.checkActiveFlag() == 1){
 				self.searchModle().checkActiveFlag(0);
-				$.each(self.planCrossRows(), function(i, crossRow){   
+				$.each(self.highLineCrossRows(), function(i, crossRow){   
 					if(crossRow.selected() == 1 && crossRow != row && crossRow.checkActiveFlag() == 1){
 						self.searchModle().checkActiveFlag(1);   
 						return false;
@@ -353,6 +396,18 @@ function CrossModel() {
 		month = ("" + month).length == 1 ? "0" + month : month;
 		days = ("" + days).length == 1 ? "0" + days : days;
 		return month + "-"+ days;
+	};
+	
+	self.getDateByInt = function(n){
+		var d = new Date();
+		d.setDate(d.getDate() + n);
+		
+		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
+		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
+		var days = d.getDate(); 
+		month = ("" + month).length == 1 ? "0" + month : month;
+		days = ("" + days).length == 1 ? "0" + days : days;
+		return year + "-" + month + "-" + days;
 	};
 	
 	self.get40Date = function(){
@@ -474,14 +529,10 @@ function CrossModel() {
 				 stationTypeArray:self.searchModle().drawFlags()
 			 });
 		}); 
-		self.runPlanCanvasPage.initPage(); 
+		self.runPlanCanvasPage.initPage();   
+		self.searchModle().planStartDate(self.getDateByInt(1)); 
 		
-		self.searchModle().startDay(self.currdate()); 
-		self.searchModle().planStartDate(self.currdate());
-		self.searchModle().planEndDate(self.get40Date());
-		
-		commonJsScreenLock(2);
-		var initFlag = 0;
+		commonJsScreenLock(2); 
 		//获取当期系统日期 
 		 $.ajax({
 				url : "jbtcx/querySchemes",
@@ -536,76 +587,30 @@ function CrossModel() {
 		
 		
 	};  
-	
-	self.loadCrosses = function(){
-		self.loadCrosseForPage();
-	};
-	self.loadCrosseForPage = function(startIndex, endIndex) {  
-	 
-		commonJsScreenLock();
-		 
-		var bureauCode = self.searchModle().bureau(); 
-		var highlingFlag = self.searchModle().highlingFlag();
-		var trainNbr = self.searchModle().filterTrainNbr(); 
-		var checkFlag = self.searchModle().checkFlag();
-		var unitCreateFlag = self.searchModle().unitCreateFlag();
-		var chart = self.searchModle().chart();
-		var startBureauCode = self.searchModle().startBureau();  
-//		var planStartDate = self.searchModle().planStartDate(); 
-//		var planEndDate = self.searchModle().planEndDate(); 
+	self.createHighLineCrosses = function(){
 		 var planStartDate = $("#runplan_input_startDate").val();
-			
-		 var planEndDate =  $("#runplan_input_endDate").val();
-		 var currentBureanFlag = self.searchModle().currentBureanFlag() ? '1' : '0';   
-		 self.searchModle().checkActiveFlag(0); 
-		 if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
-			self.searchModle().activeFlag(1);  
-		}else if(!hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 1){
-			self.searchModle().activeFlag(0); 
-		} 
-		 
-		
-//		if(chart == null){
-//			showErrorDialog("请选择方案!");
-//			commonJsScreenUnLock();
-//			return;
-//		}
-		self.planCrossRows.remove(function(item) {
-			return true;
-		}); 
-		$.ajax({
-				url : "runPlan/getPlanCross",
+		 $.ajax({
+				url : "highLine/createHighLineCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					tokenVehBureau : bureauCode, 
-					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
-					checkFlag : checkFlag == null ? null : checkFlag.value,
-					startBureau : startBureauCode,
-					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
-							chartId : chart == null ? null: chart.chartId,
-					trainNbr : trainNbr,
-					startTime : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
-					endTime : (planEndDate != null ? planEndDate : self.get40Date()).replace(/-/g, ''),
-					currentBureanFlag : currentBureanFlag
-					
-					  
+					startDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, '') 
 				}),
 				success : function(result) {    
- 
+
 					if (result != null && result != "undefind" && result.code == "0") {
 						//var rows = [];
-						if(result.data != null){ 
-							
-							$.each(result.data,function(n, crossInfo){ 
-								self.planCrossRows.push(new CrossRow(crossInfo));  
-							}); 
-							//self.crossRows.loadPageRows(result.data.totalRecord, rows);
-						} 
-						
-						 $("#cross_table_crossInfo").freezeHeader(); 
+//						if(result.data != null){ 
+//							
+//							$.each(result.data,function(n, crossInfo){ 
+//								self.highLineCrossRows.push(new CrossRow(crossInfo));  
+//							}); 
+//							//self.crossRows.loadPageRows(result.data.totalRecord, rows);
+//						} 
+//						
+//						 $("#cross_table_crossInfo").freezeHeader(); 
 						 
 					} else {
 						showErrorDialog("获取车底交路列表失败");
@@ -618,6 +623,96 @@ function CrossModel() {
 					commonJsScreenUnLock();
 				}
 			}); 
+	};
+	
+	self.loadCrosses = function(){
+		self.loadCrosseForPage();
+	};
+	self.loadCrosseForPage = function(startIndex, endIndex) {  
+	 
+//		commonJsScreenLock();
+		 
+//		var bureauCode = self.searchModle().bureau(); 
+//		var highlingFlag = self.searchModle().highlingFlag();
+//		var trainNbr = self.searchModle().filterTrainNbr(); 
+//		var checkFlag = self.searchModle().checkFlag();
+//		var unitCreateFlag = self.searchModle().unitCreateFlag();
+//		var chart = self.searchModle().chart();
+//		var startBureauCode = self.searchModle().startBureau();  
+//		var planStartDate = self.searchModle().planStartDate(); 
+//		var planEndDate = self.searchModle().planEndDate(); 
+		 var planStartDate = $("#runplan_input_startDate").val();
+			
+//		 var planEndDate =  $("#runplan_input_endDate").val();
+//		 var currentBureanFlag = self.searchModle().currentBureanFlag() ? '1' : '0';   
+//		 self.searchModle().checkActiveFlag(0); 
+//		 if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
+//			self.searchModle().activeFlag(1);  
+//		}else if(!hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 1){
+//			self.searchModle().activeFlag(0); 
+//		} 
+		 
+		
+//		if(chart == null){
+//			showErrorDialog("请选择方案!");
+//			commonJsScreenUnLock();
+//			return;
+//		}
+		self.highLineCrossRows.remove(function(item) {
+			return true;
+		}); 
+		
+		var data = [{"crossName": "G1-G2" ,"highLineCrossId" : "1", "vehicle1": "", "vehicle2": "", "tokenPsgDepot": "测试"},{"crossName": "G12-G23" ,"highLineCrossId" : "2", "vehicle1": "", "vehicle2": "", "tokenPsgDepot": "测试"},{"crossName": "G5-G4" ,"highLineCrossId" : "3", "vehicle1": "", "vehicle2": "", "tokenPsgDepot": "测试"},]
+		
+		$.each(data,function(n, crossInfo){ 
+			self.highLineCrossRows.push(new CrossRow(crossInfo));  
+		}); 
+//		$.ajax({
+//				url : "highLine/getHighLineCross",
+//				cache : false,
+//				type : "POST",
+//				dataType : "json",
+//				contentType : "application/json",
+//				data :JSON.stringify({  
+		
+//					tokenVehBureau : bureauCode, 
+//					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
+//					checkFlag : checkFlag == null ? null : checkFlag.value,
+//					startBureau : startBureauCode,
+//					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
+//							chartId : chart == null ? null: chart.chartId,
+//					trainNbr : trainNbr,
+		
+//					startDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
+
+//					endTime : (planEndDate != null ? planEndDate : self.get40Date()).replace(/-/g, ''),
+//					currentBureanFlag : currentBureanFlag
+					
+					  
+//				}),
+//				success : function(result) {    
+// 
+//					if (result != null && result != "undefind" && result.code == "0") {
+//						//var rows = [];
+//						if(result.data != null){  
+//							$.each(result.data,function(n, crossInfo){ 
+//								self.highLineCrossRows.push(new CrossRow(crossInfo));  
+//							}); 
+//							//self.crossRows.loadPageRows(result.data.totalRecord, rows);
+//						}  
+//						 $("#cross_table_crossInfo").freezeHeader(); 
+//						 
+//					} else {
+//						showErrorDialog("获取车底交路列表失败");
+//					};
+//				},
+//				error : function() {
+//					showErrorDialog("获取车底交路列表失败");
+//				},
+//				complete : function(){
+//					commonJsScreenUnLock();
+//				}
+//			}); 
 	};
 	//必须定义在load函数之后
 	self.crossRows = new PageModle(50, self.loadCrosseForPage);
@@ -709,7 +804,7 @@ function CrossModel() {
 	
 	self.deleteCrosses = function(){ 
 		var crossIds = "";
-		var crosses = self.planCrossRows(); 
+		var crosses = self.highLineCrossRows(); 
 		var delCrosses = [];
 		for(var i = 0; i < crosses.length; i++){ 
 			if(crosses[i].selected() == 1 && hasActiveRole(crosses[i].tokenVehBureau())){ 
@@ -740,7 +835,7 @@ function CrossModel() {
 					success : function(result) {     
 						if(result.code == 0){
 							$.each(delCrosses, function(i, n){ 
-								self.planCrossRows.remove(n); 
+								self.highLineCrossRows.remove(n); 
 							});
 							showSuccessDialog("删除车底交路成功"); 
 						}else{
@@ -755,7 +850,7 @@ function CrossModel() {
 	self.createTrainLines = function(){  
 		var crossIds = "";
 		var delCrosses = [];
-		var crosses = self.planCrossRows();
+		var crosses = self.highLineCrossRows();
 		for(var i = 0; i < crosses.length; i++){  
 			if(crosses[i].selected() == 1 && crosses[i].checkFlag() == 2 && hasActiveRole(crosses[i].tokenVehBureau())){ 
 				crossIds += (crossIds == "" ? "" : ",");
@@ -846,7 +941,7 @@ function CrossModel() {
 		 self.stns.remove(function(item){
 			return true;
 		 });
-		 self.planCrossRows.remove(function(item){
+		 self.highLineCrossRows.remove(function(item){
 			return true;
 		 });
 		 
@@ -875,7 +970,7 @@ function CrossModel() {
 	self.checkCrossInfo = function(){ 
 		var crossIds = "";
 		var checkedCrosses = [];
-		var crosses = self.planCrossRows();
+		var crosses = self.highLineCrossRows();
 		for(var i = 0; i < crosses.length; i++){  
 			if(crosses[i].checkFlag() == 2 && crosses[i].selected() == 1){ 
 				showWarningDialog(crosses[i].crossName() + "已审核"); 
@@ -973,54 +1068,35 @@ function CrossModel() {
 	};
 	self.showTrains = function(row) {   
 		self.setCurrentCross(row); 
-		commonJsScreenLock(3);
-		self.createCrossMap(row);
-//		self.stns.remove(function(item) {
-//			return true;
-//		});
+		commonJsScreenLock();
 		self.trains.remove(function(item) {
 			return true;
-		});
-		
-		var trains = row.crossName().split("-");
-		
-		$.each(trains, function(n, trainNbr){
-			var row = new TrainRow({"trainNbr": trainNbr});
-			self.trains.push(row); 
-		}); 
-		 
-		self.loadRunPlans(row.planCrossId()); 
-		
-		 $.ajax({
-				url : "cross/getPlanCrossInfo",
+		});   
+		$.ajax({
+				url : "highLine/getHighLineCrossTrainInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					planCrossId : row.planCrossId()
+					highLineCrossId : row.highLineCrossId() 
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {   
-							if(result.data[0].crossInfo != null){
-								self.setCurrentCross(new CrossRow(result.data[0].crossInfo)); 
-							}else{ 
-								self.setCurrentCross(new CrossRow(self.defualtCross));
-								showWarningDialog("没有找打对应的交路被找到");
-							}  
+							$.each(result.data,function(n, trainInfo){
+								var row = new TrainRow(trainInfo);
+								self.trains.push(row); 
+							}); 
 						}
 						 
 					} else {
-						showErrorDialog("获取列车列表失败");
+						showErrorDialog("获取交路列车列表失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("获取列车列表失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
+					showErrorDialog("获取交路列车列表失败");
+				} 
 			}); 
 		
 	};  
@@ -1145,6 +1221,8 @@ function CrossRow(data) {
 	
 	self.visiableRow =  ko.observable(true); 
 	
+	self.updateFlag = ko.observable(false); 
+	
 	self.selected =  ko.observable(0); 
 	
 	self.baseCrossId = data.baseCrossId; 
@@ -1154,6 +1232,12 @@ function CrossRow(data) {
 	self.shortNameFlag =  ko.observable(true);
 	
 	self.planCrossId = ko.observable(data.planCrossId);  
+	
+	self.highLineCrossId = ko.observable(data.highLineCrossId);  
+	
+	self.vehicle1 = ko.observable(data.vehicle1);   
+	
+	self.vehicle2 = ko.observable(data.vehicle2);   
 	 
 	self.crossName = ko.observable(data.planCrossName == null ? data.crossName : data.planCrossName);   
 	
@@ -1174,6 +1258,9 @@ function CrossRow(data) {
 	self.checkFlag = ko.observable(data.checkType);
 	
 	self.unitCreateFlag = ko.observable(data.unitCreateFlag);
+	
+	self.startStn = ko.observable(data.startStn);
+	self.endStn = ko.observable(data.endStn);
 	//方案ID
 	self.chartId = ko.observable(data.chartId);
 	self.chartName = ko.observable(data.chartName);
@@ -1249,52 +1336,15 @@ function CrossRow(data) {
 		 } 
 		 return result; 
 	}); 
+	
 	self.activeFlag = ko.computed(function(){
 		return hasActiveRole(data.tokenVehBureau);
 	});   
 	
 	self.checkActiveFlag = ko.computed(function(){
-//		return 1;
 		return data.relevantBureau != null ? (data.relevantBureau.indexOf(currentUserBureau) > -1 ? 1 : 0) : 0;
-	}); 
-//	'fa fa-check-square-o' : 'fa fa-pencil-square-o'
-	
-	self.checkCss = ko.computed(function(){ 
-		if(self.checkFlag() != 2 
-				&& data.relevantBureau != null 
-				&& data.relevantBureau.indexOf(currentUserBureau) > -1 
-				){//和当前局相关并且被当前局审核过了的
-			if(self.checkedBureau() != null){
-				var checkedBureau = self.checkedBureau().split(",");
-				var temp = "";
-				for(var i = 0; i < self.relevantBureau().length; i++){
-					if(self.checkedBureau().indexOf(self.relevantBureau().substring(i, i + 1)) > -1){
-						temp += self.relevantBureau().substring(i, i + 1);
-					};
-				} 
-				if(temp == self.relevantBureau()){
-					self.checkFlag(2);
-					return "fa fa-check-square-o green";
-				}else if(self.checkedBureau().indexOf(currentUserBureau) > -1){
-					return "fa fa-pencil-square-o green";
-				}else{
-					return "fa fa-pencil-square-o red";
-				};
-			}else{
-				return "fa fa-pencil-square-o red";
-			}; 
-		}else if(self.checkFlag() != 2 
-				&& (data.relevantBureau == null || (data.relevantBureau != null
-				&& data.relevantBureau.indexOf(currentUserBureau) < 0))){//和当前局无关 未被完全审核的
-			return "fa fa-pencil-square-o gray";
-		}else if(self.checkFlag() == 2){
-			if(data.relevantBureau == null || (data.relevantBureau != null
-						&& data.relevantBureau.indexOf(currentUserBureau) < 0)){
-				return "fa fa-check-square-o gray";
-			}
-			return "fa fa-check-square-o green";
-		}; 
-	}); 
+	});  
+	 
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
 	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
