@@ -4,18 +4,53 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="org.railway.com.trainplan.repository.mybatis.HighLineCrewDao">
 
+
+	
     <select id="findOne" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
-        SELECT HLC.HIGHLINE_CREW_ID, HLC.CREW_DATE, HLC.CREW_BUREAU, HLC.CREW_TYPE, HLC.CREW_CROSS, HLC.CREW_GROUP, HLC.THROUGH_LINE,
-        HLC.NAME1, HLC.TEL1, HLC.IDENTITY1, HLC.NAME2, HLC.TEL2, HLC.IDENTITY2, HLC.NOTE, HLC.RECORD_PEOPLE, HLC.RECORD_PEOPLE_ORG,
-        HLC.RECORD_TIME, HLC.SUBMIT_TYPE FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID = '${crewHighLineId}'
+        SELECT 
+	       HLC.HIGHLINE_CREW_ID AS crewHighlineId, 
+	       HLC.CREW_DATE AS crewDate, 
+	       HLC.CREW_BUREAU AS crewBureau, 
+	       HLC.CREW_TYPE AS crewType, 
+	       HLC.CREW_CROSS AS crewCross,
+	       HLC.CREW_GROUP AS crewGroup,
+	       HLC.THROUGH_LINE AS throughLine,
+	       HLC.NAME1 AS name1,
+	       HLC.TEL1 AS tel1, 
+	       HLC.IDENTITY1 AS identity1,
+	       HLC.NAME2 AS name2, 
+	       HLC.TEL2 AS tel2, 
+	       HLC.IDENTITY2 AS identity2, 
+	       HLC.NOTE AS note , 
+	       HLC.RECORD_PEOPLE AS recordPeople, 
+	       HLC.RECORD_PEOPLE_ORG AS recordPeopleOrg,
+	       HLC.RECORD_TIME AS recordTime , 
+	       HLC.SUBMIT_TYPE AS submitType
+        FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID = #{crewHighLineId}
     </select>
 
 
-    <select id="findList" parameterType="map" resultType="map">
-        SELECT HLC.HIGHLINE_CREW_ID, HLC.CREW_DATE, HLC.CREW_BUREAU, HLC.CREW_TYPE, HLC.CREW_CROSS, HLC.CREW_GROUP, HLC.THROUGH_LINE,
-        HLC.NAME1, HLC.TEL1, HLC.IDENTITY1, HLC.NAME2, HLC.TEL2, HLC.IDENTITY2, HLC.NOTE, HLC.RECORD_PEOPLE, HLC.RECORD_PEOPLE_ORG,
-        HLC.RECORD_TIME, HLC.SUBMIT_TYPE
-        FROM HIGHLINE_CREW HLC
+    <select id="findList" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
+        SELECT 
+           HLC.HIGHLINE_CREW_ID AS crewHighlineId, 
+	       HLC.CREW_DATE AS crewDate, 
+	       HLC.CREW_BUREAU AS crewBureau, 
+	       HLC.CREW_TYPE AS crewType, 
+	       HLC.CREW_CROSS AS crewCross,
+	       HLC.CREW_GROUP AS crewGroup,
+	       HLC.THROUGH_LINE AS throughLine,
+	       HLC.NAME1 AS name1,
+	       HLC.TEL1 AS tel1, 
+	       HLC.IDENTITY1 AS identity1,
+	       HLC.NAME2 AS name2, 
+	       HLC.TEL2 AS tel2, 
+	       HLC.IDENTITY2 AS identity2, 
+	       HLC.NOTE AS note , 
+	       HLC.RECORD_PEOPLE AS recordPeople, 
+	       HLC.RECORD_PEOPLE_ORG AS recordPeopleOrg,
+	       HLC.RECORD_TIME AS recordTime , 
+	       HLC.SUBMIT_TYPE AS submitType
+        FROM HIGHLINE_CREW HLC WHERE CREW_DATE=#{crewDate}
     </select>
 
     <delete id="delete" parameterType="string">
