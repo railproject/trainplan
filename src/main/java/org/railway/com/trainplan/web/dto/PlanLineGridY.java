@@ -7,6 +7,13 @@ public class PlanLineGridY {
     private String stnName;
     private int isCurrentBureau;
     private String stationType;
+    private String dptTime;
+    public PlanLineGridY(String stnName,int isCurrentBureau,String dptTime,String stationType){
+    	this(stnName);
+    	this.isCurrentBureau = isCurrentBureau;
+    	this.dptTime = dptTime;
+    	this.stationType = stationType;
+    }
     public PlanLineGridY(String stnName,int isCurrentBureau,String stationType){
     	this(stnName);
     	this.isCurrentBureau = isCurrentBureau;
@@ -16,7 +23,14 @@ public class PlanLineGridY {
         this.stnName = stnName;
     }
 
-    public String getStnName() {
+    
+    public String getDptTime() {
+		return dptTime;
+	}
+	public void setDptTime(String dptTime) {
+		this.dptTime = dptTime;
+	}
+	public String getStnName() {
         return stnName;
     }
 

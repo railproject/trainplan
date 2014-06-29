@@ -166,6 +166,9 @@ if (user !=null && user.getBureau()==null) {
                         <shiro:hasRole name="总公司客调">
                             <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>启用新图</a></li>
                         </shiro:hasRole>
+                        <!-- 
+                        <li><a href="${ctx}/crossdict/mainpage" target="contentFrame"><i class="fa fa-retweet"></i>交路图字典管理</a></li>
+                         -->
                     </ul>
                 </li>
 
@@ -177,6 +180,18 @@ if (user !=null && user.getBureau()==null) {
                         <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-search"></i>明细查询</a></li>
                     </ul>
                 </li>
+                
+                
+                
+                <li>
+                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>乘务计划<i class="fa fa-caret-down pull-right"></i></a>
+                    <ul>
+                        <li><a href="${ctx}/crew/page/sj" target="contentFrame"><i class="fa fa-external-link"></i>司机乘务计划</a></li>
+                        <li><a href="${ctx}/crew/page/cz" target="contentFrame"><i class="fa fa-external-link"></i>车长乘务计划</a></li>
+                        <li><a href="${ctx}/crew/page/jxs" target="contentFrame"><i class="fa fa-external-link"></i>机械师乘务计划</a></li>
+                    </ul>
+                </li>
+                
 
                 <li><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="contentFrame" class="menu_one"><i class="fa fa-file"></i>技术资料 </a></li>
 	            <!-- 消息测试  发布时需要注释 -->

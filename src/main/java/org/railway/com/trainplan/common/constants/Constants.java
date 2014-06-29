@@ -202,5 +202,12 @@ public class Constants {
 	public static final String GETTRAINLINES_JHPT_COUNT = "trainInfoDao.getTrainlineTotalCount";
 	public static final String GETTRAINLINES_JHPT = "trainInfoDao.getTrainlineForPage";
 	public static String GET_TRAINLINES_BY_TRAINLINEID = "trainTimeDao.getTrainLineTimes";
+	
+	
+	
+	
+
+	//获取交路字典信息
+	public static final String SQL_ID_CROSSDICT_INFO = "crossDictDao.findCrossDictList";
 
 }

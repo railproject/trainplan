@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="org.railway.com.trainplan.repository.mybatis.HighLineCrewDao">
+
+    <select id="findOne" parameterType="map" resultMap="org.railway.com.trainplan.entity.HighLineCrewInfo">
+        SELECT HLC.HIGHLINE_CREW_ID, HLC.CREW_DATE, HLC.CREW_BUREAU, HLC.CREW_TYPE, HLC.CREW_CROSS, HLC.CREW_GROUP, HLC.THROUGH_LINE,
+        HLC.NAME1, HLC.TEL1, HLC.IDENTITY1, HLC.NAME2, HLC.TEL2, HLC.IDENTITY2, HLC.NOTE, HLC.RECORD_PEOPLE, HLC.RECORD_PEOPLE_ORG,
+        HLC.RECORD_TIME, HLC.SUBMIT_TYPE FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID = '${crewHighLineId}'
+    </select>
+
+
+    <select id="findList" parameterType="map" resultMap="java.util.List">
+        SELECT HLC.HIGHLINE_CREW_ID, HLC.CREW_DATE, HLC.CREW_BUREAU, HLC.CREW_TYPE, HLC.CREW_CROSS, HLC.CREW_GROUP, HLC.THROUGH_LINE,
+        HLC.NAME1, HLC.TEL1, HLC.IDENTITY1, HLC.NAME2, HLC.TEL2, HLC.IDENTITY2, HLC.NOTE, HLC.RECORD_PEOPLE, HLC.RECORD_PEOPLE_ORG,
+        HLC.RECORD_TIME, HLC.SUBMIT_TYPE
+        FROM HIGHLINE_CREW HLC
+    </select>
+
+    <delete id="delete" parameterType="string">
+        DELETE FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID = #{crewHighLineId}
+    </delete>
+
+    <insert id="addCrew" parameterType="org.railway.com.trainplan.entity.HighLineCrewInfo">
+        INSERT INTO HIGHLINE_CREW(HIGHLINE_CREW_ID, CREW_DATE, CREW_BUREAU, CREW_TYPE, CREW_CROSS,
+        CREW_GROUP, THROUGH_LINE, NAME1, TEL1, IDENTITY1, NAME2, TEL2, IDENTITY2, NOTE, RECORD_PEOPLE,
+        RECORD_PEOPLE_ORG, RECORD_TIME, SUBMIT_TYPE) VALUES (
+            #{crewHighlineId, jdbcType=VARCHAR}, #{crewDate, jdbcType=VARCHAR}, #{crewBureau, jdbcType=VARCHAR},
+            #{crewType, jdbcType=VARCHAR}, #{crewCross, jdbcType=VARCHAR}, #{crewGroup, jdbcType=VARCHAR},
+            #{throughLine, jdbcType=VARCHAR}, #{name1, jdbcType=VARCHAR}, #{tel1, jdbcType=VARCHAR},
+            #{identity1, jdbcType=VARCHAR}, #{name2, jdbcType=VARCHAR}, #{tel2, jdbcType=VARCHAR},
+            #{identity2, jdbcType=VARCHAR}, #{note, jdbcType=VARCHAR}, #{recordPeople, jdbcType=VARCHAR},
+            #{recordPeopleOrg, jdbcType=VARCHAR}, sysdate, #{submitType, jdbcType=NUMERIC}
+        )
+    </insert>
+
+    <update id="update" parameterType="org.railway.com.trainplan.entity.HighLineCrewInfo">
+        UPDATE  HIGHLINE_CREW
+        SET CREW_DATE = #{crewDate},
+        CREW_BUREAU = #{crewBureau},
+        CREW_TYPE = #{crewType},
+        CREW_CROSS = #{crewCross},
+        CREW_GROUP = #{crewGroup},
+        THROUGH_LINE = #{throughLine},
+        NAME1 = #{name1},
+        TEL1 = #{tel1},
+        IDENTITY1 = #{identity1},
+        NAME2 = #{name2},
+        TEL2 = #{tel2},
+        IDENTITY2 = #{identity2},
+        NOTE = #{note},
+        RECORD_PEOPLE = #{recordPeople},
+        RECORD_PEOPLE_ORG = #{recordPeopleOrg},
+        SUBMIT_TYPE = #{submitType})
+        WHERE HIGHLINE_CREW_ID = #{crewHighLineId}
+    </update>
+</mapper> 
