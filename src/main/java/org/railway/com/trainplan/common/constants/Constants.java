@@ -203,7 +203,8 @@ public class Constants {
 	public static final String GETTRAINLINES_JHPT = "trainInfoDao.getTrainlineForPage";
 	public static String GET_TRAINLINES_BY_TRAINLINEID = "trainTimeDao.getTrainLineTimes";
 	
-	
+	public static final String  HIGHLINECREWDAO_FIND_RUNPLAN_LIST = "org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.findRunPlanList";
+	public static final String HIGHLINECREWDAO_FIND_HIGHLINE_CREW_LIST = "org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.findHighlineCrewList";
 	
 	
 

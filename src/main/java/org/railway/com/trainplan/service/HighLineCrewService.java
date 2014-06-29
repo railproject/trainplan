@@ -1,16 +1,20 @@
 package org.railway.com.trainplan.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
+import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.entity.HighLineCrewInfo;
+import org.railway.com.trainplan.entity.QueryResult;
+import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.repository.mybatis.HighLineCrewDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 乘务计划服务
@@ -25,6 +29,9 @@ public class HighLineCrewService {
 
     @Autowired
     private HighLineCrewDao highLineCrewDao;
+    
+    @Autowired
+    private BaseDao baseDao;
 
     public HighLineCrewInfo findHighLineCrew(Map<String, Object> map) {
         return highLineCrewDao.findOne(map);
@@ -45,4 +52,37 @@ public class HighLineCrewService {
     public void delete(String crewHighLineId) {
         highLineCrewDao.delete(crewHighLineId);
     }
+    
+    /**
+	 * 查询PLAN_TRAIN信息
+	 * @param 
+	 * @return
+	 * @throws Exception 
+	 */
+	public QueryResult  getRunLineListForRunDate(String runDate,String trainNbr,String rownumstart,String rownumend ) throws Exception{
+		Map reqMap = new HashMap<String,String>();
+		reqMap.put("runDate",runDate );
+		reqMap.put("trainNbr",trainNbr );
+		reqMap.put("rownumstart",rownumstart );
+		reqMap.put("rownumend",rownumend );
+		return baseDao.selectListForPagingBySql(Constants.HIGHLINECREWDAO_FIND_RUNPLAN_LIST,reqMap);
+	}
+    
+	
+	 /**
+	 * 查询乘务计划信息
+	 * @param 
+	 * @return
+	 * @throws Exception 
+	 */
+	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String rownumstart,String rownumend ) throws Exception{
+		Map reqMap = new HashMap<String,String>();
+		reqMap.put("crewDate",crewDate );
+		reqMap.put("crewType",crewType );
+		reqMap.put("rownumstart",rownumstart );
+		reqMap.put("rownumend",rownumend );
+		return baseDao.selectListForPagingBySql(Constants.HIGHLINECREWDAO_FIND_HIGHLINE_CREW_LIST,reqMap);
+	}
+    
+	
 }

@@ -14,7 +14,7 @@ public class CrewController {
 	 */
 	@RequestMapping(value = "page/cz", method = RequestMethod.GET)
 	public String pageCrewCz() {
-		return "crew/crew_cz";
+		return "hightlineCrew/hightline_crew_cz";
 	}
 	
 	/**
@@ -23,7 +23,7 @@ public class CrewController {
 	 */
 	@RequestMapping(value = "page/sj", method = RequestMethod.GET)
 	public String pageCrewSj() {
-		return "crew/crew_sj";
+		return "hightlineCrew/hightline_crew_sj";
 	}
 	
 	/**
@@ -32,6 +32,6 @@ public class CrewController {
 	 */
 	@RequestMapping(value = "page/jxs", method = RequestMethod.GET)
 	public String pageCrewJxs() {
-		return "crew/crew_jxs";
+		return "hightlineCrew/hightline_crew_jxs";
 	}
 }

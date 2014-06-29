@@ -275,6 +275,24 @@ public class DateUtil {
            return result;
 	  }
 	
+	/**
+	 * 将yyyy-mm-dd格式转换成yyyyMMdd格式
+	 * @param day  yyyy-mm-dd
+	 * @return yyyyMMdd
+	 */
+	public static String getFormateDayShort(String day){
+		Date date = null;
+		try {
+			date = parseDate(day,defaultDatePattern1);
+		} catch (ParseException e) {
+			
+			//e.printStackTrace();
+		}
+		return format(date,defaultDatePattern2);
+	}
+	
+	
+	
 	public static void main(String[] args) {
 	
 		System.err.println("length==" + "PFNYW".length());
