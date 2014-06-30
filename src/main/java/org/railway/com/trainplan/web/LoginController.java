@@ -38,7 +38,7 @@ public class LoginController {
 	public String fail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName, Model model) {
 		model.addAttribute(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM, userName);
         logger.info("Login:" + userName + " login failed!");
-		return "redirect:login";
+		return "login";
 	}
 
     @RequestMapping(value = "user/switch", method = RequestMethod.GET)
