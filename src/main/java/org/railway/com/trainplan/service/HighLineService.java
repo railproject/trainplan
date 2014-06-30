@@ -13,6 +13,7 @@ import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.entity.BaseTrainInfo;
 import org.railway.com.trainplan.entity.HighLineCrossTrainInfo;
 import org.railway.com.trainplan.entity.HighlineCrossInfo;
+import org.railway.com.trainplan.entity.HighlineCrossTrainBaseInfo;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,9 +81,9 @@ public class HighLineService{
 	 * @param planCrossId
 	 * @return
 	 */
-	public List<HighlineCrossInfo> getHighlineCrossList(String planCrossId){
+	public List<HighlineCrossInfo> getHighlineCrossList(String crossStartDate){
 		Map<String,String> reqMap = new HashMap<String,String>();
-		reqMap.put("planCrossId",planCrossId );
+		reqMap.put("crossStartDate",crossStartDate );
 		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_LIST, reqMap);
 	}
 	
@@ -95,5 +96,15 @@ public class HighLineService{
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("highlineCrossId",highlineCrossId );
 		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_LIST, reqMap);
+	}
+	
+	/**
+	 * 通过highlineCrossId查询
+     * 交路下所有列车的始发站，终到站，始发时间和终到时间
+	 * @param highlineCrossId
+	 * @return
+	 */
+	public List<HighlineCrossTrainBaseInfo> getHighlineCrossTrainBaseInfoList(String highlineCrossId){
+		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_BASEINFO, highlineCrossId);
 	}
 }

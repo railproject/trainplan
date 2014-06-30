@@ -77,12 +77,17 @@ public class HighLineCrewService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String rownumstart,String rownumend ) throws Exception{
+	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String trainNbr,String rownumstart,String rownumend ) throws Exception{
 		Map reqMap = new HashMap<String,String>();
 		reqMap.put("crewDate",crewDate );
 		reqMap.put("crewType",crewType );
 		reqMap.put("rownumstart",rownumstart );
 		reqMap.put("rownumend",rownumend );
+		if(trainNbr != null && !"".equals(trainNbr)){
+			reqMap.put("trainNbr","%" +trainNbr + "%");
+		}else if("".equals(trainNbr)){
+			reqMap.put("trainNbr",null);
+		}
 		return baseDao.selectListForPagingBySql(Constants.HIGHLINECREWDAO_FIND_HIGHLINE_CREW_LIST,reqMap);
 	}
     
