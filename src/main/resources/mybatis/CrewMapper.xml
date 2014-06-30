@@ -236,7 +236,10 @@
 				  SUBMIT_TYPE AS submitType
 				
 				FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType}
- 
+			    <if test="trainNbr !=null">
+			     AND CREW_CROSS LIKE #{trainNbr}
+		        </if>
+                ORDER BY RECORD_TIME
 			)M
 		) P
 		WHERE P.NUM>=${rownumstart} AND P.NUM &lt;=${rownumend}
