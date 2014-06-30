@@ -19,5 +19,5 @@ public interface HighLineCrewDao {
 
     void update(HighLineCrewInfo crewHighlineInfo);
 
-    void delete(String crewHighLineId);
+    void delete(Map<String,String> reqMap);
 }

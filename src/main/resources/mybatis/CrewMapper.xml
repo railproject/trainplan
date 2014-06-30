@@ -4,22 +4,57 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="org.railway.com.trainplan.repository.mybatis.HighLineCrewDao">
 
+
+	
     <select id="findOne" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
-        SELECT HLC.HIGHLINE_CREW_ID, HLC.CREW_DATE, HLC.CREW_BUREAU, HLC.CREW_TYPE, HLC.CREW_CROSS, HLC.CREW_GROUP, HLC.THROUGH_LINE,
-        HLC.NAME1, HLC.TEL1, HLC.IDENTITY1, HLC.NAME2, HLC.TEL2, HLC.IDENTITY2, HLC.NOTE, HLC.RECORD_PEOPLE, HLC.RECORD_PEOPLE_ORG,
-        HLC.RECORD_TIME, HLC.SUBMIT_TYPE FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID = '${crewHighLineId}'
+        SELECT 
+	       HLC.HIGHLINE_CREW_ID AS crewHighlineId, 
+	       HLC.CREW_DATE AS crewDate, 
+	       HLC.CREW_BUREAU AS crewBureau, 
+	       HLC.CREW_TYPE AS crewType, 
+	       HLC.CREW_CROSS AS crewCross,
+	       HLC.CREW_GROUP AS crewGroup,
+	       HLC.THROUGH_LINE AS throughLine,
+	       HLC.NAME1 AS name1,
+	       HLC.TEL1 AS tel1, 
+	       HLC.IDENTITY1 AS identity1,
+	       HLC.NAME2 AS name2, 
+	       HLC.TEL2 AS tel2, 
+	       HLC.IDENTITY2 AS identity2, 
+	       HLC.NOTE AS note , 
+	       HLC.RECORD_PEOPLE AS recordPeople, 
+	       HLC.RECORD_PEOPLE_ORG AS recordPeopleOrg,
+	       HLC.RECORD_TIME AS recordTime , 
+	       HLC.SUBMIT_TYPE AS submitType
+        FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID = #{crewHighlineId}
     </select>
 
 
-    <select id="findList" parameterType="map" resultType="map">
-        SELECT HLC.HIGHLINE_CREW_ID, HLC.CREW_DATE, HLC.CREW_BUREAU, HLC.CREW_TYPE, HLC.CREW_CROSS, HLC.CREW_GROUP, HLC.THROUGH_LINE,
-        HLC.NAME1, HLC.TEL1, HLC.IDENTITY1, HLC.NAME2, HLC.TEL2, HLC.IDENTITY2, HLC.NOTE, HLC.RECORD_PEOPLE, HLC.RECORD_PEOPLE_ORG,
-        HLC.RECORD_TIME, HLC.SUBMIT_TYPE
-        FROM HIGHLINE_CREW HLC
+    <select id="findList" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
+        SELECT 
+           HLC.HIGHLINE_CREW_ID AS crewHighlineId, 
+	       HLC.CREW_DATE AS crewDate, 
+	       HLC.CREW_BUREAU AS crewBureau, 
+	       HLC.CREW_TYPE AS crewType, 
+	       HLC.CREW_CROSS AS crewCross,
+	       HLC.CREW_GROUP AS crewGroup,
+	       HLC.THROUGH_LINE AS throughLine,
+	       HLC.NAME1 AS name1,
+	       HLC.TEL1 AS tel1, 
+	       HLC.IDENTITY1 AS identity1,
+	       HLC.NAME2 AS name2, 
+	       HLC.TEL2 AS tel2, 
+	       HLC.IDENTITY2 AS identity2, 
+	       HLC.NOTE AS note , 
+	       HLC.RECORD_PEOPLE AS recordPeople, 
+	       HLC.RECORD_PEOPLE_ORG AS recordPeopleOrg,
+	       HLC.RECORD_TIME AS recordTime , 
+	       HLC.SUBMIT_TYPE AS submitType
+        FROM HIGHLINE_CREW HLC WHERE CREW_DATE=#{crewDate}
     </select>
 
-    <delete id="delete" parameterType="string">
-        DELETE FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID = #{crewHighLineId}
+    <delete id="delete" parameterType="map">
+        DELETE FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID in (${crewHighlineId})
     </delete>
 
     <insert id="addCrew" parameterType="org.railway.com.trainplan.entity.HighLineCrewInfo">
@@ -37,23 +72,72 @@
 
     <update id="update" parameterType="org.railway.com.trainplan.entity.HighLineCrewInfo">
         UPDATE  HIGHLINE_CREW
-        SET CREW_DATE = #{crewDate},
-        CREW_BUREAU = #{crewBureau},
-        CREW_TYPE = #{crewType},
-        CREW_CROSS = #{crewCross},
-        CREW_GROUP = #{crewGroup},
-        THROUGH_LINE = #{throughLine},
-        NAME1 = #{name1},
-        TEL1 = #{tel1},
-        IDENTITY1 = #{identity1},
-        NAME2 = #{name2},
-        TEL2 = #{tel2},
-        IDENTITY2 = #{identity2},
-        NOTE = #{note},
-        RECORD_PEOPLE = #{recordPeople},
-        RECORD_PEOPLE_ORG = #{recordPeopleOrg},
-        SUBMIT_TYPE = #{submitType})
-        WHERE HIGHLINE_CREW_ID = #{crewHighLineId}
+        SET 
+       <choose>
+          <when test="crewDate == null">CREW_DATE = '',</when>
+          <otherwise>CREW_DATE = #{crewDate},</otherwise>
+       </choose>
+       <choose>
+          <when test="crewBureau == null">CREW_BUREAU =''</when>
+          <otherwise> CREW_BUREAU = #{crewBureau},</otherwise>
+       </choose>
+       <choose>
+          <when test="crewType == null">CREW_TYPE = ''</when>
+          <otherwise>CREW_TYPE = #{crewType},</otherwise>
+       </choose>
+       <choose>
+          <when test="crewCross == null">CREW_CROSS =''</when>
+          <otherwise>CREW_CROSS = #{crewCross},</otherwise>
+       </choose>
+        <choose>
+          <when test="crewGroup == null">CREW_GROUP =''</when>
+          <otherwise>CREW_GROUP = #{crewGroup},</otherwise>
+       </choose>
+      <choose>
+          <when test="throughLine == null">THROUGH_LINE = ''</when>
+          <otherwise>THROUGH_LINE = #{throughLine},</otherwise>
+       </choose>
+      <choose>
+          <when test="name1 == null">NAME1 = ''</when>
+          <otherwise>NAME1 = #{name1},</otherwise>
+       </choose>
+         <choose>
+          <when test="tel1 == null">TEL1 = ''</when>
+          <otherwise>TEL1 = #{tel1},</otherwise>
+       </choose>
+      <choose>
+          <when test="identity1 == null">IDENTITY1 = ''</when>
+          <otherwise>IDENTITY1 = #{identity1},</otherwise>
+       </choose>
+      <choose>
+          <when test="name2 == null">NAME2 =''</when>
+          <otherwise>NAME2 = #{name2},</otherwise>
+       </choose>
+      <choose>
+          <when test="tel2 == null">TEL2 =''</when>
+          <otherwise>TEL2 = #{tel2},</otherwise>
+       </choose>   
+       <choose>
+          <when test="identity2 == null">IDENTITY2 =''</when>
+          <otherwise>IDENTITY2 = #{identity2},</otherwise>
+       </choose>
+      <choose>
+          <when test="note == null">NOTE = ''</when>
+          <otherwise>NOTE = #{note},</otherwise>
+       </choose>         
+      <choose>
+          <when test="recordPeople == null">RECORD_PEOPLE =''</when>
+          <otherwise>RECORD_PEOPLE = #{recordPeople},</otherwise>
+       </choose>
+      <choose>
+          <when test="recordPeopleOrg == null">RECORD_PEOPLE_ORG =''</when>
+          <otherwise>RECORD_PEOPLE_ORG = #{recordPeopleOrg},</otherwise>
+       </choose>         
+       <choose>
+          <when test="submitType == null">SUBMIT_TYPE = ''</when>
+          <otherwise>SUBMIT_TYPE = #{submitType}</otherwise>
+       </choose>       
+        WHERE HIGHLINE_CREW_ID = #{crewHighlineId}
     </update>
     
     
@@ -152,7 +236,10 @@
 				  SUBMIT_TYPE AS submitType
 				
 				FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType}
- 
+			    <if test="trainNbr !=null">
+			     AND CREW_CROSS LIKE #{trainNbr}
+		        </if>
+                ORDER BY RECORD_TIME
 			)M
 		) P
 		WHERE P.NUM>=${rownumstart} AND P.NUM &lt;=${rownumend}
@@ -165,5 +252,8 @@
     </select>
     
     
+    <update id="updateSubmitType"  parameterType="map">
+     UPDATE HIGHLINE_CREW  SET SUBMIT_TYPE=1 WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType}
     
+    </update>
 </mapper> 

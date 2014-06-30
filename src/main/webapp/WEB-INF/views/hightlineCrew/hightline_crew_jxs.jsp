@@ -6,13 +6,13 @@ String basePath = request.getContextPath();
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>司机乘务计划上报</title>
+<title>机械师乘务计划上报</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 </head>
 <body class="Iframe_body">
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
-  <li><a href="<%=basePath %>/crew/page/sj">乘务计划->司机乘务计划</a></li>
+  <li><a href="<%=basePath %>/crew/page/sj">乘务计划->机械师乘务计划</a></li>
 </ol>
 <!--以上为必须要的--> 
 
@@ -32,7 +32,6 @@ String basePath = request.getContextPath();
     </div>
     <a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
     <a type="button" href="#" class="btn btn-success" data-bind="click : sendCrew" style="float:left;margin-left:5px;margin-bottom:0;"><i class="fa fa-external-link"></i>提交</a>
-    <a type="button" href="#" class="btn btn-success" data-bind="" style="float:left;margin-left:5px;margin-bottom:0;"><i class="fa fa-retweet"></i>校验</a>
   </form>
 </div>
 
@@ -96,7 +95,7 @@ String basePath = request.getContextPath();
     <!--分栏框开始-->
     <div class="panel panel-default">
       <div class="panel-heading" >
-        <h3 class="panel-title" > <i class="fa fa-user-md"></i>司机乘务计划</h3>
+        <h3 class="panel-title" > <i class="fa fa-user-md"></i>机械师乘务计划</h3>
         <!--        <div class="col-md-8 col-sm-6 col-xs-4  pull-right" style=" width: 10%; text-align:right;">  <a  class="panel-title" href="application-Status.html" >返回</a></div>--> 
       </div>
       <!--panle-heading-->
@@ -106,44 +105,38 @@ String basePath = request.getContextPath();
           <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-plus"></i>新增</button>
           <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 编辑</button>
           <button type="button" class="btn btn-success"  data-bind="click : deleteHightLineCrew"><i class="fa fa-minus-square"></i>移除</button>
-          <button type="button" class="btn btn-success" ><i class="fa fa-sign-in"></i>导入EXCEL</button>
-          <button type="button" class="btn btn-success" ><i class="fa fa-sign-out"></i>导出EXCEL</button>
         </div>
         <div class="table-responsive table-hover">
           <table class="table table-bordered table-striped table-hover">
             <thead>
               <tr>
-                <th rowspan="2" style="width:5%;"></th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px;">序号</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">乘务交路</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">车队组号</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
-                <th colspan="3" class="text-center" style="vertical-align: middle">司机1</th>
-                <th colspan="3" class="text-center" style="vertical-align: middle">司机2</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px">发布<br>状态</th>
-              </tr>
-              <tr>
-                <th class="text-center">姓名</th>
-                <th class="text-center">电话</th>
-                <th class="text-center">政治面貌</th>
-                <th class="text-center">姓名</th>
-                <th class="text-center">电话</th>
-                <th class="text-center">政治面貌</th>
+                <th style="width:5%;"></th>
+                <th style="width:10%;">序号</th>
+                <th>乘务交路</th>
+                <th>车队组号</th>
+                <th>经由铁路线</th>
+                <th>机械师1姓名</th>
+                <th>电话</th>
+                <th>政治面貌</th>
+                <th>机械师2姓名</th>
+                <th>电话</th>
+                <th>政治面貌</th>
+                <th>状态</th>
               </tr>
             </thead>
             <tbody data-bind="foreach: hightLineCrewSjRows.rows">
               <tr data-bind="attr:{class : submitType==1? 'success':''}">
               	<td><input name="crew_checkbox" type="checkbox" data-bind="value : crewHighlineId"></td>
                 <td data-bind=" text: ($index() + 1)"></td>
-                <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
-                <td data-bind=" text: crewGroup, attr:{title: crewGroup}"></td>
-                <td data-bind=" text: throughLine, attr:{title: throughLine}"></td>
-                <td data-bind=" text: name1, attr:{title: name1}"></td>
-                <td data-bind=" text: tel1, attr:{title: tel1}"></td>
-                <td data-bind=" text: identity1, attr:{title: identity1}"></td>
-                <td data-bind=" text: name2, attr:{title: name2}"></td>
-                <td data-bind=" text: tel2, attr:{title: tel2}"></td>
-                <td data-bind=" text: identity2, attr:{title: identity2}"></td>
+                <td data-bind=" text: crewCross"></td>
+                <td data-bind=" text: crewGroup"></td>
+                <td data-bind=" text: throughLine"></td>
+                <td data-bind=" text: name1"></td>
+                <td data-bind=" text: tel1"></td>
+                <td data-bind=" text: identity1"></td>
+                <td data-bind=" text: name2"></td>
+                <td data-bind=" text: tel2"></td>
+                <td data-bind=" text: identity2"></td>
                 <td data-bind="html : submitTypeStr"></td>
               </tr>
             </tbody>
@@ -206,7 +199,7 @@ String basePath = request.getContextPath();
           
           
           <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机1姓名：</label>
+            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">机械师1姓名：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
               <input id="add_name1" type="text" class="form-control" data-bind="value : name1">
                </div>
@@ -224,7 +217,7 @@ String basePath = request.getContextPath();
                </div>
           </div>
           <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机2姓名：</label>
+            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">机械师2姓名：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
               <input id="add_name2" type="text" class="form-control" data-bind="value : name2">
                </div>
@@ -265,6 +258,6 @@ String basePath = request.getContextPath();
 
 
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
-<script src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.sj.js"></script> 
+<script src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.jxs.js"></script> 
 </body>
 </html>

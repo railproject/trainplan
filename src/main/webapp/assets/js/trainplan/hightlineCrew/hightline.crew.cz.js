@@ -130,8 +130,8 @@ var HightLineCrewSjPage = function () {
 	function PageModel() {
 		var _self = this;
 		_self.searchModle = ko.observable(new SearchModle());		//页面查询对象
-		_self.planTrainRows = new PageModle(5000, loadPlanDataForPage);		//页面开行计划列表对象
-		_self.hightLineCrewSjRows = new PageModle(10000, loadHightLineCrewSjDataForPage);		//页面司机乘务计划列表对象
+		_self.planTrainRows = new PageModle(200, loadPlanDataForPage);		//页面开行计划列表对象
+		_self.hightLineCrewSjRows = new PageModle(200, loadHightLineCrewSjDataForPage);		//页面车长乘务计划列表对象
 		_self.hightLineCrewModel = ko.observable(new HighlineCrewModel());	//用于乘务计划新增、修改
 		_self.hightLineCrewModelTitle = ko.observable();	//用于乘务计划新增、修改窗口标题
 		_self.hightLineCrewSaveFlag = ko.observable();		//用于乘务计划新增、修改标识
@@ -152,7 +152,7 @@ var HightLineCrewSjPage = function () {
 			//1.查询开行计划
 			_self.planTrainRows.loadRows();	//loadRows为分页组件中方法
 
-			//2.查询司机乘务计划信息
+			//2.查询车长乘务计划信息
 			_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
 		};
 		
@@ -162,7 +162,7 @@ var HightLineCrewSjPage = function () {
 		 */
 		_self.onAddOpen = function() {
 			_self.hightLineCrewSaveFlag("add");
-			_self.hightLineCrewModelTitle("新增司机乘务计划");
+			_self.hightLineCrewModelTitle("新增车长乘务计划");
 			_self.hightLineCrewModel().update(null);
 		};
 		
@@ -174,7 +174,7 @@ var HightLineCrewSjPage = function () {
 		 */
 		_self.onEditOpen = function() {
 			_self.hightLineCrewSaveFlag("update");
-			_self.hightLineCrewModelTitle("修改司机乘务计划");
+			_self.hightLineCrewModelTitle("修改车长乘务计划");
 			var currentCrewHighlineId = "";
 			$("[name='crew_checkbox']").each(function(){
 				if($(this).is(":checked")) {
@@ -203,11 +203,11 @@ var HightLineCrewSjPage = function () {
 					if (result != null && typeof result == "object" && result.code == "0") {
 						_self.hightLineCrewModel().update(result.data);
 					} else {
-						showErrorDialog("获取司机乘务计划信息失败");
+						showErrorDialog("获取车长乘务计划信息失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("获取司机乘务计划信息失败");
+					showErrorDialog("获取车长乘务计划信息失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -259,17 +259,17 @@ var HightLineCrewSjPage = function () {
 				}),
 				success : function(result) {
 					if (result != null && typeof result == "object" && result.code == "0") {
-						//2.查询司机乘务计划信息
+						//2.查询车长乘务计划信息
 						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
-						showSuccessDialog("成功删除司机乘务计划信息");
+						showSuccessDialog("成功删除车长乘务计划信息");
 					} else {
 						commonJsScreenUnLock(1);
-						showErrorDialog("删除司机乘务计划信息失败");
+						showErrorDialog("删除车长乘务计划信息失败");
 					};
 				},
 				error : function() {
 					commonJsScreenUnLock(1);
-					showErrorDialog("删除司机乘务计划信息失败");
+					showErrorDialog("删除车长乘务计划信息失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock(1);
@@ -294,22 +294,22 @@ var HightLineCrewSjPage = function () {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					crewType : "2",//乘务类型（1车长、2司机、3机械师）
+					crewType : "1",//乘务类型（1车长、2司机、3机械师）
 					crewDate : $("#crew_input_rundate").val()//_self.searchModle().runDate()
 				}),
 				success : function(result) {
 					if (result != null && typeof result == "object" && result.code == "0") {
-						//2.查询司机乘务计划信息
+						//2.查询车长乘务计划信息
 						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
 						showSuccessDialog("提交成功");
 					} else {
 						commonJsScreenUnLock(1);
-						showErrorDialog("提交司机乘务计划信息失败");
+						showErrorDialog("提交车长乘务计划信息失败");
 					};
 				},
 				error : function() {
 					commonJsScreenUnLock(1);
-					showErrorDialog("提交司机乘务计划信息失败");
+					showErrorDialog("提交车长乘务计划信息失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock(1);
@@ -343,7 +343,7 @@ var HightLineCrewSjPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					crewHighlineId : _self.hightLineCrewModel().crewHighlineId(),
-					crewType : "2",//乘务类型（1车长、2司机、3机械师）
+					crewType : "1",//乘务类型（1车长、2司机、3机械师）
 					crewDate : $("#crew_input_rundate").val(),//_self.searchModle().runDate(),
 					crewCross : _self.hightLineCrewModel().crewCross(),
 					crewGroup : _self.hightLineCrewModel().crewGroup(),
@@ -358,17 +358,17 @@ var HightLineCrewSjPage = function () {
 				}),
 				success : function(result) {
 					if (result != null && typeof result == "object" && result.code == "0") {
-						//2.查询司机乘务计划信息
+						//2.查询车长乘务计划信息
 						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
 						showSuccessDialog("保存成功");
 					} else {
 						commonJsScreenUnLock(1);
-						showErrorDialog("保存司机乘务计划信息失败");
+						showErrorDialog("保存车长乘务计划信息失败");
 					};
 				},
 				error : function() {
 					commonJsScreenUnLock(1);
-					showErrorDialog("保存司机乘务计划信息失败");
+					showErrorDialog("保存车长乘务计划信息失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock(1);
@@ -434,7 +434,7 @@ var HightLineCrewSjPage = function () {
 		
 		
 		/**
-		 * 分页查询司机乘务计划列表
+		 * 分页查询车长乘务计划列表
 		 */
 		function loadHightLineCrewSjDataForPage(startIndex, endIndex) {
 			
@@ -455,7 +455,7 @@ var HightLineCrewSjPage = function () {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					crewType : "2",	//乘务类型（1车长、2司机、3机械师）
+					crewType : "1",	//乘务类型（1车长、2司机、3机械师）
 					crewDate : _runDate,
 					trainNbr : _trainNbr,
 					rownumstart : startIndex, 
@@ -468,9 +468,9 @@ var HightLineCrewSjPage = function () {
 						if(result.data.data != null){
 							$.each(result.data.data,function(n, obj){
 								if (obj.submitType != null && obj.submitType==0) {
-									obj.submitTypeStr = "<span class='label label-danger'>未</span>";
+									obj.submitTypeStr = "<span class='label label-danger'>草稿</span>";
 								} else if (obj.submitType != null && obj.submitType==1) {
-									obj.submitTypeStr = "<span class='label label-success'>已</span>";
+									obj.submitTypeStr = "<span class='label label-success'>已提交</span>";
 								} else {
 									obj.submitTypeStr = "";
 								}
@@ -480,11 +480,11 @@ var HightLineCrewSjPage = function () {
 						}
 						 
 					} else {
-						showErrorDialog("获取司机乘务计划信息失败");
+						showErrorDialog("获取车长乘务计划信息失败");
 					};
 				},
 				error : function() {
-					showErrorDialog("获取司机乘务计划信息失败");
+					showErrorDialog("获取车长乘务计划信息失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock(1);

@@ -6,18 +6,17 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.HighLineCrewInfo;
 import org.railway.com.trainplan.entity.QueryResult;
 import org.railway.com.trainplan.service.HighLineCrewService;
+import org.railway.com.trainplan.service.ShiroRealm;
 import org.railway.com.trainplan.service.dto.PagingResult;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,47 +37,130 @@ public class HighLineCrewController {
     @Autowired
     private HighLineCrewService highLineCrewService;
 
-    @RequestMapping(value = "{highLineId}", method = RequestMethod.GET)
-    public ResponseEntity<HighLineCrewInfo> getHighLineCrew(@PathVariable String crewHighLineId) {
+    @RequestMapping(value = "getHighLineCrew", method = RequestMethod.POST)
+    public Result getHighLineCrew(@RequestBody Map<String,Object> reqMap) {
         logger.debug("getHighLineCrew:::::::");
-        Map<String, Object> params = Maps.newHashMap();
-        params.put("crewHighLineId", crewHighLineId);
-        HighLineCrewInfo highLineCrewInfo = highLineCrewService.findHighLineCrew(params);
-        return new ResponseEntity<HighLineCrewInfo>(highLineCrewInfo, HttpStatus.OK);
+        Result result = new Result(); 
+        try{
+        	Map<String, Object> params = Maps.newHashMap();
+            params.put("crewHighlineId", StringUtil.objToStr(reqMap.get("crewHighLineId")));
+            HighLineCrewInfo highLineCrewInfo = highLineCrewService.findHighLineCrew(params);	
+            result.setData(highLineCrewInfo);
+        }catch(Exception e){
+        	logger.error(e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());
+        }
+        
+        return result;
     }
 
     @RequestMapping(value = "all", method = RequestMethod.GET)
-    public ResponseEntity<List<HighLineCrewInfo>> getHighLineCrewList() {
+    public Result getHighLineCrewList() {
         logger.debug("getHighLineCrewList:::::::");
-        Map<String, Object> params = Maps.newHashMap();
-        params.put("id", null);
-        List<HighLineCrewInfo> list = highLineCrewService.findList(params);
-        return new ResponseEntity<List<HighLineCrewInfo>>(list, HttpStatus.OK);
+        Result result = new Result(); 
+        try{
+        	 Map<String, Object> params = Maps.newHashMap();
+             params.put("id", null);
+             List<HighLineCrewInfo> list = highLineCrewService.findList(params);
+             result.setData(list);
+        }catch(Exception e){
+        	logger.error(e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());
+        }
+       
+        return result;
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public ResponseEntity addHighLineCrewInfo(@RequestBody HighLineCrewInfo highLineCrewInfo) {
+    public Result addHighLineCrewInfo(@RequestBody HighLineCrewInfo highLineCrewInfo) {
         logger.debug("addHighLineCrewInfo:::::::");
-        highLineCrewInfo.setCrewHighlineId(UUID.randomUUID().toString());
-        highLineCrewService.addCrew(highLineCrewInfo);
-        return new ResponseEntity(HttpStatus.OK);
+        Result result = new Result(); 
+        try{
+        	ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        	 highLineCrewInfo.setCrewHighlineId(UUID.randomUUID().toString());
+             String crewDate = DateUtil.getFormateDayShort(highLineCrewInfo.getCrewDate());
+             highLineCrewInfo.setCrewDate(crewDate);
+             //所属局简称
+             highLineCrewInfo.setCrewBureau(user.getBureauShortName());
+         	 highLineCrewInfo.setRecordPeople(user.getName());
+        	 highLineCrewInfo.setRecordPeopleOrg(user.getDeptName());
+             highLineCrewService.addCrew(highLineCrewInfo);
+        }catch(Exception e){
+        	logger.error(e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());
+        }
+        return result;
+        
     }
 
     @RequestMapping(value = "update", method = RequestMethod.PUT)
-    public ResponseEntity updateHighLineCrewInfo(@RequestBody HighLineCrewInfo highLineCrewInfo) {
-        logger.debug("updateHighLineCrewInfo:::::::");
-        highLineCrewService.update(highLineCrewInfo);
-        return new ResponseEntity(HttpStatus.OK);
+    public Result updateHighLineCrewInfo(@RequestBody HighLineCrewInfo highLineCrewInfo) {
+        logger.debug("updateHighLineCrewInfo:::::::" + highLineCrewInfo.getCrewDate() + "|" + highLineCrewInfo.getCrewCross());
+        Result result = new Result(); 
+        try{
+        	ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+        	//所属局简称
+        	highLineCrewInfo.setCrewBureau(user.getBureauShortName());
+        	highLineCrewInfo.setRecordPeople(user.getName());
+        	highLineCrewInfo.setRecordPeopleOrg(user.getDeptName());
+        	String crewDate = DateUtil.getFormateDayShort(highLineCrewInfo.getCrewDate());
+            highLineCrewInfo.setCrewDate(crewDate);
+        	highLineCrewService.update(highLineCrewInfo);
+        }catch(Exception e){
+        	logger.error(e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());
+        }
+        return result;
+
     }
 
-    @RequestMapping(value = "{highLineId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteHighLineCrewInfo(@PathVariable String crewHighLineId) {
+    /**
+     * 批量删除highline_crew表中数据
+     * @param reqMap
+     * @return
+     */
+    @RequestMapping(value = "deleteHighLineCrewInfo", method = RequestMethod.DELETE)
+    public Result deleteHighLineCrewInfo(@RequestBody Map<String,Object> reqMap ) {
         logger.debug("deleteHighLineCrewInfo:::::::");
-        highLineCrewService.delete(crewHighLineId);
-        return new ResponseEntity(HttpStatus.OK);
+        Result result = new Result(); 
+        try{
+            String crewHighLineId = StringUtil.objToStr(reqMap.get("crewHighLineId"));
+            logger.debug("crewHighLineId==" + crewHighLineId);
+            highLineCrewService.delete(crewHighLineId);
+        }catch(Exception e){
+        	logger.error(e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());
+        }
+        return result;
     }
     
-    
+    /**
+     * 更新字段submitType字段的值为1
+     * @param reqMap
+     * @return
+     */
+    @ResponseBody
+	@RequestMapping(value = "updateSubmitType", method = RequestMethod.POST)
+    public Result updateSubmitType(@RequestBody Map<String,Object> reqMap){
+    	Result result = new Result(); 
+    	try{
+    		logger.debug("updateSubmitType~~~~~reqMap="+reqMap);
+    		String crewDate = StringUtil.objToStr(reqMap.get("crewDate"));
+    		crewDate = DateUtil.getFormateDayShort(crewDate);
+    		String crewType =  StringUtil.objToStr(reqMap.get("crewType"));
+    		highLineCrewService.updateSubmitType(crewDate,crewType);
+    	}catch(Exception e){
+    		logger.error(e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+    	}
+    	return result;
+    }
     /**
 	 * 获取运行线信息
 	 * @param reqMap
@@ -126,7 +208,8 @@ public class HighLineCrewController {
 	    	String crewType = StringUtil.objToStr(reqMap.get("crewType"));
 	    	String rownumstart =  StringUtil.objToStr(reqMap.get("rownumstart"));
 	    	String rownumend =  StringUtil.objToStr(reqMap.get("rownumend"));
-	    	QueryResult queryResult = highLineCrewService.getHighlineCrewListForRunDate(crewDate,crewType, rownumstart, rownumend);
+	    	String trainNbr =  StringUtil.objToStr(reqMap.get("trainNbr"));
+	    	QueryResult queryResult = highLineCrewService.getHighlineCrewListForRunDate(crewDate,crewType, trainNbr,rownumstart, rownumend);
 	    	PagingResult page = new PagingResult(queryResult.getTotal(), queryResult.getRows());
 	    	result.setData(page);
 	    }catch(Exception e){

@@ -49,8 +49,10 @@ public class HighLineCrewService {
         highLineCrewDao.update(crewHighlineInfo);
     }
 
-    public void delete(String crewHighLineId) {
-        highLineCrewDao.delete(crewHighLineId);
+    public void delete(String crewHighlineId) {
+    	Map<String,String> reqMap = new HashMap<String,String>();
+    	reqMap.put("crewHighlineId", crewHighlineId);
+        highLineCrewDao.delete(reqMap);
     }
     
     /**
@@ -75,14 +77,30 @@ public class HighLineCrewService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String rownumstart,String rownumend ) throws Exception{
+	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String trainNbr,String rownumstart,String rownumend ) throws Exception{
 		Map reqMap = new HashMap<String,String>();
 		reqMap.put("crewDate",crewDate );
 		reqMap.put("crewType",crewType );
 		reqMap.put("rownumstart",rownumstart );
 		reqMap.put("rownumend",rownumend );
+		if(trainNbr != null && !"".equals(trainNbr)){
+			reqMap.put("trainNbr","%" +trainNbr + "%");
+		}else if("".equals(trainNbr)){
+			reqMap.put("trainNbr",null);
+		}
 		return baseDao.selectListForPagingBySql(Constants.HIGHLINECREWDAO_FIND_HIGHLINE_CREW_LIST,reqMap);
 	}
     
-	
+	/**
+	 * 更新submitType字段值为1
+	 * @param crewDate 格式yyyy-MM-dd
+	 * @param crewType 乘务类型（1车长、2司机、3机械师）
+	 * @return
+	 */
+	public int updateSubmitType(String crewDate,String crewType){
+		Map reqMap = new HashMap<String,String>();
+		reqMap.put("crewDate",crewDate );
+		reqMap.put("crewType", crewType);
+		return baseDao.updateBySql(Constants.HIGHLINECREWDAO_UPDATE_SUBMIT_TYPE, reqMap);
+	}
 }
