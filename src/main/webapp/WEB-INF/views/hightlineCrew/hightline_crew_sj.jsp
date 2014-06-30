@@ -31,70 +31,21 @@ String basePath = request.getContextPath();
       </div>
     </div>
     <a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
-    <a type="button" href="#" class="btn btn-success" data-bind="click : sendCrew" style="float:left;margin-left:5px;margin-bottom:0;"><i class="fa fa-external-link"></i>提交</a>
-    <a type="button" href="#" class="btn btn-success" data-bind="" style="float:left;margin-left:5px;margin-bottom:0;"><i class="fa fa-retweet"></i>校验</a>
+  	<button type="button" class="btn btn-success"  style="float:left;margin-left:5px;margin-bottom:0;" data-bind="click: checkCrew, enable: checkAndSendBtnEnable"><i class="fa fa-retweet"></i>校验</button>
+  	<button type="button" class="btn btn-success"  style="float:left;margin-left:5px;margin-bottom:0;" data-bind="click: sendCrew, enable: checkAndSendBtnEnable"><i class="fa fa-external-link"></i>提交</button>
   </form>
 </div>
 
 
 
 <!--左右分开-->
-<div class="row"> 
-  <!--所有租户-->
-  <div class="col-md-3 col-sm-3 col-xs-3" style="padding:0;"> 
-    <!--分栏框开始-->
-    <div class="panel panel-default">
-      <div class="panel-heading" >
-        <h3 class="panel-title" > <i class="fa fa-user-md"></i>列车开行计划</h3>
-      </div>
-      <!--panle-heading-->
-      <div class="panel-body" style="padding:5px 5px;">
-        <div class="table-responsive table-hover">
-          <table class="table table-bordered table-striped table-hover">
-            <thead>
-              <tr>
-                <th style="width:10%;">序号</th>
-                <th>车次</th>
-                <th>始发站</th>
-                <th>始发时间</th>
-                <th>终到站</th>
-                <th>终到时间</th>
-              </tr>
-            </thead>
-            <tbody data-bind="foreach: planTrainRows.rows">
-              <tr class="success">
-                <td data-bind=" text: ($index() + 1)"></td>
-                <td data-bind=" text: trainNbr, attr:{title: trainNbr}"></td>
-                <td data-bind=" text: startStn, attr:{title: startStn}"></td>
-                <td data-bind=" text: startTimeStr, attr:{title: startTimeStr}"></td>
-                <td data-bind=" text: endStn, attr:{title: endStn}"></td>
-                <td data-bind=" text: endTimeStr, attr:{title: endTimeStr}"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <!--panel-body--> 
-      
-    </div>
-    
-    <!--分栏框结束--> 
-  </div>
-  <!--所有租户--> 
-  
-  
-  
-  
-  
-  
-  
-  
-  
+<div class="row">
+	  
   
   <!--乘务计划-->
-  <div class="col-md-9 col-sm-9 col-xs-9 pull-right"> 
+  <div style="margin-right:-590px; float:left; width:100%;">
     <!--分栏框开始-->
-    <div class="panel panel-default">
+    <div class="panel panel-default" style="margin-right:590px;">
       <div class="panel-heading" >
         <h3 class="panel-title" > <i class="fa fa-user-md"></i>司机乘务计划</h3>
         <!--        <div class="col-md-8 col-sm-6 col-xs-4  pull-right" style=" width: 10%; text-align:right;">  <a  class="panel-title" href="application-Status.html" >返回</a></div>--> 
@@ -106,8 +57,8 @@ String basePath = request.getContextPath();
           <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-plus"></i>新增</button>
           <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 编辑</button>
           <button type="button" class="btn btn-success"  data-bind="click : deleteHightLineCrew"><i class="fa fa-minus-square"></i>移除</button>
-          <button type="button" class="btn btn-success" ><i class="fa fa-sign-in"></i>导入EXCEL</button>
-          <button type="button" class="btn btn-success" ><i class="fa fa-sign-out"></i>导出EXCEL</button>
+          <button type="button" class="btn btn-success"  data-bind="click : deleteHightLineCrew"><i class="fa fa-sign-in"></i>导入EXCEL</button>
+          <button type="button" class="btn btn-success"  data-bind="click : exportExcel"><i class="fa fa-sign-out"></i>导出EXCEL</button>
         </div>
         <div class="table-responsive table-hover">
           <table class="table table-bordered table-striped table-hover">
@@ -131,8 +82,8 @@ String basePath = request.getContextPath();
                 <th class="text-center">政治面貌</th>
               </tr>
             </thead>
-            <tbody data-bind="foreach: hightLineCrewSjRows.rows">
-              <tr data-bind="attr:{class : submitType==1? 'success':''}">
+            <tbody data-bind="foreach: hightLineCrewRows.rows">
+              <tr>
               	<td><input name="crew_checkbox" type="checkbox" data-bind="value : crewHighlineId"></td>
                 <td data-bind=" text: ($index() + 1)"></td>
                 <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
@@ -156,7 +107,61 @@ String basePath = request.getContextPath();
     
     <!--分栏框结束--> 
   </div>
-  <!--用户管理--> 
+  <!--乘务计划end--> 
+
+
+
+
+  <!--列车开行计划-->
+  <div class="pull-right" style="width:580px;"> 
+    <!--分栏框开始-->
+    <div class="panel panel-default">
+      <div class="panel-heading" >
+        <h3 class="panel-title" > <i class="fa fa-user-md"></i>列车开行计划</h3>
+      </div>
+      <!--panle-heading-->
+      <div class="panel-body" style="padding:5px 5px;">
+        <div class="table-responsive table-hover" style="height: 450px; overflow-y:auto;">
+          <table border="0" class="table table-bordered table-striped table-hover">
+            <thead>
+              <tr>
+                <th style="width:40px;">序号</th>
+                <th style="width:120px;">车次</th>
+                <th style="width:120px;">始发站</th>
+                <th style="width:120px;">始发时间</th>
+                <th style="width:120px;">终到站</th>
+                <th style="width:120px;">终到时间</th>
+              </tr>
+            </thead>
+			<tbody data-bind="foreach: planTrainRows.rows">
+			  <tr data-bind="attr:{class : isMatch()==1? 'danger':''}">
+                <td style="width:40px;" data-bind=" text: ($index() + 1)"></td>
+                <td style="width:120px;" data-bind=" text: trainNbr, attr:{title: trainNbr}"></td>
+                <td style="width:120px;" data-bind=" text: startStn, attr:{title: startStn}"></td>
+                <td style="width:120px;" data-bind=" text: startTimeStr, attr:{title: startTimeStr}"></td>
+                <td style="width:120px;" data-bind=" text: endStn, attr:{title: endStn}"></td>
+                <td style="width:120px;" data-bind=" text: endTimeStr, attr:{title: endTimeStr}"></td>
+              </tr>
+            </tbody> 
+          </table>
+        </div>
+      </div>
+      <!--panel-body--> 
+      
+    </div>
+    
+    <!--分栏框结束--> 
+  </div>
+  <!--列车开行计划 end--> 
+  
+  
+  
+  
+  
+  
+  
+  
+
   
 </div>
 <!--左右分开--> 
