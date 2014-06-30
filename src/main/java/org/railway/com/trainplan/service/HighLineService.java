@@ -117,4 +117,24 @@ public class HighLineService{
 	public List<HighlineTrainRunLine> getHighlineTrainTimeForHighlineCrossId(String highlineCrossId){
 		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_TRAINTIME_FOR_HIGHLINE_CROSSID, highlineCrossId);
 	}
+	
+	/**
+	 * 根据highlineCrossId删除表highline_cross_train中数据
+	 * @param highlineCrossId
+	 * @return 成功删除的数目
+	 */
+	public int deleteHighlienCrossTrainForHighlineCrossId(String highlineCrossId){
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID, highlineCrossId);
+	}
+	
+	
+	/**
+	 * 根据highlineCrossId删除表highline_cross中数据
+	 * @param highlineCrossId
+	 * @return 成功删除的数目
+	 */
+	public int deleteHighlienCrossForHighlineCrossId(String highlineCrossId){
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID, highlineCrossId);
+	}
+	
 }
