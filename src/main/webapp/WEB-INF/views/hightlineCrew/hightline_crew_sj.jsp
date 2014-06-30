@@ -32,6 +32,7 @@ String basePath = request.getContextPath();
     </div>
     <a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
     <a type="button" href="#" class="btn btn-success" data-bind="click : sendCrew" style="float:left;margin-left:5px;margin-bottom:0;"><i class="fa fa-external-link"></i>提交</a>
+    <a type="button" href="#" class="btn btn-success" data-bind="" style="float:left;margin-left:5px;margin-bottom:0;"><i class="fa fa-retweet"></i>校验</a>
   </form>
 </div>
 
@@ -105,38 +106,44 @@ String basePath = request.getContextPath();
           <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-plus"></i>新增</button>
           <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 编辑</button>
           <button type="button" class="btn btn-success"  data-bind="click : deleteHightLineCrew"><i class="fa fa-minus-square"></i>移除</button>
+          <button type="button" class="btn btn-success" ><i class="fa fa-sign-in"></i>导入EXCEL</button>
+          <button type="button" class="btn btn-success" ><i class="fa fa-sign-out"></i>导出EXCEL</button>
         </div>
         <div class="table-responsive table-hover">
           <table class="table table-bordered table-striped table-hover">
             <thead>
               <tr>
-                <th style="width:5%;"></th>
-                <th style="width:10%;">序号</th>
-                <th>乘务交路</th>
-                <th>车队组号</th>
-                <th>经由铁路线</th>
-                <th>司机1姓名</th>
-                <th>电话</th>
-                <th>政治面貌</th>
-                <th>司机2姓名</th>
-                <th>电话</th>
-                <th>政治面貌</th>
-                <th>状态</th>
+                <th rowspan="2" style="width:5%;"></th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px;">序号</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">乘务交路</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">车队组号</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
+                <th colspan="3" class="text-center" style="vertical-align: middle">司机1</th>
+                <th colspan="3" class="text-center" style="vertical-align: middle">司机2</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px">发布<br>状态</th>
+              </tr>
+              <tr>
+                <th class="text-center">姓名</th>
+                <th class="text-center">电话</th>
+                <th class="text-center">政治面貌</th>
+                <th class="text-center">姓名</th>
+                <th class="text-center">电话</th>
+                <th class="text-center">政治面貌</th>
               </tr>
             </thead>
             <tbody data-bind="foreach: hightLineCrewSjRows.rows">
               <tr data-bind="attr:{class : submitType==1? 'success':''}">
               	<td><input name="crew_checkbox" type="checkbox" data-bind="value : crewHighlineId"></td>
                 <td data-bind=" text: ($index() + 1)"></td>
-                <td data-bind=" text: crewCross"></td>
-                <td data-bind=" text: crewGroup"></td>
-                <td data-bind=" text: throughLine"></td>
-                <td data-bind=" text: name1"></td>
-                <td data-bind=" text: tel1"></td>
-                <td data-bind=" text: identity1"></td>
-                <td data-bind=" text: name2"></td>
-                <td data-bind=" text: tel2"></td>
-                <td data-bind=" text: identity2"></td>
+                <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
+                <td data-bind=" text: crewGroup, attr:{title: crewGroup}"></td>
+                <td data-bind=" text: throughLine, attr:{title: throughLine}"></td>
+                <td data-bind=" text: name1, attr:{title: name1}"></td>
+                <td data-bind=" text: tel1, attr:{title: tel1}"></td>
+                <td data-bind=" text: identity1, attr:{title: identity1}"></td>
+                <td data-bind=" text: name2, attr:{title: name2}"></td>
+                <td data-bind=" text: tel2, attr:{title: tel2}"></td>
+                <td data-bind=" text: identity2, attr:{title: identity2}"></td>
                 <td data-bind="html : submitTypeStr"></td>
               </tr>
             </tbody>

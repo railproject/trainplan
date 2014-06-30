@@ -1,14 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
-<%@ page import="org.apache.shiro.SecurityUtils,org.railway.com.trainplan.service.ShiroRealm,java.util.List" %>
-<% 
-ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal(); 
-boolean isZgsyh = false;
-if (user !=null && user.getBureau()==null) {
-	isZgsyh = true;
-}
-%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
@@ -132,7 +124,8 @@ if (user !=null && user.getBureau()==null) {
                         </shiro:hasPermission>
                         <shiro:hasPermission name="JHPT.KYJH.GTKD">
                             <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/audit?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁开行计划审核</a></li>
-                            <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁交路/车底计划审核</a></li>
+                            <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁交路计划审核</a></li>
+                            <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁车底计划审核</a></li>
                         </shiro:hasPermission>
                         <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
                         <shiro:hasPermission name="JHPT.KYJH.JYXKD">
@@ -140,6 +133,10 @@ if (user !=null && user.getBureau()==null) {
                         </shiro:hasPermission>
                         <shiro:hasPermission name="JHPT.KYJH.GTKD">
                             <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁日历计划发布</a></li>
+                            <li style="width: 100%;"><a style="width: 100%;" href="#" target=""><i class="fa fa-external-link"></i>高铁车底计划报告</a></li>
+	                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/cz" target="contentFrame"><i class="fa fa-external-link"></i>高铁车长乘务计划报告</a></li>
+	                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/sj" target="contentFrame"><i class="fa fa-external-link"></i>高铁司机乘务计划报告</a></li>
+	                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/jxs" target="contentFrame"><i class="fa fa-external-link"></i>高铁机械师乘务计划报告</a></li>
                         </shiro:hasPermission>
                     </ul>
                 </li>
@@ -182,15 +179,6 @@ if (user !=null && user.getBureau()==null) {
                 </li>
                 
                 
-                
-                <li>
-                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>乘务计划<i class="fa fa-caret-down pull-right"></i></a>
-                    <ul>
-                        <li><a href="${ctx}/crew/page/sj" target="contentFrame"><i class="fa fa-external-link"></i>司机乘务计划</a></li>
-                        <li><a href="${ctx}/crew/page/cz" target="contentFrame"><i class="fa fa-external-link"></i>车长乘务计划</a></li>
-                        <li><a href="${ctx}/crew/page/jxs" target="contentFrame"><i class="fa fa-external-link"></i>机械师乘务计划</a></li>
-                    </ul>
-                </li>
                 
 
                 <li><a href="http://10.1.191.99/jszl/htmlFrame/jszlIndex.htm" target="contentFrame" class="menu_one"><i class="fa fa-file"></i>技术资料 </a></li>
