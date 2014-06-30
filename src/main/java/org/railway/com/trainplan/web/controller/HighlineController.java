@@ -146,5 +146,30 @@ public class HighlineController {
 			 return result;
 		}
 		
+		 /**
+		 *更新车底编号
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/updateHighLineVehicle", method = RequestMethod.POST)
+		public Result  updateHighLineVehicle(@RequestBody Map<String,Object> reqMap) {
+			 Result result = new Result();
+			 try{
+				 List<Map> highLineCrossesList = (List<Map>)reqMap.get("highLineCrosses");
+				 if(highLineCrossesList != null && highLineCrossesList.size() > 0 ){
+					 for(Map map : highLineCrossesList){
+						 System.err.print("map=="+ map);
+					 }
+				 }
+				
+			 }catch(Exception e){
+				 logger.error("updateHighLineVehicle error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
+		
 		
 }

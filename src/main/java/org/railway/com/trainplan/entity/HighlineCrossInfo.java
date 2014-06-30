@@ -21,6 +21,8 @@ public class HighlineCrossInfo {
 	private String crossStartDate;
 	//结束日期（该日历交路最后一个车次的终到日期）
 	private String crossEndDate;
+	private String crossStartStn;
+	private String crossEndStn;
 	//交路名称
 	private String crossName;
 	//备用及停运标记（1:开行;2:备用;0:停运）
@@ -66,6 +68,158 @@ public class HighlineCrossInfo {
 	private String checkPeopleOrg;
 	//审核时间（格式：yyyy-mm-dd hh24:mi:ss）
 	private String checkTime;
+	public String getHighlineCrossId() {
+		return highlineCrossId;
+	}
+	public void setHighlineCrossId(String highlineCrossId) {
+		this.highlineCrossId = highlineCrossId;
+	}
+	public String getPlanCrossId() {
+		return planCrossId;
+	}
+	public void setPlanCrossId(String planCrossId) {
+		this.planCrossId = planCrossId;
+	}
+	public String getCrossStartDate() {
+		return crossStartDate;
+	}
+	public void setCrossStartDate(String crossStartDate) {
+		this.crossStartDate = crossStartDate;
+	}
+	public String getCrossEndDate() {
+		return crossEndDate;
+	}
+	public void setCrossEndDate(String crossEndDate) {
+		this.crossEndDate = crossEndDate;
+	}
+	public String getCrossStartStn() {
+		return crossStartStn;
+	}
+	public void setCrossStartStn(String crossStartStn) {
+		this.crossStartStn = crossStartStn;
+	}
+	public String getCrossEndStn() {
+		return crossEndStn;
+	}
+	public void setCrossEndStn(String crossEndStn) {
+		this.crossEndStn = crossEndStn;
+	}
+	public String getCrossName() {
+		return crossName;
+	}
+	public void setCrossName(String crossName) {
+		this.crossName = crossName;
+	}
+	public String getSpareFlag() {
+		return spareFlag;
+	}
+	public void setSpareFlag(String spareFlag) {
+		this.spareFlag = spareFlag;
+	}
+	public String getRelevantBureau() {
+		return relevantBureau;
+	}
+	public void setRelevantBureau(String relevantBureau) {
+		this.relevantBureau = relevantBureau;
+	}
+	public String getTokenVehBureau() {
+		return tokenVehBureau;
+	}
+	public void setTokenVehBureau(String tokenVehBureau) {
+		this.tokenVehBureau = tokenVehBureau;
+	}
+	public String getTokenVehDept() {
+		return tokenVehDept;
+	}
+	public void setTokenVehDept(String tokenVehDept) {
+		this.tokenVehDept = tokenVehDept;
+	}
+	public String getTokenVehDepot() {
+		return tokenVehDepot;
+	}
+	public void setTokenVehDepot(String tokenVehDepot) {
+		this.tokenVehDepot = tokenVehDepot;
+	}
+	public String getTokenPsgBureau() {
+		return tokenPsgBureau;
+	}
+	public void setTokenPsgBureau(String tokenPsgBureau) {
+		this.tokenPsgBureau = tokenPsgBureau;
+	}
+	public String getTokenPsgDept() {
+		return tokenPsgDept;
+	}
+	public void setTokenPsgDept(String tokenPsgDept) {
+		this.tokenPsgDept = tokenPsgDept;
+	}
+	public String getCrhType() {
+		return crhType;
+	}
+	public void setCrhType(String crhType) {
+		this.crhType = crhType;
+	}
+	public String getVehicle1() {
+		return vehicle1;
+	}
+	public void setVehicle1(String vehicle1) {
+		this.vehicle1 = vehicle1;
+	}
+	public String getVehicle2() {
+		return vehicle2;
+	}
+	public void setVehicle2(String vehicle2) {
+		this.vehicle2 = vehicle2;
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
+	}
+	public String getCreatPeople() {
+		return creatPeople;
+	}
+	public void setCreatPeople(String creatPeople) {
+		this.creatPeople = creatPeople;
+	}
+	public String getCreatPeopleOrg() {
+		return creatPeopleOrg;
+	}
+	public void setCreatPeopleOrg(String creatPeopleOrg) {
+		this.creatPeopleOrg = creatPeopleOrg;
+	}
+	public String getCreatTime() {
+		return creatTime;
+	}
+	public void setCreatTime(String creatTime) {
+		this.creatTime = creatTime;
+	}
+	public int getCheckType() {
+		return checkType;
+	}
+	public void setCheckType(int checkType) {
+		this.checkType = checkType;
+	}
+	public String getCheckPeople() {
+		return checkPeople;
+	}
+	public void setCheckPeople(String checkPeople) {
+		this.checkPeople = checkPeople;
+	}
+	public String getCheckPeopleOrg() {
+		return checkPeopleOrg;
+	}
+	public void setCheckPeopleOrg(String checkPeopleOrg) {
+		this.checkPeopleOrg = checkPeopleOrg;
+	}
+	public String getCheckTime() {
+		return checkTime;
+	}
+	public void setCheckTime(String checkTime) {
+		this.checkTime = checkTime;
+	}
+	
+	
 	
 	
 	public String getStartStn() {
