@@ -110,7 +110,7 @@ String basePath = request.getContextPath();
           <table class="table table-bordered table-striped table-hover">
             <thead>
               <tr>
-                <th style="width:5%;"><input type="checkbox"></th>
+                <th style="width:5%;"></th>
                 <th style="width:10%;">序号</th>
                 <th>乘务交路</th>
                 <th>车队组号</th>
