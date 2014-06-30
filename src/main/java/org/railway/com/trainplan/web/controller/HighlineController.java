@@ -1,5 +1,6 @@
 package org.railway.com.trainplan.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -184,7 +185,35 @@ public class HighlineController {
 			  */
 			 try{
 				 String highLineCrossIds = StringUtil.objToStr(reqMap.get("highLineCrossIds"));
-				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses");
+				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses"); 
+				 if(newCrosses != null && newCrosses.size() > 0){
+					 List<HighlineCrossInfo> hList = new ArrayList<HighlineCrossInfo>();
+					 for(Map crossMap : newCrosses){
+						 String highLineCrossId = StringUtil.objToStr(crossMap.get("highLineCrossId"));
+						 String planCrossId = StringUtil.objToStr(crossMap.get("planCrossId"));
+						 String crossName = StringUtil.objToStr(crossMap.get("crossName"));
+						 String crossStartDate = StringUtil.objToStr(crossMap.get("crossStartDate"));
+						 String crossEndDate = StringUtil.objToStr(crossMap.get("crossEndDate"));
+						 String startStn = StringUtil.objToStr(crossMap.get("startStn"));
+						 String endStn = StringUtil.objToStr(crossMap.get("endStn"));
+						 String spareFlag = StringUtil.objToStr(crossMap.get("spareFlag"));
+						 String relevantBureau = StringUtil.objToStr(crossMap.get("relevantBureau"));
+						 String tokenVehBureau = StringUtil.objToStr(crossMap.get("tokenVehBureau"));
+						 String tokenVehDept = StringUtil.objToStr(crossMap.get("tokenVehDept"));
+						 String tokenVehDepot = StringUtil.objToStr(crossMap.get("tokenVehDepot"));
+						 String tokenPsgBureau= StringUtil.objToStr(crossMap.get("tokenPsgBureau"));
+						 String tokenPsgDept = StringUtil.objToStr(crossMap.get("tokenPsgDept"));
+						 String crhType = StringUtil.objToStr(crossMap.get("crhType"));
+						 String note = StringUtil.objToStr(crossMap.get("note"));
+						 String createPeople = StringUtil.objToStr(crossMap.get("createPeople"));
+						
+						 /**
+						  *    
+	    
+	        sysdate 
+						  */
+					 }
+				 }
 				
 			 }catch(Exception e){
 				 logger.error("saveHighlineCrossAndTrainInfo error==" + e.getMessage());

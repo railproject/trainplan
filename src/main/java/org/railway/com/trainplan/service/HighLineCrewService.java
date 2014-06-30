@@ -37,7 +37,10 @@ public class HighLineCrewService {
         return highLineCrewDao.findOne(map);
     }
 
-    public List<HighLineCrewInfo> findList(Map<String, Object> map) {
+    public List<HighLineCrewInfo> findList(String crewDate,String crewType) {
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	map.put("crewDate",crewDate);
+    	map.put("crewType",crewType);
         return highLineCrewDao.findList(map);
     }
 
