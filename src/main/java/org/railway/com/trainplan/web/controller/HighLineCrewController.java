@@ -56,13 +56,17 @@ public class HighLineCrewController {
     }
 
     @RequestMapping(value = "all", method = RequestMethod.GET)
-    public Result getHighLineCrewList() {
+    public Result getHighLineCrewList(@RequestBody Map<String,Object> reqMap) {
         logger.debug("getHighLineCrewList:::::::");
         Result result = new Result(); 
         try{
-        	 Map<String, Object> params = Maps.newHashMap();
-             params.put("id", null);
-             List<HighLineCrewInfo> list = highLineCrewService.findList(params);
+        
+        	String crewDate = StringUtil.objToStr(reqMap.get("crewDate"));
+        	//将时间格式：yyyy-MM-dd转换成yyyyMMdd
+        	crewDate = DateUtil.getFormateDayShort(crewDate);
+        	String crewType = StringUtil.objToStr(reqMap.get("crewType"));
+        	
+             List<HighLineCrewInfo> list = highLineCrewService.findList(crewDate,crewType);
              result.setData(list);
         }catch(Exception e){
         	logger.error(e);

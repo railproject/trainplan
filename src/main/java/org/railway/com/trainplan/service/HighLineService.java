@@ -138,7 +138,25 @@ public class HighLineService{
 		//insert to database 
 	}
 	 
+	/**
+	 * 批量向表highline_cross表中插入数据
+	 * @param hList
+	 * @return
+	 */
+	public int  batchAddHighlineCross(List<HighlineCrossInfo> hList){
+		Map<String, Object> hMap = new HashMap<String, Object>();
+		hMap.put("hList", hList);
+		return this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS, hMap);
+	}
 	
+	/**
+	 * 批量向表highline_cross_train表中插入数据
+	 * @param tList
+	 * @return
+	 */
+	public int batchAddHighlineCrossTrain(List<HighLineCrossTrainInfo> tList){
+		return this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS_TRAIN, tList);
+	}
 	/**
 	 * 查询highlineCross信息
 	 * @param planCrossId

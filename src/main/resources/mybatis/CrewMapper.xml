@@ -51,6 +51,11 @@
 	       HLC.RECORD_TIME AS recordTime , 
 	       HLC.SUBMIT_TYPE AS submitType
         FROM HIGHLINE_CREW HLC WHERE CREW_DATE=#{crewDate}
+        <if test="crewType !=null and crewType != '' ">
+           AND CREW_TYPE=#{crewType}
+        </if>
+        
+         
     </select>
 
     <delete id="delete" parameterType="map">
