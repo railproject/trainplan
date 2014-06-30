@@ -43,6 +43,8 @@
 		PLAN_CROSS_ID AS planCrossId,
 		CROSS_START_DATE AS crossStartDate,
 		CROSS_END_DATE AS crossEndDate,
+		CROSS_START_STN AS crossStartStn,
+        CROSS_END_STN AS crossEndStn,
 		CROSS_NAME AS crossName,
 		SPARE_FLAG AS spareFlag,
 		RELEVANT_BUREAU AS relevantBureau,
