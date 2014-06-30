@@ -200,21 +200,21 @@ public class HighLineService{
 	
 	/**
 	 * 根据highlineCrossId删除表highline_cross_train中数据
-	 * @param highlineCrossId
+	 * @param highlineCrossIds,多个id，以逗号分隔
 	 * @return 成功删除的数目
 	 */
-	public int deleteHighlienCrossTrainForHighlineCrossId(String highlineCrossId){
-		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID, highlineCrossId);
+	public int deleteHighlienCrossTrainForHighlineCrossId(String highlineCrossIds){
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID, highlineCrossIds);
 	}
 	
 	
 	/**
 	 * 根据highlineCrossId删除表highline_cross中数据
-	 * @param highlineCrossId
+	 * @param highlineCrossIds, 多个id，以逗号分隔
 	 * @return 成功删除的数目
 	 */
-	public int deleteHighlienCrossForHighlineCrossId(String highlineCrossId){
-		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID, highlineCrossId);
+	public int deleteHighlienCrossForHighlineCrossId(String highlineCrossIds){
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID, highlineCrossIds);
 	}
 	
 }
