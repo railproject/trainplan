@@ -49,8 +49,10 @@ public class HighLineCrewService {
         highLineCrewDao.update(crewHighlineInfo);
     }
 
-    public void delete(String crewHighLineId) {
-        highLineCrewDao.delete(crewHighLineId);
+    public void delete(String crewHighlineId) {
+    	Map<String,String> reqMap = new HashMap<String,String>();
+    	reqMap.put("crewHighlineId", crewHighlineId);
+        highLineCrewDao.delete(reqMap);
     }
     
     /**

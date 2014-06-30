@@ -53,8 +53,8 @@
         FROM HIGHLINE_CREW HLC WHERE CREW_DATE=#{crewDate}
     </select>
 
-    <delete id="delete" parameterType="string">
-        DELETE FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID = #{crewHighlineId}
+    <delete id="delete" parameterType="map">
+        DELETE FROM HIGHLINE_CREW HLC WHERE HLC.HIGHLINE_CREW_ID in (${crewHighlineId})
     </delete>
 
     <insert id="addCrew" parameterType="org.railway.com.trainplan.entity.HighLineCrewInfo">

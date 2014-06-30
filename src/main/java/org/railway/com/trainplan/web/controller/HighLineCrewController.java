@@ -118,12 +118,18 @@ public class HighLineCrewController {
 
     }
 
+    /**
+     * 批量删除highline_crew表中数据
+     * @param reqMap
+     * @return
+     */
     @RequestMapping(value = "deleteHighLineCrewInfo", method = RequestMethod.DELETE)
     public Result deleteHighLineCrewInfo(@RequestBody Map<String,Object> reqMap ) {
         logger.debug("deleteHighLineCrewInfo:::::::");
         Result result = new Result(); 
         try{
             String crewHighLineId = StringUtil.objToStr(reqMap.get("crewHighLineId"));
+            logger.debug("crewHighLineId==" + crewHighLineId);
             highLineCrewService.delete(crewHighLineId);
         }catch(Exception e){
         	logger.error(e);
