@@ -1,62 +1,26 @@
 package org.railway.com.trainplan.service;
 
 import java.beans.IntrospectionException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.common.constants.Constants;
-import org.railway.com.trainplan.common.utils.DateUtil;
-import org.railway.com.trainplan.common.utils.ExcelUtil;
-import org.railway.com.trainplan.common.utils.StringUtil;
-import org.railway.com.trainplan.entity.BaseCrossTrainInfo;
 import org.railway.com.trainplan.entity.BaseTrainInfo;
-import org.railway.com.trainplan.entity.CrossInfo;
-import org.railway.com.trainplan.entity.CrossTrainInfo;
-import org.railway.com.trainplan.entity.PlanCheckInfo;
+import org.railway.com.trainplan.entity.HighLineCrossTrainInfo;
+import org.railway.com.trainplan.entity.HighlineCrossInfo;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
-import org.railway.com.trainplan.entity.SubCrossInfo;
-import org.railway.com.trainplan.entity.TrainLineInfo;
-import org.railway.com.trainplan.entity.UnitCrossTrainInfo;
-import org.railway.com.trainplan.entity.UnitCrossTrainSubInfo;
-import org.railway.com.trainplan.entity.UnitCrossTrainSubInfoTime;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
-import org.railway.com.trainplan.service.dto.BaseCrossDto;
-import org.railway.com.trainplan.service.dto.BaseCrossTrainDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
  
 @Service
 public class HighLineService{
-	private static final Logger logger = Logger.getLogger(CommonService.class); 
+	private static final Logger logger = Logger.getLogger(HighLineService.class); 
 	
 	@Autowired
 	private BaseDao baseDao;
@@ -110,4 +74,26 @@ public class HighLineService{
 		return 0;
 	}
 	 
+	
+	/**
+	 * 查询highlineCross信息
+	 * @param planCrossId
+	 * @return
+	 */
+	public List<HighlineCrossInfo> getHighlineCrossList(String planCrossId){
+		Map<String,String> reqMap = new HashMap<String,String>();
+		reqMap.put("planCrossId",planCrossId );
+		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_LIST, reqMap);
+	}
+	
+	/**
+	 * 查询highlineCrossTrain信息
+	 * @param highlineCrossId
+	 * @return
+	 */
+	public List<HighLineCrossTrainInfo> getHighlineCrossTrainList(String highlineCrossId){
+		Map<String,String> reqMap = new HashMap<String,String>();
+		reqMap.put("highlineCrossId",highlineCrossId );
+		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_LIST, reqMap);
+	}
 }

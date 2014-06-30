@@ -212,4 +212,8 @@ public class Constants {
 	public static final String SQL_ID_CROSSDICT_INFO = "crossDictDao.findCrossDictList";
 	public static final String GET_PLANCROSSINFO_BY_STARTDATE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getRunPlanByStartDate";
 
+	//highlineCross    
+	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_LIST = "highlineCrossDao.getHighlineCrossList";
+    //
+	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_LIST = "highlineCrossDao.getHighlineCrossTrainList";
 }
