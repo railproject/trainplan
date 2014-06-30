@@ -1,6 +1,5 @@
 package org.railway.com.trainplan.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,18 +39,17 @@ public class HighlineController {
 		 * @return
 		 */
 		@ResponseBody
-		@RequestMapping(value = "/ createHighLineCross", method = RequestMethod.POST)
+		@RequestMapping(value = "/createHighLineCross", method = RequestMethod.POST)
 		public Result  createHighLineCross(@RequestBody Map<String,Object> reqMap) {
 			 Result result = new Result();
 			 try{
 				 String startDate = StringUtil.objToStr(reqMap.get("startDate"));
-				 if(startDate != null){ 
-					List<String> crossIdsList = new ArrayList<String>();
-					 
-					highLineService.updateCorssCheckTime(startDate);
-					 
+				 if(startDate != null){  
+					 List<HighlineCrossInfo> list = highLineService.updateCorssCheckTime(startDate); 
+					 result.setData(list);
 				 } 
 			 }catch(Exception e){
+				 e.printStackTrace();
 				 logger.error("checkCorssInfo error==" + e.getMessage());
 				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	

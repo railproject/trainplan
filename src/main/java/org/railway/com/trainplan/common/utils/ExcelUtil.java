@@ -64,7 +64,19 @@ public class ExcelUtil<T> {
 		}
 		//System.out.println("sheet.getRow(headIndex)="+sheet.getRow(headIndex));
 		Short[] st = getStatus(headRow);
-		for(int i = 3 + 1 ; i < rows; i++){
+		for(int i = headIndex + 1 ; i < rows; i++){
+			list.add(getEntity(sheet.getRow(i), st));
+		}
+		return list;
+	}
+	
+	public List<T> getEntitiesHasNoHeader(int startIndex){
+		List<T> list = new LinkedList<T>();
+		int rows = sheet.getPhysicalNumberOfRows();
+	 
+		//System.out.println("sheet.getRow(headIndex)="+sheet.getRow(headIndex));
+		Short[] st = getStatus(null);
+		for(int i = startIndex ; i < rows; i++){
 			list.add(getEntity(sheet.getRow(i), st));
 		}
 		return list;
@@ -96,40 +108,34 @@ public class ExcelUtil<T> {
 		//System.out.println("map.size():" + map.size());
 		if(row == null){
 			for(String key : map.keySet()){
-				status[map.get(key)] = map.get(key);
-				//System.out.println("key:" + key);
-				//System.out.println("map.get(key):" + map.get(key));
-				/*for (int i = 0; i < status.length; i++){
-					System.out.println("status["+i+"]="+status[i]);
-				}*/
+				status[map.get(key)] = map.get(key); 
+			}
+		}else{
+			int cells = row.getPhysicalNumberOfCells();
+			for(short j = 0; j < cells; j++){
+				//System.out.println("row.getCell[" + j + "]=" + row.getCell(j));
+				if(row.getCell(j) != null){
+					//System.out.println("row.getCell(" + j + ").getCellType=" + row.getCell(j).getCellType());
+					//System.out.println("HSSFCell.CELL_TYPE_STRING=" + HSSFCell.CELL_TYPE_STRING);
+					switch (row.getCell(j).getCellType()){
+					case HSSFCell.CELL_TYPE_STRING :
+						for(String key : propertyMapping.keySet()){
+							//System.out.println("propertyMapping.get(" + key + ")=" +propertyMapping.get(key));
+							//System.out.println("row.getCell("+j+").getStringCellValue()"+row.getCell(j).getStringCellValue());
+							if(propertyMapping.get(key).equals(row.getCell(j).getStringCellValue())){
+								status[map.get(key)] = j;
+								/*for (int i = 0; i < status.length; i++){
+									System.out.println("status["+i+"]="+status[i]);
+								}*/
+							}
+						}
+						break;
+					default:
+						break;		
+					}
+				}
 			}
 		}
-//		else{
-//			int cells = row.getPhysicalNumberOfCells();
-//			for(short j = 0; j < cells; j++){
-//				//System.out.println("row.getCell[" + j + "]=" + row.getCell(j));
-//				if(row.getCell(j) != null){
-//					//System.out.println("row.getCell(" + j + ").getCellType=" + row.getCell(j).getCellType());
-//					//System.out.println("HSSFCell.CELL_TYPE_STRING=" + HSSFCell.CELL_TYPE_STRING);
-//					switch (row.getCell(j).getCellType()){
-//					case HSSFCell.CELL_TYPE_STRING :
-//						for(String key : propertyMapping.keySet()){
-//							//System.out.println("propertyMapping.get(" + key + ")=" +propertyMapping.get(key));
-//							//System.out.println("row.getCell("+j+").getStringCellValue()"+row.getCell(j).getStringCellValue());
-//							if(propertyMapping.get(key).equals(row.getCell(j).getStringCellValue())){
-//								status[map.get(key)] = j;
-//								/*for (int i = 0; i < status.length; i++){
-//									System.out.println("status["+i+"]="+status[i]);
-//								}*/
-//							}
-//						}
-//						break;
-//					default:
-//						break;		
-//					}
-//				}
-//			}
-//		}
 		return status;
 	}
 	
