@@ -89,4 +89,16 @@
 	WHERE A.HIGHLINE_CROSS_ID=B.HIGHLINE_CROSS_ID AND B.PLAN_TRAIN_ID=C.PLAN_TRAIN_ID AND A.HIGHLINE_CROSS_ID=#{highlineCrossId}
    
    </select>
+   
+   <delete id="deleteHighlienCrossTrainForHighlineCrossId" parameterType="string">
+    DELETE  FROM HIGHLINE_CROSS_TRAIN 
+    WHERE HIGHLINE_CROSS_ID = #{highlineCrossId}
+   </delete>
+   
+   
+  <delete id="deleteHighlienCrossForHighlineCrossId" parameterType="string">
+    DELETE  FROM HIGHLINE_CROSS 
+    WHERE HIGHLINE_CROSS_ID = #{highlineCrossId}
+  </delete>  
+   
 </mapper>

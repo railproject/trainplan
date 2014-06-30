@@ -171,5 +171,30 @@ public class HighlineController {
 			 return result;
 		}
 		
+		 /**
+		 *保存重组交路信息
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/saveHighlineCrossAndTrainInfo", method = RequestMethod.POST)
+		public Result  saveHighlineCrossAndTrainInfo(@RequestBody Map<String,Object> reqMap) {
+			 Result result = new Result();
+			 /**
+			  * {highLineCrossIds:",", newCrosses:[{"", "", "", trains:[{}]}]}
+			  */
+			 try{
+				 String highLineCrossIds = StringUtil.objToStr(reqMap.get("highLineCrossIds"));
+				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses");
+				 highLineService
+				
+			 }catch(Exception e){
+				 logger.error("saveHighlineCrossAndTrainInfo error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
+		
 		
 }
