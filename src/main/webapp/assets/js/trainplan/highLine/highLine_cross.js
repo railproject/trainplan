@@ -29,14 +29,18 @@ function HighLineCrossModle(){
 	self.loadTrains = function(trains){
 		$.each(trains, function(i, n){
 			var train = new TrainRow(n);
-			train.loadTimes(n);
+			train.loadTimes(n.highlineTrainTimeList);
 			self.trains.push(train);
 			
 		});
 	};
+	
+	self.addTrain = function(train){
+		self.trains.push(train);
+	};
 	 
 	self.crossStartDate = ko.computed(function(){  
-		return self.trains().length > 0 ? self.trains()[0].startTime : ""; 
+		return self.trains().length > 0 ? self.trains()[0].times()[0].startTime : ""; 
 	});;
 	//结束日期（该日历交路最后一个车次的终到日期）
 	self.crossEndDate = ko.computed(function(){  
@@ -131,24 +135,22 @@ function CrossModel() {
 	
 	self.activeTimes = ko.observableArray(); 
 	
-	self.selectedActiveHighLineCrossChange = function(){
-		console.log("--------------------------------------------------------------");
+	
+	self.selectedActiveHighLineCrossChange = function(){  
 		self.activeTimes.remove(function(item){
 			return true;
-		});
-		$.each(self.selectedActiveHighLineCrossRows, function(i, n){
-			$.each(n.trains, function(i, t){
-				self.selectedActiveHighLineCrossRows.push(t.times);
+		}); 
+		$.each(self.selectedActiveHighLineCrossRows(), function(i, n){
+			$.each(n.trains(), function(a, t){
+				$.each(t.times(), function(z, time){
+					self.activeTimes.push(time);
+				});
 			});
 		});
 	};
 	
 	self.selectedCrosse = function(){ 
-		 var currentCorss = self.selectedHighLineCrossRows()[0]; 
-//		 var cross = new HighLineCrossModle();
-		 //cross.loadTrains([{"trainNbr": "D25","passBureau":"上京" ,"startTime" : "2014-06-30 15:00:00", "endTime" : "2014-06-30 15:00:00"},{"trainNbr": "D26", "startTime" : "2014-06-30 15:00:00", "endTime" : "2014-06-30 15:00:00","passBureau":"上京"}]);
-//		 self.oldHighLineCrosses.remove(currentCorss);
-//		 self.acvtiveHighLineCrosses.push(cross);
+		 var currentCorss = self.selectedHighLineCrossRows()[0];  
 		 $.ajax({
 				url : "highLine/getHighlineTrainTimeForHighlineCrossId",
 				cache : false,
@@ -157,11 +159,11 @@ function CrossModel() {
 				contentType : "application/json",
 				data :JSON.stringify({highlineCrossId: currentCorss.highLineCrossId()}),
 				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						console.log(result.data);
+					if (result != null && result != "undefind" && result.code == "0") { 
 						 var cross = new HighLineCrossModle(); 
 						 cross.loadTrains(result.data);
-						 self.oldHighLineCrosses.remove(currentCorss);
+						 self.highLineCrossRows.remove(currentCorss);
+						 self.selectedHighLineCrossRows.remove(currentCorss);
 						 self.acvtiveHighLineCrosses.push(cross); 
 					} else {
 						showErrorDialog("获取运行规律失败");
@@ -177,7 +179,38 @@ function CrossModel() {
 	};
 	
 	self.cjHighLineCross = function(){
-		
+		$.each(self.selectedActiveHighLineCrossRows(), function(i, n){
+			$.each(n.trains(), function(a, t){ 
+				var cross = new HighLineCrossModle(); 
+				 cross.addTrain(t);
+				self.acvtiveHighLineCrosses.push(cross);  
+			}); 
+			self.selectedActiveHighLineCrossRows.remove(n);
+			self.acvtiveHighLineCrosses.remove(n);
+		});
+	};
+	
+	//合并交路
+	self.hbHighLineCross = function(){ 
+		var selectedActiveHighLineCrossRows = self.selectedActiveHighLineCrossRows();  
+		var cross = new HighLineCrossModle();
+		var preCrossEndDate = null;
+		while(selectedActiveHighLineCrossRows.length > 0){
+			var cr = selectedActiveHighLineCrossRows[0];
+			var trains = cr.trains();
+			 
+			if(preCrossEndDate != null){
+				console.log(cr.crossStartDate());
+				console.log(preCrossEndDate);
+			}
+			for(var j = 0; j < trains.length; j++ ){  
+				cross.addTrain(trains[j]);
+			};  
+			preCrossEndDate = cr.crossEndDate();
+			self.selectedActiveHighLineCrossRows.remove(cr);
+			self.acvtiveHighLineCrosses.remove(cr); 
+		} 
+		self.acvtiveHighLineCrosses.push(cross); 
 	};
 	
 	self.vehicle1Change = function(row){
@@ -276,8 +309,7 @@ function CrossModel() {
 	};
 	
 	self.dragRunPlan = function(n,event){
-		$(event.target).dialog("open");
-		
+		$(event.target).dialog("open"); 
 	};
 	
 
@@ -563,6 +595,10 @@ function CrossModel() {
 		
 		$("#current_highLineCrosses").on("dblclick", self.selectedCrosse);
 		
+		
+		
+		$("#active_highLine_cross_dialog").dialog("close"); 
+		
 //		$("#current_active_highLineCrosses").on("dblclick", self.selectedCrosse);
 		//x放大2倍
 		$("#canvas_event_btn_x_magnification").click(function(){
@@ -846,6 +882,10 @@ function CrossModel() {
 		
 		$("#file_upload_dlg").dialog("open"); 
 	};
+	
+	self.showActiveHighLineCrossDlg = function(){
+		$("#active_highLine_cross_dialog").dialog("open"); 
+	};  
 	
 	self.showRunPlans = function(){  
 		if($('#learn-more-content').is(":visible")){
@@ -1571,8 +1611,8 @@ function RunPlanRow(data){
 }
 
 function TrainTimeRow(data) { 
-	var self = this;  
-	self.index = data.stnSort + 1; 
+	var self = this;   
+	self.stnSort = parseInt(data.stnSort) + 1; 
 	self.stnName = filterValue(data.stnName);
 	self.bureauShortName = filterValue(data.bureauShortName);
 	self.sourceTime = filterValue(data.arrTime != null ? data.arrTime.replace(/-/g, "").substring(4) : "");

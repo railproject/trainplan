@@ -185,7 +185,6 @@ public class HighlineController {
 			 try{
 				 String highLineCrossIds = StringUtil.objToStr(reqMap.get("highLineCrossIds"));
 				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses");
-				 highLineService
 				
 			 }catch(Exception e){
 				 logger.error("saveHighlineCrossAndTrainInfo error==" + e.getMessage());
