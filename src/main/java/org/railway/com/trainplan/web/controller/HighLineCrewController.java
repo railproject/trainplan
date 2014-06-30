@@ -43,7 +43,7 @@ public class HighLineCrewController {
         Result result = new Result(); 
         try{
         	Map<String, Object> params = Maps.newHashMap();
-            params.put("crewHighLineId", StringUtil.objToStr(reqMap.get("crewHighLineId")));
+            params.put("crewHighlineId", StringUtil.objToStr(reqMap.get("crewHighLineId")));
             HighLineCrewInfo highLineCrewInfo = highLineCrewService.findHighLineCrew(params);	
             result.setData(highLineCrewInfo);
         }catch(Exception e){
@@ -98,7 +98,7 @@ public class HighLineCrewController {
 
     @RequestMapping(value = "update", method = RequestMethod.PUT)
     public Result updateHighLineCrewInfo(@RequestBody HighLineCrewInfo highLineCrewInfo) {
-        logger.debug("updateHighLineCrewInfo:::::::");
+        logger.debug("updateHighLineCrewInfo:::::::" + highLineCrewInfo.getCrewDate() + "|" + highLineCrewInfo.getCrewCross());
         Result result = new Result(); 
         try{
         	ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
@@ -106,6 +106,8 @@ public class HighLineCrewController {
         	highLineCrewInfo.setCrewBureau(user.getBureauShortName());
         	highLineCrewInfo.setRecordPeople(user.getName());
         	highLineCrewInfo.setRecordPeopleOrg(user.getDeptName());
+        	String crewDate = DateUtil.getFormateDayShort(highLineCrewInfo.getCrewDate());
+            highLineCrewInfo.setCrewDate(crewDate);
         	highLineCrewService.update(highLineCrewInfo);
         }catch(Exception e){
         	logger.error(e);
