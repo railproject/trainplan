@@ -211,5 +211,10 @@ public class Constants {
 	//获取交路字典信息
 	public static final String SQL_ID_CROSSDICT_INFO = "crossDictDao.findCrossDictList";
 	public static final String GET_PLANCROSSINFO_BY_STARTDATE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getRunPlanByStartDate";
-
+	public static final String TRAINPLANDAO_FIND_BY_GROUPSERIALBRR = "trainPlanDao.findPlanTrainByGroupSerialNbr";
+	
+	
+	public static final String CROSSDAO_ADD_HIGHLINE_CROSS = "crossDao.addHighLineCrossInfo";
+	public static final String CROSSDAO_ADD_HIGHLINE_CROSS_TRAIN = "crossDao.addHighLineCrossTrainInfo";
+	
 }

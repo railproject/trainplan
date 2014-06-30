@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.HighlineCrossInfo;
 import org.railway.com.trainplan.service.HighLineService;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +37,17 @@ public class HighlineController {
 		 * @return
 		 */
 		@ResponseBody
-		@RequestMapping(value = "/ createHighLineCross", method = RequestMethod.POST)
+		@RequestMapping(value = "/createHighLineCross", method = RequestMethod.POST)
 		public Result  createHighLineCross(@RequestBody Map<String,Object> reqMap) {
 			 Result result = new Result();
 			 try{
 				 String startDate = StringUtil.objToStr(reqMap.get("startDate"));
-				 if(startDate != null){ 
-					List<String> crossIdsList = new ArrayList<String>();
-					 
-					highLineService.updateCorssCheckTime(startDate);
-					 
+				 if(startDate != null){  
+					 List<HighlineCrossInfo> list = highLineService.updateCorssCheckTime(startDate); 
+					 result.setData(list);
 				 } 
 			 }catch(Exception e){
+				 e.printStackTrace();
 				 logger.error("checkCorssInfo error==" + e.getMessage());
 				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
