@@ -130,8 +130,8 @@ var HightLineCrewSjPage = function () {
 	function PageModel() {
 		var _self = this;
 		_self.searchModle = ko.observable(new SearchModle());		//页面查询对象
-		_self.planTrainRows = new PageModle(200, loadPlanDataForPage);		//页面开行计划列表对象
-		_self.hightLineCrewSjRows = new PageModle(200, loadHightLineCrewSjDataForPage);		//页面司机乘务计划列表对象
+		_self.planTrainRows = new PageModle(5000, loadPlanDataForPage);		//页面开行计划列表对象
+		_self.hightLineCrewSjRows = new PageModle(10000, loadHightLineCrewSjDataForPage);		//页面司机乘务计划列表对象
 		_self.hightLineCrewModel = ko.observable(new HighlineCrewModel());	//用于乘务计划新增、修改
 		_self.hightLineCrewModelTitle = ko.observable();	//用于乘务计划新增、修改窗口标题
 		_self.hightLineCrewSaveFlag = ko.observable();		//用于乘务计划新增、修改标识
@@ -468,9 +468,9 @@ var HightLineCrewSjPage = function () {
 						if(result.data.data != null){
 							$.each(result.data.data,function(n, obj){
 								if (obj.submitType != null && obj.submitType==0) {
-									obj.submitTypeStr = "<span class='label label-danger'>草稿</span>";
+									obj.submitTypeStr = "<span class='label label-danger'>未</span>";
 								} else if (obj.submitType != null && obj.submitType==1) {
-									obj.submitTypeStr = "<span class='label label-success'>已提交</span>";
+									obj.submitTypeStr = "<span class='label label-success'>已</span>";
 								} else {
 									obj.submitTypeStr = "";
 								}
