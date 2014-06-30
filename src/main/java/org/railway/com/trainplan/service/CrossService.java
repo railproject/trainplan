@@ -858,7 +858,7 @@ public class CrossService{
 				HSSFSheet sheet = workbook.getSheetAt(i);
 				ExcelUtil<CrossInfo> test = new ExcelUtil<CrossInfo>(pm, sheet, CrossInfo.class);
 				test.setValueMapping(valuesMap);
-				List<CrossInfo> list = test.getEntities(-1); 
+				List<CrossInfo> list = test.getEntitiesHasNoHeader(4); 
 				
 				for(int j = 0; j < list.size(); j++){ 
 					 
@@ -873,7 +873,6 @@ public class CrossService{
 				} 
 				allNum += list.size();
 			} 
-//			ArrayList<CrossTrainInfo> crossTrains = new ArrayList<CrossTrainInfo>(); 
 			for(int i = 0; i < allNum; i++){
 				try {
 					completion.take().get();

@@ -3,34 +3,37 @@ package org.railway.com.trainplan.entity;
 public class HighLineCrossTrainInfo {
     
 	//高铁日历交路计划列车ID（本表ID）
-	private String  highlineTrainId;
+	private String  highLineTrainId;
 	//列车ID
 	private String  planTrainId;
 	//高铁日历交路计划ID（对应HIGHLINE_CROSS表中的HIGHLINE_CROSS_ID）
-	private String  highlineCrossId;
+	private String  highLineCrossId;
 	//列车序号
 	private int trainSort;
 	//车次
 	private String trainNbr ;
 	//开行日期（yyyymmdd）
 	private String runDate ;
-	public String getHighlineTrainId() {
-		return highlineTrainId;
-	}
-	public void setHighlineTrainId(String highlineTrainId) {
-		this.highlineTrainId = highlineTrainId;
-	}
+	 
 	public String getPlanTrainId() {
 		return planTrainId;
 	}
 	public void setPlanTrainId(String planTrainId) {
 		this.planTrainId = planTrainId;
 	}
-	public String getHighlineCrossId() {
-		return highlineCrossId;
+	 
+	 
+	public String getHighLineTrainId() {
+		return highLineTrainId;
 	}
-	public void setHighlineCrossId(String highlineCrossId) {
-		this.highlineCrossId = highlineCrossId;
+	public void setHighLineTrainId(String highLineTrainId) {
+		this.highLineTrainId = highLineTrainId;
+	}
+	public String getHighLineCrossId() {
+		return highLineCrossId;
+	}
+	public void setHighLineCrossId(String highLineCrossId) {
+		this.highLineCrossId = highLineCrossId;
 	}
 	public int getTrainSort() {
 		return trainSort;

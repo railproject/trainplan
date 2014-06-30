@@ -45,7 +45,7 @@ public class HighlineController {
 			 try{
 				 String startDate = StringUtil.objToStr(reqMap.get("startDate"));
 				 if(startDate != null){  
-					 List<HighlineCrossInfo> list = highLineService.updateCorssCheckTime(startDate); 
+					 List<HighlineCrossInfo> list = highLineService.createHighLineCross(startDate); 
 					 result.setData(list);
 				 } 
 			 }catch(Exception e){

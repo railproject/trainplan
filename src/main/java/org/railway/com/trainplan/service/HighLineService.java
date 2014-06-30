@@ -74,7 +74,7 @@ public class HighLineService{
 		return (PlanCrossInfo)this.baseDao.selectOneBySql(Constants.CROSSDAO_GET_PLANCROSSINFO_FOR_PLANCROSSID, planCrossId);
 	}
 
-	public List<HighlineCrossInfo>  updateCorssCheckTime(String startDate){
+	public List<HighlineCrossInfo>  createHighLineCross(String startDate){
 		// TODO Auto-generated method stub
 		
 		Map<String, Object> pMap = new HashMap<String, Object>();
@@ -135,9 +135,7 @@ public class HighLineService{
 		this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS_TRAIN, tList);
 		
 		return hList;
-		//insert to database
-		
-		 
+		//insert to database 
 	}
 	 
 	

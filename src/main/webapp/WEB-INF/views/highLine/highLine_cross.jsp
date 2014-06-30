@@ -122,8 +122,7 @@ var currentUserBureau = "";
 											</th> 
 											<th style="width: 8%" align="center">车底1</th>
 											<th style="width: 8%" align="center">车底2</th>
-											<th style="width: 8%" align="center">接续车次</th>
-											<th style="width: 8%" align="center">接续车次</th>
+											<th style="width: 8%" align="center">接续车次</th> 
 											<th style="width: 8%" align="center">出库所/始发站</th>
 											<th style="width: 8%" align="center">入库所/终到站</th>
 											<th style="width: 8%" align="center">车辆担当所</th>
@@ -143,13 +142,12 @@ var currentUserBureau = "";
 															     <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
 															     <td style="width: 8%"><input type="text" data-bind="value: vehicle1, event:{change: $parent.vehicle1Change}"></td>
 															     <td style="width: 8%"><input type="text" data-bind="value: vehicle2, event:{change: $parent.vehicle2Change}"></td>
+															     <td style="width: 8%" data-bind="text: ''"></td> 
+															     <td style="width: 8%" data-bind="text: startStn"></td>
+															     <td style="width: 8%" data-bind="text: endStn"></td>
 															     <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
-															     <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
-															     <td style="width: 8%" data-bind="text: tokenVehDepot"></td>
-															     <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
-															     <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
-															     <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
-															      <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
+															     <td style="width: 8%" data-bind="text: spareFlag() == 2 ? '是' : '否'"></td>
+															     <td style="width: 8%" data-bind="text: ''"></td>
 															</tr> 
 														</tbody> 
 													</table> 
@@ -188,6 +186,10 @@ var currentUserBureau = "";
 																<tbody data-bind="foreach: trains" >
 																	<tr  data-bind="click: $parent.showTrainTimes, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
 																		<td data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
+																		<td data-bind="text: startStn, attr:{title: startStn}"></td>
+																		<td data-bind="text: startTime, attr:{title: startTime}"></td>
+																		<td data-bind="text: endStn, attr:{title: endStn}"></td>
+																		<td data-bind="text: endTime, attr:{title: endTime}"></td>
 																	</tr>
 																</tbody>
 															</table> 
@@ -329,6 +331,107 @@ var currentUserBureau = "";
 			        </div>
       		</div>
 	   </div> 
+	    <div class="row" id="active_highLine_cross_dialog"
+	    title="时刻表"
+		data-options="iconCls:'icon-save'"
+		style="width: 800px; height: 500px; padding: 10px;" > 
+		      <div class="row" style="width:100%;hight:50px">  
+		          <div class="panel panel-default" style="padding-top:10px;padding-bottom:5px"> 
+				         <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
+														日期:&nbsp;</label>
+						 <div class="pull-left" style="margin-left: 5px;">
+							 <input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
+						 </div>
+					     <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
+	      		</div> 
+		      </div>
+		      <div class="row" style="width:100%;height:90%"> 
+		    	 <div class="pull-left" style="width: 30%;height:100%" >
+				<!--分栏框开始-->    
+					   <section class="panel panel-default" style="height:100%">
+				        <div class="panel-heading">
+				        	<span>
+				              <i class="fa fa-table"></i>交路列表
+						   </span>
+						</div> 
+				          <div class="panel-body" style="height:93%">
+					         <div class="row" style="width:100%;height:100%"> 
+						        	<select multiple="multiple" id="current_highLineCrosses" style="width:100%;height:100%" data-bind="options: highLineCrossRows, optionsText: 'crossName', selectedOptions:selectedHighLineCrossRows" >
+						        	 
+						        	</select>
+							  </div>  
+						</div>
+						</section>
+				</div>
+				<div class="pull-left" style="width: 30%;height:100%" >
+				<!--分栏框开始-->    
+				  <section class="panel panel-default" style="height:100%">
+				        <div class="panel-heading">
+				        	<span>
+				              <i class="fa fa-table"></i>交路组合列表
+						   </span>
+						</div> 
+				          <div class="panel-body" style="height:93%">
+					         <div class="row" style="width:100%;height:95%"> 
+						        	<select multiple="multiple" style="width:100%;height:100%" data-bind="options: acvtiveHighLineCrosses, optionsText: 'crossName', selectedOptions: selectedActiveHighLineCrossRows, event:{change: selectedActiveHighLineCrossChange} "></select>
+							  </div> 
+							  <div class="row" style="margin-top:5px"> 
+							    <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">拆解</a>
+								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">删除</a>
+								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">组合</a>
+							  </div>
+						</div>
+						</section>
+				</div>
+				<div class="pull-left" style="width: 40%;height:100%" >
+				<!--分栏框开始-->    
+				   <section class="panel panel-default" style="height:100%">
+				        <div class="panel-heading">
+				        	<span>
+				              <i class="fa fa-table"></i>时刻点单
+						   </span>
+						</div> 
+				          <div class="panel-body" style="height:90%"> 
+					        	<table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
+							        <thead> 
+							         <tr>
+							          <th style="width:37px">站序</th>
+					                  <th style="width:19%">站名</th> 
+					                  <th style="width:10%">停时</th>
+					                  <th style="width:20%">到达时间</th> 
+					                  <th style="width:20%">出发时间</th>  
+					                 </tr> 
+							        </thead>
+							        <tbody style="padding:0">
+										 <tr style="padding:0">
+										   <td colspan="9" style="padding:0">
+												 <div id="allTimes_table" style="height: 360px; overflow-y:auto;"> 
+													<table class="table table-bordered table-striped table-hover" > 
+														 <tbody data-bind="foreach: activeTimes">
+												           <tr>  
+															<td style="width:37px" align="center" data-bind=" text: index + 1"></td>
+															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
+															<td style="width:10%" align="center" data-bind="text: stepStr"></td> 
+															<td style="width:20%" align="center" data-bind="text: sourceTime"></td>
+															<td style="width:20%" align="center" data-bind="text: targetTime"></td>
+												        	</tr>
+												        </tbody>
+													</table> 
+											 	</div>
+											</td>
+										</tr>
+									</tbody> 
+						        </table>
+						  </div> 
+						</section>
+				</div>
+			</div>
+			<div class="row" style="width:100%;" align="center">  
+			   <div class="panel panel-default" style="padding-top:10px;padding-bottom:5px"> 
+			      <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">确定交路</a>
+		        </div>
+		     </div>
+	    </div>
 </body>  
  <script type="text/html" id="tablefooter-short-template"> 
   <table style="width:100%;height:20px;">

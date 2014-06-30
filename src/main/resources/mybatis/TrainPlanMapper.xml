@@ -302,6 +302,16 @@
     delete from plan_train where run_date >=#{startRunDate} and run_date &lt;=#{endRunDate}
     </delete>
     
+    <select id="findPlanTrainByGroupSerialNbr" parameterType="map"  resultType="org.railway.com.trainplan.entity.PlanTrain">
+      SELECT *  from (
+ 		select   PLAN_TRAIN_ID as planTrainId,TRAIN_NBR as trainNbr,START_STN as startStn,
+    	 END_STN as endStn,RUN_DATE as  runDate,START_TIME as startTime, TRAIN_SORT as trainSort,
+	     END_TIME as endTime,BASE_CHART_ID as baseChartId,BASE_TRAIN_ID as baseTrainId,
+	     START_BUREAU as startBureau,END_BUREAU as endBureau,END_BUREAU_FULL as endBureauFull, group_serial_nbr as groupSerialNbr,
+	     START_BUREAU_FULL as startBureauFull,rownum as rownum1 from plan_train where plan_cross_id=#{planCrossId}  and run_date >= #{startDate} AND group_serial_nbr=#{groupSerialNbr}  ORDER BY RUN_DATE
+       ) WHERE rownum1 &lt;= (SELECT MAX(TRAIN_SORT) FROM PLAN_TRAIN WHERE PLAN_CROSS_ID=#{planCrossId})
+    </select>
+    
     <select id="findPlanTrainByStartBureauAndRundate" parameterType="map"  resultType="org.railway.com.trainplan.entity.PlanTrain">
     
      select o.* from
@@ -316,6 +326,8 @@
 	   ) o where o.rownum1>=#{rownumstart} and o.rownum1&lt;=#{rownumend} order by o.trainNbr 
   
     </select>
+    
+    
     
     <select id="findPlanTrainByStartBureauCount" parameterType="map"  resultType="map">
           select count(*) as count from plan_train  where run_date=#{runDate} and  START_BUREAU_FULL=#{startBureauFull}
