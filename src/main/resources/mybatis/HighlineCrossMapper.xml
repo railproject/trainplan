@@ -4,7 +4,39 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="highlineCrossDao">
 
+
 	
+  <resultMap id="trainSubInfo" type="org.railway.com.trainplan.entity.HighlineTrainRunLine">
+	        <id column="planTrainId" property="planTrainId"/>
+	        <result column="trainNbr" property="trainNbr"/>
+            <collection property="highlineTrainTimeList" resultMap="trainSubInfoTime"/>
+    </resultMap>
+ 
+    <resultMap id="trainSubInfoTime" type="org.railway.com.trainplan.entity.HighlineTrainRunLineTime">
+	        <id column="planTrainStnId" property="planTrainStnId"/>
+	        <result column="stnName" property="stnName"/>
+	        <result column="stnSort" property="stnSort"/>
+	        <result column="arrTime" property="arrTime"/>
+	        <result column="dptTime" property="dptTime"/>
+    </resultMap>
+  
+  <select id="getHighlineTrainTimeForHighlineCrossId"  parameterType="map" resultMap="trainSubInfo">
+  SELECT
+		B.PLAN_TRAIN_ID AS planTrainId,
+		C.TRAIN_NBR AS trainNbr,
+		C.PASS_BUREAU AS passBureau,
+		D.PLAN_TRAIN_STN_ID AS planTrainStnId,
+		D.STN_SORT AS stnSort,
+		D.STN_NAME AS stnName,
+		TO_CHAR(D.ARR_TIME,'yyyy-MM-dd hh24:mi:SS') AS ARRTIME,
+		TO_CHAR(D.DPT_TIME,'yyyy-MM-dd hh24:mi:SS') AS DPTTIME
+	FROM   HIGHLINE_CROSS A,HIGHLINE_CROSS_TRAIN B,PLAN_TRAIN C,PLAN_TRAIN_STN D
+	WHERE A.HIGHLINE_CROSS_ID = B.HIGHLINE_CROSS_ID
+		AND B.PLAN_TRAIN_ID = C.PLAN_TRAIN_ID 
+		AND C.PLAN_TRAIN_ID = D.PLAN_TRAIN_ID
+		AND A.HIGHLINE_CROSS_ID=#{highlineCrossId} 
+  
+  </select>
    <select id="getHighlineCrossList" parameterType="map" resultType="org.railway.com.trainplan.entity.HighlineCrossInfo">
       SELECT
         HIGHLINE_CROSS_ID AS highlineCrossId,

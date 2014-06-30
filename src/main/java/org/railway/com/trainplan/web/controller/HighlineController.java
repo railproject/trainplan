@@ -11,6 +11,7 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.HighLineCrossTrainInfo;
 import org.railway.com.trainplan.entity.HighlineCrossInfo;
 import org.railway.com.trainplan.entity.HighlineCrossTrainBaseInfo;
+import org.railway.com.trainplan.entity.HighlineTrainRunLine;
 import org.railway.com.trainplan.service.HighLineService;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,5 +126,27 @@ public class HighlineController {
 			 return result;
 		}
 		
-	
+		 /**
+		 *通过highlineCrossId查询该交路下的列车经由站信息
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/getHighlineTrainTimeForHighlineCrossId", method = RequestMethod.POST)
+		public Result  getHighlineTrainTimeForHighlineCrossId(@RequestBody Map<String,Object> reqMap) {
+			 Result result = new Result();
+			 try{
+				 String highlineCrossId = StringUtil.objToStr(reqMap.get("highlineCrossId"));
+				 logger.debug("highlineCrossId==" + highlineCrossId);
+				 List<HighlineTrainRunLine> list = highLineService.getHighlineTrainTimeForHighlineCrossId(highlineCrossId);
+				 result.setData(list);
+			 }catch(Exception e){
+				 logger.error("getHighlineTrainTimeForHighlineCrossId error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
+		
+		
 }

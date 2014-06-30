@@ -14,6 +14,7 @@ import org.railway.com.trainplan.entity.BaseTrainInfo;
 import org.railway.com.trainplan.entity.HighLineCrossTrainInfo;
 import org.railway.com.trainplan.entity.HighlineCrossInfo;
 import org.railway.com.trainplan.entity.HighlineCrossTrainBaseInfo;
+import org.railway.com.trainplan.entity.HighlineTrainRunLine;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,5 +107,14 @@ public class HighLineService{
 	 */
 	public List<HighlineCrossTrainBaseInfo> getHighlineCrossTrainBaseInfoList(String highlineCrossId){
 		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_BASEINFO, highlineCrossId);
+	}
+	
+	/**
+	 * 通过highlineCrossId查询该交路下的列车经由站信息
+	 * @param highlineCrossId
+	 * @return
+	 */
+	public List<HighlineTrainRunLine> getHighlineTrainTimeForHighlineCrossId(String highlineCrossId){
+		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_TRAINTIME_FOR_HIGHLINE_CROSSID, highlineCrossId);
 	}
 }
