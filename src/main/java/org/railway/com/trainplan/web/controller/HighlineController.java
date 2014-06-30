@@ -185,7 +185,7 @@ public class HighlineController {
 			  */
 			 try{
 				 String highLineCrossIds = StringUtil.objToStr(reqMap.get("highLineCrossIds"));
-				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses");
+				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses"); 
 				 if(newCrosses != null && newCrosses.size() > 0){
 					 List<HighlineCrossInfo> hList = new ArrayList<HighlineCrossInfo>();
 					 for(Map crossMap : newCrosses){

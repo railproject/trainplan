@@ -102,6 +102,8 @@ var currentUserBureau = "";
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
 						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载图定</a>
 						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">提交动车交路计划</a>
+						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整交路</a>
+						  
 						 </div>
 				        <!--col-md-3 col-sm-4 col-xs-4-->
 				      </form> 
@@ -331,22 +333,12 @@ var currentUserBureau = "";
 			        </div>
       		</div>
 	   </div> 
-	    <div class="row" id="active_highLine_cross_dialog"
-	    title="时刻表"
-		data-options="iconCls:'icon-save'"
-		style="width: 800px; height: 500px; padding: 10px;" > 
-		      <div class="row" style="width:100%;hight:50px">  
-		          <div class="panel panel-default" style="padding-top:10px;padding-bottom:5px"> 
-				         <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
-														日期:&nbsp;</label>
-						 <div class="pull-left" style="margin-left: 5px;">
-							 <input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
-						 </div>
-					     <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
-	      		</div> 
-		      </div>
+	    <div id="active_highLine_cross_dialog" class="easyui-dialog"
+	      title="交路调整"
+		  data-options="iconCls:'icon-save'"
+		   style="width: 1200px; height: 500px; padding: 10px;" >  
 		      <div class="row" style="width:100%;height:90%"> 
-		    	 <div class="pull-left" style="width: 30%;height:100%" >
+		    	 <div class="pull-left" style="width: 27%;height:100%" >
 				<!--分栏框开始-->    
 					   <section class="panel panel-default" style="height:100%">
 				        <div class="panel-heading">
@@ -363,7 +355,7 @@ var currentUserBureau = "";
 						</div>
 						</section>
 				</div>
-				<div class="pull-left" style="width: 30%;height:100%" >
+				<div class="pull-left" style="width: 25%;height:100%" >
 				<!--分栏框开始-->    
 				  <section class="panel panel-default" style="height:100%">
 				        <div class="panel-heading">
@@ -376,14 +368,14 @@ var currentUserBureau = "";
 						        	<select multiple="multiple" style="width:100%;height:100%" data-bind="options: acvtiveHighLineCrosses, optionsText: 'crossName', selectedOptions: selectedActiveHighLineCrossRows, event:{change: selectedActiveHighLineCrossChange} "></select>
 							  </div> 
 							  <div class="row" style="margin-top:5px"> 
-							    <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">拆解</a>
+							    <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: cjHighLineCross">拆解</a>
 								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">删除</a>
-								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">组合</a>
+								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: hbHighLineCross">组合</a>
 							  </div>
 						</div>
 						</section>
 				</div>
-				<div class="pull-left" style="width: 40%;height:100%" >
+				<div class="pull-left" style="width: 45%;height:100%" >
 				<!--分栏框开始-->    
 				   <section class="panel panel-default" style="height:100%">
 				        <div class="panel-heading">
@@ -395,7 +387,7 @@ var currentUserBureau = "";
 					        	<table class="table table-bordered table-striped table-hover" id="plan_runline_table_trainLine">
 							        <thead> 
 							         <tr>
-							          <th style="width:37px">站序</th>
+							          <th style="width:7%">站序</th>
 					                  <th style="width:19%">站名</th> 
 					                  <th style="width:10%">停时</th>
 					                  <th style="width:20%">到达时间</th> 
@@ -409,11 +401,11 @@ var currentUserBureau = "";
 													<table class="table table-bordered table-striped table-hover" > 
 														 <tbody data-bind="foreach: activeTimes">
 												           <tr>  
-															<td style="width:37px" align="center" data-bind=" text: index + 1"></td>
-															<td style="width:19%" data-bind="text: stnName, attr:{title: stnName}"></td>
+															<td style="width:7.5%" align="center" data-bind=" text: stnSort"></td>
+															<td style="width:20%" data-bind="text: stnName, attr:{title: stnName}"></td>
 															<td style="width:10%" align="center" data-bind="text: stepStr"></td> 
 															<td style="width:20%" align="center" data-bind="text: sourceTime"></td>
-															<td style="width:20%" align="center" data-bind="text: targetTime"></td>
+															<td style="width:17%" align="center" data-bind="text: targetTime"></td>
 												        	</tr>
 												        </tbody>
 													</table> 
