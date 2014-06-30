@@ -133,7 +133,8 @@ var HightLineCrewSjPage = function () {
 		_self.planTrainRows = new PageModle(200, loadPlanDataForPage);		//页面开行计划列表对象
 		_self.hightLineCrewSjRows = new PageModle(200, loadHightLineCrewSjDataForPage);		//页面司机乘务计划列表对象
 		_self.hightLineCrewModel = ko.observable(new HighlineCrewModel());	//用于乘务计划新增、修改
-		
+		_self.hightLineCrewModelTitle = ko.observable();	//用于乘务计划新增、修改窗口标题
+		_self.hightLineCrewSaveFlag = ko.observable();		//用于乘务计划新增、修改标识
 		
 		/**
 		 * 初始化查询条件
@@ -160,6 +161,8 @@ var HightLineCrewSjPage = function () {
 		 * 新增页面打开时
 		 */
 		_self.onAddOpen = function() {
+			_self.hightLineCrewSaveFlag("add");
+			_self.hightLineCrewModelTitle("新增司机乘务计划");
 			_self.hightLineCrewModel().update(null);
 		};
 		
@@ -170,6 +173,8 @@ var HightLineCrewSjPage = function () {
 		 * 修改页面打开时
 		 */
 		_self.onEditOpen = function() {
+			_self.hightLineCrewSaveFlag("update");
+			_self.hightLineCrewModelTitle("修改司机乘务计划");
 			var currentCrewHighlineId = "";
 			$("[name='crew_checkbox']").each(function(){
 				if($(this).is(":checked")) {
@@ -182,6 +187,7 @@ var HightLineCrewSjPage = function () {
 				showWarningDialog("请选择一条乘务计划记录");
 				return;
 			}
+			
 			
 			commonJsScreenLock();
 			$.ajax({
@@ -228,15 +234,18 @@ var HightLineCrewSjPage = function () {
 			var currentCrewHighlineId = "";
 			$("[name='crew_checkbox']").each(function(){
 				if($(this).is(":checked")) {
-					currentCrewHighlineId = $(this).val();
-					return false; //跳出循环
+					currentCrewHighlineId += "'"+$(this).val()+"',";
+					//return false; //跳出循环
 				}
 		    });
 			
 			if (currentCrewHighlineId == "") {
 				showWarningDialog("请选择一条乘务计划记录");
 				return;
+			} else {
+				currentCrewHighlineId = currentCrewHighlineId.substring(0, currentCrewHighlineId.lastIndexOf(","));
 			}
+
 			
 			commonJsScreenLock(2);
 			$.ajax({
@@ -312,85 +321,46 @@ var HightLineCrewSjPage = function () {
 		
 
 		/**
-		 * 新增乘务计划
+		 * 新增/修改乘务计划
 		 */
-		_self.addHightLineCrew = function(){
+		_self.saveHightLineCrew = function(){
 			commonJsScreenLock(2);
+			var _url = "";
+			var _type = "";
+			if (_self.hightLineCrewSaveFlag() == "add") {
+				_url = basePath+"/crew/highline/add";
+				_type = "POST";
+			} else if (_self.hightLineCrewSaveFlag() == "update") {
+				_url = basePath+"/crew/highline/update";
+				_type : "PUT";
+			}
+			
 			$.ajax({
-				url : basePath+"/crew/highline/add",
+				url : _url,
 				cache : false,
-				type : "POST",
+				type : _type,
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
+					crewHighlineId : _self.hightLineCrewModel().crewHighlineId(),
 					crewType : "2",//乘务类型（1车长、2司机、3机械师）
 					crewDate : $("#crew_input_rundate").val(),//_self.searchModle().runDate(),
-					crewCross : $("#add_crewCross").val(),
-					crewCross : $("#add_crewCross").val(),
-					crewGroup : $("#add_crewGroup").val(),
-					throughLine : $("#add_throughLine").val(),
-					name1 : $("#add_name1").val(),
-					tel1 : $("#add_tel1").val(),
-					identity1 : $("#add_identity1").val(),
-					name2 : $("#add_name2").val(),
-					tel2 : $("#add_tel2").val(),
-					identity2 : $("#add_identity2").val(),
-					note : $("#add_note").val()
+					crewCross : _self.hightLineCrewModel().crewCross(),
+					crewGroup : _self.hightLineCrewModel().crewGroup(),
+					throughLine : _self.hightLineCrewModel().throughLine(),
+					name1 : _self.hightLineCrewModel().name1(),
+					tel1 : _self.hightLineCrewModel().tel1(),
+					identity1 : _self.hightLineCrewModel().identity1(),
+					name2 : _self.hightLineCrewModel().name2(),
+					tel2 : _self.hightLineCrewModel().tel2(),
+					identity2 : _self.hightLineCrewModel().identity2(),
+					note : _self.hightLineCrewModel().note()
 				}),
 				success : function(result) {
 					if (result != null && typeof result == "object" && result.code == "0") {
 						//2.查询司机乘务计划信息
 						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
-						showSuccessDialog("新增成功");
-					} else {
-						showErrorDialog("保存司机乘务计划信息失败");
-						commonJsScreenUnLock(1);
-					};
-				},
-				error : function() {
-					showErrorDialog("保存司机乘务计划信息失败");
-					commonJsScreenUnLock(1);
-				},
-				complete : function(){
-					commonJsScreenUnLock(1);
-				}
-			});
-		};
-		
-		
-
-		/**
-		 * 修改乘务计划
-		 */
-		_self.updateHightLineCrew = function(){
-			commonJsScreenLock(2);
-			$.ajax({
-				url : basePath+"/crew/highline/update",
-				cache : false,
-				type : "PUT",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({
-					crewHighlineId : $("#update_crewHighlineId").val(),
-					crewType : "2",//乘务类型（1车长、2司机、3机械师）
-					crewDate : $("#crew_input_rundate").val(),//_self.searchModle().runDate(),
-					crewCross : $("#add_crewCross").val(),
-					crewCross : $("#add_crewCross").val(),
-					crewGroup : $("#add_crewGroup").val(),
-					throughLine : $("#add_throughLine").val(),
-					name1 : $("#add_name1").val(),
-					tel1 : $("#add_tel1").val(),
-					identity1 : $("#add_identity1").val(),
-					name2 : $("#add_name2").val(),
-					tel2 : $("#add_tel2").val(),
-					identity2 : $("#add_identity2").val(),
-					note : $("#add_note").val()
-				}),
-				success : function(result) {
-					if (result != null && typeof result == "object" && result.code == "0") {
-						//2.查询司机乘务计划信息
-						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
-						showSuccessDialog("修改成功");
+						showSuccessDialog("保存成功");
 					} else {
 						commonJsScreenUnLock(1);
 						showErrorDialog("保存司机乘务计划信息失败");
@@ -405,6 +375,8 @@ var HightLineCrewSjPage = function () {
 				}
 			});
 		};
+		
+		
 		
 		
 		

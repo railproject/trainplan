@@ -102,8 +102,8 @@ String basePath = request.getContextPath();
       
       <div class="panel-body">
         <div class="row" style="margin-bottom:10px;">
-          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#createHightLineCrewModal"><i class="fa fa-plus"></i>新增</button>
-          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#updateHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 编辑</button>
+          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-plus"></i>新增</button>
+          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 编辑</button>
           <button type="button" class="btn btn-success"  data-bind="click : deleteHightLineCrew"><i class="fa fa-minus-square"></i>移除</button>
         </div>
         <div class="table-responsive table-hover">
@@ -166,128 +166,34 @@ String basePath = request.getContextPath();
 
 
 
-<!--新增弹出框-->
-<div class="modal fade" id="createHightLineCrewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!--新增/修改弹出框-->
+<div class="modal fade" id="saveHightLineCrewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">新增司机乘务计划</h4>
-      </div>
-      
-      <!--panel-heading-->
-      <div class="panel-body row">
-        <form id="hightLineCrewForm" class="bs-example form-horizontal" style="margin-top:10px;">
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">乘务交路：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_crewCross" type="text" class="form-control">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">车队组号：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_crewGroup" type="text" class="form-control">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">经由铁路线：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_throughLine" type="text" class="form-control">
-               </div>
-          </div>
-          
-          
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机1姓名：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_name1" type="text" class="form-control">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">电话：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_tel1" type="text" class="form-control">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">政治面貌：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_identity1" type="text" class="form-control">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机2姓名：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_name2" type="text" class="form-control">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">电话：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_tel2" type="text" class="form-control">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">政治面貌：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_identity2" type="text" class="form-control">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">备注：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <textarea id="add_note" class="form-control" rows="4"></textarea>
-            </div>
-          </div>
-        </form>
-        <!--        <p class="pull-right" style="margin:0;">说明：当您申请后需要等待管理员审批才能使用。</p>
---> </div>
-      <!--panel-body-->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bind="click : addHightLineCrew" data-dismiss="modal">确定</button>
-        <button type="reset" class="btn btn-info">重置</button>
-        <button type="button" class="btn btn-warning" data-dismiss="modal">取消</button>
-      </div>
-    </div>
-    <!-- /.modal-content --> 
-  </div>
-  <!-- /.modal-dialog --> 
-</div>
-<!--新增弹出框 end-->
-
-
-
-
-<!--修改弹出框-->
-<div class="modal fade" id="updateHightLineCrewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">修改司机乘务计划</h4>
+        <h4 class="modal-title" data-bind="text : hightLineCrewModelTitle"></h4>
       </div>
       
       <!--panel-heading-->
       <div class="panel-body row">
         <form id="hightLineCrewForm" class="bs-example form-horizontal" style="margin-top:10px;" data-bind="with : hightLineCrewModel">
-          <input id="update_crewHighlineId" type="hidden" data-bind="value : crewHighlineId">
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">乘务交路：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_crewCross" type="text" class="form-control" data-bind="value : crewCross">
+              <input id="add_crewCross" type="text" class="form-control" data-bind="value : crewCross">
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">车队组号：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_crewGroup" type="text" class="form-control" data-bind="value : crewGroup">
+              <input id="add_crewGroup" type="text" class="form-control" data-bind="value : crewGroup">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">经由铁路线：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_throughLine" type="text" class="form-control" data-bind="value : throughLine">
+              <input id="add_throughLine" type="text" class="form-control" data-bind="value : throughLine">
                </div>
           </div>
           
@@ -295,43 +201,43 @@ String basePath = request.getContextPath();
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机1姓名：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_name1" type="text" class="form-control" data-bind="value : name1">
+              <input id="add_name1" type="text" class="form-control" data-bind="value : name1">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">电话：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_tel1" type="text" class="form-control" data-bind="value : tel1">
+              <input id="add_tel1" type="text" class="form-control" data-bind="value : tel1">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">政治面貌：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_identity1" type="text" class="form-control" data-bind="value : identity1">
+              <input id="add_identity1" type="text" class="form-control" data-bind="value : identity1">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机2姓名：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_name2" type="text" class="form-control" data-bind="value : name2">
+              <input id="add_name2" type="text" class="form-control" data-bind="value : name2">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">电话：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_tel2" type="text" class="form-control" data-bind="value : tel2">
+              <input id="add_tel2" type="text" class="form-control" data-bind="value : tel2">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">政治面貌：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="update_identity2" type="text" class="form-control" data-bind="value : identity2">
+              <input id="add_identity2" type="text" class="form-control" data-bind="value : identity2">
                </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">备注：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
-              <textarea id="update_note" class="form-control" rows="4" data-bind="value : note"></textarea>
+              <textarea id="add_note" class="form-control" rows="4" data-bind="value : note"></textarea>
             </div>
           </div>
         </form>
@@ -339,8 +245,7 @@ String basePath = request.getContextPath();
 --> </div>
       <!--panel-body-->
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bind="click : updateHightLineCrew" data-dismiss="modal">确定</button>
-        <button type="reset" class="btn btn-info">重置</button>
+        <button type="button" class="btn btn-primary" data-bind="click : saveHightLineCrew" data-dismiss="modal">确定</button>
         <button type="button" class="btn btn-warning" data-dismiss="modal">取消</button>
       </div>
     </div>
@@ -348,7 +253,9 @@ String basePath = request.getContextPath();
   </div>
   <!-- /.modal-dialog --> 
 </div>
-<!--修改弹出框 end--> 
+<!--新增/修改弹出框 end-->
+
+
 
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.sj.js"></script> 
