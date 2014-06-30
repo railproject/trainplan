@@ -6,13 +6,13 @@ String basePath = request.getContextPath();
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>司机乘务计划上报</title>
+<title>机械师乘务计划上报</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 </head>
 <body class="Iframe_body">
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
-  <li><a href="<%=basePath %>/crew/page/sj">乘务计划->司机乘务计划</a></li>
+  <li><a href="<%=basePath %>/crew/page/sj">乘务计划->机械师乘务计划</a></li>
 </ol>
 <!--以上为必须要的--> 
 
@@ -95,7 +95,7 @@ String basePath = request.getContextPath();
     <!--分栏框开始-->
     <div class="panel panel-default">
       <div class="panel-heading" >
-        <h3 class="panel-title" > <i class="fa fa-user-md"></i>司机乘务计划</h3>
+        <h3 class="panel-title" > <i class="fa fa-user-md"></i>机械师乘务计划</h3>
         <!--        <div class="col-md-8 col-sm-6 col-xs-4  pull-right" style=" width: 10%; text-align:right;">  <a  class="panel-title" href="application-Status.html" >返回</a></div>--> 
       </div>
       <!--panle-heading-->
@@ -115,10 +115,10 @@ String basePath = request.getContextPath();
                 <th>乘务交路</th>
                 <th>车队组号</th>
                 <th>经由铁路线</th>
-                <th>司机1姓名</th>
+                <th>机械师1姓名</th>
                 <th>电话</th>
                 <th>政治面貌</th>
-                <th>司机2姓名</th>
+                <th>机械师2姓名</th>
                 <th>电话</th>
                 <th>政治面貌</th>
                 <th>状态</th>
@@ -199,7 +199,7 @@ String basePath = request.getContextPath();
           
           
           <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机1姓名：</label>
+            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">机械师1姓名：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
               <input id="add_name1" type="text" class="form-control" data-bind="value : name1">
                </div>
@@ -217,7 +217,7 @@ String basePath = request.getContextPath();
                </div>
           </div>
           <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">司机2姓名：</label>
+            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">机械师2姓名：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
               <input id="add_name2" type="text" class="form-control" data-bind="value : name2">
                </div>
@@ -258,6 +258,6 @@ String basePath = request.getContextPath();
 
 
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
-<script src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.sj.js"></script> 
+<script src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.jxs.js"></script> 
 </body>
 </html>
