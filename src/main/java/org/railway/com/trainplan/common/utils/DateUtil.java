@@ -291,11 +291,26 @@ public class DateUtil {
 		return format(date,defaultDatePattern2);
 	}
 	
-	
+	/**
+	 * 时间格式转换
+	 * @param day  传入的日期
+	 * @param formateType formate格式字符串
+	 * @return yyyyMMdd
+	 */
+	public static String getFormateDayTime(String day,String formateType){
+		Date date = null;
+		try {
+			date = parseDate(day,formateType);
+		} catch (ParseException e) {
+			
+			//e.printStackTrace();
+		}
+		return format(date,defaultDatePattern2);
+	}
 	
 	public static void main(String[] args) {
 	
-		System.err.println("length==" + "PFNYW".length());
+		System.err.println(getFormateDayTime("2014-06-06 23:30:43","yyyy-MM-dd hh:mm:ss"));
 		
 		/**
 		 * 1.构造一个时间
