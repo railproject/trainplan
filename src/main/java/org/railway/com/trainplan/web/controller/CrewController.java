@@ -9,6 +9,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class CrewController {
 
 	/**
+	 * 乘务信息查询跳转
+	 * @return
+	 */
+	@RequestMapping(value = "page/all", method = RequestMethod.GET)
+	public String pageCrewAll() {
+		return "hightlineCrew/hightline_crew_all";
+	}
+
+	/**
 	 * 车长乘务信息跳转
 	 * @return
 	 */

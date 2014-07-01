@@ -121,7 +121,7 @@ String basePath = request.getContextPath();
       </div>
       <!--panle-heading-->
       <div class="panel-body" style="padding:5px 5px;">
-        <div class="table-responsive table-hover" style="height: 450px; overflow-y:auto;">
+        <div class="table-responsive table-hover" style="height: 700px; overflow-y:auto;">
           <table border="0" class="table table-bordered table-striped table-hover">
             <thead>
               <tr>
