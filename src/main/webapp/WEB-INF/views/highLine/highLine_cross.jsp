@@ -22,7 +22,7 @@ String basePath = request.getContextPath();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>既有图定开行计划</title>
+<title>高铁交路计划审核</title>
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -85,7 +85,7 @@ var currentUserBureau = "";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">既有图定开行计划</a></li>
+		<li><a href="#">高铁交路计划审核</a></li>
 	</ol>  
 	    <div class="row" style="margin: 10px 10px 10px 10px;">   
 		    <!--分栏框开始-->
@@ -148,7 +148,7 @@ var currentUserBureau = "";
 															     <td style="width: 8%" data-bind="text: endStn"></td>
 															     <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
 															     <td style="width: 8%" data-bind="text: spareFlag() == 2 ? '是' : '否'"></td>
-															     <td style="width: 8%" data-bind="text: ''"></td>
+															     <td style="width: 7%" data-bind="text: ''"></td>
 															</tr> 
 														</tbody> 
 													</table> 
@@ -180,17 +180,17 @@ var currentUserBureau = "";
 											</thead>
 											<tbody style="padding:0">
 												 <tr style="padding:0">
-												   <td colspan="6" style="padding:0">
+												   <td colspan="5" style="padding:0">
 														 <div id="plan_cross_panel_body" style="height: 220px; overflow-y:auto;"> 
 															<table class="table table-bordered table-striped table-hover"
 																id="cross_trainInfo" > 
 																<tbody data-bind="foreach: trains" >
 																	<tr  data-bind="click: $parent.showTrainTimes, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
-																		<td data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
-																		<td data-bind="text: startStn, attr:{title: startStn}"></td>
-																		<td data-bind="text: startTime, attr:{title: startTime}"></td>
-																		<td data-bind="text: endStn, attr:{title: endStn}"></td>
-																		<td data-bind="text: endTime, attr:{title: endTime}"></td>
+																		<td style="width: 20%" data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
+																		<td style="width: 20%" data-bind="text: startStn, attr:{title: startStn}"></td>
+																		<td style="width: 20%" data-bind="text: startTime, attr:{title: startTime}"></td>
+																		<td style="width: 20%" data-bind="text: endStn, attr:{title: endStn}"></td>
+																		<td style="width: 18%" data-bind="text: endTime, attr:{title: endTime}"></td>
 																	</tr>
 																</tbody>
 															</table> 

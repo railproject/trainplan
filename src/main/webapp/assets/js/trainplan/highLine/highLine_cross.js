@@ -36,6 +36,7 @@ function HighLineCrossModle(){
 	};
 	
 	self.addTrain = function(train){
+		train.trainSort(self.trains().length);
 		self.trains.push(train);
 	};
 	 
@@ -195,6 +196,7 @@ function CrossModel() {
 		 var currentCorss = self.selectedHighLineCrossRows()[0]; 
 		 //做恢复使用
 		 self.oldHighLineCrosses.push(currentCorss);
+		 commonJsScreenLock();
 		 $.ajax({
 				url : "highLine/getHighlineTrainTimeForHighlineCrossId",
 				cache : false,
@@ -283,21 +285,25 @@ function CrossModel() {
 		}
 		
 		$.ajax({
-				url : "highLine/saveHighLineCross",
+				url : "highLine/saveHighlineCrossAndTrainInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
-				data :JSON.stringify({"highLineCrosseIds": oldCrossIds, "crosses" : crosses}),
+				data :JSON.stringify({"highLineCrossIds": oldCrossIds, "newCrosses" : crosses}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
-						showSuccessDialog("提交交动车交路计划成功"); 
+						self.loadCrosses();
+						self.acvtiveHighLineCrosses.remove(function(item){
+							return true;
+						});
+						showSuccessDialog("交路调整成功"); 
 					} else {
-						showErrorDialog("获取运行规律失败");
+						showErrorDialog("交路调整失败");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("交路调整失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -1338,7 +1344,7 @@ function CrossModel() {
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null && result.data.length > 0) {   
 							$.each(result.data,function(n, trainInfo){
-								var row = new TrainRow(trainInfo);
+								var row = new HighLineTrain(trainInfo);
 								self.trains.push(row); 
 							}); 
 						}
@@ -1633,17 +1639,30 @@ function TrainModel() {
 	self.rowLookup = {};
 }
 
+
+function HighLineTrain(data){
+	var self = this; 
+
+	self.trainNbr = data.trainNbr;
+	self.startStn = data.startStn;
+	self.startTime = data.startTime;
+	self.endTime = data.endTime;
+	self.endStn = data.endStn; 
+}
+
 function TrainRow(data) {
 	var self = this; 
-	self.crossTainId  = data.crossTainId;//BASE_CROSS_TRAIN_ID
+	self.planTainId  = data.planTainId;//BASE_CROSS_TRAIN_ID
 	self.crossId = data.crossId;//BASE_CROSS_ID
-	self.trainSort = data.trainSort;//TRAIN_SORT
+	self.trainSort = ko.observable(data.trainSort);//TRAIN_SORT
 	self.baseTrainId = data.baseTrainId;
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
 	self.times = ko.observableArray(); 
 	self.simpleTimes = ko.observableArray(); 
 	
+	 
+	self.sourceTime = 
 	self.passBureau = data.passBureau;
 	
 	self.startTime = ko.computed(function(){  

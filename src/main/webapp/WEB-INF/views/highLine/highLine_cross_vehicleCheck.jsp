@@ -22,7 +22,7 @@ String basePath = request.getContextPath();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>既有图定开行计划</title>
+<title>高铁车底计划审核</title>
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -85,7 +85,7 @@ var currentUserBureau = "";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">既有图定开行计划</a></li>
+		<li><a href="#">高铁车底计划审核</a></li>
 	</ol>  
 	    <div class="row" style="margin: 10px 10px 10px 10px;">   
 		    <!--分栏框开始-->

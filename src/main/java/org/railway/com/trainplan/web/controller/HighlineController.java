@@ -214,6 +214,7 @@ public class HighlineController {
 				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses"); 
 				 if(newCrosses != null && newCrosses.size() > 0){
 					 List<HighlineCrossInfo> hList = new ArrayList<HighlineCrossInfo>();
+					 List<HighLineCrossTrainInfo> tList = new ArrayList<HighLineCrossTrainInfo>();
 					 for(Map crossMap : newCrosses){
 						 HighlineCrossInfo highlineCrossInfo = new HighlineCrossInfo();
 						 String highLineCrossId = UUID.randomUUID().toString();
@@ -254,12 +255,9 @@ public class HighlineController {
 						 highlineCrossInfo.setCreatPeople(createPeople == null?"":createPeople);
 						 
 						 hList.add(highlineCrossInfo);
-						 //保存到表highline_cross
-						 highLineService.batchAddHighlineCross(hList);
-						 //
+						 //保存到表highline_cross  
 						 List<Map> trainsList = (List<Map>)crossMap.get("trains");
-						 if(trainsList != null && trainsList.size() > 0 ){
-							 List<HighLineCrossTrainInfo> tList = new ArrayList<HighLineCrossTrainInfo>();
+						 if(trainsList != null && trainsList.size() > 0 ){ 
 							 for(Map trainMap : trainsList){
 								 HighLineCrossTrainInfo crossTrain = new HighLineCrossTrainInfo();
 								 String  highLineTrainId = UUID.randomUUID().toString();
@@ -274,14 +272,15 @@ public class HighlineController {
 								 crossTrain.setHighLineTrainId(highLineTrainId);
 								 crossTrain.setTrainNbr(trainNbr == null?"":trainNbr);
 								 crossTrain.setTrainSort(trainSort);
-								 
+								 crossTrain.setHighLineCrossId(highlineCrossInfo.getHighLineCrossId());
 								 tList.add(crossTrain);
 							 }
-							 //保存数据到highline_cross_train中
-							 highLineService.batchAddHighlineCrossTrain(tList);
+							 //保存数据到highline_cross_train中 
 						 }
 						 
 					 }
+					 highLineService.batchAddHighlineCross(hList);
+					 highLineService.batchAddHighlineCrossTrain(tList);
 				 }
 				
 				 //删除表highline_cross表中数据
