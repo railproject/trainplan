@@ -30,6 +30,9 @@ function CrossModel() {
 	self.gloabBureaus = [];   
 	
 	self.searchModle = ko.observable(new searchModle());
+	
+	//交路列表 
+	self.crossAllcheckBox = ko.observable(0);
 	 
 	//当前日期可调整的交路
 	self.highLineCrossRows =  ko.observableArray();    
@@ -124,7 +127,92 @@ function CrossModel() {
 				}
 		    });  
 	};
+	
+	self.checkHighLineCrosses = function(){  
+		var crossIds = "";
+		var updateCrosses = [];
+		var crosses = self.highLineCrossRows();
+		for(var i = 0; i < crosses.length; i++){
+			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){  
+				showErrorDialog("不能重复审核"); 
+				return;
+			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
+				crossIds += (crossIds == "" ? "'" : ",'") + crosses[i].crossId + "'"; 
+				updateCrosses.push(crosses[i]); 
+			}; 
+		}  
+		if(crossIds == ""){
+			showErrorDialog("没有可审核的");
+			return;
+		}
+		commonJsScreenLock();
+		 $.ajax({
+				url : "../highLine/checkHighLineCorssInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					highLineCrossIds : crossIds
+				}),
+				success : function(result) {     
+					if(result.code == 0){
+						$.each(updateCrosses, function(i, n){ 
+							n.checkFlag("1");
+						});
+						showSuccessDialog("审核成功");
+					}else{
+						showErrorDialog("审核失败");
+					}
+				},
+				error : function() {
+					showErrorDialog("审核失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+		
+	};
 	 
+	
+	self.selectCrosses = function(){
+//		self.crossAllcheckBox(); 
+		$.each(self.crossRows.rows(), function(i, crossRow){ 
+			if(self.crossAllcheckBox() == 1){
+				crossRow.selected(0);
+				self.searchModle().activeFlag(0);
+			}else{
+				if(hasActiveRole(crossRow.tokenVehBureau())){ 
+					crossRow.selected(1); 
+					self.searchModle().activeFlag(1);
+				}
+			}  
+		});  
+	};
+	
+	self.selectCross = function(row){ 
+//		self.crossAllcheckBox();  
+		if(row.selected() == 0){  
+			self.crossAllcheckBox(1);  
+			self.searchModle().activeFlag(1);
+			$.each(self.crossRows.rows(), function(i, crossRow){  
+				if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
+					self.crossAllcheckBox(0);
+					return false;
+				}  
+			}); 
+		}else{
+			self.searchModle().activeFlag(0);  
+			self.crossAllcheckBox(0);
+			$.each(self.crossRows.rows(), function(i, crossRow){  
+				if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
+					self.searchModle().activeFlag(1);
+					return false;
+				}  
+			}); 
+		} 
+	}; 
 	 
 	
 	self.setCurrentCross = function(cross){

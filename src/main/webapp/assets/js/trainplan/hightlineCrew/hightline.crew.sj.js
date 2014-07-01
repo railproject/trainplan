@@ -565,7 +565,7 @@ var HightLineCrewSjPage = function () {
 				_trainNbr = "-1";
 			}
 			
-			if(_runDate == null || typeof _runDate!="string"){
+			if(_runDate == null || typeof _runDate!="string" || _runDate==""){
 				showErrorDialog("请选择日期!");
 				return;
 			}
@@ -574,6 +574,62 @@ var HightLineCrewSjPage = function () {
 		
 		
 		
+		/**
+		 * 导入excel点击事件
+		 * 
+		 * 检查导入条件
+		 */
+		_self.checkBeforImportExcel = function() {
+			var _runDate = $("#crew_input_rundate").val();//_self.searchModle().runDate();	//运行日期
+			if(_runDate == null || typeof _runDate!="string" || _runDate==""){
+				showErrorDialog("请选择日期!");
+				return;
+			}
+		};
+		
+		
+		/**
+		 * 导入excel
+		 */
+		_self.uploadExcel = function() {
+			var _runDate = $("#crew_input_rundate").val();//_self.searchModle().runDate();	//运行日期
+			if(_runDate == null || typeof _runDate!="string" || _runDate==""){
+				showErrorDialog("请选择日期!");
+				return;
+			}
+		    if($("#crewExcelFile").val() == null || $("#crewExcelFile").val() == ""){
+		    	showErrorDialog("没有可导入的文件"); 
+		    	return;
+		    }
+		    $("#loading").show();
+		    $("#btn_fileToUpload").attr("disabled", "disabled");
+	        $.ajaxFileUpload ({
+                url : basePath+"/crew/highline/importExcel",
+                secureuri:false,
+                fileElementId:'crewExcelFile',
+                type : "POST",
+                dataType: 'json',  
+                data:{
+                	crewDate:_runDate,
+                	crewType:"2"//乘务类型（1车长、2司机、3机械师）
+                },
+                success: function (data, status) {
+					_self.hightLineCrewRows.loadRows();	//loadRows为分页组件中方法
+                	
+                	showSuccessDialog("导入成功");
+                	$("#loading").hide();
+                	$("#btn_fileToUpload").removeAttr("disabled");
+                	$("#btn_fileToUpload_cancel").click();
+                	
+                },
+                error: function(result){
+                	showErrorDialog("导入失败");
+                	$("#loading").hide();
+                	$("#btn_fileToUpload").removeAttr("disabled");
+                }
+            });  
+	        return true;
+		};
 		
 		
 	};
