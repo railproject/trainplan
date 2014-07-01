@@ -100,5 +100,19 @@
     DELETE  FROM HIGHLINE_CROSS 
     WHERE HIGHLINE_CROSS_ID in (${highlineCrossId}) 
   </delete>  
+  
+  <update id="updateHighLineVehicle" parameterType="map">
+  UPDATE HIGHLINE_CROSS 
+  SET
+    <choose>
+      <when test="vehicle1 == null">VEHICLE1 = '',</when>
+      <otherwise>VEHICLE1 = #{vehicle1},</otherwise>
+    </choose>
+    <choose>
+      <when test="vehicle2 == null">VEHICLE2 = ''</when>
+      <otherwise>VEHICLE2 = #{vehicle2}</otherwise>
+    </choose>  
+    WHERE HIGHLINE_CROSS_ID = #{highlineCrossId}
+  </update>
    
 </mapper>

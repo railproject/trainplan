@@ -226,8 +226,8 @@ public class Constants {
 	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_BASEINFO="highlineCrossDao.getHighlineCrossTrainBaseInfoList";
     //getHighlineTrainTimeForHighlineCrossId
 	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_TRAINTIME_FOR_HIGHLINE_CROSSID = "highlineCrossDao.getHighlineTrainTimeForHighlineCrossId";
-    //deleteHighlienCrossTrainForHighlineCrossId
+    //deleteHighlienCrossTrainForHighlineCrossId  
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID = "highlineCrossDao.deleteHighlienCrossTrainForHighlineCrossId";
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID = "highlineCrossDao.deleteHighlienCrossForHighlineCrossId";
-
+    public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_VEHICLE="highlineCrossDao.updateHighLineVehicle";
 }

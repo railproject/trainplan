@@ -159,7 +159,12 @@ public class HighlineController {
 				 List<Map> highLineCrossesList = (List<Map>)reqMap.get("highLineCrosses");
 				 if(highLineCrossesList != null && highLineCrossesList.size() > 0 ){
 					 for(Map map : highLineCrossesList){
-						 System.err.print("map=="+ map);
+						 logger.debug("map=="+ map);
+						 String highlineCrossId =  StringUtil.objToStr(map.get("highlineCrossId"));
+						 String vehicle1 =  StringUtil.objToStr(map.get("vehicle1"));
+						 String vehicle2 =  StringUtil.objToStr(map.get("vehicle2"));
+						 int count = highLineService.updateHighLineVehicle(highlineCrossId,vehicle1,vehicle2);
+						 logger.debug("updateHighLineVehicle~~count==" + count);
 					 }
 				 }
 				
