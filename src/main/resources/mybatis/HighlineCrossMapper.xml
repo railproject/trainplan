@@ -115,4 +115,15 @@
     WHERE HIGHLINE_CROSS_ID = #{highlineCrossId}
   </update>
    
+   <update id="updateHiglineCheckInfo" parameterType="map" >
+   UPDATE HIGHLINE_CROSS 
+     SET
+        CHECK_TYPE=${checkType},
+		CHECK_PEOPLE=#{checkPeople},
+		CHECK_PEOPLE_ORG=#{checkPeopleOrg},
+		CHECK_TIME=sysdate
+  
+     WHERE HIGHLINE_CROSS_ID IN (${highlineCrossIds})
+   
+   </update>
 </mapper>

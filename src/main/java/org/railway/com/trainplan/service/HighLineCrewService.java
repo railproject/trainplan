@@ -39,6 +39,9 @@ public class HighLineCrewService {
 
     public List<HighLineCrewInfo> findList(String crewDate,String crewType) {
     	Map<String,Object> map = new HashMap<String,Object>();
+    	if("all".equals(crewType)){
+    		crewType = null;
+    	}
     	map.put("crewDate",crewDate);
     	map.put("crewType",crewType);
         return highLineCrewDao.findList(map);
@@ -82,6 +85,9 @@ public class HighLineCrewService {
 	 */
 	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String trainNbr,String rownumstart,String rownumend ) throws Exception{
 		Map reqMap = new HashMap<String,String>();
+		if("all".equals(crewType)){
+			crewType = null;
+		}
 		reqMap.put("crewDate",crewDate );
 		reqMap.put("crewType",crewType );
 		reqMap.put("rownumstart",rownumstart );

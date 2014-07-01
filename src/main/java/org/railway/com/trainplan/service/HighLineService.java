@@ -232,4 +232,22 @@ public class HighLineService{
 		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_UPDATE_HIGHLINE_VEHICLE, reqMap);
 	}
 	
+	
+	/**
+	 * 更新highlinecross中check的基本信息
+	 * @param checkType 审核状态
+	 * @param checkPeople  审核人
+	 * @param checkPeopleOrg 审核人所属单位
+	 * @param highlineCrossIds
+	 * @return
+	 */
+	public int updateHiglineCheckInfo(String checkType,String checkPeople,String checkPeopleOrg,String highlineCrossIds){
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("checkType",checkType );
+		reqMap.put("checkPeople", checkPeople);
+		reqMap.put("checkPeopleOrg",checkPeopleOrg );
+		reqMap.put("highlineCrossIds",highlineCrossIds);
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_UPDATE_HIGHLINE_CHECKINFO, reqMap);
+	}
+	
 }

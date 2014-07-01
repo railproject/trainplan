@@ -231,4 +231,6 @@ public class Constants {
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID = "highlineCrossDao.deleteHighlienCrossTrainForHighlineCrossId";
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID = "highlineCrossDao.deleteHighlienCrossForHighlineCrossId";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_VEHICLE="highlineCrossDao.updateHighLineVehicle";
+    public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_CHECKINFO="highlineCrossDao.updateHiglineCheckInfo";
+    
 }

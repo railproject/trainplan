@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.HighLineCrossTrainInfo;
@@ -13,6 +14,7 @@ import org.railway.com.trainplan.entity.HighlineCrossInfo;
 import org.railway.com.trainplan.entity.HighlineCrossTrainBaseInfo;
 import org.railway.com.trainplan.entity.HighlineTrainRunLine;
 import org.railway.com.trainplan.service.HighLineService;
+import org.railway.com.trainplan.service.ShiroRealm;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -281,6 +283,34 @@ public class HighlineController {
 			
 			 return result;
 		}
+		
+		 /**
+		 *更新highlinecross中check的基本信息
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/updateHiglineCheckInfo", method = RequestMethod.POST)
+		public Result  updateHiglineCheckInfo(@RequestBody Map<String,Object> reqMap) {
+			 Result result = new Result();
+			 try{
+				 logger.debug("updateHiglineCheckInfo~~~reqMap==" + reqMap);
+				 String highlineCrossIds = StringUtil.objToStr(reqMap.get("highlineCrossIds"));
+				 //check_type:0_未审核 1_已审核
+				 String checkType = "1";
+				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+				 int count = highLineService.updateHiglineCheckInfo(checkType,user.getName(),user.getDeptName(),highlineCrossIds);
+				 logger.debug("updateHiglineCheckInfo~~count==" + count);
+					
+				
+			 }catch(Exception e){
+				 logger.error("updateHiglineCheckInfo error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
+		
 		
 		
 }
