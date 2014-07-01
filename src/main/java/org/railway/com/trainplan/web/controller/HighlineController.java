@@ -3,6 +3,7 @@ package org.railway.com.trainplan.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -214,7 +215,7 @@ public class HighlineController {
 					 List<HighlineCrossInfo> hList = new ArrayList<HighlineCrossInfo>();
 					 for(Map crossMap : newCrosses){
 						 HighlineCrossInfo highlineCrossInfo = new HighlineCrossInfo();
-						 String highLineCrossId = StringUtil.objToStr(crossMap.get("highLineCrossId"));
+						 String highLineCrossId = UUID.randomUUID().toString();
 						 String planCrossId = StringUtil.objToStr(crossMap.get("planCrossId"));
 						 String crossName = StringUtil.objToStr(crossMap.get("crossName"));
 						 String crossStartDate = StringUtil.objToStr(crossMap.get("crossStartDate"));
@@ -232,7 +233,7 @@ public class HighlineController {
 						 String note = StringUtil.objToStr(crossMap.get("note"));
 						 String createPeople = StringUtil.objToStr(crossMap.get("createPeople"));
 						 //set值
-						 highlineCrossInfo.setHighLineCrossId(highLineCrossId == null?"":highLineCrossId);
+						 highlineCrossInfo.setHighLineCrossId(highLineCrossId);
 						 highlineCrossInfo.setPlanCrossId(planCrossId == null?"":planCrossId);
 						 highlineCrossInfo.setCrossName(crossName == null?"":crossName);
 						 highlineCrossInfo.setCrossStartDate(crossStartDate == null?"":crossStartDate);
