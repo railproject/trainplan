@@ -40,11 +40,11 @@ function HighLineCrossModle(){
 	};
 	 
 	self.crossStartDate = ko.computed(function(){  
-		return self.trains().length > 0 ? self.trains()[0].times()[0].startTime : ""; 
+		return self.trains().length > 0 ? self.trains()[0].times()[0].targetTime : ""; 
 	});;
 	//结束日期（该日历交路最后一个车次的终到日期）
 	self.crossEndDate = ko.computed(function(){  
-		return self.trains().length > 0 ? self.trains()[self.trains().length - 1].endTime : ""; 
+		return self.trains().length > 0 ? self.trains()[self.trains().length - 1].times()[self.trains()[self.trains().length - 1].times().length - 1].sourceTime : ""; 
 	});
 	 
 	//备用及停运标记（1:开行;2:备用;0:停运）
@@ -119,20 +119,21 @@ function CrossModel() {
 	self.currentTrainInfoMessage = ko.observable("");
 	
 	self.currentTrain = ko.observable(); 
-	//组合拆解功能 
+	
+	//中间多选列表的对象
 	self.acvtiveHighLineCrosses = ko.observableArray(); 
 	
-	//组合拆解功能 
+	//组合拆解功能 从左边交路中拉过来未处理的
 	self.oldHighLineCrosses = ko.observableArray();  
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
-	
+	//当前日期可调整的交路
 	self.highLineCrossRows =  ko.observableArray(); 
-	
+	//左边交路选中的记录列表
 	self.selectedHighLineCrossRows = ko.observableArray(); 
-	
+	//中间的列表选中的记录列表
 	self.selectedActiveHighLineCrossRows = ko.observableArray(); 
-	
+	//车次组合后的时刻点单，用于显示
 	self.activeTimes = ko.observableArray(); 
 	
 	
@@ -150,7 +151,9 @@ function CrossModel() {
 	};
 	
 	self.selectedCrosse = function(){ 
-		 var currentCorss = self.selectedHighLineCrossRows()[0];  
+		 var currentCorss = self.selectedHighLineCrossRows()[0]; 
+		 //做恢复使用
+		 self.oldHighLineCrosses.push(currentCorss);
 		 $.ajax({
 				url : "highLine/getHighlineTrainTimeForHighlineCrossId",
 				cache : false,
@@ -211,6 +214,47 @@ function CrossModel() {
 			self.acvtiveHighLineCrosses.remove(cr); 
 		} 
 		self.acvtiveHighLineCrosses.push(cross); 
+	};
+	
+	//保存交路合并结果
+	self.submitHighLineCross = function(){ 
+		var activeCrosses = self.acvtiveHighLineCrosses();
+		var crosses = [];
+		for(var i = 0; i < activeCrosses.length; i++){  
+			var postParam = $.parseJSON(ko.toJSON(activeCrosses[i])); 
+			$.each(postParam.trains , function(i, n){
+				delete(n.times);
+			});
+			crosses.push(postParam);
+		}
+		var oldCrosses = self.oldHighLineCrosses();
+		var oldCrossIds = "";
+		for(var i = 0; i < oldCrosses.length; i++){ 
+			oldCrossIds = (oldCrossIds == "" ? "'"  : ",'")  + oldCrosses[i].highLineCrossId() + "'";
+		}
+		
+		$.ajax({
+				url : "highLine/saveHighLineCross",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({"highLineCrosseIds": oldCrossIds, "crosses" : crosses}),
+				success : function(result) {    
+					if (result != null && result != "undefind" && result.code == "0") {
+						showSuccessDialog("提交交动车交路计划成功"); 
+					} else {
+						showErrorDialog("获取运行规律失败");
+					} 
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+		    });  
+		
 	};
 	
 	self.vehicle1Change = function(row){
@@ -1548,18 +1592,30 @@ function TrainRow(data) {
 	self.baseTrainId = data.baseTrainId;
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
+	self.times = ko.observableArray(); 
+	self.simpleTimes = ko.observableArray(); 
 	
 	self.passBureau = data.passBureau;
 	
+	self.startTime = ko.computed(function(){  
+		return self.times().length > 0 ? self.times()[0].sourceTime : ""; 
+	});;
+	//结束日期（该日历交路最后一个车次的终到日期）
+	self.endTime = ko.computed(function(){  
+		return self.times().length > 0 ? self.times()[self.times().length - 1].targetTime : ""; 
+	});
+	
 	self.trainNbr = data.trainNbr;
-	self.startStn = filterValue(data.startStn);
-	self.endStn = filterValue(data.endStn);
-	self.startTime = filterValue(data.startTime != null ? data.startTime.replace(/-/g, "").substring(4) : "");
-	self.endTime = filterValue(data.endTime != null ? data.endTime.replace(/-/g, "").substring(4) : "");
+	self.startStn = ko.computed(function(){  
+		return self.times().length > 0 ? self.times()[0].stnName : ""; 
+	});;
+	self.endStn = ko.computed(function(){  
+		return self.times().length > 0 ? self.times()[self.times().length - 1].stnName : ""; 
+	});
+	 
  
 	
-	self.times = ko.observableArray(); 
-	self.simpleTimes = ko.observableArray(); 
+	
 	self.loadTimes = function(times){
 		$.each(times, function(i, n){ 
 			var timeRow = new TrainTimeRow(n);

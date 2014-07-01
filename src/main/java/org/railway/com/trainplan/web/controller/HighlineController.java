@@ -34,6 +34,13 @@ public class HighlineController {
      public String highLine() {
 		 return "highLine/highLine_cross";
      }
+	 
+	 @RequestMapping(value="/vehicle",method = RequestMethod.GET)
+     public String highLineVehicle() {
+		 return "highLine/highLine_cross_vehicle";
+     }
+	 
+	
 
 	 /**
 		 * 审核交路信息
