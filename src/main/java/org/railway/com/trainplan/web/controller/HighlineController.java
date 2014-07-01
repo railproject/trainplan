@@ -262,7 +262,7 @@ public class HighlineController {
 							 List<HighLineCrossTrainInfo> tList = new ArrayList<HighLineCrossTrainInfo>();
 							 for(Map trainMap : trainsList){
 								 HighLineCrossTrainInfo crossTrain = new HighLineCrossTrainInfo();
-								 String  highLineTrainId = StringUtil.objToStr(trainMap.get("highLineTrainId"));
+								 String  highLineTrainId = UUID.randomUUID().toString();
 								 String  planTrainId = StringUtil.objToStr(trainMap.get("planTrainId"));
 								 String  highLineCrossIdForTrain = StringUtil.objToStr(trainMap.get("highLineCrossId"));
 								 int   trainSort = Integer.valueOf(StringUtil.objToStr(trainMap.get("trainSort")));
@@ -271,7 +271,7 @@ public class HighlineController {
 								 crossTrain.setHighLineCrossId(highLineCrossIdForTrain == null?"":highLineCrossIdForTrain);
 								 crossTrain.setPlanTrainId(planTrainId == null?"":planTrainId);
 								 crossTrain.setRunDate(runDate == null?"":runDate);
-								 crossTrain.setHighLineTrainId(highLineTrainId == null?"":highLineTrainId);
+								 crossTrain.setHighLineTrainId(highLineTrainId);
 								 crossTrain.setTrainNbr(trainNbr == null?"":trainNbr);
 								 crossTrain.setTrainSort(trainSort);
 								 

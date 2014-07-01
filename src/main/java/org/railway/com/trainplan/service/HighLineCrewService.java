@@ -68,7 +68,7 @@ public class HighLineCrewService {
 	 * @throws Exception 
 	 */
 	public QueryResult  getRunLineListForRunDate(String runDate,String trainNbr,String rownumstart,String rownumend ) throws Exception{
-		Map reqMap = new HashMap<String,String>();
+		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("runDate",runDate );
 		reqMap.put("trainNbr",trainNbr );
 		reqMap.put("rownumstart",rownumstart );
@@ -84,7 +84,7 @@ public class HighLineCrewService {
 	 * @throws Exception 
 	 */
 	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String trainNbr,String rownumstart,String rownumend ) throws Exception{
-		Map reqMap = new HashMap<String,String>();
+		Map<String,String> reqMap = new HashMap<String,String>();
 		if("all".equals(crewType)){
 			crewType = null;
 		}
@@ -107,7 +107,7 @@ public class HighLineCrewService {
 	 * @return
 	 */
 	public int updateSubmitType(String crewDate,String crewType){
-		Map reqMap = new HashMap<String,String>();
+		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("crewDate",crewDate );
 		reqMap.put("crewType", crewType);
 		return baseDao.updateBySql(Constants.HIGHLINECREWDAO_UPDATE_SUBMIT_TYPE, reqMap);
@@ -129,5 +129,8 @@ public class HighLineCrewService {
 		return baseDao.deleteBySql(Constants.HIGHLINECREWDAO_DELETE_HIGHLINE_CREW_FOR_CREWDATE, reqMap);
 		
 	}
+	
+	
+	
 	
 }
