@@ -200,21 +200,36 @@ public class HighLineService{
 	
 	/**
 	 * 根据highlineCrossId删除表highline_cross_train中数据
-	 * @param highlineCrossId
+	 * @param highlineCrossIds,多个id，以逗号分隔
 	 * @return 成功删除的数目
 	 */
-	public int deleteHighlienCrossTrainForHighlineCrossId(String highlineCrossId){
-		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID, highlineCrossId);
+	public int deleteHighlienCrossTrainForHighlineCrossId(String highlineCrossIds){
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID, highlineCrossIds);
 	}
 	
 	
 	/**
 	 * 根据highlineCrossId删除表highline_cross中数据
-	 * @param highlineCrossId
+	 * @param highlineCrossIds, 多个id，以逗号分隔
 	 * @return 成功删除的数目
 	 */
-	public int deleteHighlienCrossForHighlineCrossId(String highlineCrossId){
-		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID, highlineCrossId);
+	public int deleteHighlienCrossForHighlineCrossId(String highlineCrossIds){
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID, highlineCrossIds);
+	}
+	
+	/**
+	 * 根据highlineCrossId更新车底信息
+	 * @param highlineCrossId
+	 * @param vehicle1
+	 * @param vehicle2
+	 * @return
+	 */
+	public int updateHighLineVehicle(String highlineCrossId,String vehicle1,String vehicle2){
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("highlineCrossId", highlineCrossId);
+		reqMap.put("vehicle1",vehicle1 );
+		reqMap.put("vehicle2",vehicle2 );
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_UPDATE_HIGHLINE_VEHICLE, reqMap);
 	}
 	
 }
