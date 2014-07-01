@@ -12,7 +12,7 @@ String basePath = request.getContextPath();
 <body class="Iframe_body">
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
-  <li><a href="<%=basePath %>/crew/page/sj">乘务计划->司机乘务计划</a></li>
+  <li><a href="<%=basePath %>/crew/page/sj">乘务计划->司机乘务计划上报</a></li>
 </ol>
 <!--以上为必须要的--> 
 
@@ -54,11 +54,11 @@ String basePath = request.getContextPath();
       
       <div class="panel-body">
         <div class="row" style="margin-bottom:10px;">
-          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-plus"></i>新增</button>
-          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 编辑</button>
-          <button type="button" class="btn btn-success"  data-bind="click : deleteHightLineCrew"><i class="fa fa-minus-square"></i>移除</button>
-          <button type="button" class="btn btn-success"  data-bind="click : deleteHightLineCrew"><i class="fa fa-sign-in"></i>导入EXCEL</button>
-          <button type="button" class="btn btn-success"  data-bind="click : exportExcel"><i class="fa fa-sign-out"></i>导出EXCEL</button>
+          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-plus"></i>添加</button>
+          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 修改</button>
+          <button type="button" class="btn btn-success" data-bind="click : deleteHightLineCrew"><i class="fa fa-minus-square"></i>删除</button>
+          <button type="button" class="btn btn-success" data-bind="" data-toggle="modal" data-target="#uploadCrewExcelModal"><i class="fa fa-sign-in"></i>导入EXCEL</button>
+          <button type="button" class="btn btn-success" data-bind="click : exportExcel"><i class="fa fa-sign-out"></i>导出EXCEL</button>
         </div>
         <div class="table-responsive table-hover">
           <table class="table table-bordered table-striped table-hover">
@@ -71,7 +71,7 @@ String basePath = request.getContextPath();
                 <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
                 <th colspan="3" class="text-center" style="vertical-align: middle">司机1</th>
                 <th colspan="3" class="text-center" style="vertical-align: middle">司机2</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px">发布<br>状态</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px">提交<br>状态</th>
               </tr>
               <tr>
                 <th class="text-center">姓名</th>
@@ -269,7 +269,49 @@ String basePath = request.getContextPath();
 
 
 
-<script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
-<script src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.sj.js"></script> 
+
+
+
+<!--导入弹窗-->
+<div class="modal fade" id="uploadCrewExcelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">导入司机乘务计划EXCEL</h4>
+      </div>
+      
+      <!--panel-heading-->
+      <div class="panel-body row">
+      	<img id="loading" src="<%=basePath %>/assets/images/loading.gif" style="display:none;">
+        <form  id="file_upload_crew" name="file_upload_crew" action="crew/highline/importExcel" method="post" enctype="multipart/form-data" class="bs-example form-horizontal" style="margin-top:10px;">
+          <div class="form-group">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <input id="crewExcelFile" type="file" size="45" name="crewExcelFile"/>
+            </div>
+          </div>
+        </form>
+        <!--        <p class="pull-right" style="margin:0;">说明：当您申请后需要等待管理员审批才能使用。</p>
+--> </div>
+      <!--panel-body-->
+      <div class="modal-footer">
+        <button id="btn_fileToUpload" type="button" class="btn btn-primary" data-bind="click : uploadExcel" data-dismiss="modal">导入</button>
+        <button id="btn_fileToUpload_cancel" type="button" class="btn btn-warning" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+    <!-- /.modal-content --> 
+  </div>
+  <!-- /.modal-dialog --> 
+</div>
+<!-- 导入excel弹窗 end -->
+
+
+
+
+
+
+<script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
+<script type="text/javascript"  src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
+<script type="text/javascript"  src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.sj.js"></script> 
 </body>
 </html>

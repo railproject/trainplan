@@ -123,18 +123,35 @@ var HightLineCrewSjPage = function () {
 	
 	
 	/**
+	 * 开行计划列表行数据model
+	 * @param palnTrainObj
+	 */
+	function PlanTrainRowModel(palnTrainObj) {
+		this.trainNbr = ko.observable(palnTrainObj.trainNbr);
+		this.startStn = ko.observable(palnTrainObj.startStn);
+		this.startTimeStr = ko.observable(moment(palnTrainObj.startTimeStr).format("YYMMDD HH:mm"));
+		this.endStn = ko.observable(palnTrainObj.endStn);
+		this.endTimeStr = ko.observable(moment(palnTrainObj.endTimeStr).format("YYMMDD HH:mm"));
+		this.isMatch = ko.observable(palnTrainObj.isMatch);	//是否已上报车长乘务计划	1：真 0：假
+	};
+	
+	
+	
+	/**
 	 * 页面元素绑定对象
 	 * 
 	 * private
 	 */
 	function PageModel() {
 		var _self = this;
+		_self.queryBtnCount = ko.observable(0);	//查询按钮点击次数 
 		_self.searchModle = ko.observable(new SearchModle());		//页面查询对象
-		_self.planTrainRows = new PageModle(200, loadPlanDataForPage);		//页面开行计划列表对象
-		_self.hightLineCrewSjRows = new PageModle(200, loadHightLineCrewSjDataForPage);		//页面车长乘务计划列表对象
+		_self.planTrainRows = new PageModle(5000, loadPlanDataForPage);		//页面开行计划列表对象
+		_self.hightLineCrewRows = new PageModle(10000, loadHightLineCrewSjDataForPage);		//页面车长乘务计划列表对象
 		_self.hightLineCrewModel = ko.observable(new HighlineCrewModel());	//用于乘务计划新增、修改
 		_self.hightLineCrewModelTitle = ko.observable();	//用于乘务计划新增、修改窗口标题
 		_self.hightLineCrewSaveFlag = ko.observable();		//用于乘务计划新增、修改标识
+		
 		
 		/**
 		 * 初始化查询条件
@@ -153,8 +170,47 @@ var HightLineCrewSjPage = function () {
 			_self.planTrainRows.loadRows();	//loadRows为分页组件中方法
 
 			//2.查询车长乘务计划信息
-			_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
+			_self.hightLineCrewRows.loadRows();	//loadRows为分页组件中方法
+			
+			_self.queryBtnCount += 1;	//查询按钮点击次数+1
 		};
+		
+		
+		/**
+		 * 检验按钮事件
+		 * 检测车次是否上报车长乘务计划
+		 * 
+		 * 当planTrainRows中车次存在于hightLineCrewRows中乘务交路 则视为该车次已上报
+		 */
+		_self.checkCrew = function() {
+			
+			for(var i=0; i<_self.planTrainRows.rows().length;i++) {
+				var _trainNbr = _self.planTrainRows.rows()[i].trainNbr();
+				for(var j=0; j<_self.hightLineCrewRows.rows().length;j++) {
+					var crewCrossArray = _self.hightLineCrewRows.rows()[j].crewCross.split("-");
+					
+					if($.inArray(_trainNbr, crewCrossArray) > -1) {
+						_self.planTrainRows.rows()[i].isMatch("1");//车次匹配  已上报车长乘务计划 
+						break;
+					}
+				}
+			}
+		};
+		
+		
+		/**
+		 * 检验按钮是否允许点击
+		 * 
+		 * 当查询按钮点击次数 ==0 或开行计划list==0时  按钮不可用
+		 */
+		_self.checkAndSendBtnEnable = ko.computed(function() {
+			//查询按钮点击次数 
+	        if(_self.queryBtnCount == 0 || _self.planTrainRows.rows().length==0) {
+	            return false;
+	        }
+	        
+	        return true;
+	    });
 		
 		
 		/**
@@ -260,7 +316,7 @@ var HightLineCrewSjPage = function () {
 				success : function(result) {
 					if (result != null && typeof result == "object" && result.code == "0") {
 						//2.查询车长乘务计划信息
-						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
+						_self.hightLineCrewRows.loadRows();	//loadRows为分页组件中方法
 						showSuccessDialog("成功删除车长乘务计划信息");
 					} else {
 						commonJsScreenUnLock(1);
@@ -294,13 +350,13 @@ var HightLineCrewSjPage = function () {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					crewType : "1",//乘务类型（1车长、2司机、3机械师）
+					crewType : "1",//乘务类型（1车长、2车长、3机械师）
 					crewDate : $("#crew_input_rundate").val()//_self.searchModle().runDate()
 				}),
 				success : function(result) {
 					if (result != null && typeof result == "object" && result.code == "0") {
 						//2.查询车长乘务计划信息
-						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
+						_self.hightLineCrewRows.loadRows();	//loadRows为分页组件中方法
 						showSuccessDialog("提交成功");
 					} else {
 						commonJsScreenUnLock(1);
@@ -325,6 +381,7 @@ var HightLineCrewSjPage = function () {
 		 */
 		_self.saveHightLineCrew = function(){
 			commonJsScreenLock(2);
+			
 			var _url = "";
 			var _type = "";
 			if (_self.hightLineCrewSaveFlag() == "add") {
@@ -332,7 +389,7 @@ var HightLineCrewSjPage = function () {
 				_type = "POST";
 			} else if (_self.hightLineCrewSaveFlag() == "update") {
 				_url = basePath+"/crew/highline/update";
-				_type : "PUT";
+				_type = "PUT";
 			}
 			
 			$.ajax({
@@ -343,7 +400,7 @@ var HightLineCrewSjPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					crewHighlineId : _self.hightLineCrewModel().crewHighlineId(),
-					crewType : "1",//乘务类型（1车长、2司机、3机械师）
+					crewType : "1",//乘务类型（1车长、2车长、3机械师）
 					crewDate : $("#crew_input_rundate").val(),//_self.searchModle().runDate(),
 					crewCross : _self.hightLineCrewModel().crewCross(),
 					crewGroup : _self.hightLineCrewModel().crewGroup(),
@@ -359,7 +416,7 @@ var HightLineCrewSjPage = function () {
 				success : function(result) {
 					if (result != null && typeof result == "object" && result.code == "0") {
 						//2.查询车长乘务计划信息
-						_self.hightLineCrewSjRows.loadRows();	//loadRows为分页组件中方法
+						_self.hightLineCrewRows.loadRows();	//loadRows为分页组件中方法
 						showSuccessDialog("保存成功");
 					} else {
 						commonJsScreenUnLock(1);
@@ -413,7 +470,10 @@ var HightLineCrewSjPage = function () {
 						var rows = [];
 						if(result.data.data != null){
 							$.each(result.data.data,function(n, obj){
-								rows.push(obj);
+//								var row = new PlanTrainRowModel(obj);
+//								row.isMatch("0");
+								obj.isMatch = "0";
+								rows.push(new PlanTrainRowModel(obj));
 							});
 							_self.planTrainRows.loadPageRows(result.data.totalRecord, rows);
 						}
@@ -455,7 +515,7 @@ var HightLineCrewSjPage = function () {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					crewType : "1",	//乘务类型（1车长、2司机、3机械师）
+					crewType : "1",	//乘务类型（1车长、2车长、3机械师）
 					crewDate : _runDate,
 					trainNbr : _trainNbr,
 					rownumstart : startIndex, 
@@ -468,15 +528,15 @@ var HightLineCrewSjPage = function () {
 						if(result.data.data != null){
 							$.each(result.data.data,function(n, obj){
 								if (obj.submitType != null && obj.submitType==0) {
-									obj.submitTypeStr = "<span class='label label-danger'>草稿</span>";
+									obj.submitTypeStr = "<span class='label label-danger'>未</span>";
 								} else if (obj.submitType != null && obj.submitType==1) {
-									obj.submitTypeStr = "<span class='label label-success'>已提交</span>";
+									obj.submitTypeStr = "<span class='label label-success'>已</span>";
 								} else {
 									obj.submitTypeStr = "";
 								}
 								rows.push(obj);
 							});
-							_self.hightLineCrewSjRows.loadPageRows(result.data.totalRecord, rows);
+							_self.hightLineCrewRows.loadPageRows(result.data.totalRecord, rows);
 						}
 						 
 					} else {
@@ -492,6 +552,84 @@ var HightLineCrewSjPage = function () {
 			});
 		};
 		
+		
+		
+		
+		/**
+		 * 导出excel
+		 */
+		_self.exportExcel = function() {
+			var _runDate = $("#crew_input_rundate").val();//_self.searchModle().runDate();	//运行日期
+			var _trainNbr = _self.searchModle().trainNbr();	//车次
+			if(_trainNbr=="undefined" || _trainNbr=="" || typeof _trainNbr=="undefined") {
+				_trainNbr = "-1";
+			}
+			
+			if(_runDate == null || typeof _runDate!="string" || _runDate==""){
+				showErrorDialog("请选择日期!");
+				return;
+			}
+			window.open(basePath+"/crew/highline/exportExcel/1/"+_runDate+"/"+_trainNbr);
+		};
+		
+		
+		
+		/**
+		 * 导入excel点击事件
+		 * 
+		 * 检查导入条件
+		 */
+		_self.checkBeforImportExcel = function() {
+			var _runDate = $("#crew_input_rundate").val();//_self.searchModle().runDate();	//运行日期
+			if(_runDate == null || typeof _runDate!="string" || _runDate==""){
+				showErrorDialog("请选择日期!");
+				return;
+			}
+		};
+		
+		
+		/**
+		 * 导入excel
+		 */
+		_self.uploadExcel = function() {
+			var _runDate = $("#crew_input_rundate").val();//_self.searchModle().runDate();	//运行日期
+			if(_runDate == null || typeof _runDate!="string" || _runDate==""){
+				showErrorDialog("请选择日期!");
+				return;
+			}
+		    if($("#crewExcelFile").val() == null || $("#crewExcelFile").val() == ""){
+		    	showErrorDialog("没有可导入的文件"); 
+		    	return;
+		    }
+		    $("#loading").show();
+		    $("#btn_fileToUpload").attr("disabled", "disabled");
+	        $.ajaxFileUpload ({
+                url : basePath+"/crew/highline/importExcel",
+                secureuri:false,
+                fileElementId:'crewExcelFile',
+                type : "POST",
+                dataType: 'json',  
+                data:{
+                	crewDate:_runDate,
+                	crewType:"1"//乘务类型（1车长、2车长、3机械师）
+                },
+                success: function (data, status) {
+					_self.hightLineCrewRows.loadRows();	//loadRows为分页组件中方法
+                	
+                	showSuccessDialog("导入成功");
+                	$("#loading").hide();
+                	$("#btn_fileToUpload").removeAttr("disabled");
+                	$("#btn_fileToUpload_cancel").click();
+                	
+                },
+                error: function(result){
+                	showErrorDialog("导入失败");
+                	$("#loading").hide();
+                	$("#btn_fileToUpload").removeAttr("disabled");
+                }
+            });  
+	        return true;
+		};
 		
 		
 	};
