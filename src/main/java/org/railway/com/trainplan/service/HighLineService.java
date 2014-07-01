@@ -204,7 +204,9 @@ public class HighLineService{
 	 * @return 成功删除的数目
 	 */
 	public int deleteHighlienCrossTrainForHighlineCrossId(String highlineCrossIds){
-		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID, highlineCrossIds);
+		Map<String,String> reqMap = new HashMap<String,String>();
+		reqMap.put("highlineCrossIds", highlineCrossIds);
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID, reqMap);
 	}
 	
 	
@@ -214,7 +216,9 @@ public class HighLineService{
 	 * @return 成功删除的数目
 	 */
 	public int deleteHighlienCrossForHighlineCrossId(String highlineCrossIds){
-		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID, highlineCrossIds);
+		Map<String,String> reqMap = new HashMap<String,String>();
+		reqMap.put("highlineCrossIds", highlineCrossIds);
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID, reqMap);
 	}
 	
 	/**

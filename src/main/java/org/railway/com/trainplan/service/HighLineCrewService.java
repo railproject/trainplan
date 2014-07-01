@@ -131,7 +131,7 @@ public class HighLineCrewService {
 	}
 	
 	public List<String> getRecordPeopleOrgList(){
-		baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_RECORD_PEOPLE_ORG, "");
+		return baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_RECORD_PEOPLE_ORG, "");
 	}
 	
 	

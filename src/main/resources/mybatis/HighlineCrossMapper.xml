@@ -90,13 +90,13 @@
    
    </select>
    
-   <delete id="deleteHighlienCrossTrainForHighlineCrossId" parameterType="string">
+   <delete id="deleteHighlienCrossTrainForHighlineCrossId" parameterType="map">
     DELETE  FROM HIGHLINE_CROSS_TRAIN 
     WHERE HIGHLINE_CROSS_ID in (${highlineCrossIds}) 
    </delete>
    
    
-  <delete id="deleteHighlienCrossForHighlineCrossId" parameterType="string">
+  <delete id="deleteHighlienCrossForHighlineCrossId" parameterType="map">
     DELETE  FROM HIGHLINE_CROSS 
     WHERE HIGHLINE_CROSS_ID in (${highlineCrossIds}) 
   </delete>  
