@@ -263,7 +263,7 @@
     </update>
     
     <delete id="deleteHighlineCrewForCrewDate" parameterType="map">
-    DELETE FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType}
+    DELETE FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType} AND  RECORD_PEOPLE=#{recordPepole}
     
     </delete>
 </mapper> 

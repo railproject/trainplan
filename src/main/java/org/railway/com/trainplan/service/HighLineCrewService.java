@@ -111,12 +111,15 @@ public class HighLineCrewService {
 	 * 根据crewDate和crewType删除表highline_crew表中数据
 	 * @param crewDate 格式：yyyyMMdd
 	 * @param crewType
+	 * @param recordPepole 
 	 * @return 成功删除数据的条数
 	 */
-	public int deleteHighlineCrewForCrewDate(String crewDate,String crewType ){
+	public int deleteHighlineCrewForCrewDate(String crewDate,String crewType,String recordPepole ){
 		Map<String,Object> reqMap = new HashMap<String,Object>();
 		reqMap.put("crewDate",crewDate);
 		reqMap.put("crewType", crewType);
+		reqMap.put("recordPepole", recordPepole);
+		
 		return baseDao.deleteBySql(Constants.HIGHLINECREWDAO_DELETE_HIGHLINE_CREW_FOR_CREWDATE, reqMap);
 		
 	}
