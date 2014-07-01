@@ -35,6 +35,7 @@
 		AND B.PLAN_TRAIN_ID = C.PLAN_TRAIN_ID 
 		AND C.PLAN_TRAIN_ID = D.PLAN_TRAIN_ID
 		AND A.HIGHLINE_CROSS_ID=#{highlineCrossId} 
+		ORDER BY B.TRAIN_SORT,D.STN_SORT
   
   </select>
    <select id="getHighlineCrossList" parameterType="map" resultType="org.railway.com.trainplan.entity.HighlineCrossInfo">

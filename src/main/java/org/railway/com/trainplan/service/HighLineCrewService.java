@@ -1,5 +1,6 @@
 package org.railway.com.trainplan.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.HighLineCrewInfo;
 import org.railway.com.trainplan.entity.QueryResult;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
@@ -130,10 +132,24 @@ public class HighLineCrewService {
 		
 	}
 	
+	/**
+	 * 获取表highline_crew中RecordPeopleOrg字段的值
+	 * @return
+	 */
 	public List<String> getRecordPeopleOrgList(){
-		return baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_RECORD_PEOPLE_ORG, "");
+		List<String> listRecordPeopleOrg = new ArrayList<String>();
+		List<Map<String,Object>> list =  baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_RECORD_PEOPLE_ORG, "");
+	    if(list != null && list.size() > 0 ){
+	    	for(Map<String,Object> map : list){
+	    		listRecordPeopleOrg.add(StringUtil.objToStr(map.get("recordPeopleOrg")));
+	    	}
+	    }
+	    return listRecordPeopleOrg;
 	}
 	
 	
+	public List<HighLineCrewInfo>   getHighlineCrewBaseInfo(HighLineCrewInfo crewInfo,int startnum,int endnum){
+		return null;
+	}
 	
 }

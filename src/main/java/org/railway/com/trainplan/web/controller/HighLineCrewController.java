@@ -664,6 +664,28 @@ public class HighLineCrewController {
 	}
     
     
+    /**
+	 * 获取表highline_crew中record_people_org的值列表
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getRecordPeopleOrgList", method = RequestMethod.GET)
+	public Result getRecordPeopleOrgList(){
+		Result result = new Result(); 
+	    try{
+	    	List<String> list = highLineCrewService.getRecordPeopleOrgList();
+	    	logger.debug("list=="+list);
+	    	result.setData(list);
+	    }catch(Exception e){
+			logger.error(e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		}
+	
+		return result;
+	}
+    
     
     
     /**
