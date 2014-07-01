@@ -194,7 +194,7 @@ $(function(){
 	$("body").append(common_login_div_str);
 	 
 	var common_confirm_div_str = ""
-		+ '<div class="modal fade" id="_confirm_div" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'
+		+ '<div class="modal fade" id="_confirm_div" tabindex="-1" style="z-index:9999" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'
 		+ "	<div class='modal-dialog'>"
 		+ "		<div class='modal-content'>"
 		+ "			<div class='modal-header'>"

@@ -40,6 +40,16 @@ public class HighlineController {
 		 return "highLine/highLine_cross_vehicle";
      }
 	 
+	 @RequestMapping(value="/vehicleCheck",method = RequestMethod.GET)
+     public String highLineVehicleCheck() {
+		 return "highLine/highLine_cross_vehicleCheck";
+     }
+	 
+	 @RequestMapping(value="/vehicleSearch",method = RequestMethod.GET)
+     public String highLineVehicleSearch() {
+		 return "highLine/highLine_cross_vehicleSearch";
+     }
+	 
 	
 
 	 /**

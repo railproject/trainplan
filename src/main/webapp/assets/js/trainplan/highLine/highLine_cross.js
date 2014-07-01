@@ -46,6 +46,16 @@ function HighLineCrossModle(){
 	self.crossEndDate = ko.computed(function(){  
 		return self.trains().length > 0 ? self.trains()[self.trains().length - 1].times()[self.trains()[self.trains().length - 1].times().length - 1].sourceTime : ""; 
 	});
+	
+	
+	self.crossStartStn = ko.computed(function(){  
+		return self.trains().length > 0 ? self.trains()[0].times()[0].stnName : ""; 
+	});;
+	//结束日期（该日历交路最后一个车次的终到日期）
+	self.crossEndStn = ko.computed(function(){  
+		return self.trains().length > 0 ? self.trains()[self.trains().length - 1].times()[self.trains()[self.trains().length - 1].times().length - 1].stnName : ""; 
+	});
+	 
 	 
 	//备用及停运标记（1:开行;2:备用;0:停运）
 	self.spareFlag = 1;
@@ -137,6 +147,37 @@ function CrossModel() {
 	self.activeTimes = ko.observableArray(); 
 	
 	
+	
+	self.activeCrossUp = function(){
+		var currentCorss = self.selectedActiveHighLineCrossRows()[0]; 
+		var acvtiveHighLineCrosses = self.acvtiveHighLineCrosses();
+		for(var i = 0 ; i < acvtiveHighLineCrosses.length; i++){
+			console.log(currentCorss);
+			if(acvtiveHighLineCrosses[i] == currentCorss){ 
+				if(i > 0){ 
+					var temp = acvtiveHighLineCrosses[i - 1];
+					self.acvtiveHighLineCrosses.splice(i - 1, 2, currentCorss, temp);  
+				}
+				break;
+			}
+		}
+	};
+	
+	self.activeCrossDown = function(){
+		var currentCorss = self.selectedActiveHighLineCrossRows()[0]; 
+		var acvtiveHighLineCrosses = self.acvtiveHighLineCrosses();
+		for(var i = 0 ; i < acvtiveHighLineCrosses.length; i++){
+			console.log(currentCorss);
+			if(acvtiveHighLineCrosses[i] == currentCorss){ 
+				if(i < acvtiveHighLineCrosses.length - 1){  
+					var temp = acvtiveHighLineCrosses[i + 1];
+					self.acvtiveHighLineCrosses.splice(i , 2, temp, currentCorss);   
+				}
+				break;
+			}
+		}
+	};
+	
 	self.selectedActiveHighLineCrossChange = function(){  
 		self.activeTimes.remove(function(item){
 			return true;
@@ -196,23 +237,30 @@ function CrossModel() {
 	//合并交路
 	self.hbHighLineCross = function(){ 
 		var selectedActiveHighLineCrossRows = self.selectedActiveHighLineCrossRows();  
-		var cross = new HighLineCrossModle();
-		var preCrossEndDate = null;
-		while(selectedActiveHighLineCrossRows.length > 0){
-			var cr = selectedActiveHighLineCrossRows[0];
-			var trains = cr.trains();
-			 
-			if(preCrossEndDate != null){
-				console.log(cr.crossStartDate());
-				console.log(preCrossEndDate);
-			}
+		var cross = new HighLineCrossModle(); 
+		
+		for(var i = 0; i < selectedActiveHighLineCrossRows.length; i++){
+			var cr = selectedActiveHighLineCrossRows[i];
+			if(i > 0){
+				var pre = selectedActiveHighLineCrossRows[i - 1]; 
+				if(!timeCompare(pre.crossEndDate(), cr.crossStartDate()) || pre.crossEndStn() != cr.crossStartStn()){
+					showConfirmDiv("提示", "车次" + cr.crossName() + "无法与" + pre.crossName() + "前车接续", function(r){
+						return;
+					});
+					return;
+				}  
+			} 
+			var trains = cr.trains();  
 			for(var j = 0; j < trains.length; j++ ){  
 				cross.addTrain(trains[j]);
-			};  
-			preCrossEndDate = cr.crossEndDate();
-			self.selectedActiveHighLineCrossRows.remove(cr);
-			self.acvtiveHighLineCrosses.remove(cr); 
+			};   
+			
 		} 
+		while(selectedActiveHighLineCrossRows.length > 0){
+			self.acvtiveHighLineCrosses.remove(selectedActiveHighLineCrossRows[0]); 
+			self.selectedActiveHighLineCrossRows.remove(selectedActiveHighLineCrossRows[0]); 
+		}
+		 
 		self.acvtiveHighLineCrosses.push(cross); 
 	};
 	
@@ -224,13 +272,14 @@ function CrossModel() {
 			var postParam = $.parseJSON(ko.toJSON(activeCrosses[i])); 
 			$.each(postParam.trains , function(i, n){
 				delete(n.times);
+				delete(n.simpleTimes);
 			});
 			crosses.push(postParam);
 		}
 		var oldCrosses = self.oldHighLineCrosses();
 		var oldCrossIds = "";
 		for(var i = 0; i < oldCrosses.length; i++){ 
-			oldCrossIds = (oldCrossIds == "" ? "'"  : ",'")  + oldCrosses[i].highLineCrossId() + "'";
+			oldCrossIds += (oldCrossIds == "" ? "'"  : ",'")  + oldCrosses[i].highLineCrossId() + "'";
 		}
 		
 		$.ajax({
@@ -1671,14 +1720,25 @@ function TrainTimeRow(data) {
 	self.stnSort = parseInt(data.stnSort) + 1; 
 	self.stnName = filterValue(data.stnName);
 	self.bureauShortName = filterValue(data.bureauShortName);
-	self.sourceTime = filterValue(data.arrTime != null ? data.arrTime.replace(/-/g, "").substring(4) : "");
-	self.targetTime = filterValue(data.dptTime != null ? data.dptTime.replace(/-/g, "").substring(4) : "");
+	self.sourceTime = filterValue(data.arrTime);
+	self.targetTime = filterValue(data.dptTime);
 	self.stepStr = GetDateDiff(data); 
 	self.trackName = filterValue(data.trackName);  
 	self.runDays = data.runDays;
 	self.stationFlag = data.stationFlag;
 	 
 }; 
+
+function timeCompare(preTargetTime, curSourceTime){
+	 
+	var preEndTime = Date.parse(preTargetTime);
+	var curStartTime = Date.parse(curSourceTime);
+	if(preEndTime > curStartTime){
+		return false;
+	}
+	return true;
+};
+
 function GetDateDiff(data)
 { 
 	 if(data.childIndex == 0 

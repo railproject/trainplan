@@ -101,7 +101,6 @@ var currentUserBureau = "";
 							</div>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
 						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载图定</a>
-						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">提交动车交路计划</a>
 						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整交路</a>
 						  
 						 </div>
@@ -142,8 +141,8 @@ var currentUserBureau = "";
 																<!-- <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td> -->
 														        <td style="width: 36px" data-bind="text: $index() + 1"></td> 
 															     <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
-															     <td style="width: 8%"><input type="text" data-bind="value: vehicle1, event:{change: $parent.vehicle1Change}"></td>
-															     <td style="width: 8%"><input type="text" data-bind="value: vehicle2, event:{change: $parent.vehicle2Change}"></td>
+															     <td style="width: 8%" data-bind="text: vehicle1"></td>
+															     <td style="width: 8%" data-bind="text: vehicle2"></td>
 															     <td style="width: 8%" data-bind="text: ''"></td> 
 															     <td style="width: 8%" data-bind="text: startStn"></td>
 															     <td style="width: 8%" data-bind="text: endStn"></td>
@@ -364,16 +363,25 @@ var currentUserBureau = "";
 						   </span>
 						</div> 
 				          <div class="panel-body" style="height:93%">
-					         <div class="row" style="width:100%;height:95%"> 
-						        	<select multiple="multiple" style="width:100%;height:100%" data-bind="options: acvtiveHighLineCrosses, optionsText: 'crossName', selectedOptions: selectedActiveHighLineCrossRows, event:{change: selectedActiveHighLineCrossChange} "></select>
-							  </div> 
+				             <div class="row" style="width:100%;height:95%"> 
+						          <div class="pull-left" style="width:90%;height:100%"> 
+							        	<select multiple="multiple" style="width:100%;height:100%" data-bind="options: acvtiveHighLineCrosses, optionsText: 'crossName', selectedOptions: selectedActiveHighLineCrossRows, event:{change: selectedActiveHighLineCrossChange} "></select>
+								  </div>
+								  <div class="pull-left" style="width:10%;height:100%"> 
+								          <div style="height:40%;" > 
+									      </div> 
+									      <div style="height:60%;" > 
+									        <a data-bind="click: activeCrossUp" style="margin-left: 2px"><i class="fa fa-chevron-up blue"></i></a>
+									        <a data-bind="click: activeCrossDown" style="margin-left:2px;"><i class="fa fa-chevron-down blue"></i></a>
+									      </div> 
+								  </div> 
+							 </div>
 							  <div class="row" style="margin-top:5px"> 
 							    <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: cjHighLineCross">拆解</a>
-								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">删除</a>
 								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: hbHighLineCross">组合</a>
-							  </div>
+							  </div> 
 						</div>
-						</section>
+					</section>
 				</div>
 				<div class="pull-left" style="width: 45%;height:100%" >
 				<!--分栏框开始-->    
@@ -420,7 +428,7 @@ var currentUserBureau = "";
 			</div>
 			<div class="row" style="width:100%;" align="center">  
 			   <div class="panel panel-default" style="padding-top:10px;padding-bottom:5px"> 
-			      <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">确定交路</a>
+			      <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: submitHighLineCross">确定交路</a>
 		        </div>
 		     </div>
 	    </div>
