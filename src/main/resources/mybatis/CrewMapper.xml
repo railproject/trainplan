@@ -261,4 +261,9 @@
      UPDATE HIGHLINE_CREW  SET SUBMIT_TYPE=1 WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType}
     
     </update>
+    
+    <delete id="deleteHighlineCrewForCrewDate" parameterType="map">
+    DELETE FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType} AND  RECORD_PEOPLE=#{recordPepole}
+    
+    </delete>
 </mapper> 
