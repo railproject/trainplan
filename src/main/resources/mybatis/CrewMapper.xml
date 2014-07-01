@@ -264,15 +264,15 @@
     
     
     <update id="updateSubmitType"  parameterType="map">
-     UPDATE HIGHLINE_CREW  SET SUBMIT_TYPE=1 WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType}
+       UPDATE HIGHLINE_CREW  SET SUBMIT_TYPE=1 WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType}
     
     </update>
     
     <delete id="deleteHighlineCrewForCrewDate" parameterType="map">
-    DELETE FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType} AND  RECORD_PEOPLE=#{recordPepole}
+       DELETE FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate} AND CREW_TYPE=#{crewType} AND  RECORD_PEOPLE=#{recordPepole}
     </delete>
     
     <select id="getRecordPeopleOrgList" resultType="map">
-    select RECORD_PEOPLE_ORG from HIGHLINE_CREW group by RECORD_PEOPLE_ORG
+       select RECORD_PEOPLE_ORG as recordPeople from HIGHLINE_CREW group by RECORD_PEOPLE_ORG
     </select>
 </mapper> 

@@ -92,13 +92,13 @@
    
    <delete id="deleteHighlienCrossTrainForHighlineCrossId" parameterType="string">
     DELETE  FROM HIGHLINE_CROSS_TRAIN 
-    WHERE HIGHLINE_CROSS_ID in (${highlineCrossId}) 
+    WHERE HIGHLINE_CROSS_ID in (${highlineCrossIds}) 
    </delete>
    
    
   <delete id="deleteHighlienCrossForHighlineCrossId" parameterType="string">
     DELETE  FROM HIGHLINE_CROSS 
-    WHERE HIGHLINE_CROSS_ID in (${highlineCrossId}) 
+    WHERE HIGHLINE_CROSS_ID in (${highlineCrossIds}) 
   </delete>  
   
   <update id="updateHighLineVehicle" parameterType="map">
