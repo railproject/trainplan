@@ -117,28 +117,63 @@
                 <a href="http://10.1.186.116:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor: hand;"><i class="fa fa-bar-chart-o"></i>首页（看板） </a>
             </li>
             <shiro:authenticated>
-                <li>
-                    <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>发布计划<i class="fa fa-caret-down pull-right"></i></a>
-                    <ul style="width: 200px">
-                        <shiro:hasPermission name="JHPT.KYJH.JYXKD">
-                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/audit?train_type=0" target="contentFrame"><i class="fa fa-external-link"></i>既有开行计划审核</a></li>
-                        </shiro:hasPermission>
-                        <shiro:hasPermission name="JHPT.KYJH.GTKD">
-                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/audit?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁开行计划审核</a></li>
-                            <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁交路计划审核</a></li>
-                            <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁车底计划审核</a></li>
-                        </shiro:hasPermission>
-                        <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>乘务计划审核</a></li>
-                        <shiro:hasPermission name="JHPT.KYJH.JYXKD">
-                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=0" target="contentFrame"><i class="fa fa-external-link"></i>既有日历计划发布</a></li>
-                        </shiro:hasPermission>
-                        <shiro:hasPermission name="JHPT.KYJH.GTKD">
-                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁日历计划发布</a></li>
-                            <li style="width: 100%;"><a style="width: 100%;" href="#" target=""><i class="fa fa-external-link"></i>高铁车底计划报告</a></li>
-	                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/cz" target="contentFrame"><i class="fa fa-external-link"></i>高铁车长乘务计划报告</a></li>
-	                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/sj" target="contentFrame"><i class="fa fa-external-link"></i>高铁司机乘务计划报告</a></li>
-	                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/jxs" target="contentFrame"><i class="fa fa-external-link"></i>高铁机械师乘务计划报告</a></li>
-                        </shiro:hasPermission>
+                <li><a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>发布计划<i class="fa fa-caret-down pull-right"></i></a>
+                    <ul class="second-menu">
+			          <li><a  target="contentFrame"><i class="fa fa-external-link"></i>开行计划<i class="fa fa-caret-right pull-right"></i></a>
+				            <ul class="third-menu" style="width:200px">
+		                        <shiro:hasPermission name="JHPT.KYJH.JYXKD">
+		                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/audit?train_type=0" target="contentFrame"><i class="fa fa-external-link"></i>既有开行计划审核</a></li>
+		                        </shiro:hasPermission>
+				            	<shiro:hasPermission name="JHPT.KYJH.GTKD">
+		                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/audit?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁开行计划审核</a></li>
+		                        </shiro:hasPermission>
+				            </ul>
+			          </li>
+			          
+			          
+				      <shiro:hasPermission name="JHPT.KYJH.GTKD">
+			          <li><a  target="contentFrame"><i class="fa fa-external-link"></i>交路计划<i class="fa fa-caret-right pull-right"></i></a>
+				      		<ul class="third-menu" style="width:200px">
+                            		<li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁交路计划审核</a></li>
+				            </ul>
+			          </li>
+			          </shiro:hasPermission>
+			          
+			          
+				      <shiro:hasPermission name="JHPT.KYJH.GTKD">
+			          <li><a  target="contentFrame"><i class="fa fa-external-link"></i>车底计划<i class="fa fa-caret-right pull-right"></i></a>
+				      		<ul class="third-menu" style="width:200px">
+		                            <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁车底计划审核</a></li>
+                            		<li style="width: 100%;"><a style="width: 100%;" href="#" target=""><i class="fa fa-external-link"></i>高铁车底计划报告</a></li>
+		                        
+				            </ul>
+			          </li>
+			          </shiro:hasPermission>
+			          
+			          
+			          <shiro:hasPermission name="JHPT.KYJH.GTKD">
+			          <li><a  target="contentFrame"><i class="fa fa-external-link"></i>乘务计划<i class="fa fa-caret-right pull-right"></i></a>
+				      		<ul class="third-menu" style="width:200px">
+			                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/all" target="contentFrame"><i class="fa fa-external-link"></i>高铁乘务计划查询</a></li>
+			                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/cz" target="contentFrame"><i class="fa fa-external-link"></i>高铁车长乘务计划报告</a></li>
+			                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/sj" target="contentFrame"><i class="fa fa-external-link"></i>高铁司机乘务计划报告</a></li>
+			                        <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/crew/page/jxs" target="contentFrame"><i class="fa fa-external-link"></i>高铁机械师乘务计划报告</a></li>
+		                        
+				            </ul>
+			          </li>
+			          </shiro:hasPermission>
+			          
+			          
+			          <li><a  target="contentFrame"><i class="fa fa-external-link"></i>日历计划<i class="fa fa-caret-right pull-right"></i></a>
+				      		<ul class="third-menu" style="width:200px">
+				            	<shiro:hasPermission name="JHPT.KYJH.JYXKD">
+		                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=0" target="contentFrame"><i class="fa fa-external-link"></i>既有日历计划发布</a></li>
+		                        </shiro:hasPermission>
+		                        <shiro:hasPermission name="JHPT.KYJH.GTKD">
+                            		<li style="width: 100%;"><a style="width: 100%;" href="${ctx}/default/transfer/planReviewAll?train_type=1" target="contentFrame"><i class="fa fa-external-link"></i>高铁日历计划发布</a></li>
+		                        </shiro:hasPermission>
+				            </ul>
+			          </li>
                     </ul>
                 </li>
 
@@ -147,11 +182,11 @@
                     <ul>
                         <shiro:hasPermission name="JHPT.KYJH.JYXKD">
                             <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-external-link"></i>既有图定开行计划</a></li>
+                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-ol"></i>既有临客开行计划</a></li>
                         </shiro:hasPermission>
                         <shiro:hasPermission name="JHPT.KYJH.GTKD">
-                            <li><a href="${ctx}/runPlan/runPlanGt" target="contentFrame"><i class="fa fa-list-alt"></i>高铁图定开行计划</a></li>
+                            <li><a href="${ctx}/runPlan/runPlanGt" target="contentFrame"><i class="fa fa-list-alt"></i>高铁开行计划</a></li>
                         </shiro:hasPermission>
-                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-ol"></i>临客开行计划</a></li>
                     </ul>
                 </li>
 
