@@ -83,59 +83,59 @@
           <otherwise>CREW_DATE = #{crewDate},</otherwise>
        </choose>
        <choose>
-          <when test="crewBureau == null">CREW_BUREAU =''</when>
+          <when test="crewBureau == null">CREW_BUREAU ='',</when>
           <otherwise> CREW_BUREAU = #{crewBureau},</otherwise>
        </choose>
        <choose>
-          <when test="crewType == null">CREW_TYPE = ''</when>
+          <when test="crewType == null">CREW_TYPE = '',</when>
           <otherwise>CREW_TYPE = #{crewType},</otherwise>
        </choose>
        <choose>
-          <when test="crewCross == null">CREW_CROSS =''</when>
+          <when test="crewCross == null">CREW_CROSS ='',</when>
           <otherwise>CREW_CROSS = #{crewCross},</otherwise>
        </choose>
         <choose>
-          <when test="crewGroup == null">CREW_GROUP =''</when>
+          <when test="crewGroup == null">CREW_GROUP ='',</when>
           <otherwise>CREW_GROUP = #{crewGroup},</otherwise>
        </choose>
       <choose>
-          <when test="throughLine == null">THROUGH_LINE = ''</when>
+          <when test="throughLine == null">THROUGH_LINE = '',</when>
           <otherwise>THROUGH_LINE = #{throughLine},</otherwise>
        </choose>
       <choose>
-          <when test="name1 == null">NAME1 = ''</when>
+          <when test="name1 == null">NAME1 = '',</when>
           <otherwise>NAME1 = #{name1},</otherwise>
        </choose>
          <choose>
-          <when test="tel1 == null">TEL1 = ''</when>
+          <when test="tel1 == null">TEL1 = '',</when>
           <otherwise>TEL1 = #{tel1},</otherwise>
        </choose>
       <choose>
-          <when test="identity1 == null">IDENTITY1 = ''</when>
+          <when test="identity1 == null">IDENTITY1 = '',</when>
           <otherwise>IDENTITY1 = #{identity1},</otherwise>
        </choose>
       <choose>
-          <when test="name2 == null">NAME2 =''</when>
+          <when test="name2 == null">NAME2 ='',</when>
           <otherwise>NAME2 = #{name2},</otherwise>
        </choose>
       <choose>
-          <when test="tel2 == null">TEL2 =''</when>
+          <when test="tel2 == null">TEL2 ='',</when>
           <otherwise>TEL2 = #{tel2},</otherwise>
        </choose>   
        <choose>
-          <when test="identity2 == null">IDENTITY2 =''</when>
+          <when test="identity2 == null">IDENTITY2 ='',</when>
           <otherwise>IDENTITY2 = #{identity2},</otherwise>
        </choose>
       <choose>
-          <when test="note == null">NOTE = ''</when>
+          <when test="note == null">NOTE = '',</when>
           <otherwise>NOTE = #{note},</otherwise>
        </choose>         
       <choose>
-          <when test="recordPeople == null">RECORD_PEOPLE =''</when>
+          <when test="recordPeople == null">RECORD_PEOPLE ='',</when>
           <otherwise>RECORD_PEOPLE = #{recordPeople},</otherwise>
        </choose>
       <choose>
-          <when test="recordPeopleOrg == null">RECORD_PEOPLE_ORG =''</when>
+          <when test="recordPeopleOrg == null">RECORD_PEOPLE_ORG ='',</when>
           <otherwise>RECORD_PEOPLE_ORG = #{recordPeopleOrg},</otherwise>
        </choose>         
        <choose>
@@ -194,7 +194,7 @@
 				 DAILYPLAN_FLAG AS dailyPlanFlag
 				 
 				 FROM PLAN_TRAIN WHERE 1=1 AND RUN_DATE=#{runDate}  
-				 <if test="trainNbr !=null">
+				 <if test="trainNbr !=null and trainNbr !='' ">
 				     AND TRAIN_NBR=#{trainNbr}
 				  </if>
                  order by TRAIN_NBR
@@ -207,7 +207,7 @@
     <select id="findRunPlanList_COUNT" parameterType="map" resultType="java.lang.Integer">
     	SELECT COUNT(PLAN_TRAIN_ID) FROM PLAN_TRAIN 
     	WHERE 1=1 AND RUN_DATE = #{runDate}
-	   	 <if test="trainNbr !=null">
+	   	 <if test="trainNbr !=null and trainNbr !='' ">
 			AND TRAIN_NBR=#{trainNbr}
 		 </if>
     </select>
@@ -241,10 +241,10 @@
 				  SUBMIT_TYPE AS submitType
 				
 				FROM HIGHLINE_CREW WHERE CREW_DATE=#{crewDate}
-				<if test="crewType !=null ">
+				<if test="crewType !=null and crewType !='' ">
 				 AND CREW_TYPE=#{crewType}
 				</if>
-			    <if test="trainNbr !=null">
+			    <if test="trainNbr !=null and trainNbr !=''">
 			     AND CREW_CROSS LIKE #{trainNbr}
 		        </if>
                 ORDER BY RECORD_TIME
@@ -277,11 +277,11 @@
     </select>
     
       <select id="getHighlineCrewBaseInfoForPage_COUNT" parameterType="map" resultType="java.lang.Integer">
-    	SELECT COUNT(HIGHLINE_CREW_ID) FROM HIGHLINE_CREW WHERE 1=1 
-   	        <if test="crewStartDate !=null">
+    	SELECT COUNT(HIGHLINE_CREW_ID) FROM HIGHLINE_CREW WHERE 1=1 AND SUBMIT_TYPE = 1
+   	        <if test="crewStartDate !=null and crewStartDate !='' ">
 			  AND CREW_DATE >=#{crewStartDate} 
 			</if>
-			<if test="crewEndDate !=null">
+			<if test="crewEndDate !=null and crewEndDate !='' ">
 			 AND CREW_DATE &lt;=#{crewEndDate}
 			</if>
 			<if test="crewType != 'all'">
@@ -293,10 +293,10 @@
 			<if test="recordPeopleOrg != 'all' ">
 			  AND  RECORD_PEOPLE_ORG=#{recordPeopleOrg}
 			</if>
-			<if test="crewCross !=null">
+			<if test="trainNbr !=null and trainNbr !='' ">
 			  AND CREW_CROSS LIKE '%${trainNbr}%'
 			</if>
-			<if test="name !=null">
+			<if test="name !=null and name !='' ">
 			AND (NAME1 LIKE '%${name}%' OR NAME2 LIKE '%${name}%' )
 			</if>
     </select>
@@ -327,11 +327,11 @@
 				  RECORD_TIME AS recordTime,
 				  SUBMIT_TYPE AS submitType
 				
-				FROM HIGHLINE_CREW WHERE 1=1
-				<if test="crewStartDate !=null">
+				FROM HIGHLINE_CREW WHERE 1=1  AND SUBMIT_TYPE = 1
+				<if test="crewStartDate !=null and crewStartDate !='' ">
 				  AND CREW_DATE >=#{crewStartDate} 
 				</if>
-				<if test="crewEndDate !=null">
+				<if test="crewEndDate !=null and crewEndDate !='' ">
 				 AND CREW_DATE &lt;=#{crewEndDate}
 				</if>
 				<if test="crewType != 'all'">
@@ -343,10 +343,10 @@
 				<if test="recordPeopleOrg != 'all' ">
 				  AND  RECORD_PEOPLE_ORG=#{recordPeopleOrg}
 				</if>
-				<if test="crewCross !=null">
+				<if test="trainNbr !=null and trainNbr !='' ">
 				  AND CREW_CROSS LIKE '%${trainNbr}%'
 				</if>
-				<if test="name !=null">
+				<if test="name !=null and name !='' ">
 				AND (NAME1 LIKE '%${name}%' OR NAME2 LIKE '%${name}%' )
 				</if>
 			)M
@@ -376,11 +376,11 @@
 				  RECORD_TIME AS recordTime,
 				  SUBMIT_TYPE AS submitType
 				
-				FROM HIGHLINE_CREW WHERE 1=1
-				<if test="crewStartDate !=null">
+				FROM HIGHLINE_CREW WHERE 1=1  AND SUBMIT_TYPE = 1
+				<if test="crewStartDate !=null and crewStartDate != ''">
 				  AND CREW_DATE >=#{crewStartDate} 
 				</if>
-				<if test="crewEndDate !=null">
+				<if test="crewEndDate !=null and crewEndDate !='' ">
 				 AND CREW_DATE &lt;=#{crewEndDate}
 				</if>
 				<if test="crewType != 'all'">
@@ -392,10 +392,10 @@
 				<if test="recordPeopleOrg != 'all' ">
 				  AND  RECORD_PEOPLE_ORG=#{recordPeopleOrg}
 				</if>
-				<if test="crewCross !=null">
+				<if test="trainNbr !=null and trainNbr !='' ">
 				  AND CREW_CROSS LIKE '%${trainNbr}%'
 				</if>
-				<if test="name !=null">
+				<if test="name !=null and name !='' ">
 				AND (NAME1 LIKE '%${name}%' OR NAME2 LIKE '%${name}%' )
 				</if>
     </select>

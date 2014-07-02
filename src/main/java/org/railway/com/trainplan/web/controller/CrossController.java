@@ -499,6 +499,13 @@ public class CrossController {
 					 }*/
 					 /*******************/
 					 grid = getPlanLineGridForAll(list1,trainInfo.getCrossStartDate(),trainInfo.getCrossEndDate());
+					 
+					 //fortest
+					 /*List<PlanLineGridY> listy = grid.getCrossStns();
+					 for(PlanLineGridY y :listy){
+						 System.err.println(y.getStnName() + "#" + y.getDptTime()+"#"+y.getStationType());
+					 }*/
+					 //////
 					 String myJlData = objectMapper.writeValueAsString(dataList);
 					  //图形数据
 					  result.addObject("myJlData",myJlData);

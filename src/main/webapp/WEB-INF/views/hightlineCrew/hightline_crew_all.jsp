@@ -34,7 +34,7 @@ String basePath = request.getContextPath();
 						<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;乘务类型:&nbsp;</label>
 					    <div class="pull-left">
 					    	<select class="form-control" style="width: 110px;display:inline-block;"
-								 data-bind="options: [{'value': 'all', 'text': ''},{'value': '1', 'text': '车长'},{'value': '2', 'text': '司机'},{'value': '3', 'text': '机械师'}], value: searchModle().crewTypeOption, optionsText: 'text'">
+								 data-bind="options: [{'code': 'all', 'text': ''},{'code': '1', 'text': '车长'},{'code': '2', 'text': '司机'},{'code': '3', 'text': '机械师'}], value: searchModle().crewTypeOption, optionsText: 'text',optionsValue:'code'">
 							</select>
 						</div>
 						<label for="exampleInputEmail3" class="control-label pull-left">&nbsp;&nbsp;路局:</label>
@@ -98,9 +98,12 @@ String basePath = request.getContextPath();
                 <th rowspan="2" class="text-center" style="vertical-align: middle">乘务交路</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">车队组号</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
-                <th colspan="3" class="text-center" style="vertical-align: middle">司机1</th>
-                <th colspan="3" class="text-center" style="vertical-align: middle">司机2</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle;width:80px">提交<br>状态</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">乘务类型</th>
+                <th colspan="3" class="text-center" style="vertical-align: middle">乘务员1</th>
+                <th colspan="3" class="text-center" style="vertical-align: middle">乘务员2</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">路局</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">部门</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">备注</th>
               </tr>
               <tr>
                 <th class="text-center">姓名</th>
@@ -117,13 +120,16 @@ String basePath = request.getContextPath();
                 <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
                 <td data-bind=" text: crewGroup, attr:{title: crewGroup}"></td>
                 <td data-bind=" text: throughLine, attr:{title: throughLine}"></td>
+                <td data-bind=" text: crewTypeName"></td>
                 <td data-bind=" text: name1, attr:{title: name1}"></td>
                 <td data-bind=" text: tel1, attr:{title: tel1}"></td>
                 <td data-bind=" text: identity1, attr:{title: identity1}"></td>
                 <td data-bind=" text: name2, attr:{title: name2}"></td>
                 <td data-bind=" text: tel2, attr:{title: tel2}"></td>
                 <td data-bind=" text: identity2, attr:{title: identity2}"></td>
-                <td data-bind="html : submitTypeStr"></td>
+                <td data-bind=" text: crewBureau"></td>
+                <td data-bind=" text: recordPeopleOrg, attr:{title: recordPeopleOrg}"></td>
+                <td data-bind=" text: note, attr:{title: note}"></td>
               </tr>
             </tbody>
           </table>

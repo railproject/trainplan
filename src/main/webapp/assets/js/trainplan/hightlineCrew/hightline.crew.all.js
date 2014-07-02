@@ -108,8 +108,6 @@ var HightLineCrewSjPage = function () {
 				dataType : "json",
 				contentType : "application/json", 
 				success : function(result) {
-					console.dir("================  部门 result===============");
-					console.dir(result);
 					if (result != null && result != "undefind" && result.code == "0") {
 						for ( var i = 0; i < result.data.length; i++) {
 							_self.orgSelect.push({"value": result.data[i], "text": result.data[i]}); 
@@ -173,7 +171,6 @@ var HightLineCrewSjPage = function () {
 		 * 分页查询乘务计划列表
 		 */
 		function loadHightLineCrewSjDataForPage(startIndex, endIndex) {
-			
 			$.ajax({
 				url : basePath+"/crew/highline/getHighlineCrewBaseInfoForPage",
 				cache : false,
@@ -181,7 +178,7 @@ var HightLineCrewSjPage = function () {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					crewType : _self.searchModle().crewTypeOption().value,	//乘务类型（all全部、1车长、2司机、3机械师）
+					crewType : _self.searchModle().crewTypeOption(),	//乘务类型（all全部、1车长、2司机、3机械师）
 					crewStartDate : $("#crew_input_startDate").val(),
 					crewEndDate : $("#crew_input_endDate").val(),
 					crewBureau : _self.searchModle().bureauOption().value,//路局
@@ -204,6 +201,18 @@ var HightLineCrewSjPage = function () {
 								} else {
 									obj.submitTypeStr = "";
 								}
+								
+								//乘务类型（1车长、2司机、3机械师）
+								if (obj.crewType == "1") {
+									obj.crewTypeName = "车长";
+								} else if (obj.crewType == "2") {
+									obj.crewTypeName = "司机";
+								} else if (obj.crewType == "3") {
+									obj.crewTypeName = "机械师";
+								} else {
+									obj.crewTypeName = "";
+								}
+								
 								rows.push(obj);
 							});
 							_self.hightLineCrewRows.loadPageRows(result.data.totalRecord, rows);
@@ -232,7 +241,7 @@ var HightLineCrewSjPage = function () {
 		_self.exportExcel = function() {
 			var _crewStartDate = $("#crew_input_startDate").val();	//日期
 			var _crewEndDate = $("#crew_input_endDate").val();	//日期
-			var _crewType = _self.searchModle().crewTypeOption().value;//乘务类型（all全部、1车长、2司机、3机械师）
+			var _crewType = _self.searchModle().crewTypeOption();//乘务类型（all全部、1车长、2司机、3机械师）
 			var _crewBureau = _self.searchModle().bureauOption().value;//路局
 			var _recordPeopleOrg = _self.searchModle().orgOption().value;//部门
 			var _trainNbr = _self.searchModle().trainNbr();	//车次
