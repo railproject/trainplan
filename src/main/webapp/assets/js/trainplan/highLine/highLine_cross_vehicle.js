@@ -111,9 +111,9 @@ function CrossModel() {
 				data :JSON.stringify({"highLineCrosses": updateCrossRows}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
-						showSuccessDialog("提交交动车交路计划成功"); 
+						showSuccessDialog("提交车底计划成功"); 
 					} else {
-						showErrorDialog("获取运行规律失败");
+						showErrorDialog("提交车底计划失败");
 					} 
 				},
 				error : function() {
