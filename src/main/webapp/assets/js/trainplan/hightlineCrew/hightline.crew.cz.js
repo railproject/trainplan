@@ -183,17 +183,16 @@ var HightLineCrewSjPage = function () {
 		
 		
 		/**
-		 * 检验按钮事件
+		 * 校验按钮事件
 		 * 检测车次是否上报车长乘务计划
 		 * 
 		 * 当planTrainRows中车次存在于hightLineCrewRows中乘务交路 则视为该车次已上报
 		 */
 		_self.checkCrew = function() {
-			
 			for(var i=0; i<_self.planTrainRows.rows().length;i++) {
+				_self.planTrainRows.rows()[i].isMatch("0");//恢复匹配颜色默认值;
 				var _trainNbr = _self.planTrainRows.rows()[i].trainNbr();
 				for(var j=0; j<_self.hightLineCrewRows.rows().length;j++) {
-					_self.planTrainRows.rows()[i].isMatch("0");//恢复匹配颜色默认值;
 					var crewCrossArray = _self.hightLineCrewRows.rows()[j].crewCross.split("-");
 					
 					if($.inArray(_trainNbr, crewCrossArray) > -1) {
