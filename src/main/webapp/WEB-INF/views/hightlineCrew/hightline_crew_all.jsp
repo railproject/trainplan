@@ -118,7 +118,7 @@ String basePath = request.getContextPath();
                 <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
                 <td data-bind=" text: crewGroup, attr:{title: crewGroup}"></td>
                 <td data-bind=" text: throughLine, attr:{title: throughLine}"></td>
-                <td data-bind=" text: crewType=='1'?'车长:(crewType==2?'司机':(crewType==3?'机械师':''))'"></td>
+                <td data-bind=" text: crewTypeName"></td>
                 <td data-bind=" text: name1, attr:{title: name1}"></td>
                 <td data-bind=" text: tel1, attr:{title: tel1}"></td>
                 <td data-bind=" text: identity1, attr:{title: identity1}"></td>

@@ -204,6 +204,18 @@ var HightLineCrewSjPage = function () {
 								} else {
 									obj.submitTypeStr = "";
 								}
+								
+								//乘务类型（1车长、2司机、3机械师）
+								if (obj.crewType == "1") {
+									obj.crewTypeName = "车长";
+								} else if (obj.crewType == "2") {
+									obj.crewTypeName = "司机";
+								} else if (obj.crewType == "3") {
+									obj.crewTypeName = "机械师";
+								} else {
+									obj.crewTypeName = "";
+								}
+								
 								rows.push(obj);
 							});
 							_self.hightLineCrewRows.loadPageRows(result.data.totalRecord, rows);
