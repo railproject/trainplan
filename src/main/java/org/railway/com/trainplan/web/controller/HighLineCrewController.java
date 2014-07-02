@@ -22,6 +22,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.shiro.SecurityUtils;
+import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
@@ -687,7 +688,34 @@ public class HighLineCrewController {
 	}
     
     
-    
+
+	 /**
+	  * 对highline_crew进行条件分页查询
+	 * @param reqMap
+	 * 主要有这些字段：
+	 * crewStartDate;crewEndDate;crewType;
+       crewBureau;recordPeopleOrg;trainNbr;name;rownumstart;rownumend
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getHighlineCrewBaseInfoForPage", method = RequestMethod.POST)
+	public Result getHighlineCrewBaseInfoForPage(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result(); 
+	    try{
+	    	logger.debug("getHighlineCrewBaseInfoForPag~~~reqMap==" + reqMap);
+	    	QueryResult<HighLineCrewInfo> queryResult = highLineCrewService.getHighlineCrewBaseInfoForPage(reqMap);
+	    	PagingResult page = new PagingResult(queryResult.getTotal(), queryResult.getRows());
+	    	result.setData(page);
+	    }catch(Exception e){
+			logger.error(e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		}
+	
+		return result;
+	}
+	
+
     /**
      * 保存乘务信息
      * 被导入Excel方法调用

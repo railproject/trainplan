@@ -12,6 +12,7 @@ import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.HighLineCrewInfo;
 import org.railway.com.trainplan.entity.QueryResult;
+import org.railway.com.trainplan.entity.RunPlan;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.repository.mybatis.HighLineCrewDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 public class HighLineCrewService {
-
-    private static Log logger = LogFactory.getLog(HighLineCrewService.class);
 
     @Autowired
     private HighLineCrewDao highLineCrewDao;
@@ -69,7 +68,8 @@ public class HighLineCrewService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public QueryResult  getRunLineListForRunDate(String runDate,String trainNbr,String rownumstart,String rownumend ) throws Exception{
+    @SuppressWarnings("unchecked")
+	public QueryResult<RunPlan>  getRunLineListForRunDate(String runDate,String trainNbr,String rownumstart,String rownumend ) throws Exception{
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("runDate",runDate );
 		reqMap.put("trainNbr",trainNbr );
@@ -85,7 +85,8 @@ public class HighLineCrewService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public QueryResult  getHighlineCrewListForRunDate(String crewDate,String crewType,String trainNbr,String rownumstart,String rownumend ) throws Exception{
+	@SuppressWarnings("unchecked")
+	public QueryResult<HighLineCrewInfo>  getHighlineCrewListForRunDate(String crewDate,String crewType,String trainNbr,String rownumstart,String rownumend ) throws Exception{
 		Map<String,String> reqMap = new HashMap<String,String>();
 		if("all".equals(crewType)){
 			crewType = null;
@@ -136,20 +137,42 @@ public class HighLineCrewService {
 	 * 获取表highline_crew中RecordPeopleOrg字段的值
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<String> getRecordPeopleOrgList(){
 		List<String> listRecordPeopleOrg = new ArrayList<String>();
 		List<Map<String,Object>> list =  baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_RECORD_PEOPLE_ORG, "");
 	    if(list != null && list.size() > 0 ){
-	    	for(Map<String,Object> map : list){
-	    		listRecordPeopleOrg.add(StringUtil.objToStr(map.get("recordPeopleOrg")));
+	    	for(Map<String,Object> map : list){ 
+	    		listRecordPeopleOrg.add(StringUtil.objToStr(map.get("RECORDPEOPLEORG")));
 	    	}
 	    }
 	    return listRecordPeopleOrg;
 	}
 	
+	/**
+	 * 对表highline_crew进行条件分页查询
+	 * @param reqMap
+	 * 主要有这些字段：
+	 * crewStartDate;crewEndDate;crewType;
+       crewBureau;recordPeopleOrg;trainNbr;name;rownumstart;rownumend
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public QueryResult<HighLineCrewInfo>   getHighlineCrewBaseInfoForPage(Map<String,Object> reqMap)throws Exception{
+		return baseDao.selectListForPagingBySql(Constants.HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO_FOR_PAGE, reqMap);
+	}
 	
-	public List<HighLineCrewInfo>   getHighlineCrewBaseInfo(HighLineCrewInfo crewInfo,int startnum,int endnum){
-		return null;
+	/**
+	 * 对表highline_crew进行条件查询
+	 * @param reqMap
+	 * 主要有这些字段：
+	 * crewStartDate;crewEndDate;crewType;
+       crewBureau;recordPeopleOrg;trainNbr;name
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<HighLineCrewInfo> getHighlineCrewBaseInfo(Map<String,Object> reqMap){
+		return baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO, reqMap);
 	}
 	
 }

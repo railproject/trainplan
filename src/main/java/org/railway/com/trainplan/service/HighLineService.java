@@ -57,10 +57,9 @@ public class HighLineService{
 		Map<String,Object> reqMap = new HashMap<String,Object>();
 		reqMap.put("trainCrossList",list );
 		int count = baseDao.insertBySql(Constants.CROSSDAO_ADD_PLAN_CROSS_INFO, reqMap);
-		//System.err.println("addPlanCrossInfo--count==" + count);
 		return count;
 	}
-	
+	@SuppressWarnings("unchecked")
 	public List<BaseTrainInfo> getBaseTrainInfoByParam(Map<String, String> map){
 		return this.baseDao.selectListBySql(Constants.CROSSDAO_GET_BASETRAIN_INFO_FOR_PARAM, map);
 	}
@@ -74,8 +73,8 @@ public class HighLineService{
 		return (PlanCrossInfo)this.baseDao.selectOneBySql(Constants.CROSSDAO_GET_PLANCROSSINFO_FOR_PLANCROSSID, planCrossId);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<HighlineCrossInfo>  createHighLineCross(String startDate){
-		// TODO Auto-generated method stub
 		
 		Map<String, Object> pMap = new HashMap<String, Object>();
 		pMap.put("startDate", startDate);
@@ -91,10 +90,10 @@ public class HighLineService{
 				try {
 					BeanUtils.copyProperties(highlineCrossInfo, pc);  
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				} 
 				tMap.put("planCrossId", pc.getPlanCrossId());
@@ -118,10 +117,10 @@ public class HighLineService{
 					try {
 						BeanUtils.copyProperties(ht, ct);
 					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
 					} catch (InvocationTargetException e) {
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
 					} 
 					tList.add(ht);
@@ -162,6 +161,7 @@ public class HighLineService{
 	 * @param planCrossId
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<HighlineCrossInfo> getHighlineCrossList(String crossStartDate){
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("crossStartDate",crossStartDate );
@@ -173,6 +173,7 @@ public class HighLineService{
 	 * @param highlineCrossId
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<HighLineCrossTrainInfo> getHighlineCrossTrainList(String highlineCrossId){
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("highlineCrossId",highlineCrossId );
@@ -185,6 +186,7 @@ public class HighLineService{
 	 * @param highlineCrossId
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<HighlineCrossTrainBaseInfo> getHighlineCrossTrainBaseInfoList(String highlineCrossId){
 		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_BASEINFO, highlineCrossId);
 	}
@@ -194,6 +196,7 @@ public class HighLineService{
 	 * @param highlineCrossId
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<HighlineTrainRunLine> getHighlineTrainTimeForHighlineCrossId(String highlineCrossId){
 		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_TRAINTIME_FOR_HIGHLINE_CROSSID, highlineCrossId);
 	}

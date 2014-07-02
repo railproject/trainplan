@@ -276,9 +276,37 @@
        select RECORD_PEOPLE_ORG as recordPeopleOrg from HIGHLINE_CREW group by RECORD_PEOPLE_ORG
     </select>
     
+      <select id="getHighlineCrewBaseInfoForPage_COUNT" parameterType="map" resultType="java.lang.Integer">
+    	SELECT COUNT(HIGHLINE_CREW_ID) FROM HIGHLINE_CREW WHERE 1=1 
+   	        <if test="crewStartDate !=null">
+			  AND CREW_DATE >=#{crewStartDate} 
+			</if>
+			<if test="crewEndDate !=null">
+			 AND CREW_DATE &lt;=#{crewEndDate}
+			</if>
+			<if test="crewType != 'all'">
+			  AND CREW_TYPE=#{crewType}
+			</if>
+			<if test="crewBureau != 'all' ">
+			  AND CREW_BUREAU=#{crewBureau}
+			</if>
+			<if test="recordPeopleOrg != 'all' ">
+			  AND  RECORD_PEOPLE_ORG=#{recordPeopleOrg}
+			</if>
+			<if test="crewCross !=null">
+			  AND CREW_CROSS LIKE '%${trainNbr}%'
+			</if>
+			<if test="name !=null">
+			AND (NAME1 LIKE '%${name}%' OR NAME2 LIKE '%${name}%' )
+			</if>
+    </select>
     
-    <select id="getHighlineCrewBaseInfo" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
-    
+    <select id="getHighlineCrewBaseInfoForPage" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
+    	SELECT P.*
+		FROM 
+		(
+			SELECT M.*, ROWNUM NUM
+			FROM (
               SELECT    
 				  HIGHLINE_CREW_ID AS crewHighlineId,
 				  CREW_DATE AS crewDate,
@@ -300,8 +328,11 @@
 				  SUBMIT_TYPE AS submitType
 				
 				FROM HIGHLINE_CREW WHERE 1=1
-				<if test="crewDate !=null and crewDate != '' ">
-				  AND CREW_DATE >=#{crewDate} AND CREW_DATE &lt;=#{crewDate}
+				<if test="crewStartDate !=null">
+				  AND CREW_DATE >=#{crewStartDate} 
+				</if>
+				<if test="crewEndDate !=null">
+				 AND CREW_DATE &lt;=#{crewEndDate}
 				</if>
 				<if test="crewType != 'all'">
 				  AND CREW_TYPE=#{crewType}
@@ -313,7 +344,56 @@
 				  AND  RECORD_PEOPLE_ORG=#{recordPeopleOrg}
 				</if>
 				<if test="crewCross !=null">
-				  AND CREW_CROSS LIKE '%${crewCross}%'
+				  AND CREW_CROSS LIKE '%${trainNbr}%'
+				</if>
+				<if test="name !=null">
+				AND (NAME1 LIKE '%${name}%' OR NAME2 LIKE '%${name}%' )
+				</if>
+			)M
+		) P
+		WHERE P.NUM>=${rownumstart} AND P.NUM &lt;=${rownumend}
+    </select>
+    
+    
+    <select id="getHighlineCrewBaseInfo" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
+              SELECT    
+				  HIGHLINE_CREW_ID AS crewHighlineId,
+				  CREW_DATE AS crewDate,
+				  CREW_BUREAU AS crewBureau,
+				  CREW_TYPE AS crewType,
+				  CREW_CROSS AS crewCross,
+				  CREW_GROUP AS crewGroup,
+				  THROUGH_LINE AS throughLine,
+				  NAME1 AS name1,
+				  TEL1 AS tel1,
+				  IDENTITY1 AS identity1,
+				  NAME2 AS name2,
+				  TEL2 AS tel2,
+				  IDENTITY2 AS  identity2,
+				  NOTE AS note,
+				  RECORD_PEOPLE AS recordPeople,
+				  RECORD_PEOPLE_ORG AS recordPeopleOrg,
+				  RECORD_TIME AS recordTime,
+				  SUBMIT_TYPE AS submitType
+				
+				FROM HIGHLINE_CREW WHERE 1=1
+				<if test="crewStartDate !=null">
+				  AND CREW_DATE >=#{crewStartDate} 
+				</if>
+				<if test="crewEndDate !=null">
+				 AND CREW_DATE &lt;=#{crewEndDate}
+				</if>
+				<if test="crewType != 'all'">
+				  AND CREW_TYPE=#{crewType}
+				</if>
+				<if test="crewBureau != 'all' ">
+				  AND CREW_BUREAU=#{crewBureau}
+				</if>
+				<if test="recordPeopleOrg != 'all' ">
+				  AND  RECORD_PEOPLE_ORG=#{recordPeopleOrg}
+				</if>
+				<if test="crewCross !=null">
+				  AND CREW_CROSS LIKE '%${trainNbr}%'
 				</if>
 				<if test="name !=null">
 				AND (NAME1 LIKE '%${name}%' OR NAME2 LIKE '%${name}%' )
