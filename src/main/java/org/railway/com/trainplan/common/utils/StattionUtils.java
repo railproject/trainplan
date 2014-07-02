@@ -450,12 +450,20 @@ public class StattionUtils {
 				if(tempShortList.size()==0){
 					shortListStaion = currentShort;
 				}
-				
+				//如果shortList中的第一个元素在longList中存在
 				if(indexCurrent == 0){
 					if(tempLongList !=null && tempLongList.size() > 0){
 						result.addAll(tempLongList);
 					}
-					result.add(current);
+					String stationTypeCurrent = current.getStationType();
+					String stationTypeCurrentShort = currentShort.getStationType();
+					//0：表示始发站和终到站
+					if(!"0".equals(stationTypeCurrent) && "0".equals(stationTypeCurrentShort)){
+						result.add(currentShort);
+					}else {
+						result.add(current);	
+					}
+					
 					//print(result);
 					shortListStaion = currentShort;
 					shortList.remove(indexCurrent);
