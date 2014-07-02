@@ -83,19 +83,19 @@ String basePath = request.getContextPath();
               </tr>
             </thead>
             <tbody data-bind="foreach: hightLineCrewRows.rows">
-              <tr>
+              <tr data-bind="style:{color: $parent.currentRowCrewHighlineId() == crewHighlineId ? 'blue':''}">
               	<td><input name="crew_checkbox" type="checkbox" data-bind="value : crewHighlineId"></td>
-                <td data-bind=" text: ($index() + 1)"></td>
-                <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
-                <td data-bind=" text: crewGroup, attr:{title: crewGroup}"></td>
-                <td data-bind=" text: throughLine, attr:{title: throughLine}"></td>
-                <td data-bind=" text: name1, attr:{title: name1}"></td>
-                <td data-bind=" text: tel1, attr:{title: tel1}"></td>
-                <td data-bind=" text: identity1, attr:{title: identity1}"></td>
-                <td data-bind=" text: name2, attr:{title: name2}"></td>
-                <td data-bind=" text: tel2, attr:{title: tel2}"></td>
-                <td data-bind=" text: identity2, attr:{title: identity2}"></td>
-                <td data-bind="html : submitTypeStr"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: crewCross, attr:{title: crewCross}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: crewGroup, attr:{title: crewGroup}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: throughLine, attr:{title: throughLine}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: name1, attr:{title: name1}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: tel1, attr:{title: tel1}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: identity1, attr:{title: identity1}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: name2, attr:{title: name2}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: tel2, attr:{title: tel2}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: identity2, attr:{title: identity2}"></td>
+                <td data-bind="click: $parent.setCurrentRec,html : submitTypeStr"></td>
               </tr>
             </tbody>
           </table>
@@ -134,7 +134,7 @@ String basePath = request.getContextPath();
               </tr>
             </thead>
 			<tbody data-bind="foreach: planTrainRows.rows">
-			  <tr data-bind="attr:{class : isMatch()==1? 'danger':''}">
+			  <tr data-bind="click: $parent.setCurrentTrainPlan,style:{color: $parent.currentRowPlanTrainId() == planTrainId ? 'blue':''}, attr:{class : isMatch()==1? 'label-success':''}">
                 <td style="width:40px;" data-bind=" text: ($index() + 1)"></td>
                 <td style="width:120px;" data-bind=" text: trainNbr, attr:{title: trainNbr}"></td>
                 <td style="width:120px;" data-bind=" text: startStn, attr:{title: startStn}"></td>
