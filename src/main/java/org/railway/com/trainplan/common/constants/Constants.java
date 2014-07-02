@@ -211,7 +211,7 @@ public class Constants {
     //
 	public static final String HIGHLINECREWDAO_GET_RECORD_PEOPLE_ORG = "org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.getRecordPeopleOrgList";
 	//
-	public static final String HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO = "org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.getHighlineCrewBaseInfo";
+	public static final String HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO = "org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.getHighlineCrewBaseInfoForPage";
 	
 	//获取交路字典信息
 	public static final String SQL_ID_CROSSDICT_INFO = "crossDictDao.findCrossDictList";

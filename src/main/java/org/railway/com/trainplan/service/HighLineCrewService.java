@@ -147,9 +147,16 @@ public class HighLineCrewService {
 	    return listRecordPeopleOrg;
 	}
 	
-	
-	public List<HighLineCrewInfo>   getHighlineCrewBaseInfo(HighLineCrewInfo crewInfo,int startnum,int endnum){
-		return null;
+	/**
+	 * 对表highline_crew进行条件分页查询
+	 * @param reqMap
+	 * 主要有这些字段：
+	 * crewStartDate;crewEndDate;crewType;
+       crewBureau;recordPeopleOrg;trainNbr;name;rownumstart;rownumend
+	 * @return
+	 */
+	public QueryResult<HighLineCrewInfo>   getHighlineCrewBaseInfoForPage(Map<String,Object> reqMap)throws Exception{
+		return baseDao.selectListForPagingBySql(Constants.HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO, reqMap);
 	}
 	
 }
