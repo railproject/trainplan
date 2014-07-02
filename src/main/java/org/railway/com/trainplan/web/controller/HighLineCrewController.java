@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.PathParam;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -732,5 +733,318 @@ public class HighLineCrewController {
 		highLineCrewInfo.setSubmitType(0);
 		highLineCrewService.addCrew(highLineCrewInfo);
     }
+    
+    
+    
+    
+    
+
+	/**
+	 * 导出全部乘务计划信息excel
+	 * @param request
+	 * @param response
+     * @author denglj
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/exportAllCrewTypeExcel", method = RequestMethod.GET)
+	public void exportAllCrewTypeExcel(@PathParam("crewType") String crewType,@PathParam("trainNbr") String trainNbr,
+			@PathParam("crewStartDate") String crewStartDate,@PathParam("crewEndDate") String crewEndDate,@PathParam("crewBureau") String crewBureau,
+			@PathParam("recordPeopleOrg") String recordPeopleOrg,@PathParam("name") String name,
+			HttpServletRequest request, HttpServletResponse response){
+		try {
+
+	    	//格式化时间
+			String _crewStartDate = DateUtil.getFormateDayShort(crewStartDate);
+			String _crewEndDate = DateUtil.getFormateDayShort(crewEndDate);
+			
+			Map<String,Object> reqMap = new HashMap<String,Object>();
+			reqMap.put("crewType", crewType);
+			if (trainNbr!=null && !"".equals(trainNbr.trim())) {
+				reqMap.put("crewCross", trainNbr.trim());
+			}
+			if (crewStartDate!=null && !"".equals(crewStartDate.trim())) {
+				reqMap.put("crewStartDate", crewStartDate.trim());
+			}
+			if (crewEndDate!=null && !"".equals(crewEndDate.trim())) {
+				reqMap.put("crewEndDate", crewEndDate.trim());
+			}
+			reqMap.put("crewBureau", crewBureau);
+			reqMap.put("recordPeopleOrg", recordPeopleOrg);
+			if (name!=null && !"".equals(name.trim())) {
+				reqMap.put("name", name.trim());
+			}
+			
+			System.err.println("~~~~~~ exportAllCrewTypeExcel reqMap="+reqMap);
+			
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/vnd.ms-excel");
+			HSSFWorkbook workBook = new HSSFWorkbook();// 创建 一个excel文档对象
+			HSSFSheet sheet = workBook.createSheet("乘务信息_"+_crewStartDate+"~"+_crewEndDate);// 创建一个工作薄对象
+			
+			
+			sheet.setColumnWidth((short)0, (short)2000);
+			sheet.setColumnWidth((short)1, (short)7000);
+			sheet.setColumnWidth((short)2, (short)4000);
+			sheet.setColumnWidth((short)3, (short)7000);
+			sheet.setColumnWidth((short)4, (short)4000);
+			sheet.setColumnWidth((short)5, (short)4500);
+			sheet.setColumnWidth((short)6, (short)4000);
+			sheet.setColumnWidth((short)7, (short)4000);
+			sheet.setColumnWidth((short)8, (short)4500);
+			sheet.setColumnWidth((short)9, (short)4000);
+			sheet.setColumnWidth((short)10, (short)8000);
+			
+			
+			HSSFCellStyle style = workBook.createCellStyle();
+			style.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+			style.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);//左边边框
+			style.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);//顶部边框粗线
+			style.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);//右边边框
+			HSSFDataFormat format = workBook.createDataFormat();
+			style.setDataFormat(format.getFormat("@"));//表文为普通文本
+			style.setWrapText(true);
+			// 设置表文字体
+			HSSFFont tableFont = workBook.createFont();
+			tableFont.setFontHeightInPoints((short) 12); // 设置字体大小
+			tableFont.setFontName("宋体"); // 设置为黑体字
+			style.setFont(tableFont);
+			
+			HSSFCellStyle dataStyle = workBook.createCellStyle();
+			dataStyle.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+			dataStyle.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);//左边边框
+			dataStyle.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);//顶部边框粗线
+			dataStyle.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);//右边边框
+			dataStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
+			
+			
+			HSSFCellStyle styleTitle = workBook.createCellStyle();
+			//设置字体
+			HSSFFont font = workBook.createFont();//创建字体对象
+			font.setFontHeightInPoints((short)12);//设置字体大小
+			font.setFontName("黑体");//设置为黑体字
+			styleTitle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);//垂直居中  
+			styleTitle.setAlignment(HSSFCellStyle.ALIGN_CENTER);//水平居中
+			styleTitle.setFont(font);//将字体加入到样式对象
+			
+			
+
+			HSSFRow row0 = sheet.createRow(0);// 创建一个行对象
+			row0.setHeightInPoints(23);
+			// 标题
+			HSSFCell titleCell = row0.createCell((short)0);
+			titleCell.setCellStyle(styleTitle);
+			titleCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			titleCell.setCellValue(_crewStartDate+"~"+_crewEndDate+"乘务计划");
+			
+			
+			
+			
+			
+			HSSFRow row1 = sheet.createRow(1);// 创建一个行对象
+			row1.setHeightInPoints(23);
+			// 序号
+			HSSFCell indexCell = row1.createCell((short)0);
+			indexCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			indexCell.setCellStyle(styleTitle);
+			indexCell.setCellValue("序号");
+			// 乘务交路
+			HSSFCell crewCrossCell = row1.createCell((short)1);
+			crewCrossCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			crewCrossCell.setCellStyle(styleTitle);
+			crewCrossCell.setCellValue("乘务交路");
+			// 车队组号
+			HSSFCell crewGroupCell = row1.createCell((short)2);
+			crewGroupCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			crewGroupCell.setCellStyle(styleTitle);
+			crewGroupCell.setCellValue("车队组号");
+			// 经由铁路线
+			HSSFCell throughLineCell = row1.createCell((short)3);
+			throughLineCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			throughLineCell.setCellStyle(styleTitle);
+			throughLineCell.setCellValue("经由铁路线");
+			// 乘务类型
+			HSSFCell crewTypeCell = row1.createCell((short)4);
+			crewTypeCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			crewTypeCell.setCellStyle(styleTitle);
+			crewTypeCell.setCellValue("乘务类型");
+			// 司机1
+			HSSFCell sj1Cell = row1.createCell((short)5);
+			sj1Cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			sj1Cell.setCellStyle(styleTitle);
+			sj1Cell.setCellValue("乘务员1");//乘务类型（1车长、2司机、3机械师）
+			HSSFCell blankCell = row1.createCell((short)6);
+			HSSFCell blankCell1 = row1.createCell((short)7);
+			// 司机2
+			HSSFCell sj2Cell = row1.createCell((short)8);
+			sj2Cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			sj2Cell.setCellStyle(styleTitle);
+			sj2Cell.setCellValue("乘务员2");//乘务类型（1车长、2司机、3机械师）
+			HSSFCell blankCell8 = row1.createCell((short)9);
+			HSSFCell blankCell9 = row1.createCell((short)10);
+			
+			// 备注
+			HSSFCell noteCell = row1.createCell((short)11);
+			noteCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			noteCell.setCellStyle(styleTitle);
+			noteCell.setCellValue("备注");
+			
+			
+			
+
+			HSSFRow row2 = sheet.createRow(2);// 创建一个行对象
+			row2.setHeightInPoints(23);
+			HSSFCell blankRowCell0 = row2.createCell((short)0);
+			HSSFCell blankRowCell1 = row2.createCell((short)1);
+			HSSFCell blankRowCell2 = row2.createCell((short)2);
+			HSSFCell blankRowCell3 = row2.createCell((short)3);
+			HSSFCell blankRowCell4 = row2.createCell((short)4);
+			//姓名1
+			HSSFCell name1Cell = row2.createCell((short)5);
+			name1Cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			name1Cell.setCellStyle(styleTitle);
+			name1Cell.setCellValue("姓名");
+			//电话1
+			HSSFCell tel1Cell = row2.createCell((short)6);
+			tel1Cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			tel1Cell.setCellStyle(styleTitle);
+			tel1Cell.setCellValue("电话");
+			//政治面貌1
+			HSSFCell identity1Cell = row2.createCell((short)7);
+			identity1Cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			identity1Cell.setCellStyle(styleTitle);
+			identity1Cell.setCellValue("政治面貌");
+			//姓名2
+			HSSFCell name2Cell = row2.createCell((short)8);
+			name2Cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			name2Cell.setCellStyle(styleTitle);
+			name2Cell.setCellValue("姓名");
+			//电话2
+			HSSFCell tel2Cell = row2.createCell((short)9);
+			tel2Cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			tel2Cell.setCellStyle(styleTitle);
+			tel2Cell.setCellValue("电话");
+			//政治面貌2
+			HSSFCell identity2Cell = row2.createCell((short)10);
+			identity2Cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			identity2Cell.setCellStyle(styleTitle);
+			identity2Cell.setCellValue("政治面貌");
+			HSSFCell blankRowCell10 = row2.createCell((short)11);
+
+			
+			//查询乘务上报信息
+			List<HighLineCrewInfo> list = highLineCrewService.getHighlineCrewBaseInfo(reqMap);
+			//循环生成列表
+			if(list!=null && list.size() > 0) {
+				for (int i=0;i<list.size();i++) {
+					HighLineCrewInfo obj = list.get(i);
+					HSSFRow rowX = sheet.createRow(3+i);// 创建一个行对象
+					rowX.setHeightInPoints(23);
+					
+					// 序号
+					HSSFCell indexCellFor = rowX.createCell((short)0);
+					indexCellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					indexCellFor.setCellStyle(styleTitle);
+					indexCellFor.setCellValue(i+1);
+
+					// 乘务交路
+					HSSFCell crewCrossCellFor = rowX.createCell((short)1);
+					crewCrossCellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					crewCrossCellFor.setCellStyle(styleTitle);
+					crewCrossCellFor.setCellValue(obj.getCrewCross());
+					// 车队组号
+					HSSFCell crewGroupCellFor = rowX.createCell((short)2);
+					crewGroupCellFor.setCellStyle(styleTitle);
+					crewGroupCellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					crewGroupCellFor.setCellValue(obj.getCrewGroup());
+					// 经由铁路线
+					HSSFCell throughLineCellFor = rowX.createCell((short)3);
+					throughLineCellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					throughLineCellFor.setCellStyle(styleTitle);
+					throughLineCellFor.setCellValue(obj.getThroughLine());
+					// 乘务类型	1车长、2司机、3机械师）
+					HSSFCell cerwTypeCellFor = rowX.createCell((short)4);
+					cerwTypeCellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					cerwTypeCellFor.setCellStyle(styleTitle);
+					if ("1".equals(obj.getCrewType())) {
+						cerwTypeCellFor.setCellValue("车长");
+					}else if ("2".equals(obj.getCrewType())) {
+						cerwTypeCellFor.setCellValue("司机");
+					}else if ("3".equals(obj.getCrewType())) {
+						cerwTypeCellFor.setCellValue("机械师");
+					}
+					//姓名1
+					HSSFCell name1CellFor = rowX.createCell((short)5);
+					name1CellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					name1CellFor.setCellStyle(styleTitle);
+					name1CellFor.setCellValue(obj.getName1());
+					//电话1
+					HSSFCell tel1CellFor = rowX.createCell((short)6);
+					tel1CellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					tel1CellFor.setCellStyle(styleTitle);
+					tel1CellFor.setCellValue(obj.getTel1());
+					//政治面貌1
+					HSSFCell identity1CellFor = rowX.createCell((short)7);
+					identity1CellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					identity1CellFor.setCellStyle(styleTitle);
+					identity1CellFor.setCellValue(obj.getIdentity1());
+					//姓名2
+					HSSFCell name2CellFor = rowX.createCell((short)8);
+					name2CellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					name2CellFor.setCellStyle(styleTitle);
+					name2CellFor.setCellValue(obj.getName2());
+					//电话2
+					HSSFCell tel2CellFor = rowX.createCell((short)9);
+					tel2CellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					tel2CellFor.setCellStyle(styleTitle);
+					tel2CellFor.setCellValue(obj.getTel2());
+					//政治面貌2
+					HSSFCell identity2CellFor = rowX.createCell((short)10);
+					identity2CellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					identity2CellFor.setCellStyle(styleTitle);
+					identity2CellFor.setCellValue(obj.getIdentity2());
+					//备注
+					HSSFCell noteCellFor = rowX.createCell((short)11);
+					noteCellFor.setCellType(HSSFCell.CELL_TYPE_STRING);
+					noteCellFor.setCellStyle(styleTitle);
+					noteCellFor.setCellValue(obj.getNote());
+				}
+			}
+			
+			
+			//行列合并	四个参数分别是：起始行，起始列，结束行，结束列
+			sheet.addMergedRegion(new Region((short)0, (short)0, (short)0, (short)10)); //标题  合并1行11列
+			sheet.addMergedRegion(new Region((short)1, (short)0, (short)2, (short)0)); //序号  合并2行1列
+			sheet.addMergedRegion(new Region((short)1, (short)1, (short)2, (short)1)); //乘务交路  合并2行1列
+			sheet.addMergedRegion(new Region((short)1, (short)2, (short)2, (short)2)); //车队组号  合并2行1列
+			sheet.addMergedRegion(new Region((short)1, (short)3, (short)2, (short)3)); //经由铁路线  合并2行1列
+			sheet.addMergedRegion(new Region((short)1, (short)4, (short)2, (short)4)); //乘务类型  合并2行1列
+			sheet.addMergedRegion(new Region((short)1, (short)5, (short)1, (short)7)); //司机1  合并1行3列
+			sheet.addMergedRegion(new Region((short)1, (short)8, (short)1, (short)10)); //司机2  合并1行3列
+			sheet.addMergedRegion(new Region((short)1, (short)11, (short)2, (short)11)); //备注  合并2行1列
+			
+			
+			
+			String filename = this.encodeFilename("乘务信息_"+_crewStartDate+"~"+_crewEndDate+".xls", request);
+			response.setHeader("Content-disposition", "attachment;filename=" + filename);
+			OutputStream ouputStream = null;
+			try {
+				ouputStream = response.getOutputStream();
+				workBook.write(ouputStream);
+				ouputStream.flush();
+				ouputStream.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (ouputStream!=null) {
+					ouputStream.close();
+				}
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+				
+	}
 	
 }

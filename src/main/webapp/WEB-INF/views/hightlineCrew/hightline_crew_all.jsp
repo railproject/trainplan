@@ -98,8 +98,9 @@ String basePath = request.getContextPath();
                 <th rowspan="2" class="text-center" style="vertical-align: middle">乘务交路</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">车队组号</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
-                <th colspan="3" class="text-center" style="vertical-align: middle">司机1</th>
-                <th colspan="3" class="text-center" style="vertical-align: middle">司机2</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">乘务类型</th>
+                <th colspan="3" class="text-center" style="vertical-align: middle">乘务员1</th>
+                <th colspan="3" class="text-center" style="vertical-align: middle">乘务员2</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle;width:80px">提交<br>状态</th>
               </tr>
               <tr>
@@ -117,6 +118,7 @@ String basePath = request.getContextPath();
                 <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
                 <td data-bind=" text: crewGroup, attr:{title: crewGroup}"></td>
                 <td data-bind=" text: throughLine, attr:{title: throughLine}"></td>
+                <td data-bind=" text: crewType=='1'?'车长:(crewType==2?'司机':(crewType==3?'机械师':''))'"></td>
                 <td data-bind=" text: name1, attr:{title: name1}"></td>
                 <td data-bind=" text: tel1, attr:{title: tel1}"></td>
                 <td data-bind=" text: identity1, attr:{title: identity1}"></td>
