@@ -74,4 +74,11 @@ public class Station {
 		return true;
 	} 
 	
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.getStnName() + "|" + this.getDptTime();
+	}
+	
 }
