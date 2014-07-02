@@ -129,9 +129,9 @@ var HightLineCrewSjPage = function () {
 	function PlanTrainRowModel(palnTrainObj) {
 		this.trainNbr = ko.observable(palnTrainObj.trainNbr);
 		this.startStn = ko.observable(palnTrainObj.startStn);
-		this.startTimeStr = ko.observable(moment(palnTrainObj.startTimeStr).format("YYMMDD HH:mm"));
+		this.startTimeStr = ko.observable(moment(palnTrainObj.startTimeStr).format("MMDD HH:mm"));
 		this.endStn = ko.observable(palnTrainObj.endStn);
-		this.endTimeStr = ko.observable(moment(palnTrainObj.endTimeStr).format("YYMMDD HH:mm"));
+		this.endTimeStr = ko.observable(moment(palnTrainObj.endTimeStr).format("MMDD HH:mm"));
 		this.isMatch = ko.observable(palnTrainObj.isMatch);	//是否已上报机械师乘务计划	1：真 0：假
 	};
 	

@@ -67,7 +67,7 @@ String basePath = request.getContextPath();
                 <th rowspan="2" style="width:5%;"></th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px;">序号</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">乘务交路</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">车队组号</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">乘务组编号</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
                 <th colspan="3" class="text-center" style="vertical-align: middle">车长1</th>
                 <th colspan="3" class="text-center" style="vertical-align: middle">车长2</th>
@@ -197,7 +197,7 @@ String basePath = request.getContextPath();
             </div>
           </div>
           <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">车队组号：</label>
+            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">乘务组编号：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
               <input id="add_crewGroup" type="text" class="form-control" data-bind="value : crewGroup">
                </div>
