@@ -18,20 +18,63 @@ String basePath = request.getContextPath();
 
 <div class="row" style="padding-top:10px;padding-bottom:10px;">
   <form class="form-horizontal" role="form">
-    <div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
-      <label for="exampleInputEmail2" class="control-label pull-left">计划日期:&nbsp;</label>
-      <div class="pull-left">
-        <input id="crew_input_rundate" type="text" class="form-control" style="width:100px;" placeholder="" data-bind="value: searchModle().runDate">
-      </div>
-    </div>
-    <div class="form-group" style="float:left;margin-left:30px;margin-bottom:0;">
-      <label for="exampleInputEmail2" class="control-label pull-left"> 车次:&nbsp;</label>
-      <div class="pull-left">
-        <input id="crew_input_trainNbr" type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().trainNbr">
-      </div>
-    </div>
-    <a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
-    <button type="button" class="btn btn-success" data-bind="click : exportExcel" style="float:left;margin-left:5px;margin-bottom:0;"><i class="fa fa-sign-out"></i>导出EXCEL</button>
+  	<div class="row">
+  		<div class="pull-left">
+	  		<div class="row">
+	  			<div class="row" style="width: 100%; margin-top: 5px;">
+			  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
+			  			<label for="exampleInputEmail2" class="control-label pull-left">开始日期:&nbsp;</label>
+					    <div class="pull-left">
+					        <input id="crew_input_startDate" type="text" class="form-control" style="width:100px;" placeholder="">
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;截至日期:&nbsp;</label>
+					    <div class="pull-left">
+					        <input id="crew_input_endDate" type="text" class="form-control" style="width:100px;" placeholder="">
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;乘务类型:&nbsp;</label>
+					    <div class="pull-left">
+					    	<select class="form-control" style="width: 110px;display:inline-block;"
+								 data-bind="options: [{'value': 'all', 'text': ''},{'value': '1', 'text': '车长'},{'value': '2', 'text': '司机'},{'value': '3', 'text': '机械师'}], value: searchModle().crewTypeOption, optionsText: 'text'">
+							</select>
+						</div>
+						<label for="exampleInputEmail3" class="control-label pull-left">&nbsp;&nbsp;路局:</label>
+						<div class="pull-left" style="margin-left: 5px; ">
+							<select style="width: 80px" class="form-control" data-bind="options:searchModle().bureauSelect, value: searchModle().bureauOption, optionsText: 'text'"></select>
+						</div>
+			  		</div>
+			  	</div>
+			  	<div class="row" style="width: 100%; margin-top: 5px;">
+			  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
+			  			
+						<label for="exampleInputEmail2" class="control-label pull-left">部门:&nbsp;</label>
+					    <div class="pull-left">
+					        <select class="form-control" style="width:260px" data-bind="options:searchModle().orgSelect, value: searchModle().orgOption, optionsText: 'text'"></select>
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;车次:&nbsp;</label>
+					    <div class="pull-left">
+					        <input id="crew_input_trainNbr" type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().trainNbr">
+					    </div>
+					    <label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;乘务员姓名:&nbsp;</label>
+					    <div class="pull-left">
+					        <input id="crew_input_crewPeopleName" type="text" class="form-control" style="width:110px;" data-bind="value: searchModle().crewPeopleName">
+					    </div>
+			  		</div>
+			  	</div>
+			  	
+			  	
+			  	
+	  		</div>
+  		</div>
+  		<div style="float:left;margin-left:20px;margin-top: 25px;margin-bottom:0;vertical-align: middle">
+  			<a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
+    		<button type="button" class="btn btn-success" data-bind="click : exportExcel" style="float:left;margin-left:5px;margin-bottom:0;"><i class="fa fa-sign-out"></i>导出EXCEL</button>
+  			
+  		</div>
+  	</div>
+  	
+  	
+  	
+  	
   </form>
 </div>
 
@@ -84,6 +127,7 @@ String basePath = request.getContextPath();
               </tr>
             </tbody>
           </table>
+			<div data-bind="template: { name: 'tablefooter-short-template', foreach: hightLineCrewRows }" style="margin-bottom: 5px"></div>
         </div>
       </div>
       <!--panel-body--> 
@@ -131,5 +175,24 @@ String basePath = request.getContextPath();
 <script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
 <script type="text/javascript"  src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script type="text/javascript"  src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.all.js"></script> 
+ <script type="text/html" id="tablefooter-short-template"> 
+  <table style="width:100%;height:20px;">
+    <tr style="width:100%;height:20px;">
+     <td style="width:60%;height:20px;">
+		<div style="pull-left;">
+  			<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 		
+		</div>						 
+  	 </td>
+     <td  align="right" style="width:40%;padding:0px;pading-bottom:-14">   
+		<div style="pull-right;">
+			<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
+	    	<input type="text"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
+			<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
+       		</ul> 
+	 	</div>
+     </td >
+  </tr>
+</table> 
+</script>
 </body>
 </html>
