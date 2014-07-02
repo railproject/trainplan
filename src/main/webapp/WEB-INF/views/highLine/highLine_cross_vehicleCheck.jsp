@@ -100,8 +100,8 @@ var currentUserBureau = "";
 								<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 							</div>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
-						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">提交动车交路计划</a>
-						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: checkHighLineCrosses">审核动车交路计划</a>
+						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">保存</a>
+						  <a type="button"  style="margin-left:20px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: checkHighLineCrosses">提交</a>
 						  
 						 </div>
 				        <!--col-md-3 col-sm-4 col-xs-4-->

@@ -22,7 +22,7 @@ String basePath = request.getContextPath();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>既有图定开行计划</title>
+<title>高铁车底计划报告</title>
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -85,7 +85,7 @@ var currentUserBureau = "";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">既有图定开行计划</a></li>
+		<li><a href="#">高铁车底计划报告</a></li>
 	</ol>  
 	    <div class="row" style="margin: 10px 10px 10px 10px;">   
 		    <!--分栏框开始-->
@@ -100,7 +100,7 @@ var currentUserBureau = "";
 								<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 							</div>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
-						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">提交动车交路计划</a>
+						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">提交</a>
 						  
 						 </div>
 				        <!--col-md-3 col-sm-4 col-xs-4-->

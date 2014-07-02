@@ -100,8 +100,11 @@ var currentUserBureau = "";
 								<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 							</div>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
-						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载图定</a>
-						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整交路</a>
+						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >清空</a>
+						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载</a>
+						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整</a>
+						  <a type="button"  style="margin-left:20px" class="btn btn-success" data-toggle="modal" data-target="#" >提交</a>
+						  
 						  
 						 </div>
 				        <!--col-md-3 col-sm-4 col-xs-4-->
