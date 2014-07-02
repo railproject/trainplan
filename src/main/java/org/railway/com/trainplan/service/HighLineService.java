@@ -73,6 +73,7 @@ public class HighLineService{
 		return (PlanCrossInfo)this.baseDao.selectOneBySql(Constants.CROSSDAO_GET_PLANCROSSINFO_FOR_PLANCROSSID, planCrossId);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<HighlineCrossInfo>  createHighLineCross(String startDate){
 		
 		Map<String, Object> pMap = new HashMap<String, Object>();

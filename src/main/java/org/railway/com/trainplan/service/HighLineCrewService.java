@@ -142,8 +142,8 @@ public class HighLineCrewService {
 		List<String> listRecordPeopleOrg = new ArrayList<String>();
 		List<Map<String,Object>> list =  baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_RECORD_PEOPLE_ORG, "");
 	    if(list != null && list.size() > 0 ){
-	    	for(Map<String,Object> map : list){
-	    		listRecordPeopleOrg.add(StringUtil.objToStr(map.get("recordPeopleOrg")));
+	    	for(Map<String,Object> map : list){ 
+	    		listRecordPeopleOrg.add(StringUtil.objToStr(map.get("RECORDPEOPLEORG")));
 	    	}
 	    }
 	    return listRecordPeopleOrg;
