@@ -704,6 +704,16 @@ public class HighLineCrewController {
 		Result result = new Result(); 
 	    try{
 	    	logger.debug("getHighlineCrewBaseInfoForPag~~~reqMap==" + reqMap);
+	    	String crewStartDate = StringUtil.objToStr(reqMap.get("crewStartDate"));
+	    	String crewEndDate = StringUtil.objToStr(reqMap.get("crewEndDate"));
+	    	if(crewStartDate != null && !"".equals(crewStartDate)){
+	    		crewStartDate = DateUtil.getFormateDayShort(crewStartDate);
+	    		reqMap.put("crewStartDate", crewStartDate);
+	    	}
+	    	if(crewEndDate != null && !"".equals(crewEndDate)){
+	    		crewEndDate = DateUtil.getFormateDayShort(crewEndDate);
+	    		reqMap.put("crewEndDate", crewEndDate);
+	    	}
 	    	QueryResult<HighLineCrewInfo> queryResult = highLineCrewService.getHighlineCrewBaseInfoForPage(reqMap);
 	    	PagingResult page = new PagingResult(queryResult.getTotal(), queryResult.getRows());
 	    	result.setData(page);

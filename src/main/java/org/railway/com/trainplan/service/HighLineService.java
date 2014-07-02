@@ -103,13 +103,13 @@ public class HighLineService{
 					PlanTrain ct = trains.get(i);
 					if(ct.getTrainSort() == 1){ 
 						highlineCrossInfo.setCrossStartDate(DateUtil.format(ct.getStartTime(), "yyyyMMdd"));
-						highlineCrossInfo.setStartStn(ct.getStartStn());
+						highlineCrossInfo.setCrossStartStn(ct.getStartStn());
 						// 如果只有第一个车的时候默认设置为第一个车的终到站和时间
 						highlineCrossInfo.setCrossEndDate(DateUtil.format(ct.getEndTime(), "yyyyMMdd"));
 						highlineCrossInfo.setEndStn(ct.getEndStn()); 
 					}else if(i == trains.size() - 1){ 
 						highlineCrossInfo.setCrossEndDate(DateUtil.format(ct.getEndTime(), "yyyyMMdd"));
-						highlineCrossInfo.setEndStn(ct.getEndStn()); 
+						highlineCrossInfo.setCrossEndStn(ct.getEndStn()); 
 					}
 					HighLineCrossTrainInfo ht = new HighLineCrossTrainInfo();
 					ht.setHighLineCrossId(highlineCrossInfo.getHighLineCrossId());
@@ -130,9 +130,10 @@ public class HighLineService{
 		}   
 		Map<String, Object> hMap = new HashMap<String, Object>();
 		hMap.put("hList", hList);
-		this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS, hMap);
-		this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS_TRAIN, tList);
-		
+		if(hList.size() > 0){
+			this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS, hMap);
+			this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS_TRAIN, tList);
+		} 
 		return hList;
 		//insert to database 
 	}

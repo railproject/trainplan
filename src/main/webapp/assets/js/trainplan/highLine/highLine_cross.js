@@ -212,11 +212,11 @@ function CrossModel() {
 						 self.selectedHighLineCrossRows.remove(currentCorss);
 						 self.acvtiveHighLineCrosses.push(cross); 
 					} else {
-						showErrorDialog("获取运行规律失败");
+						showErrorDialog("没有加载的交路数据");
 					} 
 				},
 				error : function() {
-					showErrorDialog("接口调用失败");
+					showErrorDialog("加载的交路数据失败");
 				},
 				complete : function(){
 					commonJsScreenUnLock();
@@ -1518,8 +1518,8 @@ function CrossRow(data) {
 	
 	self.unitCreateFlag = ko.observable(data.unitCreateFlag);
 	
-	self.startStn = ko.observable(data.startStn);
-	self.endStn = ko.observable(data.endStn);
+	self.startStn = ko.observable(data.crossStartStn);
+	self.endStn = ko.observable(data.crossEndStn);
 	//方案ID
 	self.chartId = ko.observable(data.chartId);
 	self.chartName = ko.observable(data.chartName);

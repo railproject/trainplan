@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.HighLineCrewInfo;
 import org.railway.com.trainplan.entity.QueryResult;
@@ -172,6 +173,17 @@ public class HighLineCrewService {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<HighLineCrewInfo> getHighlineCrewBaseInfo(Map<String,Object> reqMap){
+		String crewStartDate = StringUtil.objToStr(reqMap.get("crewStartDate"));
+    	String crewEndDate = StringUtil.objToStr(reqMap.get("crewEndDate"));
+		if(crewStartDate != null && !"".equals(crewStartDate)){
+			//将日期格式yyyy-MM-dd转换成yyyyMMdd格式
+    		crewStartDate = DateUtil.getFormateDayShort(crewStartDate);
+    		reqMap.put("crewStartDate", crewStartDate);
+    	}
+    	if(crewEndDate != null && !"".equals(crewEndDate)){
+    		crewEndDate = DateUtil.getFormateDayShort(crewEndDate);
+    		reqMap.put("crewEndDate", crewEndDate);
+    	}
 		return baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO, reqMap);
 	}
 	
