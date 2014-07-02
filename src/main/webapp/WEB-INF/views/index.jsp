@@ -144,7 +144,7 @@
 			          <li><a  target="contentFrame"><i class="fa fa-external-link"></i>车底计划<i class="fa fa-caret-right pull-right"></i></a>
 				      		<ul class="third-menu" style="width:200px">
 		                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/highLine/vehicleCheck" target="contentFrame" ><i class="fa fa-external-link"></i>高铁车底计划审核</a></li>
-                            		<li style="width: 100%;"><a style="width: 100%;" href="${ctx}/highLine/vehicle" target=""><i class="fa fa-external-link"></i>高铁车底计划报告</a></li>
+                            		<li style="width: 100%;"><a style="width: 100%;" href="${ctx}/highLine/vehicle" target="contentFrame"><i class="fa fa-external-link"></i>高铁车底计划报告</a></li>
 		                        
 				            </ul>
 			          </li>
