@@ -130,9 +130,10 @@ public class HighLineService{
 		}   
 		Map<String, Object> hMap = new HashMap<String, Object>();
 		hMap.put("hList", hList);
-		this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS, hMap);
-		this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS_TRAIN, tList);
-		
+		if(hList.size() > 0){
+			this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS, hMap);
+			this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS_TRAIN, tList);
+		} 
 		return hList;
 		//insert to database 
 	}

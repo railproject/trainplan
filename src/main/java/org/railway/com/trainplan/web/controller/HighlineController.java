@@ -70,8 +70,7 @@ public class HighlineController {
 					 List<HighlineCrossInfo> list = highLineService.createHighLineCross(startDate); 
 					 result.setData(list);
 				 } 
-			 }catch(Exception e){
-				 e.printStackTrace();
+			 }catch(Exception e){ 
 				 logger.error("checkCorssInfo error==" + e.getMessage());
 				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
