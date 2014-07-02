@@ -277,7 +277,7 @@
     </select>
     
       <select id="getHighlineCrewBaseInfoForPage_COUNT" parameterType="map" resultType="java.lang.Integer">
-    	SELECT COUNT(HIGHLINE_CREW_ID) FROM HIGHLINE_CREW WHERE 1=1 
+    	SELECT COUNT(HIGHLINE_CREW_ID) FROM HIGHLINE_CREW WHERE 1=1 AND SUBMIT_TYPE = 1
    	        <if test="crewStartDate !=null and crewStartDate !='' ">
 			  AND CREW_DATE >=#{crewStartDate} 
 			</if>
@@ -327,7 +327,7 @@
 				  RECORD_TIME AS recordTime,
 				  SUBMIT_TYPE AS submitType
 				
-				FROM HIGHLINE_CREW WHERE 1=1
+				FROM HIGHLINE_CREW WHERE 1=1  AND SUBMIT_TYPE = 1
 				<if test="crewStartDate !=null and crewStartDate !='' ">
 				  AND CREW_DATE >=#{crewStartDate} 
 				</if>
@@ -376,7 +376,7 @@
 				  RECORD_TIME AS recordTime,
 				  SUBMIT_TYPE AS submitType
 				
-				FROM HIGHLINE_CREW WHERE 1=1
+				FROM HIGHLINE_CREW WHERE 1=1  AND SUBMIT_TYPE = 1
 				<if test="crewStartDate !=null and crewStartDate != ''">
 				  AND CREW_DATE >=#{crewStartDate} 
 				</if>
