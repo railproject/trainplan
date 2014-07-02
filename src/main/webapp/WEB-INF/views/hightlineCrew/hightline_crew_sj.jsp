@@ -67,7 +67,7 @@ String basePath = request.getContextPath();
                 <th rowspan="2" style="width:5%;"></th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px;">序号</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">乘务交路</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">车队组号</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">乘务组编号</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
                 <th colspan="3" class="text-center" style="vertical-align: middle">司机1</th>
                 <th colspan="3" class="text-center" style="vertical-align: middle">司机2</th>
@@ -83,19 +83,19 @@ String basePath = request.getContextPath();
               </tr>
             </thead>
             <tbody data-bind="foreach: hightLineCrewRows.rows">
-              <tr>
+              <tr data-bind="style:{color: $parent.currentRowCrewHighlineId() == crewHighlineId ? 'blue':''}">
               	<td><input name="crew_checkbox" type="checkbox" data-bind="value : crewHighlineId"></td>
-                <td data-bind=" text: ($index() + 1)"></td>
-                <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
-                <td data-bind=" text: crewGroup, attr:{title: crewGroup}"></td>
-                <td data-bind=" text: throughLine, attr:{title: throughLine}"></td>
-                <td data-bind=" text: name1, attr:{title: name1}"></td>
-                <td data-bind=" text: tel1, attr:{title: tel1}"></td>
-                <td data-bind=" text: identity1, attr:{title: identity1}"></td>
-                <td data-bind=" text: name2, attr:{title: name2}"></td>
-                <td data-bind=" text: tel2, attr:{title: tel2}"></td>
-                <td data-bind=" text: identity2, attr:{title: identity2}"></td>
-                <td data-bind="html : submitTypeStr"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: crewCross, attr:{title: crewCross}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: crewGroup, attr:{title: crewGroup}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: throughLine, attr:{title: throughLine}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: name1, attr:{title: name1}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: tel1, attr:{title: tel1}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: identity1, attr:{title: identity1}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: name2, attr:{title: name2}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: tel2, attr:{title: tel2}"></td>
+                <td data-bind="click: $parent.setCurrentRec, text: identity2, attr:{title: identity2}"></td>
+                <td data-bind="click: $parent.setCurrentRec,html : submitTypeStr"></td>
               </tr>
             </tbody>
           </table>
@@ -134,7 +134,7 @@ String basePath = request.getContextPath();
               </tr>
             </thead>
 			<tbody data-bind="foreach: planTrainRows.rows">
-			  <tr data-bind="attr:{class : isMatch()==1? 'danger':''}">
+			  <tr data-bind="click: $parent.setCurrentTrainPlan,style:{color: $parent.currentRowPlanTrainId() == planTrainId ? 'blue':''}, attr:{class : isMatch()==1? 'label-success':''}">
                 <td style="width:40px;" data-bind=" text: ($index() + 1)"></td>
                 <td style="width:120px;" data-bind=" text: trainNbr, attr:{title: trainNbr}"></td>
                 <td style="width:120px;" data-bind=" text: startStn, attr:{title: startStn}"></td>
@@ -197,7 +197,7 @@ String basePath = request.getContextPath();
             </div>
           </div>
           <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">车队组号：</label>
+            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">乘务组编号：</label>
             <div class="col-md-7 col-sm-7 col-xs-6">
               <input id="add_crewGroup" type="text" class="form-control" data-bind="value : crewGroup">
                </div>

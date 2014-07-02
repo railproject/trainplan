@@ -127,11 +127,12 @@ var HightLineCrewSjPage = function () {
 	 * @param palnTrainObj
 	 */
 	function PlanTrainRowModel(palnTrainObj) {
+		this.planTrainId = ko.observable(palnTrainObj.planTrainId);
 		this.trainNbr = ko.observable(palnTrainObj.trainNbr);
 		this.startStn = ko.observable(palnTrainObj.startStn);
-		this.startTimeStr = ko.observable(moment(palnTrainObj.startTimeStr).format("YYMMDD HH:mm"));
+		this.startTimeStr = ko.observable(moment(palnTrainObj.startTimeStr).format("MMDD HH:mm"));
 		this.endStn = ko.observable(palnTrainObj.endStn);
-		this.endTimeStr = ko.observable(moment(palnTrainObj.endTimeStr).format("YYMMDD HH:mm"));
+		this.endTimeStr = ko.observable(moment(palnTrainObj.endTimeStr).format("MMDD HH:mm"));
 		this.isMatch = ko.observable(palnTrainObj.isMatch);	//是否已上报车长乘务计划	1：真 0：假
 	};
 	
@@ -152,6 +153,9 @@ var HightLineCrewSjPage = function () {
 		_self.hightLineCrewModelTitle = ko.observable();	//用于乘务计划新增、修改窗口标题
 		_self.hightLineCrewSaveFlag = ko.observable();		//用于乘务计划新增、修改标识
 		
+		_self.currentRowCrewHighlineId = ko.observable();//列表行id
+		_self.currentRowPlanTrainId = ko.observable();//开行计划列表行id
+		
 		
 		/**
 		 * 初始化查询条件
@@ -166,6 +170,8 @@ var HightLineCrewSjPage = function () {
 		 */
 		_self.queryList = function(){
 			commonJsScreenLock(2);
+			_self.currentRowCrewHighlineId("");
+			_self.currentRowPlanTrainId("");
 			//1.查询开行计划
 			_self.planTrainRows.loadRows();	//loadRows为分页组件中方法
 
@@ -187,6 +193,7 @@ var HightLineCrewSjPage = function () {
 			for(var i=0; i<_self.planTrainRows.rows().length;i++) {
 				var _trainNbr = _self.planTrainRows.rows()[i].trainNbr();
 				for(var j=0; j<_self.hightLineCrewRows.rows().length;j++) {
+					_self.planTrainRows.rows()[i].isMatch("0");//恢复匹配颜色默认值;
 					var crewCrossArray = _self.hightLineCrewRows.rows()[j].crewCross.split("-");
 					
 					if($.inArray(_trainNbr, crewCrossArray) > -1) {
@@ -630,6 +637,32 @@ var HightLineCrewSjPage = function () {
             });  
 	        return true;
 		};
+		
+		
+
+		/**
+		 * 乘务列表行点击事件
+		 */
+		_self.setCurrentRec = function(row) {
+			_self.currentRowCrewHighlineId(row.crewHighlineId);
+		};
+		
+		
+		/**
+		 * 列车列表行点击事件
+		 */
+		_self.setCurrentTrainPlan = function(row) {
+			_self.currentRowPlanTrainId(row.planTrainId);
+		};
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 	};
