@@ -271,7 +271,7 @@ $(function(){
 		锁屏modal
 	 */
 	var _common_div_screen_modal = ""
-	+ "<div class='modal fade active' id='common_div_screen_modal' tabindex='-1' data-backdrop='static' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>"
+	+ "<div class='modal fade active' id='common_div_screen_modal' tabindex='-1'  style='z-index:19999' data-backdrop='static' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>"
 	+ "	<div class='modal-dialog'>"
 	+ "	<div class='modal-content'>"
 	+ "	<!-- <div class='modal-header'></div>-->"

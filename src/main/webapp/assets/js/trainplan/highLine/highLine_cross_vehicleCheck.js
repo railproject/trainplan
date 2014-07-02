@@ -137,7 +137,7 @@ function CrossModel() {
 				showErrorDialog("不能重复审核"); 
 				return;
 			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
-				crossIds += (crossIds == "" ? "'" : ",'") + crosses[i].crossId + "'"; 
+				crossIds += (crossIds == "" ? "'" : ",'") + crosses[i].highLineCrossId() + "'"; 
 				updateCrosses.push(crosses[i]); 
 			}; 
 		}  
@@ -147,13 +147,13 @@ function CrossModel() {
 		}
 		commonJsScreenLock();
 		 $.ajax({
-				url : "../highLine/checkHighLineCorssInfo",
+				url : "../highLine/updateHiglineCheckInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					highLineCrossIds : crossIds
+					highlineCrossIds : crossIds
 				}),
 				success : function(result) {     
 					if(result.code == 0){
@@ -178,15 +178,15 @@ function CrossModel() {
 	
 	self.selectCrosses = function(){
 //		self.crossAllcheckBox(); 
-		$.each(self.crossRows.rows(), function(i, crossRow){ 
+		$.each(self.highLineCrossRows(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0);
 				self.searchModle().activeFlag(0);
 			}else{
-				if(hasActiveRole(crossRow.tokenVehBureau())){ 
+//				if(hasActiveRole(crossRow.tokenVehBureau())){ 
 					crossRow.selected(1); 
 					self.searchModle().activeFlag(1);
-				}
+//				}
 			}  
 		});  
 	};
@@ -635,13 +635,13 @@ function CrossRow(data) {
 	
 	self.unitCreateFlag = ko.observable(data.unitCreateFlag);
 	
-	self.startStn = ko.observable(data.startStn);
-	self.endStn = ko.observable(data.endStn);
+	self.startStn = ko.observable(data.crossStartStn);
+	self.endStn = ko.observable(data.crossEndStn);
 	//方案ID
 	self.chartId = ko.observable(data.chartId);
 	self.chartName = ko.observable(data.chartName);
 	self.crossStartDate = ko.observable(data.crossStartDate);
-	self.crossEndDate = ko.observable(data.crossEndDate);
+	self.crossEndDate = ko.observable(data.crossEndDate); 
 	self.crossSpareName = ko.observable(data.crossSpareName);
 	self.alterNateDate = ko.observable(data.alterNateDate);
 	self.alterNateTranNbr = ko.observable(data.alterNateTranNbr);
