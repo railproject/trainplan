@@ -134,7 +134,7 @@
 				      <shiro:hasPermission name="JHPT.KYJH.GTKD">
 			          <li><a  target="contentFrame"><i class="fa fa-external-link"></i>交路计划<i class="fa fa-caret-right pull-right"></i></a>
 				      		<ul class="third-menu" style="width:200px">
-                            		<li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁交路计划审核</a></li>
+                            		<li style="width: 100%;"><a style="width: 100%;" href="${ctx}/highLine" target="contentFrame"><i class="fa fa-external-link"></i>高铁交路计划审核</a></li>
 				            </ul>
 			          </li>
 			          </shiro:hasPermission>
@@ -143,8 +143,8 @@
 				      <shiro:hasPermission name="JHPT.KYJH.GTKD">
 			          <li><a  target="contentFrame"><i class="fa fa-external-link"></i>车底计划<i class="fa fa-caret-right pull-right"></i></a>
 				      		<ul class="third-menu" style="width:200px">
-		                            <li style="width: 100%;"><a style="width: 100%;" href="#" target="contentFrame" onclick="return false"><i class="fa fa-external-link"></i>高铁车底计划审核</a></li>
-                            		<li style="width: 100%;"><a style="width: 100%;" href="#" target=""><i class="fa fa-external-link"></i>高铁车底计划报告</a></li>
+		                            <li style="width: 100%;"><a style="width: 100%;" href="${ctx}/highLine/vehicleCheck" target="contentFrame" ><i class="fa fa-external-link"></i>高铁车底计划审核</a></li>
+                            		<li style="width: 100%;"><a style="width: 100%;" href="${ctx}/highLine/vehicleSearch" target=""><i class="fa fa-external-link"></i>高铁车底计划报告</a></li>
 		                        
 				            </ul>
 			          </li>
