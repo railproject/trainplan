@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="org.railway.com.trainplan.repository.mybatis.RunPlanDao">
+
+    <!-- 校验列车主体信息： 客运计划vs日计划 -->
+    <select id="checkTrainInfo" parameterType="map" resultType="map">
+        SELECT CASE WHEN PT.TRAIN_NBR = TL.NAME THEN 1 ELSE 0 END AS TRAIN_NAME,
+        CASE WHEN PT.START_BUREAU_FULL = TL.SOURCE_BUREAU_NAME THEN 1 ELSE 0 END AS START_BUREAU,
+        CASE WHEN PT.END_BUREAU_FULL = TL.TARGET_BUREAU_NAME THEN 1 ELSE 0 END AS END_BUREAU,
+        CASE WHEN PT.START_STN = TL.SOURCE_NODE_NAME THEN 1 ELSE 0 END AS START_STN,
+        CASE WHEN PT.END_STN = TL.TARGET_NODE_NAME THEN 1 ELSE 0 END AS END_STN,
+        CASE WHEN TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') = TO_CHAR(TL.SOURCE_TIME, 'yyyy-mm-dd hh24:mi') THEN 1 ELSE 0 END AS START_TIME,
+        CASE WHEN TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') = TO_CHAR(TL.TARGET_TIME, 'yyyy-mm-dd hh24:mi') THEN 1 ELSE 0 END AS END_TIME
+        FROM PLAN_TRAIN PT LEFT JOIN JHPT_RJH.M_TRAINLINE TL ON PT.DAILYPLAN_ID = TL.ID
+        WHERE PT.PLAN_TRAIN_ID = '${planId}' AND TL.ID = '${lineId}'
+    </select>
+
+    <!-- 根据计划id查询计划时刻表 -->
+    <select id="findPlanTimeTableByPlanId" parameterType="string" resultType="map">
+        SELECT PTS.STN_SORT AS STN_INDEX, PTS.STN_NAME AS STN_NAME, PTS.STN_BUREAU_FULL AS BUREAU,
+        PTS.TRACK_NAME AS TRACK_NAME, TO_CHAR(PTS.ARR_TIME, 'yyyy-mm-dd hh24:mi') AS ARR_TIME,
+        TO_CHAR(PTS.DPT_TIME, 'yyyy-mm-dd hh24:mi') AS DPT_TIME
+        FROM PLAN_TRAIN_STN PTS
+        WHERE PTS.PLAN_TRAIN_ID = #{planId}
+        ORDER BY PTS.STN_SORT
+    </select>
+
+    <!-- 根据计划id查询计划主体信息 -->
+    <select id="findPlanInfoByPlanId" parameterType="string" resultType="map">
+        SELECT PT.PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NAME, PT.START_BUREAU_FULL AS START_BUREAU, PT.END_BUREAU_FULL AS END_BUREAU, PT.START_STN AS START_STN,
+        PT.END_STN AS END_STN, TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME, PT.PASS_BUREAU AS PASS_BUREAU,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV1_BUREAU AS CHECK_LEV1_BUREAU, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE, PT.CHECK_LEV2_BUREAU AS CHECK_LEV2_BUREAU
+        FROM PLAN_TRAIN PT WHERE PT.PLAN_TRAIN_ID = #{planId}
+    </select>
+
+    <insert id="addCheckHis" parameterType="java.util.List">
+        INSERT INTO DAILYPLAN_CHECK(DAILYPLAN_CHECK_ID,DAILYPLAN_ID,PLAN_TRAIN_ID,CHECK_PEOPLE,CHECK_TIME,CHECK_DEPT,CHECK_BUREAU,CHECK_TYPE)
+        <foreach collection="list" item="item" index="index" open="(" separator="UNION ALL" close=")">
+            SELECT #{item.id, jdbcType=VARCHAR}, #{item.lineId, jdbcType=VARCHAR}, #{item.planId, jdbcType=VARCHAR}, #{item.people, jdbcType=VARCHAR}, sysdate, #{item.dept, jdbcType=VARCHAR},
+            #{item.bureau, jdbcType=VARCHAR}, #{item.checkType, jdbcType=NUMERIC} FROM DUAL
+        </foreach>
+    </insert>
+
+    <select id="findPlanInfoListByPlanId" parameterType="java.util.List" resultType="map">
+        SELECT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NAME, PT.START_BUREAU_FULL AS START_BUREAU, PT.END_BUREAU_FULL AS END_BUREAU, PT.START_STN AS START_STN,
+        PT.END_STN AS END_STN, TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME, PT.PASS_BUREAU AS PASS_BUREAU,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV1_BUREAU AS CHECK_LEV1_BUREAU, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE, PT.CHECK_LEV2_BUREAU AS CHECK_LEV2_BUREAU
+        FROM PLAN_TRAIN PT WHERE PT.PLAN_TRAIN_ID in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    
+    <select id="getTrainRunPlans" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossRunPlanInfo">
+       select t.run_date runDay,
+			  t.train_nbr trainNbr,
+              t.start_stn startStn,
+              t.end_stn endStn,
+              t.spare_flag runFlag 
+      from plan_train t 
+      where t.plan_cross_id=#{planCrossId}  and t.run_date>=#{startDay} and t.run_date &lt;=#{endDay} order by t.run_date, T.train_NBR
+    </select>
+    
+    <select id="getPlanCross" parameterType="map" resultType="org.railway.com.trainplan.service.dto.PlanCrossDto">
+    select 
+M.planCrossId, M.baseCrossId, M.planCrossName, M.tokenVehBureau,M.startBureau,M.checkType,M.relevantBureau, WMSYS.WM_CONCAT(P.CHECK_BUREAU) AS checkedBureau
+FROM
+(
+      select t.plan_cross_id planCrossId,
+			  t.base_cross_id baseCrossId,
+              t.cross_name planCrossName, 
+              t.TOKEN_VEH_BUREAU as tokenVehBureau ,
+              t.START_BUREAU as startBureau,
+              t.CHECK_TYPE  as checkType,
+              t.RELEVANT_BUREAU   as relevantBureau
+              
+      from plan_cross t
+      where 1=1 
+      <if test="trainNbr != null">
+			AND t.cross_name like '%' || #{trainNbr} || '%'
+	  </if>
+	   <if test="tokenVehBureau != null">
+            AND t.TOKEN_VEH_BUREAU= #{tokenVehBureau}
+        </if>
+        <if test="startBureau != null">
+            AND t.START_BUREAU = #{startBureau}
+        </if>
+        <if test="highlineFlag != null">
+            AND t.HIGHLINE_FLAG = #{highlineFlag}
+        </if>
+         <if test="currentBureanFlag == 1">
+            <if test="currentBureau != null">
+            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            </if>
+        </if>
+        <if test="checkFlag == 0 ">
+            AND t.check_time is null
+        </if>
+         <if test="currentBureanFlag == 1">
+            <if test="currentBureau != null">
+            	AND t.RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            </if>
+        </if>
+        <if test="checkFlag == 1 ">
+            AND t.check_time is not null
+        </if> 
+ 
+       	<if test="startTime != null">  
+       	      AND 
+       	       <if test="endTime != null"> 
+       	          ((
+       	       </if> 
+       	       (t.CROSS_START_DATE >= #{startTime} or t.CROSS_END_DATE >=  #{startTime}) 
+      	     <if test="endTime != null">  
+      	         AND (t.CROSS_START_DATE &lt;= #{endTime} or t.CROSS_END_DATE &lt;=  #{endTime}))
+          		OR (t.CROSS_START_DATE &lt;= #{startTime} AND t.CROSS_END_DATE >=  #{endTime})) 
+          	 </if> 
+        </if> 
+        <if test="startTime == null"> 
+	        <if test="endTime != null ">
+	             AND (t.CROSS_START_DATE &lt;= #{endTime} or t.CROSS_END_DATE &lt;=  #{endTime})) 
+	       	</if> 
+	    </if> 
+       )M left join plan_check P on M.planCrossId=p.plan_cross_id  GROUP BY 
+      M.planCrossId, M.baseCrossId, M.planCrossName, M.tokenVehBureau,M.startBureau,M.checkType,M.relevantBureau  order by M.planCrossName 
+ 
+    </select> 
+
+    <update id="updateCheckInfo" parameterType="map">
+        UPDATE PLAN_TRAIN PT SET PT.CHECK_LEV1_TYPE = #{lev1Type}, PT.CHECK_LEV1_BUREAU = #{lev1Bureau}, PT.CHECK_LEV2_TYPE = #{lev2Type}, PT.CHECK_LEV2_BUREAU = #{lev2Bureau} WHERE PT.PLAN_TRAIN_ID = #{planId}
+    </update>
+    
+    
+     <delete id="deletePlanCrossByPlanCrossIds" parameterType="map">
+        delete from plan_cross where plan_cross_id in (${planCrossIds})
+    </delete>
+    
+    <delete id="deletePlanTrainsByPlanCrossIds" parameterType="map">
+        delete from plan_train where plan_cross_id in (${planCrossIds})
+    </delete>
+    
+    <delete id="deletePlanTrainStnsByPlanCrossIds" parameterType="map">
+        delete from plan_train_stn t where exists (select 1 from plan_train a where a.plan_train_id=t.plan_train_id and a.plan_cross_id in (${planCrossIds}))
+    </delete>
+    
+
+    <insert id="addRunPlanList" parameterType="java.util.List">
+        INSERT INTO PLAN_TRAIN(PLAN_TRAIN_ID, PLAN_TRAIN_SIGN,PLAN_CROSS_ID,MARSHALLING_NAME,GROUP_SERIAL_NBR,TRAIN_SORT,PRE_TRAIN_ID,NEXT_TRAIN_ID,RUN_DATE,
+        TRAIN_NBR,START_TIME,END_TIME,START_BUREAU,START_BUREAU_FULL,START_STN,END_BUREAU,END_BUREAU_FULL,END_STN,PASS_BUREAU,TRAIN_SCOPE,TRAIN_TYPE_ID,
+        HIGHLINE_FLAG,BASE_CHART_ID,BASE_TRAIN_ID,HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,APPOINT_DAY,DAY_GAP,SPARE_FLAG,SPARE_APPLY_FLAG,CREAT_TYPE,
+        CREAT_TIME,CHECK_LEV1_TYPE,CHECK_LEV2_TYPE,DAILYPLAN_TIMES,DAILYPLAN_FLAG)
+        <foreach collection="list" item="item" index="index" open="(" separator="UNION ALL" close=")">
+            SELECT #{item.planTrainId, jdbcType=VARCHAR}, #{item.planTrainSign, jdbcType=VARCHAR}, #{item.planCrossId, jdbcType=VARCHAR}, #{item.marshallingName, jdbcType=VARCHAR},
+            #{item.groupSerialNbr, jdbcType=NUMERIC}, #{item.trainSort, jdbcType=NUMERIC}, #{item.preTrainId, jdbcType=VARCHAR},
+            #{item.nextTrainId, jdbcType=VARCHAR}, #{item.runDate, jdbcType=VARCHAR}, #{item.trainNbr, jdbcType=VARCHAR}, #{item.startDateTime, jdbcType=DATE},
+            #{item.endDateTime, jdbcType=DATE},#{item.startBureauShortName, jdbcType=VARCHAR}, #{item.startBureauFullName, jdbcType=VARCHAR}, #{item.startStn, jdbcType=VARCHAR},
+            #{item.endBureauShortName, jdbcType=VARCHAR},#{item.endBureauFullName, jdbcType=VARCHAR}, #{item.endStn, jdbcType=VARCHAR}, #{item.passBureau, jdbcType=VARCHAR},
+            #{item.trainScope, jdbcType=NUMERIC},#{item.trainTypeId, jdbcType=VARCHAR}, #{item.highLineFlag, jdbcType=NUMERIC}, #{item.baseChartId, jdbcType=VARCHAR},
+            #{item.baseTrainId, jdbcType=VARCHAR},#{item.hightLineRule, jdbcType=NUMERIC}, #{item.commonLineRule, jdbcType=NUMERIC}, #{item.appointWeek, jdbcType=VARCHAR},
+            #{item.appointDay, jdbcType=VARCHAR},#{item.dayGap, jdbcType=NUMERIC},#{item.spareFlag, jdbcType=NUMERIC}, #{item.spareApplyFlag, jdbcType=NUMERIC},
+            #{item.createType, jdbcType=NUMERIC}, #{item.createDateTime, jdbcType=DATE}, #{item.checkLev1Type, jdbcType=NUMERIC}, #{item.checkLev2Type, jdbcType=NUMERIC},
+            #{item.dailyPlanTimes, jdbcType=NUMERIC}, #{item.dailyPlanFlag, jdbcType=NUMERIC} FROM DUAL
+        </foreach>
+    </insert>
+
+    <insert id="addRunPlan" parameterType="org.railway.com.trainplan.entity.RunPlan">
+        INSERT INTO PLAN_TRAIN(PLAN_TRAIN_ID, PLAN_TRAIN_SIGN,PLAN_CROSS_ID,MARSHALLING_NAME,GROUP_SERIAL_NBR,TRAIN_SORT,PRE_TRAIN_ID,NEXT_TRAIN_ID,RUN_DATE,
+        TRAIN_NBR,START_TIME,END_TIME,START_BUREAU,START_BUREAU_FULL,START_STN,END_BUREAU,END_BUREAU_FULL,END_STN,PASS_BUREAU,TRAIN_SCOPE,TRAIN_TYPE_ID,
+        HIGHLINE_FLAG,BASE_CHART_ID,BASE_TRAIN_ID,HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,APPOINT_DAY,DAY_GAP,SPARE_FLAG,SPARE_APPLY_FLAG,CREAT_TYPE,
+        CREAT_TIME,CHECK_LEV1_TYPE,CHECK_LEV2_TYPE,DAILYPLAN_TIMES,DAILYPLAN_FLAG)
+        VALUES(
+        #{planTrainId, jdbcType=VARCHAR}, #{planTrainSign, jdbcType=VARCHAR}, #{planCrossId, jdbcType=VARCHAR}, #{marshallingName, jdbcType=VARCHAR},
+        #{groupSerialNbr, jdbcType=NUMERIC}, #{trainSort, jdbcType=NUMERIC}, #{preTrainId, jdbcType=VARCHAR},
+        #{nextTrainId, jdbcType=VARCHAR}, #{runDate, jdbcType=VARCHAR}, #{trainNbr, jdbcType=VARCHAR}, #{startDateTime, jdbcType=DATE},
+        #{endDateTime, jdbcType=DATE},#{startBureauShortName, jdbcType=VARCHAR}, #{startBureauFullName, jdbcType=VARCHAR}, #{startStn, jdbcType=VARCHAR},
+        #{endBureauShortName, jdbcType=VARCHAR},#{endBureauFullName, jdbcType=VARCHAR}, #{endStn, jdbcType=VARCHAR}, #{passBureau, jdbcType=VARCHAR},
+        #{trainScope, jdbcType=NUMERIC},#{trainTypeId, jdbcType=VARCHAR}, #{highLineFlag, jdbcType=NUMERIC}, #{baseChartId, jdbcType=VARCHAR},
+        #{baseTrainId, jdbcType=VARCHAR},#{hightLineRule, jdbcType=NUMERIC}, #{commonLineRule, jdbcType=NUMERIC}, #{appointWeek, jdbcType=VARCHAR},
+        #{appointDay, jdbcType=VARCHAR},#{dayGap, jdbcType=NUMERIC},#{spareFlag, jdbcType=NUMERIC}, #{spareApplyFlag, jdbcType=NUMERIC},
+        #{createType, jdbcType=NUMERIC}, #{createDateTime, jdbcType=DATE}, #{checkLev1Type, jdbcType=NUMERIC}, #{checkLev2Type, jdbcType=NUMERIC},
+        #{dailyPlanTimes, jdbcType=NUMERIC}, #{dailyPlanFlag, jdbcType=NUMERIC}
+        )
+    </insert>
+
+
+    <select id="findRunPlan_sfzd" parameterType="map" resultType="map">
+        SELECT DISTINCT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, PT.START_STN AS START_STN, PT.END_STN AS END_STN, PT.RUN_DATE AS RUN_DATE,
+        PT.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TO_CHAR(PT.DAILYPLAN_TIME, 'mm-dd hh24:mi') AS DAILYPLAN_TIME, PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+        (CASE PT.HIGHLINE_FLAG WHEN 1 THEN '高线' WHEN 2 THEN '混合' WHEN 0 THEN '普线' ELSE '未知' END) AS HIGHLINE_FLAG,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE,
+        TO_CHAR(PT.START_TIME, 'mm-dd hh24:mi') AS START_TIME,
+        TO_CHAR(PT.END_TIME, 'mm-dd hh24:mi') AS END_TIME,
+        CASE PT.SPARE_FLAG WHEN 1 THEN '开行' WHEN 2 THEN '备用' WHEN 0 THEN '停运' ELSE '未知' END AS SPARE_FLAG,
+        CASE PT.CREAT_TYPE WHEN 0 THEN '基本图初始化' WHEN 1 THEN '基本图滚动' WHEN 2 THEN '文件电报' WHEN 3 THEN PT.CMD_SHORTINFO WHEN 4 THEN '人工添加' ELSE '未知' END AS CREAT_TYPE,
+        CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED, '始发终到' AS TRAIN_TYPE
+        FROM PLAN_TRAIN PT
+        INNER JOIN PLAN_TRAIN_STN STN ON PT.PLAN_TRAIN_ID = STN.PLAN_TRAIN_ID
+        WHERE PT.START_BUREAU = '${bureau}' AND PT.END_BUREAU = '${bureau}' AND STN.STN_BUREAU = '${bureau}' AND (TO_CHAR(STN.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(STN.DPT_TIME, 'yyyymmdd') = '${date}')
+        <if test="name != null">
+            AND PT.TRAIN_NBR LIKE '%${name}%'
+        </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findRunPlan_sfjc" parameterType="map" resultType="map">
+        SELECT DISTINCT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, PT.START_STN AS START_STN, JCSTN.STN_NAME AS END_STN, PT.RUN_DATE AS RUN_DATE,
+        PT.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TO_CHAR(PT.DAILYPLAN_TIME, 'mm-dd hh24:mi') AS DAILYPLAN_TIME, PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+        (CASE PT.HIGHLINE_FLAG WHEN 1 THEN '高线' WHEN 2 THEN '混合' WHEN 0 THEN '普线' ELSE '未知' END) AS HIGHLINE_FLAG,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE,
+        TO_CHAR(PT.START_TIME, 'mm-dd hh24:mi') AS START_TIME,
+        JCSTN.JC_TIME AS END_TIME,
+        CASE PT.SPARE_FLAG WHEN 1 THEN '开行' WHEN 2 THEN '备用' WHEN 0 THEN '停运' ELSE '未知' END AS SPARE_FLAG,
+        CASE PT.CREAT_TYPE WHEN 0 THEN '基本图初始化' WHEN 1 THEN '基本图滚动' WHEN 2 THEN '文件电报' WHEN 3 THEN PT.CMD_SHORTINFO WHEN 4 THEN '人工添加' ELSE '未知' END AS CREAT_TYPE,
+        CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED, '始发交出' AS TRAIN_TYPE
+        FROM PLAN_TRAIN PT
+        INNER JOIN PLAN_TRAIN_STN STN ON PT.PLAN_TRAIN_ID = STN.PLAN_TRAIN_ID
+        LEFT JOIN (
+        SELECT JC.PLAN_TRAIN_ID, CASE WHEN JC.STN_BUREAU = '${bureau}' THEN TO_CHAR(JC.DPT_TIME, 'mm-dd hh24:mi') ELSE TO_CHAR(JC.ARR_TIME, 'mm-dd hh24:mi') END AS JC_TIME, JC.STN_NAME AS STN_NAME
+        FROM PLAN_TRAIN_STN JC INNER JOIN (
+        SELECT PTS.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, MAX(PTS.STN_SORT) AS STN_SORT
+        FROM PLAN_TRAIN_STN PTS
+        INNER JOIN JHPT_JCSJ.ZDFJK FJK ON PTS.STN_NAME = FJK.CNAME
+        INNER JOIN JHPT_JCSJ.LJZD SSJ ON SSJ.LJPYM = FJK.SSJ
+        INNER JOIN JHPT_JCSJ.LJZD LJ ON LJ.LJPYM = FJK.LJ
+        WHERE (SSJ.LJJC = '${bureau}' OR LJ.LJJC = '${bureau}')
+        GROUP BY PLAN_TRAIN_ID
+        ORDER BY PLAN_TRAIN_ID, STN_SORT) JRFJK ON JC.PLAN_TRAIN_ID = JRFJK.PLAN_TRAIN_ID AND JC.STN_SORT = JRFJK.STN_SORT
+        ) JCSTN ON PT.PLAN_TRAIN_ID = JCSTN.PLAN_TRAIN_ID
+        WHERE PT.START_BUREAU = '${bureau}' AND PT.END_BUREAU &lt;> '${bureau}' AND STN.STN_BUREAU = '${bureau}' AND (TO_CHAR(STN.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(STN.DPT_TIME, 'yyyymmdd') = '${date}')
+        <if test="name != null">
+            AND PT.TRAIN_NBR LIKE '%${name}%'
+        </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findRunPlan_jrzd" parameterType="map" resultType="map">
+        SELECT DISTINCT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, JRSTN.STN_NAME AS START_STN, PT.END_STN AS END_STN, PT.RUN_DATE AS RUN_DATE,
+        PT.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TO_CHAR(PT.DAILYPLAN_TIME, 'mm-dd hh24:mi') AS DAILYPLAN_TIME, PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+        (CASE PT.HIGHLINE_FLAG WHEN 1 THEN '高线' WHEN 2 THEN '混合' WHEN 0 THEN '普线' ELSE '未知' END) AS HIGHLINE_FLAG,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE,
+        JRSTN.JR_TIME AS START_TIME,
+        TO_CHAR(PT.END_TIME, 'mm-dd hh24:mi') AS END_TIME,
+        CASE PT.SPARE_FLAG WHEN 1 THEN '开行' WHEN 2 THEN '备用' WHEN 0 THEN '停运' ELSE '未知' END AS SPARE_FLAG,
+        CASE PT.CREAT_TYPE WHEN 0 THEN '基本图初始化' WHEN 1 THEN '基本图滚动' WHEN 2 THEN '文件电报' WHEN 3 THEN PT.CMD_SHORTINFO WHEN 4 THEN '人工添加' ELSE '未知' END AS CREAT_TYPE,
+        CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED, '接入终到' AS TRAIN_TYPE
+        FROM PLAN_TRAIN PT
+        INNER JOIN PLAN_TRAIN_STN STN ON PT.PLAN_TRAIN_ID = STN.PLAN_TRAIN_ID
+        LEFT JOIN (
+        SELECT JR.PLAN_TRAIN_ID, CASE WHEN JR.STN_BUREAU = '${bureau}' THEN TO_CHAR(JR.ARR_TIME, 'mm-dd hh24:mi') ELSE TO_CHAR(JR.DPT_TIME, 'mm-dd hh24:mi') END AS JR_TIME, JR.STN_NAME AS STN_NAME
+        FROM PLAN_TRAIN_STN JR INNER JOIN (
+        SELECT PTS.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, MIN(PTS.STN_SORT) AS STN_SORT
+        FROM PLAN_TRAIN_STN PTS
+        INNER JOIN JHPT_JCSJ.ZDFJK FJK ON PTS.STN_NAME = FJK.CNAME
+        INNER JOIN JHPT_JCSJ.LJZD SSJ ON SSJ.LJPYM = FJK.SSJ
+        INNER JOIN JHPT_JCSJ.LJZD LJ ON LJ.LJPYM = FJK.LJ
+        WHERE (SSJ.LJJC = '${bureau}' OR LJ.LJJC = '${bureau}')
+        GROUP BY PLAN_TRAIN_ID
+        ORDER BY PLAN_TRAIN_ID, STN_SORT) JRFJK ON JR.PLAN_TRAIN_ID = JRFJK.PLAN_TRAIN_ID AND JR.STN_SORT = JRFJK.STN_SORT
+        ) JRSTN ON PT.PLAN_TRAIN_ID = JRSTN.PLAN_TRAIN_ID
+        WHERE PT.START_BUREAU &lt;> '${bureau}' AND PT.END_BUREAU = '${bureau}' AND STN.STN_BUREAU = '${bureau}' AND (TO_CHAR(STN.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(STN.DPT_TIME, 'yyyymmdd') = '${date}')
+        <if test="name != null">
+            AND PT.TRAIN_NBR LIKE '%${name}%'
+        </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findRunPlan_jrjc" parameterType="map" resultType="map">
+        SELECT DISTINCT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, JRSTN.STN_NAME AS START_STN, JCSTN.STN_NAME AS END_STN, PT.RUN_DATE AS RUN_DATE,
+        PT.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TO_CHAR(PT.DAILYPLAN_TIME, 'mm-dd hh24:mi') AS DAILYPLAN_TIME, PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+        (CASE PT.HIGHLINE_FLAG WHEN 1 THEN '高线' WHEN 2 THEN '混合' WHEN 0 THEN '普线' ELSE '未知' END) AS HIGHLINE_FLAG,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE,
+        JRSTN.JR_TIME AS START_TIME,
+        JCSTN.JC_TIME AS END_TIME,
+        CASE PT.SPARE_FLAG WHEN 1 THEN '开行' WHEN 2 THEN '备用' WHEN 0 THEN '停运' ELSE '未知' END AS SPARE_FLAG,
+        CASE PT.CREAT_TYPE WHEN 0 THEN '基本图初始化' WHEN 1 THEN '基本图滚动' WHEN 2 THEN '文件电报' WHEN 3 THEN PT.CMD_SHORTINFO WHEN 4 THEN '人工添加' ELSE '未知' END AS CREAT_TYPE,
+        CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED, '接入交出' AS TRAIN_TYPE
+        FROM PLAN_TRAIN PT
+        INNER JOIN PLAN_TRAIN_STN STN ON PT.PLAN_TRAIN_ID = STN.PLAN_TRAIN_ID
+        LEFT JOIN (
+        SELECT JR.PLAN_TRAIN_ID, CASE WHEN JR.STN_BUREAU = '${bureau}' THEN TO_CHAR(JR.ARR_TIME, 'mm-dd hh24:mi') ELSE TO_CHAR(JR.DPT_TIME, 'mm-dd hh24:mi') END AS JR_TIME, JR.STN_NAME AS STN_NAME
+        FROM PLAN_TRAIN_STN JR INNER JOIN (
+        SELECT PTS.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, MIN(PTS.STN_SORT) AS STN_SORT
+        FROM PLAN_TRAIN_STN PTS
+        INNER JOIN JHPT_JCSJ.ZDFJK FJK ON PTS.STN_NAME = FJK.CNAME
+        INNER JOIN JHPT_JCSJ.LJZD SSJ ON SSJ.LJPYM = FJK.SSJ
+        INNER JOIN JHPT_JCSJ.LJZD LJ ON LJ.LJPYM = FJK.LJ
+        WHERE (SSJ.LJJC = '${bureau}' OR LJ.LJJC = '${bureau}')
+        GROUP BY PLAN_TRAIN_ID
+        ORDER BY PLAN_TRAIN_ID, STN_SORT) JRFJK ON JR.PLAN_TRAIN_ID = JRFJK.PLAN_TRAIN_ID AND JR.STN_SORT = JRFJK.STN_SORT
+        ) JRSTN ON PT.PLAN_TRAIN_ID = JRSTN.PLAN_TRAIN_ID
+        LEFT JOIN (
+        SELECT JC.PLAN_TRAIN_ID, CASE WHEN JC.STN_BUREAU = '${bureau}' THEN TO_CHAR(JC.DPT_TIME, 'mm-dd hh24:mi') ELSE TO_CHAR(JC.ARR_TIME, 'mm-dd hh24:mi') END AS JC_TIME, JC.STN_NAME AS STN_NAME
+        FROM PLAN_TRAIN_STN JC INNER JOIN (
+        SELECT PTS.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, MAX(PTS.STN_SORT) AS STN_SORT
+        FROM PLAN_TRAIN_STN PTS
+        INNER JOIN JHPT_JCSJ.ZDFJK FJK ON PTS.STN_NAME = FJK.CNAME
+        INNER JOIN JHPT_JCSJ.LJZD SSJ ON SSJ.LJPYM = FJK.SSJ
+        INNER JOIN JHPT_JCSJ.LJZD LJ ON LJ.LJPYM = FJK.LJ
+        WHERE (SSJ.LJJC = '${bureau}' OR LJ.LJJC = '${bureau}')
+        GROUP BY PLAN_TRAIN_ID
+        ORDER BY PLAN_TRAIN_ID, STN_SORT) JRFJK ON JC.PLAN_TRAIN_ID = JRFJK.PLAN_TRAIN_ID AND JC.STN_SORT = JRFJK.STN_SORT
+        ) JCSTN ON PT.PLAN_TRAIN_ID = JCSTN.PLAN_TRAIN_ID
+        WHERE PT.START_BUREAU &lt;> '${bureau}' AND PT.END_BUREAU &lt;> '${bureau}' AND STN.STN_BUREAU = '${bureau}' AND (TO_CHAR(STN.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(STN.DPT_TIME, 'yyyymmdd') = '${date}')
+        <if test="name != null">
+            AND PT.TRAIN_NBR LIKE '%${name}%'
+        </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findRunPlan_all" parameterType="map" resultType="map">
+        SELECT DISTINCT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, PT.START_STN AS START_STN, PT.END_STN AS END_STN, PT.RUN_DATE AS RUN_DATE,
+        PT.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TO_CHAR(PT.DAILYPLAN_TIME, 'mm-dd hh24:mi') AS DAILYPLAN_TIME, PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+        (CASE PT.HIGHLINE_FLAG WHEN 1 THEN '高线' WHEN 2 THEN '混合' WHEN 0 THEN '普线' ELSE '未知' END) AS HIGHLINE_FLAG,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE,
+        TO_CHAR(PT.START_TIME, 'mm-dd hh24:mi') AS START_TIME,
+        TO_CHAR(PT.END_TIME, 'mm-dd hh24:mi') AS END_TIME,
+        CASE PT.SPARE_FLAG WHEN 1 THEN '开行' WHEN 2 THEN '备用' WHEN 0 THEN '停运' ELSE '未知' END AS SPARE_FLAG,
+        CASE PT.CREAT_TYPE WHEN 0 THEN '基本图初始化' WHEN 1 THEN '基本图滚动' WHEN 2 THEN '文件电报' WHEN 3 THEN PT.CMD_SHORTINFO WHEN 4 THEN '人工添加' ELSE '未知' END AS CREAT_TYPE,
+        CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED, '始发终到' AS TRAIN_TYPE
+        FROM PLAN_TRAIN PT
+        INNER JOIN PLAN_TRAIN_STN STN ON PT.PLAN_TRAIN_ID = STN.PLAN_TRAIN_ID
+        WHERE PT.START_BUREAU = '${bureau}' AND PT.END_BUREAU = '${bureau}' AND STN.STN_BUREAU = '${bureau}' AND (TO_CHAR(STN.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(STN.DPT_TIME, 'yyyymmdd') = '${date}')
+        <if test="name != null">
+            AND PT.TRAIN_NBR LIKE '%${name}%'
+        </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
+
+        UNION
+
+        SELECT DISTINCT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, PT.START_STN AS START_STN, JCSTN.STN_NAME AS END_STN, PT.RUN_DATE AS RUN_DATE,
+        PT.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TO_CHAR(PT.DAILYPLAN_TIME, 'mm-dd hh24:mi') AS DAILYPLAN_TIME, PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+        (CASE PT.HIGHLINE_FLAG WHEN 1 THEN '高线' WHEN 2 THEN '混合' WHEN 0 THEN '普线' ELSE '未知' END) AS HIGHLINE_FLAG,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE,
+        TO_CHAR(PT.START_TIME, 'mm-dd hh24:mi') AS START_TIME,
+        JCSTN.JC_TIME AS END_TIME,
+        CASE PT.SPARE_FLAG WHEN 1 THEN '开行' WHEN 2 THEN '备用' WHEN 0 THEN '停运' ELSE '未知' END AS SPARE_FLAG,
+        CASE PT.CREAT_TYPE WHEN 0 THEN '基本图初始化' WHEN 1 THEN '基本图滚动' WHEN 2 THEN '文件电报' WHEN 3 THEN PT.CMD_SHORTINFO WHEN 4 THEN '人工添加' ELSE '未知' END AS CREAT_TYPE,
+        CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED, '始发交出' AS TRAIN_TYPE
+        FROM PLAN_TRAIN PT
+        INNER JOIN PLAN_TRAIN_STN STN ON PT.PLAN_TRAIN_ID = STN.PLAN_TRAIN_ID
+        LEFT JOIN (
+        SELECT JC.PLAN_TRAIN_ID, CASE WHEN JC.STN_BUREAU = '${bureau}' THEN TO_CHAR(JC.DPT_TIME, 'mm-dd hh24:mi') ELSE TO_CHAR(JC.ARR_TIME, 'mm-dd hh24:mi') END AS JC_TIME, JC.STN_NAME AS STN_NAME
+        FROM PLAN_TRAIN_STN JC INNER JOIN (
+        SELECT PTS.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, MAX(PTS.STN_SORT) AS STN_SORT
+        FROM PLAN_TRAIN_STN PTS
+        INNER JOIN JHPT_JCSJ.ZDFJK FJK ON PTS.STN_NAME = FJK.CNAME
+        INNER JOIN JHPT_JCSJ.LJZD SSJ ON SSJ.LJPYM = FJK.SSJ
+        INNER JOIN JHPT_JCSJ.LJZD LJ ON LJ.LJPYM = FJK.LJ
+        WHERE (SSJ.LJJC = '${bureau}' OR LJ.LJJC = '${bureau}')
+        GROUP BY PLAN_TRAIN_ID
+        ORDER BY PLAN_TRAIN_ID, STN_SORT) JRFJK ON JC.PLAN_TRAIN_ID = JRFJK.PLAN_TRAIN_ID AND JC.STN_SORT = JRFJK.STN_SORT
+        ) JCSTN ON PT.PLAN_TRAIN_ID = JCSTN.PLAN_TRAIN_ID
+        WHERE PT.START_BUREAU = '${bureau}' AND PT.END_BUREAU &lt;> '${bureau}' AND STN.STN_BUREAU = '${bureau}' AND (TO_CHAR(STN.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(STN.DPT_TIME, 'yyyymmdd') = '${date}')
+        <if test="name != null">
+            AND PT.TRAIN_NBR LIKE '%${name}%'
+        </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
+
+        UNION
+
+        SELECT DISTINCT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, JRSTN.STN_NAME AS START_STN, PT.END_STN AS END_STN, PT.RUN_DATE AS RUN_DATE,
+        PT.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TO_CHAR(PT.DAILYPLAN_TIME, 'mm-dd hh24:mi') AS DAILYPLAN_TIME, PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+        (CASE PT.HIGHLINE_FLAG WHEN 1 THEN '高线' WHEN 2 THEN '混合' WHEN 0 THEN '普线' ELSE '未知' END) AS HIGHLINE_FLAG,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE,
+        JRSTN.JR_TIME AS START_TIME,
+        TO_CHAR(PT.END_TIME, 'mm-dd hh24:mi') AS END_TIME,
+        CASE PT.SPARE_FLAG WHEN 1 THEN '开行' WHEN 2 THEN '备用' WHEN 0 THEN '停运' ELSE '未知' END AS SPARE_FLAG,
+        CASE PT.CREAT_TYPE WHEN 0 THEN '基本图初始化' WHEN 1 THEN '基本图滚动' WHEN 2 THEN '文件电报' WHEN 3 THEN PT.CMD_SHORTINFO WHEN 4 THEN '人工添加' ELSE '未知' END AS CREAT_TYPE,
+        CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED, '接入终到' AS TRAIN_TYPE
+        FROM PLAN_TRAIN PT
+        INNER JOIN PLAN_TRAIN_STN STN ON PT.PLAN_TRAIN_ID = STN.PLAN_TRAIN_ID
+        LEFT JOIN (
+        SELECT JR.PLAN_TRAIN_ID, CASE WHEN JR.STN_BUREAU = '${bureau}' THEN TO_CHAR(JR.ARR_TIME, 'mm-dd hh24:mi') ELSE TO_CHAR(JR.DPT_TIME, 'mm-dd hh24:mi') END AS JR_TIME, JR.STN_NAME AS STN_NAME
+        FROM PLAN_TRAIN_STN JR INNER JOIN (
+        SELECT PTS.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, MIN(PTS.STN_SORT) AS STN_SORT
+        FROM PLAN_TRAIN_STN PTS
+        INNER JOIN JHPT_JCSJ.ZDFJK FJK ON PTS.STN_NAME = FJK.CNAME
+        INNER JOIN JHPT_JCSJ.LJZD SSJ ON SSJ.LJPYM = FJK.SSJ
+        INNER JOIN JHPT_JCSJ.LJZD LJ ON LJ.LJPYM = FJK.LJ
+        WHERE (SSJ.LJJC = '${bureau}' OR LJ.LJJC = '${bureau}')
+        GROUP BY PLAN_TRAIN_ID
+        ORDER BY PLAN_TRAIN_ID, STN_SORT) JRFJK ON JR.PLAN_TRAIN_ID = JRFJK.PLAN_TRAIN_ID AND JR.STN_SORT = JRFJK.STN_SORT
+        ) JRSTN ON PT.PLAN_TRAIN_ID = JRSTN.PLAN_TRAIN_ID
+        WHERE PT.START_BUREAU &lt;> '${bureau}' AND PT.END_BUREAU = '${bureau}' AND STN.STN_BUREAU = '${bureau}' AND (TO_CHAR(STN.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(STN.DPT_TIME, 'yyyymmdd') = '${date}')
+        <if test="name != null">
+            AND PT.TRAIN_NBR LIKE '%${name}%'
+        </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
+
+        UNION
+
+        SELECT DISTINCT PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NBR, JRSTN.STN_NAME AS START_STN, JCSTN.STN_NAME AS END_STN, PT.RUN_DATE AS RUN_DATE,
+        PT.DAILYPLAN_FLAG AS DAILYPLAN_FLAG, TO_CHAR(PT.DAILYPLAN_TIME, 'mm-dd hh24:mi') AS DAILYPLAN_TIME, PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+        (CASE PT.HIGHLINE_FLAG WHEN 1 THEN '高线' WHEN 2 THEN '混合' WHEN 0 THEN '普线' ELSE '未知' END) AS HIGHLINE_FLAG,
+        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE,
+        JRSTN.JR_TIME AS START_TIME,
+        JCSTN.JC_TIME AS END_TIME,
+        CASE PT.SPARE_FLAG WHEN 1 THEN '开行' WHEN 2 THEN '备用' WHEN 0 THEN '停运' ELSE '未知' END AS SPARE_FLAG,
+        CASE PT.CREAT_TYPE WHEN 0 THEN '基本图初始化' WHEN 1 THEN '基本图滚动' WHEN 2 THEN '文件电报' WHEN 3 THEN PT.CMD_SHORTINFO WHEN 4 THEN '人工添加' ELSE '未知' END AS CREAT_TYPE,
+        CASE WHEN PT.CHECK_LEV1_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV1_CHECKED, CASE WHEN PT.CHECK_LEV2_BUREAU LIKE '%${bureau}%' THEN 1 ELSE 0 END AS LEV2_CHECKED, '接入交出' AS TRAIN_TYPE
+        FROM PLAN_TRAIN PT
+        INNER JOIN PLAN_TRAIN_STN STN ON PT.PLAN_TRAIN_ID = STN.PLAN_TRAIN_ID
+        LEFT JOIN (
+        SELECT JR.PLAN_TRAIN_ID, CASE WHEN JR.STN_BUREAU = '${bureau}' THEN TO_CHAR(JR.ARR_TIME, 'mm-dd hh24:mi') ELSE TO_CHAR(JR.DPT_TIME, 'mm-dd hh24:mi') END AS JR_TIME, JR.STN_NAME AS STN_NAME
+        FROM PLAN_TRAIN_STN JR INNER JOIN (
+        SELECT PTS.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, MIN(PTS.STN_SORT) AS STN_SORT
+        FROM PLAN_TRAIN_STN PTS
+        INNER JOIN JHPT_JCSJ.ZDFJK FJK ON PTS.STN_NAME = FJK.CNAME
+        INNER JOIN JHPT_JCSJ.LJZD SSJ ON SSJ.LJPYM = FJK.SSJ
+        INNER JOIN JHPT_JCSJ.LJZD LJ ON LJ.LJPYM = FJK.LJ
+        WHERE (SSJ.LJJC = '${bureau}' OR LJ.LJJC = '${bureau}')
+        GROUP BY PLAN_TRAIN_ID
+        ORDER BY PLAN_TRAIN_ID, STN_SORT) JRFJK ON JR.PLAN_TRAIN_ID = JRFJK.PLAN_TRAIN_ID AND JR.STN_SORT = JRFJK.STN_SORT
+        ) JRSTN ON PT.PLAN_TRAIN_ID = JRSTN.PLAN_TRAIN_ID
+        LEFT JOIN (
+        SELECT JC.PLAN_TRAIN_ID, CASE WHEN JC.STN_BUREAU = '${bureau}' THEN TO_CHAR(JC.DPT_TIME, 'mm-dd hh24:mi') ELSE TO_CHAR(JC.ARR_TIME, 'mm-dd hh24:mi') END AS JC_TIME, JC.STN_NAME AS STN_NAME
+        FROM PLAN_TRAIN_STN JC INNER JOIN (
+        SELECT PTS.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, MAX(PTS.STN_SORT) AS STN_SORT
+        FROM PLAN_TRAIN_STN PTS
+        INNER JOIN JHPT_JCSJ.ZDFJK FJK ON PTS.STN_NAME = FJK.CNAME
+        INNER JOIN JHPT_JCSJ.LJZD SSJ ON SSJ.LJPYM = FJK.SSJ
+        INNER JOIN JHPT_JCSJ.LJZD LJ ON LJ.LJPYM = FJK.LJ
+        WHERE (SSJ.LJJC = '${bureau}' OR LJ.LJJC = '${bureau}')
+        GROUP BY PLAN_TRAIN_ID
+        ORDER BY PLAN_TRAIN_ID, STN_SORT) JRFJK ON JC.PLAN_TRAIN_ID = JRFJK.PLAN_TRAIN_ID AND JC.STN_SORT = JRFJK.STN_SORT
+        ) JCSTN ON PT.PLAN_TRAIN_ID = JCSTN.PLAN_TRAIN_ID
+        WHERE PT.START_BUREAU &lt;> '${bureau}' AND PT.END_BUREAU &lt;> '${bureau}' AND STN.STN_BUREAU = '${bureau}' AND (TO_CHAR(STN.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(STN.DPT_TIME, 'yyyymmdd') = '${date}')
+        <if test="name != null">
+            AND PT.TRAIN_NBR LIKE '%${name}%'
+        </if>
+        <choose>
+            <when test="trainType != null">
+                AND PT.HIGHLINE_FLAG = 1
+            </when>
+            <otherwise>
+                AND PT.HIGHLINE_FLAG &lt;> 1
+            </otherwise>
+        </choose>
+    </select>
+    
+    <select id="getPlanCheckInfoForPlanCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.PlanCheckInfo">
+       SELECT 
+        PLAN_CHECK_ID AS planCheckId,
+		PLAN_CROSS_ID AS planCrossId,
+		START_DATE AS startDate,
+		END_DATE AS endDate,
+		CHECK_PEOPLE AS checkPeople ,
+		CHECK_TIME AS checkTime,
+		CHECK_DEPT AS checkDept,
+		CHECK_BUREAU AS checkBureau
+      FROM  PLAN_CHECK WHERE PLAN_CROSS_ID=#{planCrossId}
+    </select>
+    
+    <select id="getRunPlanByStartDate" parameterType="map" resultType="org.railway.com.trainplan.entity.PlanCrossInfo">
+      select t.plan_cross_id as planCrossId,
+		t.unit_cross_id as unitCrossId,
+		t.base_cross_id as baseCrossId,
+		t.base_chart_id as baseChartId,
+		t.RELEVANT_BUREAU as relevantBureau,
+		t.base_chart_name as baseChartName,
+		t.cross_start_date as crossStartDate,
+		t.cross_end_date as crossEndDate,
+		t.cross_name as crossName,
+		t.cross_spare_name as crossSpareName,
+		t.SPARE_FLAG as spareFlag,
+		t.GROUP_TOTAL_NBR as groupTotalNbr,
+		t.PAIR_NBR as pairNbr,
+		t.HIGHLINE_FLAG as highlineFlag,
+		t.HIGHLINE_RULE as highlineRule,
+		t.COMMONLINE_RULE as commonlineRule,
+		t.APPOINT_WEEK as appointWeek,
+		t.APPOINT_DAY as appointDay,
+		t.CROSS_SECTION as crossSection,
+		t.THROUGH_LINE as throughline,
+		t.START_BUREAU as startBureau,
+		t.TOKEN_VEH_BUREAU as tokenVehBureau,
+		t.TOKEN_VEH_DEPT as tokenVehDept,
+		t.TOKEN_VEH_DEPOT as tokenVehDepot,
+		t.TOKEN_PSG_BUREAU as tokenPsgBureau,
+		t.TOKEN_PSG_DEPT as tokenPsgDept,
+		t.LOCO_TYPE as locoType,
+		t.CRH_TYPE as crhType,
+		t.ELEC_SUPPLY as elecSupply,
+		t.DEJ_COLLECT as dejCollect,
+		t.AIR_CONDITION as airCondition,
+		t.NOTE as note,
+		t.CREAT_PEOPLE as createPeople,
+		t.CREAT_PEOPLE_ORG as createPeopleOrg,
+		t.CREAT_TIME as createTime,
+		t.CHECK_TYPE as checkType,
+		t.CHECK_PEOPLE as checkPeople,
+		t.CHECK_PEOPLE_ORG as checkPeopleOrg,
+		t.CHECK_TIME as checkTime  , a.group_serial_nbr as  groupSerialNbr 
+		from plan_cross t, plan_train a
+		where a.plan_cross_id=t.plan_cross_id and a.run_date=#{startDate} and a.train_sort='1' 
+    </select>
+    
+    <select id="getPlanTrainByPlanCrossId" parameterType="map" resultType="org.railway.com.trainplan.service.dto.PlanCrossDto">
+      select t.plan_cross_id as planCrossId,
+		t.unit_cross_id as unitCrossId,
+		t.base_cross_id as baseCrossId,
+		t.base_chart_id as baseChartId,
+		t.RELEVANT_BUREAU as relevantBureau,
+		t.base_chart_name as baseChartName,
+		t.cross_start_date as crossStartDate,
+		t.cross_end_date as crossEndDate,
+		t.cross_name as crossName,
+		t.cross_spare_name as crossSpareName,
+		t.SPARE_FLAG as spareFlag,
+		t.GROUP_TOTAL_NBR as groupTotalNbr,
+		t.PAIR_NBR as pairNbr,
+		t.HIGHLINE_FLAG as highlineFlag,
+		t.HIGHLINE_RULE as highlineRule,
+		t.COMMONLINE_RULE as commonlineRule,
+		t.APPOINT_WEEK as appointWeek,
+		t.APPOINT_DAY as appointDay,
+		t.CROSS_SECTION as crossSection,
+		t.THROUGH_LINE as throughline,
+		t.START_BUREAU as startBureau,
+		t.TOKEN_VEH_BUREAU as tokenVehBureau,
+		t.TOKEN_VEH_DEPT as tokenVehDept,
+		t.TOKEN_VEH_DEPOT as tokenVehDepot,
+		t.TOKEN_PSG_BUREAU as tokenPsgBureau,
+		t.TOKEN_PSG_DEPT as tokenPsgDept,
+		t.LOCO_TYPE as locoType,
+		t.CRH_TYPE as crhType,
+		t.ELEC_SUPPLY as elecSupply,
+		t.DEJ_COLLECT as dejCollect,
+		t.AIR_CONDITION as airCondition,
+		t.NOTE as note,
+		t.CREAT_PEOPLE as createPeople,
+		t.CREAT_PEOPLE_ORG as createPeopleOrg,
+		t.CREAT_TIME as createTime,
+		t.CHECK_TYPE as checkType,
+		t.CHECK_PEOPLE as checkPeople,
+		t.CHECK_PEOPLE_ORG as checkPeopleOrg,
+		t.CHECK_TIME as checkTime  
+      from plan_cross t
+      where exists (select 1 from plan_train a where a.plan_cross_id=t.plan_cross_id and a.run_date=#{startDate} and a.train_sort='1')
+    </select> 
+     
+    <update id="updateCheckTypeForPlanCrossId" parameterType="map" >
+       update plan_cross
+       set check_type=#{checkType} where plan_cross_id=#{planCrossId}
+    </update>
+</mapper> 
