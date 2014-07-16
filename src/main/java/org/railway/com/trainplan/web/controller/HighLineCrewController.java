@@ -45,7 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.common.collect.Maps;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
+//import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 /**
  * Created by speeder on 2014/6/27.
@@ -559,7 +559,8 @@ public class HighLineCrewController {
           return newFileName;  
         }  
         if ((agent != null) && (-1 != agent.indexOf("Mozilla")))  
-          return MimeUtility.encodeText(filename, "UTF-8", "B");  
+          //return MimeUtility.encodeText(filename, "UTF-8", "B");  
+        	return new String(filename.getBytes("UTF-8"),"ISO8859-1"); 
     
         return filename;  
       } catch (Exception ex) {
