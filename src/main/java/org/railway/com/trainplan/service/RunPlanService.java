@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * 客运计划服务类
  * Created by star on 5/12/14.
  */
 @Component
@@ -59,6 +60,15 @@ public class RunPlanService {
     @Value("#{restConfig['plan.generatr.thread']}")
     private int threadNbr;
 
+    /**
+     * 查询客运计划列表（开行计划列表）
+     * @param date 日期
+     * @param bureau 所属局
+     * @param name 车次
+     * @param type 查询类型，详看下面switch
+     * @param trainType 是否高线
+     * @return 计划列表
+     */
     public List<Map<String, Object>> findRunPlan(String date, String bureau, String name, int type, int trainType) {
         logger.debug("findRunPlan::::");
         Map<String, Object> map = new HashMap<String, Object>();
@@ -91,16 +101,33 @@ public class RunPlanService {
         return list;
     }
 
+    /**
+     * 根据列车id查询列车时刻表
+     * @param planId 列车id
+     * @return 时刻表
+     */
     public List<Map<String, Object>> findPlanTimeTableByPlanId(String planId) {
         logger.debug("findPlanTimeTableByPlanId::::");
         return runPlanDao.findPlanTimeTableByPlanId(planId);
     }
 
+    /**
+     * 根据列车id查询列车信息
+     * @param planId 列车id
+     * @return 列车信息
+     */
     public Map<String, Object> findPlanInfoByPlanId(String planId) {
         logger.debug("findPlanInfoByPlanId::::");
         return runPlanDao.findPlanInfoByPlanId(planId);
     }
 
+    /**
+     * 一级审核
+     * @param list 列车列表
+     * @param user 当前审核
+     * @param checkType 审核类型
+     * @return 审核结果
+     */
     public List<Map<String, Object>> checkLev1(List<Map<String, Object>> list, ShiroRealm.ShiroUser user, int checkType) {
         List<Map<String, Object>> checkLev1Result = new ArrayList<Map<String, Object>>();
         try {
@@ -167,6 +194,13 @@ public class RunPlanService {
         return checkLev1Result;
     }
 
+    /**
+     * 二级审核
+     * @param plans 列车列表
+     * @param user 当前审核
+     * @param checkType 审核类型
+     * @return 审核结果
+     */
     public List<Map<String, Object>> checkLev2(List<Map<String, Object>> plans, ShiroRealm.ShiroUser user, int checkType) {
         List<Map<String, Object>> checkLev1Result = new ArrayList<Map<String, Object>>();
         try {
@@ -249,6 +283,15 @@ public class RunPlanService {
         return result.toString();
     }
 
+    /**
+     * 计算新一级审核状态
+     * @param current 当前状态
+     * @param passBureau 经由局
+     * @param currentChecked 当前已审核局
+     * @param split 当前局
+     * @return 新状态
+     * @throws DailyPlanCheckException
+     */
     private int newLev1Type(int current, String passBureau, String currentChecked, String split) throws DailyPlanCheckException {
         int result;
         if(!passBureau.contains(split)) {
@@ -265,6 +308,14 @@ public class RunPlanService {
         return result;
     }
 
+    /**
+     * 是否已审核完
+     * @param current 当前审核状态
+     * @param passBureau 经由局
+     * @param checkedBureau 已审核局
+     * @return 审核状态
+     * @throws WrongDataException
+     */
     private int computeLev1Type(int current, String passBureau, String checkedBureau) throws WrongDataException {
         if(current != 2 && isAllChecked(passBureau, checkedBureau)) {
             return 2;
@@ -304,8 +355,7 @@ public class RunPlanService {
         }
         return true;
     }
-    
-    
+
 	public List<RunPlanTrainDto> getTrainRunPlans(Map<String , Object> map) throws Exception {
 			List<RunPlanTrainDto> runPlans = new ArrayList<RunPlanTrainDto>();
 			Map<String, RunPlanTrainDto> runPlanTrainMap = new HashMap<String, RunPlanTrainDto>();
@@ -330,7 +380,10 @@ public class RunPlanService {
 		return baseDao.selectListBySql(Constants.GET_PLAN_CROSS, reqMap);
 	}
 
-
+    /**
+     * 查询plancross列表
+     * @return plancross列表
+     */
     public List<PlanCross> findPlanCross() {
         try {
             return unitCrossDao.findPlanCross(null);
@@ -340,7 +393,10 @@ public class RunPlanService {
         return null;
     }
 
-
+    /**
+     * 查询runplan列表
+     * @return runplan列表
+     */
     public List<RunPlan> findRunPlan() {
         try {
             return baseTrainDao.findBaseTrainByPlanCrossid(null);
@@ -425,6 +481,18 @@ public class RunPlanService {
             logger.debug("thread end:" + LocalTime.now().toString("hh:mm:ss"));
         }
 
+        /**
+         * 生成计划列表
+         * @param startDate 起始日期
+         * @param unitCrossTrainList 基本交路车底
+         * @param baseRunPlanList 基本图数据
+         * @param planCrossId plancrossid
+         * @param totalGroupNbr 交路车底组数
+         * @param days 生成计划天数
+         * @return 计划列表
+         * @throws WrongDataException
+         * @throws Exception
+         */
         private List<RunPlan> generateRunPlan(LocalDate startDate, List<UnitCrossTrain> unitCrossTrainList,
                                               List<RunPlan> baseRunPlanList, String planCrossId, int totalGroupNbr, int days) throws WrongDataException, Exception {
             // 按组别保存最后一个计划
