@@ -216,6 +216,14 @@ public class Constants {
 	public static final String HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO="org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.getHighlineCrewBaseInfo";
 	//获取交路字典信息
 	public static final String SQL_ID_CROSSDICT_INFO = "crossDictDao.findCrossDictList";
+	//增加交路字典信息
+	public static final String SQL_ADD_CROSS_DIC_INFO = "crossDictDao.addCrossDictInfo";
+	//批量增加交路字典经由站信息
+	public static final String SQL_BATCH_ADD_CROSS_DIC_STN_INFO="crossDictDao.batchAddCrossDictStnInfo";
+	//通过baseCrossId查询draw_graph对象
+	public static final String SQL_GET_DRAW_GRAPH_FOR_BASECROSSID = "crossDictDao.getDrawGraphForBaseCrossId";
+	//通过baseCrossId查询draw_graph_stn对象
+	public static final String SQL_GET_CROSS_DIC_STN_FOR_BASECROSSID = "crossDictDao.getCrossDictStnForBaseCrossId";
 	public static final String GET_PLANCROSSINFO_BY_STARTDATE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getRunPlanByStartDate";
  
 	public static final String TRAINPLANDAO_FIND_BY_GROUPSERIALBRR = "trainPlanDao.findPlanTrainByGroupSerialNbr";

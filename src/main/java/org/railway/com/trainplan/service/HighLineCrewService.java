@@ -173,6 +173,7 @@ public class HighLineCrewService {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<HighLineCrewInfo> getHighlineCrewBaseInfo(Map<String,Object> reqMap){
+		    System.err.println("getHighlineCrewBaseInfo~~~reqMap===" + reqMap);
 			return baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO, reqMap);
 	}
 	

@@ -14,6 +14,61 @@ public class CrossDictInfo {
 	private String crossName;// 车底交路名
 	private String ljjm;// 路局局码
 	private String ljjc;// 路局简称
+    private String createPeople; //创建人名字
+    private String createPeopleOrg; //创建人单位
+    private String createTime;//创建时间
+    private String checkPeople;//修改人名字
+    private String checkPeopleOrg;//修改人单位
+    private String checkTime;//修改时间
+    
+    
+	public String getCreatePeople() {
+		return createPeople;
+	}
+
+	public void setCreatePeople(String createPeople) {
+		this.createPeople = createPeople;
+	}
+
+	public String getCreatePeopleOrg() {
+		return createPeopleOrg;
+	}
+
+	public void setCreatePeopleOrg(String createPeopleOrg) {
+		this.createPeopleOrg = createPeopleOrg;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getCheckPeople() {
+		return checkPeople;
+	}
+
+	public void setCheckPeople(String checkPeople) {
+		this.checkPeople = checkPeople;
+	}
+
+	public String getCheckPeopleOrg() {
+		return checkPeopleOrg;
+	}
+
+	public void setCheckPeopleOrg(String checkPeopleOrg) {
+		this.checkPeopleOrg = checkPeopleOrg;
+	}
+
+	public String getCheckTime() {
+		return checkTime;
+	}
+
+	public void setCheckTime(String checkTime) {
+		this.checkTime = checkTime;
+	}
 
 	public String getDrawGrapId() {
 		return drawGrapId;

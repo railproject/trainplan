@@ -53,4 +53,98 @@
     </select>
 
 
+    <insert id="addCrossDictInfo" parameterType="org.railway.com.trainplan.entity.CrossDictInfo">
+        INSERT INTO DRAW_GRAPH( DRAW_GRAPH_ID,
+								BASE_CHART_ID,
+								BASE_CHART_NAME,
+								BASE_CROSS_ID,
+								CROSS_NAME,
+								CREAT_PEOPLE,
+								CREAT_PEOPLE_ORG,
+								CREAT_TIME,
+								CHECK_PEOPLE,
+								CHECK_PEOPLE_ORG,
+								CHECK_TIME) 
+								VALUES 
+								(
+					            #{drawGrapId, jdbcType=VARCHAR}, 
+					            #{baseChartId, jdbcType=VARCHAR},
+					            #{baseChartName, jdbcType=VARCHAR},
+					            #{baseCrossId, jdbcType=VARCHAR},
+					            #{crossName, jdbcType=VARCHAR}, 
+					            #{createPeople, jdbcType=VARCHAR},
+					            #{createPeopleOrg, jdbcType=VARCHAR}, 
+					            sysdate,
+					            #{checkPeople, jdbcType=VARCHAR}, 
+					            #{checkPeopleOrg, jdbcType=VARCHAR},
+					            sysdate)
+       
+    </insert>
+    
+    
+   <insert id="batchAddCrossDictStnInfo"  parameterType="java.util.Map">
+
+        INSERT INTO DRAW_GRAPH_STN
+        (
+          DRAW_GRAPH_STN_ID,
+		  DRAW_GRAPH_ID,
+		  STN_SORT,
+		  STN_NAME,
+		  HEIGHT,
+		  STN_TYPE
+        )
+        (
+        <foreach collection="trainCrossList" item="item" index="index"
+                 separator="UNION ALL">
+            <![CDATA[
+	       SELECT
+	 
+	       #{item.drawGrapStnId,jdbcType=VARCHAR},
+	       #{item.drawGrapId,jdbcType=VARCHAR},
+	       #{item.stnSort,jdbcType=NUMERIC},
+	       #{item.stnName,jdbcType=VARCHAR},
+	       #{item.height,jdbcType=NUMERIC},
+	       #{item.stnType,jdbcType=VARCHAR}
+	       from dual
+	         ]]>
+        </foreach>
+
+        )
+
+    </insert>
+    
+    
+    <select id="getDrawGraphForBaseCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossDictInfo">
+    
+    SELECT 
+	  DRAW_GRAPH_ID AS drawGrapId,
+	  BASE_CHART_ID AS baseChartId,
+	  BASE_CHART_NAME AS baseChartName,
+	  BASE_CROSS_ID AS baseCrossId,
+	  CROSS_NAME AS crossName,
+	  CREAT_PEOPLE AS createPeople,
+	  CREAT_PEOPLE_ORG AS createPeopleOrg,
+	  TO_CHAR(CREAT_TIME,'yyyy-MM-dd hh24:mi:SS') AS createTime,
+	  CHECK_PEOPLE AS checkPeople,
+	  CHECK_PEOPLE_ORG AS checkPeopleOrg,
+	  TO_CHAR(CHECK_TIME,'yyyy-MM-dd hh24:mi:SS') AS checkTime
+   FROM DRAW_GRAPH WHERE BASE_CROSS_ID = #{baseCrossId}
+  </select>
+  
+  
+  <select id="getCrossDictStnForBaseCrossId" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossDictStnInfo">
+  
+  SELECT 
+
+	B.DRAW_GRAPH_STN_ID AS drawGrapStnId,
+	B.DRAW_GRAPH_ID AS drawGrapId,
+	B.STN_SORT AS stnSort,
+	B.STN_NAME AS stnName,
+	B.HEIGHT AS height,
+	B.STN_TYPE AS stnType
+
+   FROM DRAW_GRAPH A,DRAW_GRAPH_STN B 
+   WHERE A.DRAW_GRAPH_ID = B.DRAW_GRAPH_ID AND A.BASE_CROSS_ID=#{baseCrossId}
+  
+  </select>
 </mapper>

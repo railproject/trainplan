@@ -375,6 +375,7 @@ public class StattionUtils {
 		if(sameStationCount > 1){
 			result = false;
 		}
+		
 		return result;
 	}
 	/**
