@@ -171,6 +171,27 @@ public class JBTCXController {
 		return result;
 	} 
 	
+	/**
+	 * 修改运行线的列车运行时刻表
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/editPlanLineTrainTimes", method = RequestMethod.POST)
+	public Result editPlanLineTrainTimes(@RequestBody String reqStr){
+		Result result = new Result();
+		try{
+			
+			
+			logger.info("editPlanLineTrainTimes~~reqStr==" + reqStr);
+			
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		return result;
+	} 
 	
 	
 }

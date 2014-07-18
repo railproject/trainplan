@@ -439,7 +439,7 @@ public class CrossController {
 			 List<Station> stationList = new LinkedList<Station>();
 			 //标识纵坐标的站点信息是否来源于字典
 			 boolean isStationFromDic = false;
-			 if(listDicStn != null){
+			 if(listDicStn != null && listDicStn.size() >0 ){
 				 isStationFromDic = true;
 				 for(CrossDictStnInfo dictStnInfo : listDicStn){
 					 Station station = new Station();
