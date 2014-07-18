@@ -166,46 +166,7 @@ public class AuditController {
         chart3.setName("未知");
         chart3.setCount(MapUtils.getIntValue(result, "UNKNOWN", 0));
         charts.add(chart3);
-        return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
-    }
-
-    /**
-     * 测试接口，查询unitcross列表
-     * @return 查询结果
-     */
-    @RequestMapping(value = "plancross/test", method = RequestMethod.GET)
-    public ResponseEntity<List<PlanCross>> getUnitCross() {
-        List<PlanCross> result = runPlanService.findPlanCross();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<List<PlanCross>>(result, httpHeaders, HttpStatus.OK);
-    }
-
-    /**
-     * 测试接口，查询计划列表
-     * @return 查询结果
-     */
-    @RequestMapping(value = "runplan/test", method = RequestMethod.GET)
-    public ResponseEntity<List<RunPlan>> getRunPlan() {
-        List<RunPlan> result = runPlanService.findRunPlan();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<List<RunPlan>>(result, httpHeaders, HttpStatus.OK);
-    }
-
-    /**
-     * 测试接口，生成开行计划
-     * @param date 开始日期
-     * @param days 偏移量
-     * @param planCrossId 可选参数，可指定生成某个交路
-     * @return 生成结果
-     */
-    @RequestMapping(value = "runplan/generate/{date}/{days}/{planCrossId}")
-    public ResponseEntity<Integer> generateRunPlan(@PathVariable String date, @PathVariable int days, @PathVariable String planCrossId) {
-        List<String> list = Lists.newArrayList();
-        list.add(planCrossId);
-        int i = runPlanService.generateRunPlan(list, date, days);
-        return new ResponseEntity<Integer>(i, HttpStatus.OK);
+        return new ResponseEntity<>(charts, httpHeaders, HttpStatus.OK);
     }
 
     /**

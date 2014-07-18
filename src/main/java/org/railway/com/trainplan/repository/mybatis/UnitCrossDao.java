@@ -11,5 +11,5 @@ import java.util.List;
 @MyBatisRepository
 public interface UnitCrossDao {
 
-    List<PlanCross> findPlanCross(List<String> planCrossIds);
+    List<UnitCross> findUnitCrossBySchemaId(String schemaId);
 }

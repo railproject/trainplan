@@ -153,7 +153,7 @@ public class PlanTrainStnService {
 	 * startDate 格式:yyyy-mm-dd
 	 * @throws Exception
 	 */
-
+    @Deprecated
 	public int importTainPlan( String schemeId,
 			 String startDate,  String dayCount) throws Exception {
 		//调用后台接口之前推送一条消息到页面
@@ -181,11 +181,11 @@ public class PlanTrainStnService {
 		//添加数据到表plan_cross
 		int count = crossService.addPlanCrossInfo(listPlanCross);
 		//做交路计划，第一个参数传null,表示全部交路都做
-		int crossCount = runPlanService.generateRunPlan(null, startDate, Integer.valueOf(dayCount));
+//		int crossCount = runPlanService.generateRunPlan(null, startDate, Integer.valueOf(dayCount));
 		//全部处理完了，推送一条消息到页面
 		quoteService.sendQuotes("", 0, 0, "plan.end");
 		
-		return crossCount;
+		return 0;
 	}
 
 	
