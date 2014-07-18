@@ -21,11 +21,10 @@ import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping(value = "/runPlan")
@@ -219,7 +218,28 @@ public class RunPlanController {
 		
 		return result;
 	}
-	
-	
+
+    /**
+     *
+     * @param baseChartId 基本图id
+     * @param startDate 开始日期，格式：yyyyMMdd
+     * @param days 天数
+     * @param unitcrossId unitcrossid数组
+     * @return 正在生成计划的基本交路id
+     */
+    @RequestMapping(value = "/plantrain/gen", method = RequestMethod.POST)
+	public ResponseEntity<List<String>> generatePlanTrainBySchemaId(@RequestParam(value = "baseChartId") String baseChartId,
+                                            @RequestParam(value = "startDate") String startDate,
+                                            @RequestParam(value = "days") int days,
+                                            @RequestParam(value = "unitcrossId", required = false) String[] unitcrossId) {
+        List<String> unitCrossIds = runPlanService.generateRunPlan(baseChartId, startDate, days);
+        return new ResponseEntity<>(unitCrossIds, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/plantrain/gen", method = RequestMethod.GET)
+    public ResponseEntity<List<String>> testGeneratePlanTrainBySchemaId() {
+        List<String> unitCrossIds = runPlanService.generateRunPlan("c1099526-202d-4653-890d-d8b2e2c8c0ae", "20140717", 1);
+        return new ResponseEntity<>(unitCrossIds, HttpStatus.OK);
+    }
 	
 }

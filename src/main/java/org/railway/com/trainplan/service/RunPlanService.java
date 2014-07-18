@@ -20,6 +20,7 @@ import org.railway.com.trainplan.repository.mybatis.*;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
+import org.railway.com.trainplan.service.message.SendMsgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -56,6 +57,15 @@ public class RunPlanService {
     
     @Autowired
     private BaseDao baseDao;
+
+    @Autowired
+    private CrossService crossService;
+
+    @Autowired
+    private SendMsgService msgService;
+
+    @Autowired
+    private PlanCrossDao planCrossDao;
 
     @Value("#{restConfig['plan.generatr.thread']}")
     private int threadNbr;
@@ -382,56 +392,31 @@ public class RunPlanService {
 	}
 
     /**
-     * 查询plancross列表
-     * @return plancross列表
-     */
-    public List<PlanCross> findPlanCross() {
-        try {
-            return unitCrossDao.findPlanCross(null);
-        } catch (Exception e) {
-            logger.error("findPlanCross:::::", e);
-        }
-        return null;
-    }
-
-    /**
-     * 查询runplan列表
-     * @return runplan列表
-     */
-    public List<RunPlan> findRunPlan() {
-        try {
-            return baseTrainDao.findBaseTrainByPlanCrossid(null);
-        } catch (Exception e) {
-            logger.error("findRunPlan:::::", e);
-        }
-        return null;
-    }
-
-    /**
      *
-     * @param planCrossIdList 指定生成plancross计划
+     * @param schemaId 基本图id
      * @param startDate yyyy-MM-dd
      * @param days 比如:30
      * @return 生成了多少个plancross的计划
      */
-    public int generateRunPlan(List<String> planCrossIdList, String startDate, int days) {
+    public List<String> generateRunPlan(String schemaId, String startDate, int days) {
         ExecutorService executorService = Executors.newFixedThreadPool(threadNbr);
-        List<PlanCross> planCrossList = null;
+        List<UnitCross> unitCrossList = unitCrossDao.findUnitCrossBySchemaId(schemaId);
+        List<String> unitCrossIdList = Lists.newArrayList();
         try{
-            planCrossList = unitCrossDao.findPlanCross(planCrossIdList);
-            for(PlanCross planCross: planCrossList) {
-                executorService.execute(new RunPlanGenerator(planCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days - 1));
+            for(UnitCross unitCross: unitCrossList) {
+                executorService.execute(new RunPlanGenerator(unitCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days - 1, msgService));
+                unitCrossIdList.add(unitCross.getUnitCrossId());
             }
         } finally {
             executorService.shutdown();
         }
-        return planCrossList.size();
+        return unitCrossIdList;
     }
 
     class RunPlanGenerator implements Runnable {
 
         // 传入参数
-        private PlanCross planCross;
+        private UnitCross unitCross;
 
         // 保存客运计划用
         private RunPlanDao runPlanDao;
@@ -445,18 +430,21 @@ public class RunPlanService {
 
         private int days;
 
+        private SendMsgService msgService;
+
         private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        RunPlanGenerator(PlanCross planCross, RunPlanDao runPlanDao,
+        RunPlanGenerator(UnitCross unitCross, RunPlanDao runPlanDao,
                          BaseTrainDao baseTrainDao, String startDate,
-                         RunPlanStnDao runPlanStnDao, int days) {
+                         RunPlanStnDao runPlanStnDao, int days, SendMsgService msgService) {
 
-            this.planCross = planCross;
+            this.unitCross = unitCross;
             this.runPlanDao = runPlanDao;
             this.baseTrainDao = baseTrainDao;
             this.runPlanStnDao = runPlanStnDao;
             this.startDate = startDate;
             this.days = days;
+            this.msgService = msgService;
         }
 
         @Override
@@ -464,20 +452,18 @@ public class RunPlanService {
         @Monitored
         public void run() {
             logger.debug("thread start:" + LocalTime.now().toString("hh:mm:ss"));
-            List<UnitCrossTrain> unitCrossTrainList = this.planCross.getUnitCrossTrainList();
-            String planCrossId = planCross.getPlanCrossId();
             Map<String, Object> params = Maps.newHashMap();
-            params.put("planCrossId", planCrossId);
-            List<RunPlan> baseRunPlanList = baseTrainDao.findBaseTrainByPlanCrossid(params);
-            LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(startDate);
+            params.put("unitCrossId", this.unitCross.getUnitCrossId());
+            List<RunPlan> baseRunPlanList = baseTrainDao.findBaseTrainByUnitCrossid(params);
+            LocalDate start = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.startDate);
 
             try {
-                generateRunPlan(start, unitCrossTrainList, baseRunPlanList, planCrossId, this.planCross.getGroupTotalNbr(), this.days);
+                generateRunPlan(start, baseRunPlanList);
             } catch (WrongDataException e) {
-                logger.error("数据错误：plancross_id = " + this.planCross.getPlanCrossId(), e);
+                logger.error("数据错误：unitCross_id = " + this.unitCross.getPlanCrossId(), e);
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error("生成计划失败：plancross_id = " + this.planCross.getPlanCrossId(), e);
+                logger.error("生成计划失败：unitCross_id = " + this.unitCross.getPlanCrossId(), e);
             }
             logger.debug("thread end:" + LocalTime.now().toString("hh:mm:ss"));
         }
@@ -485,21 +471,32 @@ public class RunPlanService {
         /**
          * 生成计划列表
          * @param startDate 起始日期
-         * @param unitCrossTrainList 基本交路车底
          * @param baseRunPlanList 基本图数据
-         * @param planCrossId plancrossid
-         * @param totalGroupNbr 交路车底组数
-         * @param days 生成计划天数
          * @return 计划列表
          * @throws WrongDataException
          * @throws Exception
          */
-        private List<RunPlan> generateRunPlan(LocalDate startDate, List<UnitCrossTrain> unitCrossTrainList,
-                                              List<RunPlan> baseRunPlanList, String planCrossId, int totalGroupNbr, int days) throws WrongDataException, Exception {
+        private void generateRunPlan(LocalDate startDate, List<RunPlan> baseRunPlanList) throws WrongDataException, Exception {
+            //生成plan_cross逻辑
+            String planCrossId = this.unitCross.getPlanCrossId();
+            boolean isNewPlanCrossInfo = false;
+            PlanCrossInfo planCrossInfo;
+            if(planCrossId == null) {
+                planCrossInfo = new PlanCrossInfo();
+                BeanUtils.copyProperties(planCrossInfo, this.unitCross);
+                planCrossInfo.setPlanCrossId(UUID.randomUUID().toString());
+                planCrossInfo.setCrossStartDate(this.startDate);
+                planCrossId = planCrossInfo.getPlanCrossId();
+                isNewPlanCrossInfo = true;
+            } else {
+                planCrossInfo = crossService.getPlanCrossInfoForPlanCrossId(planCrossId);
+            }
             // 按组别保存最后一个计划
             Map<Integer, RunPlan> lastRunPlans = Maps.newHashMap();
             // 用来保存最后一个交路起点
             RunPlan lastStartPoint = null;
+            List<UnitCrossTrain> unitCrossTrainList = this.unitCross.getUnitCrossTrainList();
+            int totalGroupNbr = this.unitCross.getGroupTotalNbr();
             // 计算每组有几个车次
             if(unitCrossTrainList.size() % totalGroupNbr != 0) {
                 throw new WrongDataException("交路数据错误，每组车数量不一样");
@@ -507,7 +504,7 @@ public class RunPlanService {
             int trainCount = unitCrossTrainList.size() / totalGroupNbr;
             List<RunPlan> resultList = Lists.newArrayList();
             // 计算结束时间
-            LocalDate lastDate = startDate.plusDays(days);
+            LocalDate lastDate = startDate.plusDays(this.days);
             // 记录daygap
             int totalDayGap = 0;
             // 开始生成
@@ -597,6 +594,7 @@ public class RunPlanService {
                                 LocalDate lastStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(lastStartPoint.getRunDate());
 
                                 if(((i % trainCount) == (trainCount - 1)) && (lastStartDate.compareTo(lastDate) >= 0)) {
+                                    planCrossInfo.setCrossEndDate(LocalDate.fromDateFields(new Date(runPlan.getEndDateTime().getTime())).toString("yyyyMMdd"));
                                     break generate;
                                 }
                                 break;
@@ -609,13 +607,17 @@ public class RunPlanService {
 
                 }
             }
-            return resultList;
+            if(isNewPlanCrossInfo) {
+                planCrossDao.save(planCrossInfo);
+            } else {
+                planCrossDao.update(planCrossInfo);
+            }
         }
     }
 
 	public int deletePlanCrossByPlanCorssIds(String[] crossIdsArray) {
 		StringBuffer bf = new StringBuffer();
-		Map<String,Object> reqMap = new HashMap<String,Object>();
+		Map<String,Object> reqMap = Maps.newHashMap();
 		int size = crossIdsArray.length;
 		for(int i = 0 ;i<size;i++){
 			bf.append("'").append(crossIdsArray[i]).append("'");
