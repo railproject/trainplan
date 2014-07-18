@@ -184,6 +184,37 @@ function CrossModel() {
 		   
 		// $("#run_plan_train_times").dialog("open");
 	};
+	
+	
+	/**
+	 * 用于调整时刻表
+	 * @param currentTrain
+	 */
+	self.loadTrainAllStns = function(currentTrain){
+		console.dir(currentTrain);
+		if($('#run_plan_train_times_edit_div').is(":hidden")){
+			$("#run_plan_train_times_edit_div").find("iframe").attr("src", basePath+"/runPlan/trainRunTimePage?trainNbr="+currentTrain.trainName+"&trainPlanId=" + currentTrain.planTrainId);
+			$('#run_plan_train_times_edit_div').dialog({title: "编辑列车运行时刻", autoOpen: true, modal: false, draggable: true, resizable:true,
+				onResize:function() {
+					var iframeBox = $("#run_plan_train_times_edit_div").find("iframe");
+					var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+					var WH = $('#run_plan_train_times_edit_div').height();
+					var WW = $('#run_plan_train_times_edit_div').width();
+	                if (isChrome) {
+	                	iframeBox.css({ "height": (WH) + "px"});
+	                	iframeBox.css({ "min-height": (WH) + "px"});
+	                	iframeBox.attr("width", (WW));
+
+	                }else{
+	                	iframeBox.css({ "height": (WH)  + "px"});
+	                	iframeBox.css({ "min-height": (WH) + "px"});
+	                	iframeBox.attr("width", (WW));
+	                }
+				}});
+		}
+	};
+	
+	
 	self.setCurrentTrain = function(train){ 
 		self.currentTrain(train); 
 	};
@@ -371,7 +402,8 @@ function CrossModel() {
 	
 	self.init = function(){  
  
-		$("#run_plan_train_times").dialog("close"); 
+		$("#run_plan_train_times").dialog("close");
+		$("#run_plan_train_times_edit_div").dialog("close"); 
  
 		$("#runplan_input_startDate").datepicker();
 		$("#runplan_input_endDate").datepicker();

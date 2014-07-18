@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping(value = "/runPlan")
@@ -49,6 +52,19 @@ public class RunPlanController {
      public String runPlanGt() {
 		 return "runPlan/run_plan_gt";
      }
+	 
+	 
+	 /**
+	  * 跳转到列车运行时刻表编辑页面
+	  * @param request
+	  * @return
+	  */
+	 @RequestMapping(value="/trainRunTimePage" ,method = RequestMethod.GET)
+     public ModelAndView trainRunTimePage(HttpServletRequest request) {
+		 return new ModelAndView("runPlan/train_runTime").addObject("trainNbr", request.getParameter("trainNbr"))
+		 		.addObject("trainPlanId", request.getParameter("trainPlanId"));
+     }
+	 
 	 
 	 @ResponseBody
 	 @RequestMapping(value = "/getRunPlans", method = RequestMethod.POST)
