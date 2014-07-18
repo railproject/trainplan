@@ -45,32 +45,32 @@ var TrainRunTimePage = function () {
 			console.dir(_trainUpdateList);
 			console.dir(JSON.stringify(_trainUpdateList));
 			
-//			commonJsScreenLock();
-//			$.ajax({
-//				url : basePath+"/jbtcx/queryPlanLineTrainTimes",
-//				cache : false,
-//				type : "POST",
-//				dataType : "json",
-//				contentType : "application/json",
-//				data :JSON.stringify({
-//					trainId: _trainUpdateList
-//				}),
-//				success : function(result) {
-//					if (result != null && result != "undefind" && result.code == "0") {
-//			            showSuccessDialog("保存成功");
-//					} else {
-//						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-//					} 
-//				},
-//				error : function() {
-//					showErrorDialog("接口调用失败");
-//				},
-//				complete : function(){ 
-//					commonJsScreenUnLock();  
-//				}
-//		    });
+			commonJsScreenLock();
+			$.ajax({
+				url : basePath+"/jbtcx/editPlanLineTrainTimes",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify(_trainUpdateList),
+				success : function(result) {
+					if (result != null && result != "undefind" && result.code == "0") {
+			            showSuccessDialog("保存成功");
+			            
+
+						_self.resetPageStatus();	//重置页面状态
+					} else {
+						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
+					} 
+				},
+				error : function() {
+					showErrorDialog("接口调用失败");
+				},
+				complete : function(){ 
+					commonJsScreenUnLock();  
+				}
+		    });
 			
-			_self.resetPageStatus();
 		};
 		
 		
