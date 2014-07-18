@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.beanutils.BeanUtils;
@@ -398,7 +400,7 @@ public class RunPlanService {
      * @param days 比如:30
      * @return 生成了多少个plancross的计划
      */
-    public List<String> generateRunPlan(String baseChartId, String startDate, int days, List<String> unitCrossIds) {
+    public List<String> generateRunPlan(String baseChartId, String startDate, int days, List<String> unitCrossIds, String msgReceiveUrl) {
         ExecutorService executorService = Executors.newFixedThreadPool(threadNbr);
         Map<String, Object> params = Maps.newHashMap();
         params.put("baseChartId", baseChartId);
@@ -407,7 +409,7 @@ public class RunPlanService {
         List<String> unitCrossIdList = Lists.newArrayList();
         try{
             for(UnitCross unitCross: unitCrossList) {
-                executorService.execute(new RunPlanGenerator(unitCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days - 1, msgService));
+                executorService.execute(new RunPlanGenerator(unitCross, runPlanDao, baseTrainDao, startDate, runPlanStnDao, days - 1, msgService, msgReceiveUrl));
                 unitCrossIdList.add(unitCross.getUnitCrossId());
             }
         } finally {
@@ -435,11 +437,13 @@ public class RunPlanService {
 
         private SendMsgService msgService;
 
+        private String msgReceiveUrl;
+
         private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         RunPlanGenerator(UnitCross unitCross, RunPlanDao runPlanDao,
                          BaseTrainDao baseTrainDao, String startDate,
-                         RunPlanStnDao runPlanStnDao, int days, SendMsgService msgService) {
+                         RunPlanStnDao runPlanStnDao, int days, SendMsgService msgService, String msgReceiveUrl) {
 
             this.unitCross = unitCross;
             this.runPlanDao = runPlanDao;
@@ -448,6 +452,7 @@ public class RunPlanService {
             this.startDate = startDate;
             this.days = days;
             this.msgService = msgService;
+            this.msgReceiveUrl = msgReceiveUrl;
         }
 
         @Override
@@ -593,6 +598,7 @@ public class RunPlanService {
                                 runPlanDao.addRunPlan(runPlan);
                                 runPlanStnDao.addRunPlanStn(runPlan.getRunPlanStnList());
 
+                                sendRunPlanMsg(this.unitCross.getUnitCrossId(), runPlan);
                                 // 如果有一组车的第一辆车的开始日期到了计划最后日期，就停止生成
                                 LocalDate lastStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(lastStartPoint.getRunDate());
 
@@ -614,6 +620,43 @@ public class RunPlanService {
                 planCrossDao.save(planCrossInfo);
             } else {
                 planCrossDao.update(planCrossInfo);
+            }
+            sendUnitCrossMsg(this.unitCross.getUnitCrossId());
+        }
+
+        private void sendRunPlanMsg(String unitCrossId, RunPlan runPlan) {
+            if(this.msgReceiveUrl == null) {
+                return;
+            }
+            Map<String, Object> msg = Maps.newHashMap();
+            msg.put("unitCrossId", unitCrossId);
+            msg.put("trainNbr", runPlan.getTrainNbr());
+            msg.put("day", runPlan.getRunDate());
+            msg.put("runFlag", runPlan.getSpareFlag());
+            ObjectMapper jsonUtil = new ObjectMapper();
+
+            try {
+                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                logger.error("发送消息失败", e);
+            }
+        }
+
+        private void sendUnitCrossMsg(String unitCrossId) {
+            if(this.msgReceiveUrl == null) {
+                return;
+            }
+            Map<String, Object> msg = Maps.newHashMap();
+            msg.put("unitCrossId", unitCrossId);
+            msg.put("status", 2);
+            ObjectMapper jsonUtil = new ObjectMapper();
+
+            try {
+                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                logger.error("发送消息失败", e);
             }
         }
     }

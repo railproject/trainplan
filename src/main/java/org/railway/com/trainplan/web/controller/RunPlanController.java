@@ -241,7 +241,8 @@ public class RunPlanController {
         String startDate = MapUtils.getString(params, "startDate");
         int days = MapUtils.getIntValue(params, "days");
         List<String> unitcrossId = (List<String>) params.get("unitcrossId");
-        List<String> unitCrossIds = runPlanService.generateRunPlan(baseChartId, startDate, days, unitcrossId);
+        String msgReceiveUrl = MapUtils.getString(params, "msgReceiveUrl");
+        List<String> unitCrossIds = runPlanService.generateRunPlan(baseChartId, startDate, days, unitcrossId, msgReceiveUrl);
         return new ResponseEntity<>(unitCrossIds, HttpStatus.OK);
     }
 }
