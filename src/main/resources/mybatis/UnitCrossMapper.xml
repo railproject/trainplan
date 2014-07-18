@@ -53,7 +53,7 @@
         <collection property="unitCrossTrainList" resultMap="org.railway.com.trainplan.repository.mybatis.UnitCrossTrainDao.unitCrossTrain"/>
     </resultMap>
 
-    <select id="findUnitCrossBySchemaId" parameterType="string" resultMap="unitCross">
+    <select id="findUnitCrossBySchemaId" parameterType="java.util.Map" resultMap="unitCross">
         SELECT
         UC.UNIT_CROSS_ID AS UNIT_CROSS_ID,
         UC.BASE_CROSS_ID AS BASE_CROSS_ID,
@@ -126,7 +126,13 @@
         UCT.END_DATE AS END_DATE
         FROM UNIT_CROSS UC LEFT JOIN UNIT_CROSS_TRAIN UCT ON UC.UNIT_CROSS_ID = UCT.UNIT_CROSS_ID
         LEFT JOIN PLAN_CROSS PC ON UC.UNIT_CROSS_ID = PC.UNIT_CROSS_ID
-        WHERE UC.BASE_CHART_ID = #{schemaId}
+        WHERE UC.BASE_CHART_ID = #{baseChartId}
+        <if test="unitCrossIds != null">
+            AND UC.UNIT_CROSS_ID IN
+            <foreach collection="unitCrossIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         ORDER BY UC.UNIT_CROSS_ID, UCT.GROUP_SERIAL_NBR, UCT.TRAIN_SORT
     </select>
 </mapper> 

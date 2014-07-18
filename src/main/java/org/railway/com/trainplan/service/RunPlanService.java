@@ -393,14 +393,17 @@ public class RunPlanService {
 
     /**
      *
-     * @param schemaId 基本图id
+     * @param baseChartId 基本图id
      * @param startDate yyyy-MM-dd
      * @param days 比如:30
      * @return 生成了多少个plancross的计划
      */
-    public List<String> generateRunPlan(String schemaId, String startDate, int days) {
+    public List<String> generateRunPlan(String baseChartId, String startDate, int days, List<String> unitCrossIds) {
         ExecutorService executorService = Executors.newFixedThreadPool(threadNbr);
-        List<UnitCross> unitCrossList = unitCrossDao.findUnitCrossBySchemaId(schemaId);
+        Map<String, Object> params = Maps.newHashMap();
+        params.put("baseChartId", baseChartId);
+        params.put("unitCrossIds", unitCrossIds);
+        List<UnitCross> unitCrossList = unitCrossDao.findUnitCrossBySchemaId(params);
         List<String> unitCrossIdList = Lists.newArrayList();
         try{
             for(UnitCross unitCross: unitCrossList) {

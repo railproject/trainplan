@@ -1,5 +1,6 @@
 package org.railway.com.trainplan.web.controller;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -232,24 +233,15 @@ public class RunPlanController {
 
     /**
      *
-     * @param baseChartId 基本图id
-     * @param startDate 开始日期，格式：yyyyMMdd
-     * @param days 天数
-     * @param unitcrossId unitcrossid数组
      * @return 正在生成计划的基本交路id
      */
     @RequestMapping(value = "/plantrain/gen", method = RequestMethod.POST)
-	public ResponseEntity<List<String>> generatePlanTrainBySchemaId(@RequestParam(value = "baseChartId") String baseChartId,
-                                            @RequestParam(value = "startDate") String startDate,
-                                            @RequestParam(value = "days") int days,
-                                            @RequestParam(value = "unitcrossId", required = false) String[] unitcrossId) {
-        List<String> unitCrossIds = runPlanService.generateRunPlan(baseChartId, startDate, days);
-        return new ResponseEntity<>(unitCrossIds, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/plantrain/gen", method = RequestMethod.GET)
-    public ResponseEntity<List<String>> testGeneratePlanTrainBySchemaId() {
-        List<String> unitCrossIds = runPlanService.generateRunPlan("c1099526-202d-4653-890d-d8b2e2c8c0ae", "20140717", 1);
+     public ResponseEntity<List<String>> generatePlanTrainBySchemaId(@RequestBody Map<String, Object> params) {
+        String baseChartId = MapUtils.getString(params, "baseChartId");
+        String startDate = MapUtils.getString(params, "startDate");
+        int days = MapUtils.getIntValue(params, "days");
+        List<String> unitcrossId = (List<String>) params.get("unitcrossId");
+        List<String> unitCrossIds = runPlanService.generateRunPlan(baseChartId, startDate, days, unitcrossId);
         return new ResponseEntity<>(unitCrossIds, HttpStatus.OK);
     }
 }
