@@ -793,7 +793,13 @@ var currentUserBureau = "<%=currentUserBureau %>";
 		</div> -->
 	
 	
-	<div id="run_plan_train_times_edit_div" class="easyui-dialog" title="调整时刻表"
+	<div id="run_plan_train_times_edit_dialog" class="easyui-dialog" title="调整时刻表"
+		data-options="iconCls:'icon-save'"
+		style="width: 800px; height: 400px;overflow: hidden;">
+		 <iframe style="width: 100%; height: 395px;border: 0;overflow: hidden;" src=""></iframe>
+	</div>
+	
+	<div id="run_plan_train_crew_dialog" class="easyui-dialog" title="调整时刻表"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 400px;overflow: hidden;">
 		 <iframe style="width: 100%; height: 395px;border: 0;overflow: hidden;" src=""></iframe>

@@ -28,9 +28,6 @@ var TrainRunTimePage = function () {
 	function PageModel() {
 		var _self = this;
 		
-
-		_self.trainUpdateList = ko.observableArray();	//列车经由站列表
-		
 		_self.trainStns = ko.observableArray();	//列车经由站列表
 		_self.currentTrainInfoMessage = ko.observable("");
 

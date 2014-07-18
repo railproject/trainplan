@@ -191,15 +191,14 @@ function CrossModel() {
 	 * @param currentTrain
 	 */
 	self.loadTrainAllStns = function(currentTrain){
-		console.dir(currentTrain);
-		if($('#run_plan_train_times_edit_div').is(":hidden")){
-			$("#run_plan_train_times_edit_div").find("iframe").attr("src", basePath+"/runPlan/trainRunTimePage?trainNbr="+currentTrain.trainName+"&trainPlanId=" + currentTrain.planTrainId);
-			$('#run_plan_train_times_edit_div').dialog({title: "编辑列车运行时刻", autoOpen: true, modal: false, draggable: true, resizable:true,
+//		if($('#run_plan_train_times_edit_dialog').is(":hidden")){
+			$("#run_plan_train_times_edit_dialog").find("iframe").attr("src", basePath+"/runPlan/trainRunTimePage?trainNbr="+currentTrain.trainName+"&trainPlanId=" + currentTrain.planTrainId);
+			$('#run_plan_train_times_edit_dialog').dialog({title: "编辑列车运行时刻", autoOpen: true, modal: false, draggable: true, resizable:true,
 				onResize:function() {
-					var iframeBox = $("#run_plan_train_times_edit_div").find("iframe");
+					var iframeBox = $("#run_plan_train_times_edit_dialog").find("iframe");
 					var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
-					var WH = $('#run_plan_train_times_edit_div').height();
-					var WW = $('#run_plan_train_times_edit_div').width();
+					var WH = $('#run_plan_train_times_edit_dialog').height();
+					var WW = $('#run_plan_train_times_edit_dialog').width();
 	                if (isChrome) {
 	                	iframeBox.css({ "height": (WH) + "px"});
 	                	iframeBox.css({ "min-height": (WH) + "px"});
@@ -211,7 +210,41 @@ function CrossModel() {
 	                	iframeBox.attr("width", (WW));
 	                }
 				}});
-		}
+//		}
+	};
+	
+	
+	/**
+	 * 查看列车乘务信息
+	 * @param currentTrain
+	 */
+	self.loadTrainPersonnel = function(currentTrain){
+		console.dir(currentTrain);
+//		if($('#run_plan_train_crew_dialog').is(":hidden")){
+			var _param = "trainNbr="+currentTrain.trainName+"&runDate=" + currentTrain.startDate+"&startStn="+currentTrain.startStn+"&endStn="+currentTrain.endStn;
+			var _title = "车次："+currentTrain.trainName+"&nbsp;&nbsp;&nbsp;&nbsp;"
+						+"开行日期：" + currentTrain.startDate
+						+"&nbsp;&nbsp;&nbsp;&nbsp;"  + currentTrain.startStn + "&nbsp;→&nbsp;" +  currentTrain.endStn;
+
+			$("#run_plan_train_crew_dialog").find("iframe").attr("src", basePath+"/runPlan/trainCrewPage?"+_param);
+			$('#run_plan_train_crew_dialog').dialog({title: "乘务信息【"+_title+"】", autoOpen: true, modal: false, draggable: true, resizable:true,
+				onResize:function() {
+					var iframeBox = $("#run_plan_train_crew_dialog").find("iframe");
+					var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+					var WH = $('#run_plan_train_crew_dialog').height();
+					var WW = $('#run_plan_train_crew_dialog').width();
+	                if (isChrome) {
+	                	iframeBox.css({ "height": (WH) + "px"});
+	                	iframeBox.css({ "min-height": (WH) + "px"});
+	                	iframeBox.attr("width", (WW));
+
+	                }else{
+	                	iframeBox.css({ "height": (WH)  + "px"});
+	                	iframeBox.css({ "min-height": (WH) + "px"});
+	                	iframeBox.attr("width", (WW));
+	                }
+				}});
+//		}
 	};
 	
 	
@@ -403,7 +436,8 @@ function CrossModel() {
 	self.init = function(){  
  
 		$("#run_plan_train_times").dialog("close");
-		$("#run_plan_train_times_edit_div").dialog("close"); 
+		$("#run_plan_train_times_edit_dialog").dialog("close");
+		$("#run_plan_train_crew_dialog").dialog("close");
  
 		$("#runplan_input_startDate").datepicker();
 		$("#runplan_input_endDate").datepicker();
