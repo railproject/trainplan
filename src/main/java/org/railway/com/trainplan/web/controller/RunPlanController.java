@@ -70,7 +70,7 @@ public class RunPlanController {
 	  */
 	 @RequestMapping(value="/trainCrewPage" ,method = RequestMethod.GET)
      public ModelAndView trainCrewPage(HttpServletRequest request) {
-		 return new ModelAndView("runPlan/train_crew").addObject("trainNbr", request.getParameter("rainNbr"))
+		 return new ModelAndView("runPlan/train_crew").addObject("trainNbr", request.getParameter("trainNbr"))
 		 		.addObject("runDate", request.getParameter("runDate"));
      }
 	 

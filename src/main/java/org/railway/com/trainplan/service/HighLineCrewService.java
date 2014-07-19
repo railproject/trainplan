@@ -183,10 +183,11 @@ public class HighLineCrewService {
 	 * @param trainNbr 车次
 	 * @return
 	 */
-	public List<HighLineCrewInfo> getHighlineCrewForCrewDateAndTrainNbr(String crewDate,String trainNbr){
+	public List<HighLineCrewInfo> getHighlineCrewForCrewDateAndTrainNbr(String crewDate,String trainNbr,String submitType){
 		   Map<String,Object> reqMap = new HashMap<String,Object>();
 		   reqMap.put("crewDate",crewDate);
 		   reqMap.put("trainNbr",trainNbr);
+		   reqMap.put("submitType", submitType);
 		   return baseDao.selectListBySql(Constants.GET_HIGHLINE_CREW_FOR_CREWDATE_AND_TRAINNBR, reqMap);
 	}
 }

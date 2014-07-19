@@ -262,10 +262,13 @@ public class HighLineCrewController {
     public Result getHighlineCrewForCrewDateAndTrainNbr(@RequestBody Map<String, Object> reqMap){
     	Result result = new Result();
         try {
+        	System.err.println("getHighlineCrewForCrewDateAndTrainNbr~~~~~reqMap=" + reqMap);
             logger.debug("getHighlineCrewForCrewDateAndTrainNbr~~~~~reqMap=" + reqMap);
             String crewDate = StringUtil.objToStr(reqMap.get("crewDate"));
             String trainNbr =  StringUtil.objToStr(reqMap.get("trainNbr"));
-            List<HighLineCrewInfo> queryResult = highLineCrewService.getHighlineCrewForCrewDateAndTrainNbr(crewDate, trainNbr);
+            //提交状态（0：编辑，1：提交）
+            String submitType = "1";
+            List<HighLineCrewInfo> queryResult = highLineCrewService.getHighlineCrewForCrewDateAndTrainNbr(crewDate, trainNbr,submitType);
             result.setData(queryResult);
         } catch (Exception e) {
             logger.error(e);
