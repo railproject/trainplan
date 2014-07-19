@@ -19,7 +19,7 @@
 	</appender>
 
 	<!--log4jdbc -->
-	<logger name="jdbc.sqltiming" level="DEBUG"/>
+	<logger name="jdbc.sqltiming" level="ERROR"/>
 	
 	<!-- springside modules -->
 	<logger name="org.springside.modules" level="ERROR" />
@@ -29,9 +29,9 @@
 
     <logger name="org.springframework" level="ERROR" />
 
-    <logger name="org.mybatis" level="debug" />
+    <logger name="org.mybatis" level="INFO" />
 
-    <logger name="org.apache.ibatis" level="ERROR"/>
+    <logger name="org.apache.ibatis" level="DEBUG"/>
 
     <logger name="org.hibernate" level="ERROR" />
 
@@ -42,7 +42,7 @@
     <logger name="org.springframework.amqp" level="ERROR" />
 
 	<!-- root -->
-	<root level="debug">
+	<root level="INFO">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />
 	</root>

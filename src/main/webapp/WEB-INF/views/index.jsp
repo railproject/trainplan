@@ -114,7 +114,7 @@
     <nav class="Navigation">
         <ul>
             <li>
-                <a href="http://10.1.186.115:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor: hand;"><i class="fa fa-bar-chart-o"></i>首页（看板） </a>
+                <a href="http://10.1.186.117:8080/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor: hand;"><i class="fa fa-bar-chart-o"></i>首页（看板） </a>
             </li>
             <shiro:authenticated>
                 <li><a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>发布计划<i class="fa fa-caret-down pull-right"></i></a>
