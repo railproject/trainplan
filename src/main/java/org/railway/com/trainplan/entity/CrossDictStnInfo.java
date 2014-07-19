@@ -12,11 +12,12 @@ public class CrossDictStnInfo {
 	private String drawGrapId;// 绘制交路图ID（对应DRAW_GRAPH主表中DRAW_GRAPH_ID）
 	private int stnSort;// 站序
 	private String stnName;// 车站名
-	private String height;// 绘图高度（距离第一个站的高度）
+	private String heightDetail;// 绘详图高度（距离第一个站的高度）
+	private String heightSimple;//绘简图高度（距离第一个站的高度）
 	private String stnType;// 车站类型（1:发到站，2:分界口，3:停站,4:不停站）
 	//所属局简称
     private String bureau;
-    
+ 
     
 	public String getBureau() {
 		return bureau;
@@ -60,12 +61,22 @@ public class CrossDictStnInfo {
 		this.stnName = stnName;
 	}
 
-	public String getHeight() {
-		return height;
+	
+
+	public String getHeightDetail() {
+		return heightDetail;
 	}
 
-	public void setHeight(String height) {
-		this.height = height;
+	public void setHeightDetail(String heightDetail) {
+		this.heightDetail = heightDetail;
+	}
+
+	public String getHeightSimple() {
+		return heightSimple;
+	}
+
+	public void setHeightSimple(String heightSimple) {
+		this.heightSimple = heightSimple;
 	}
 
 	public String getStnType() {

@@ -597,40 +597,47 @@ public class CrossController {
 						 //获取纵坐标信息
 						 List<PlanLineGridY> listGridY =  grid.getCrossStns();
 						 int height = 0;
+						 int heightSimple = 0;
 						 int stnsort = 0;
-						 for(PlanLineGridY gridY : listGridY){
-							 CrossDictStnInfo crossStnInfo = new CrossDictStnInfo();
-							 crossStnInfo.setDrawGrapId(drawGrapId);
-							 crossStnInfo.setDrawGrapStnId(UUID.randomUUID().toString());
-							 //TODO 所属局简称
-							 crossStnInfo.setBureau("");
-							 //默认每个站的间隔为100
-							 height = height+100;
-							 crossStnInfo.setHeight(String.valueOf(height));
-							 crossStnInfo.setStnName(gridY.getStnName());
-							 crossStnInfo.setStnSort(stnsort++);
+						 for(int i = 0;i<listGridY.size();i++){
+							 PlanLineGridY gridY = listGridY.get(i);
 							 String stationType = gridY.getStationType();
-							 //车站类型（1:发到站，2:分界口，3:停站,4:不停站）
-							 if("0".equals(stationType)){
-								 stationType = "1";
-							 }else if("BT".equals(stationType)){
-								 stationType = "4";
-							 }else if("TZ".equals(stationType)){
-								 stationType = "3";
-							 }else if("FJK".equals(stationType)){
-								 stationType = "2";
+							 if(!"BT".equals(stationType)){
+								 //不存不停的站
+								 CrossDictStnInfo crossStnInfo = new CrossDictStnInfo();
+								 crossStnInfo.setDrawGrapId(drawGrapId);
+								 crossStnInfo.setDrawGrapStnId(UUID.randomUUID().toString());
+								 //TODO 所属局简称
+								 crossStnInfo.setBureau("");
+								 //默认每个站的间隔为100
+								 height = height+100;
+								 crossStnInfo.setHeightDetail(String.valueOf(height));
+								 crossStnInfo.setStnName(gridY.getStnName());
+								 crossStnInfo.setStnSort(stnsort++);
+								 
+								 //车站类型（1:发到站，2:分界口，3:停站）
+								 if("0".equals(stationType)){
+									 stationType = "1";		
+								 }else if("TZ".equals(stationType)){
+									 stationType = "3";
+								 }else if("FJK".equals(stationType)){
+									 stationType = "2";
+								 }
+								 crossStnInfo.setStnType(stationType);
+								 
+								 if(i == 0 && "1".equals(stationType)){
+									 crossStnInfo.setHeightSimple(String.valueOf(0)) ;
+								 }else if( i !=0 && "1".equals(stationType)){
+									 heightSimple = heightSimple + 100;
+									 crossStnInfo.setHeightSimple(String.valueOf(heightSimple));
+								 }else{
+									 crossStnInfo.setHeightSimple(String.valueOf(0));
+								 }
+								 listDictStn.add(crossStnInfo);	 
 							 }
-							 crossStnInfo.setStnType(stationType);
-							 listDictStn.add(crossStnInfo);
+							
 						 }
-						 ////for test
-						 for(CrossDictStnInfo stnInfo :listDictStn ){
-							 System.err.println("name=" + stnInfo.getStnName());
-							 System.err.println("stnSort=" + stnInfo.getStnSort());
-							 System.err.println("stnType=" + stnInfo.getStnType());
-							 System.err.println("height=" + stnInfo.getHeight());
-						 }
-						 ///////
+						
 						 //保存数据
 						 int countDicStn = crossDictService.batchAddCrossDictStnInfo(listDictStn);
 						 logger.debug("countDicStn=="+ countDicStn);
