@@ -147,4 +147,18 @@
    WHERE A.DRAW_GRAPH_ID = B.DRAW_GRAPH_ID AND A.BASE_CROSS_ID=#{baseCrossId}
   
   </select>
+  
+  <select id="getCrossDictStnForUnitCorssId" parameterType="string" resultType="org.railway.com.trainplan.entity.CrossDictStnInfo">
+     select  C.draw_graph_stn_id as drawGraphStnId,
+             C.draw_graph_id as drawGraphId,
+             C.stn_sort as stnSort,
+             C.height as height,
+             C.stn_type as stnType,
+             C.stn_name as stnName
+     from unit_cross A,draw_graph B,draw_graph_stn C 
+     where a.base_cross_id = B.base_cross_id and B.draw_graph_id = C.draw_graph_id  and A.unit_cross_id=#{unitCrossId}  order by stn_sort
+   
+   </select>
+   
+   
 </mapper>

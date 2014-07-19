@@ -400,4 +400,31 @@
 				AND (NAME1 LIKE '%${name}%' OR NAME2 LIKE '%${name}%' )
 				</if>
     </select>
+    
+    <select id="getHighlineCrewForCrewDateAndTrainNbr" parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrewInfo">
+        select  A.* from
+	      (select  '-'||crew_cross||'-' as crewCross,
+	        HIGHLINE_CREW_ID  as crewHighlineId,
+	        CREW_DATE as crewDate,
+	        CREW_BUREAU as crewBureau,
+	        CREW_TYPE as crewType,
+	        CREW_GROUP as crewGroup,
+	        THROUGH_LINE as throughLine,
+	        NAME1 as name1,
+	        TEL1 as tel1,
+	        IDENTITY1 as identity1,
+	        NAME2 as name2,
+	        TEL2 as tel2,
+	        IDENTITY2 as identity2,
+	        NOTE as note,
+	        RECORD_PEOPLE as recordPeople,
+	        RECORD_PEOPLE_ORG as recordPeopleOrg,
+	        RECORD_TIME as recordTime,
+	        SUBMIT_TYPE AS submitType
+	      
+	      from highline_crew ) A  WHERE A.crewDate=#{crewDate} AND A.crewCross LIKE '%-${trainNbr}-%'
+      
+    
+    
+    </select>
 </mapper> 

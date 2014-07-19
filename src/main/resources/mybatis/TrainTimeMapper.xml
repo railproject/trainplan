@@ -151,4 +151,15 @@ select  t.child_index childIndex,
    
    </select>
    
+   <update id="editPlanLineTrainTimes" parameterType="map">
+   UPDATE PLAN_TRAIN_STN SET 
+     ARR_TIME = TO_DATE(#{arrTime},'yyyy-MM-dd hh24:mi:SS'),
+     DPT_TIME = TO_DATE(#{dptTime},'yyyy-MM-dd hh24:mi:SS'),
+     TRACK_NAME = #{trackName}
+     WHERE PLAN_TRAIN_STN_ID=#{planTrainStnId}
+   
+   </update>
+   
+   
+   
 </mapper>
