@@ -98,7 +98,7 @@ var TrainRunTimePage = function () {
 			
 			commonJsScreenLock();
 			$.ajax({
-				url : basePath+"/jbtcx/queryPlanLineTrainTimes",
+				url : basePath+"/jbtcx/getPlanTrainStnInfoForPlanTrainId",
 				cache : false,
 				type : "POST",
 				dataType : "json",

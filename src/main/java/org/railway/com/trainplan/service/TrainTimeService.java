@@ -39,6 +39,15 @@ public class TrainTimeService {
 		  
 	  }
 
+	  /**
+	   * 根据planTrainId查询plan_train_stn表信息
+	   * @param planTrainId
+	   * @return
+	   */
+	  public List<TrainTimeInfo>  getPlanTrainStnInfoForPlanTrainId(String planTrainId){
+		  return baseDao.selectListBySql(Constants.TRAININFO_GET_PLAN_TRAIN_STN_BY_TRAINID, planTrainId);
+		   
+	  }
 	public List<TrainTimeInfo> getTrainLineTimes(String trainId) {
 		 return baseDao.selectListBySql(Constants.GET_TRAINLINES_BY_TRAINLINEID, trainId); 
 	}

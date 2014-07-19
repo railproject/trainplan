@@ -174,6 +174,30 @@ public class JBTCXController {
 		return result;
 	} 
 	
+	
+	/**
+	 * 根据planTrainId查询运行线的列车运行时刻表
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getPlanTrainStnInfoForPlanTrainId", method = RequestMethod.POST)
+	public Result getPlanTrainStnInfoForPlanTrainId(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		try{
+			
+			String trainId =  StringUtil.objToStr(reqMap.get("trainId"));
+			logger.info("getPlanTrainStnInfoForPlanTrainId~~trainId==" + trainId);
+			List<TrainTimeInfo> times = trainTimeService.getPlanTrainStnInfoForPlanTrainId(trainId);
+			result.setData(times);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		return result;
+	}
+	
 	/**
 	 * 修改运行线的列车运行时刻表
 	 * @param reqMap

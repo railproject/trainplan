@@ -83,6 +83,37 @@ select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t
    </select> 
    
    
+   <select id="getPlanTrainStnInfoForPlanTrainId" parameterType="string" resultType="org.railway.com.trainplan.entity.TrainTimeInfo">
+   
+  SELECT  
+   PLAN_TRAIN_STN_ID AS planTrainStnId ,
+PLAN_TRAIN_ID,
+STN_SORT,
+STN_NAME AS stnName,
+STN_BUREAU AS bureauShortName ,
+STN_BUREAU_FULL,
+ARR_TRAIN_NBR,
+DPT_TRAIN_NBR,
+ARR_TIME AS arrTime,
+DPT_TIME AS dptTime,
+BASE_ARR_TIME,
+BASE_DPT_TIME,
+UP_DOWN,
+TRACK_NBR,
+TRACK_NAME AS trackName,
+PLATFORM,
+PSG_FLG,
+LOCO_FLAG,
+TEC_TYPE,
+STN_TYPE,
+BOUNDARY_IN_OUT,
+RUN_DAYS AS runDays
+   
+   FROM PLAN_TRAIN_STN WHERE PLAN_TRAIN_ID= #{planTrainId}  ORDER BY STN_SORT
+
+	 
+   
+   </select>
 <select id="getPlanLineTrainTimeInfoByTrainId" parameterType="string" resultType="org.railway.com.trainplan.entity.TrainTimeInfo">
 SELECT  T1.*,
  case 
