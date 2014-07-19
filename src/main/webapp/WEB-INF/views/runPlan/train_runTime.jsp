@@ -17,7 +17,7 @@ String basePath = request.getContextPath();
     <div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
       <label for="exampleInputEmail2" class="control-label pull-left" data-bind="html: currentTrainInfoMessage()"></label>
     </div>
-    <a type="button" href="#" class="btn btn-success btn-xs" data-bind="click: saveTrainTime" style="float:right;margin-right:20px;margin-bottom:0;"><i class="fa fa-search"></i>保存</a>
+    <a type="button" href="#" class="btn btn-success btn-xs" data-bind="click: saveTrainTime" style="float:right;margin-right:20px;margin-bottom:0;"><i class="fa fa-floppy-o"></i>保存</a>
   </form>
 </div>
 
@@ -41,15 +41,15 @@ String basePath = request.getContextPath();
                  </tr>
             </thead>
             <tbody data-bind="foreach: trainStns">
-	           <tr data-bind="attr:{class : isChangeValue()==1? 'success':''}">
+	           <tr data-bind="attr:{class : isChangeValue()==1? 'danger':''}">
 				<td style="width:40px" align="center" data-bind=" text: $index() + 1"></td>
 				<td style="width:200px" data-bind="text: stnName, attr:{title: stnName}"></td>
 				<td style="width:70px" align="center" data-bind="text: bureauShortName"></td>
-				<td style="width:180px" align="center"><input  data-bind="value: arrTime, event:{change: onChange}"/></td>
-				<td style="width:180px" align="center"><input  data-bind="value: dptTime, event:{change: onChange}"/></td>
+				<td style="width:180px" align="center"><input  data-bind="value: arrTime, event:{change: onArrTimeChange}"/></td>
+				<td style="width:180px" align="center"><input  data-bind="value: dptTime, event:{change: onDeptTimeChange}"/></td>
 				<td style="width:80px" align="center" data-bind="text: stepStr"></td>
 				<td style="width:80px" align="center" data-bind="text: runDays"></td>
-				<td style="width:80px" align="center"><input  data-bind="value: trackName, event:{change: onChange}"/></td>
+				<td style="width:80px" align="center"><input  data-bind="value: trackName, event:{change: onTrackNameChange}"/></td>
 	        	</tr>
 	        </tbody>
           </table>

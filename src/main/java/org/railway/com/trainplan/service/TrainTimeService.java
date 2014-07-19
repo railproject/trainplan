@@ -42,5 +42,24 @@ public class TrainTimeService {
 	public List<TrainTimeInfo> getTrainLineTimes(String trainId) {
 		 return baseDao.selectListBySql(Constants.GET_TRAINLINES_BY_TRAINLINEID, trainId); 
 	}
+	
+	/**
+	 * 更改表plan_train_stn中时刻和股道信息
+	 * @param list  list里存放TrainTimeInfo对象，
+	 * 主要是对arrTime，dptTime，trackName的更改
+	 * @return 修改成功的条数
+	 */
+	public int editPlanLineTrainTimes(List<TrainTimeInfo> list){
+		int totalCount = 0;
+		for(TrainTimeInfo timeInfo : list){
+			Map<String,Object> reqMap = new HashMap<String,Object>();
+			reqMap.put("arrTime", timeInfo.getArrTime());
+			reqMap.put("dptTime", timeInfo.getDptTime());
+			reqMap.put("trackName", timeInfo.getTrackName());
+			reqMap.put("planTrainStnId", timeInfo.getPlanTrainStnId());
+			totalCount += baseDao.insertBySql(Constants.EDIT_PLAN_LINE_TRAIN_TIMES, reqMap);
+		}
+		return totalCount;
+	}
 
 }

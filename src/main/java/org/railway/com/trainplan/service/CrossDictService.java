@@ -62,11 +62,20 @@ public class CrossDictService {
 	}
 	
 	/**
-	 * 通过baseCrossId查询
+	 * 通过baseCrossId查询CrossDictStnInfo对象
 	 * @param baseCrossId
 	 * @return
 	 */
 	public List<CrossDictStnInfo> getCrossDictStnForBaseCrossId(String baseCrossId){
 		return baseDao.selectListBySql(Constants.SQL_GET_CROSS_DIC_STN_FOR_BASECROSSID, baseCrossId);
+	}
+	
+	/**
+	 * 通过unitCrossId查询CrossDictStnInfo对象
+	 * @param unitCrossId
+	 * @return
+	 */
+	public List<CrossDictStnInfo> getCrossDictStnForUnitCorssId(String unitCrossId){
+		return baseDao.selectListBySql(Constants.GET_CROSS_DICT_STN_FOR_UNITCROSSID, unitCrossId);
 	}
 }

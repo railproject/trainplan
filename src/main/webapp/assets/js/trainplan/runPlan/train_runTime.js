@@ -28,9 +28,6 @@ var TrainRunTimePage = function () {
 	function PageModel() {
 		var _self = this;
 		
-
-		_self.trainUpdateList = ko.observableArray();	//列车经由站列表
-		
 		_self.trainStns = ko.observableArray();	//列车经由站列表
 		_self.currentTrainInfoMessage = ko.observable("");
 
@@ -41,10 +38,6 @@ var TrainRunTimePage = function () {
 		 * 保存
 		 */
 		_self.saveTrainTime = function() {
-			console.log("################### 进入保存方法###########");
-			console.dir(_trainUpdateList);
-			console.dir(JSON.stringify(_trainUpdateList));
-			
 			commonJsScreenLock();
 			$.ajax({
 				url : basePath+"/jbtcx/editPlanLineTrainTimes",
@@ -79,8 +72,6 @@ var TrainRunTimePage = function () {
 		 * 重置页面元素状态
 		 */
 		_self.resetPageStatus = function() {
-			console.log("************   重置页面元素状态 *************");
-			console.dir(_self.trainStns());
 			for (var i=0; i<_self.trainStns().length;i++) {
 				var _oldObj = _self.trainStns()[i];
 				for (var j=0;j<_trainUpdateList.length;j++) {
@@ -116,9 +107,6 @@ var TrainRunTimePage = function () {
 					trainId: $("#trainRunTime_trainPlanId_hidden").val()
 				}),
 				success : function(result) {
-					console.log(" queryPlanLineTrainTimes ============");
-					console.dir(result);
-					console.log(" queryPlanLineTrainTimes ============");
 					if (result != null && result != "undefind" && result.code == "0") {
 						var message = "车次："+$("#trainRunTime_trainNbr_hidden").val()+"&nbsp;&nbsp;&nbsp;&nbsp;" + result.data[0].stnName + "&nbsp;→&nbsp;" +  result.data[result.data.length-1].stnName;
 						_self.currentTrainInfoMessage(message);
@@ -156,6 +144,7 @@ var TrainRunTimePage = function () {
 	 */
 	function TrainTimeRow(data) {
 		var _self = this;
+		_self.data = data;
 		_self.planTrainStnId = ko.observable(data.planTrainStnId);
 		_self.index = ko.observable(data.childIndex + 1);
 		_self.stnName = ko.observable(filterValue(data.stnName));
@@ -168,17 +157,82 @@ var TrainRunTimePage = function () {
 		_self.stationFlag = ko.observable(data.stationFlag);
 		_self.isChangeValue = ko.observable(0);
 		
-		_self.data = data;
-		
-		_self.onChange = function() {
+		/**
+		 * 到达时间变更
+		 */
+		_self.onArrTimeChange = function() {
 			_self.data.arrTime = _self.arrTime();
-			_self.data.dptTime = _self.dptTime();
-			_self.data.trackName = _self.trackName();
 			_self.stepStr(GetDateDiff(_self.data));
-			_self.data.stepStr = _self.trackName();
+			_self.data.stepStr = _self.stepStr();
 			_self.isChangeValue(1);
 			
-			_trainUpdateList.push(_self.data);
+			var isAdd = true;	//是否将该行记录增加到需要保存数组中
+			for (var i=0;i<_trainUpdateList.length;i++) {
+				var _tempData = _trainUpdateList[i];
+				if (_tempData.planTrainStnId == _self.planTrainStnId()) {
+					_tempData.arrTime = _self.arrTime();
+					_tempData.stepStr = _self.stepStr();
+					
+					isAdd = false;
+					break;
+				}
+			}
+			
+			if (isAdd) {
+				_trainUpdateList.push(_self.data);
+			}
+		};
+		
+
+		/**
+		 * 出发时间变更
+		 */
+		_self.onDeptTimeChange = function() {
+			_self.data.dptTime = _self.dptTime();
+			_self.stepStr(GetDateDiff(_self.data));
+			_self.data.stepStr = _self.stepStr();
+			_self.isChangeValue(1);
+
+			var isAdd = true;	//是否将该行记录增加到需要保存数组中
+			for (var i=0;i<_trainUpdateList.length;i++) {
+				var _tempData = _trainUpdateList[i];
+				if (_tempData.planTrainStnId == _self.planTrainStnId()) {
+					_tempData.dptTime = _self.dptTime();
+					_tempData.stepStr = _self.stepStr();
+					
+					isAdd = false;
+					break;
+				}
+			}
+			
+			if (isAdd) {
+				_trainUpdateList.push(_self.data);
+			}
+		};
+		
+
+		/**
+		 * 股道变更
+		 */
+		_self.onTrackNameChange = function() {
+			_self.data.trackName = _self.trackName();
+			_self.isChangeValue(1);
+			
+
+			var isAdd = true;	//是否将该行记录增加到需要保存数组中
+			for (var i=0;i<_trainUpdateList.length;i++) {
+				var _tempData = _trainUpdateList[i];
+				if (_tempData.planTrainStnId == _self.planTrainStnId()) {
+					_tempData.trackName = _self.trackName();
+					
+					isAdd = false;
+					break;
+				}
+			}
+			
+			if (isAdd) {
+				_trainUpdateList.push(_self.data);
+			}
 		};
 		
 	};
@@ -190,15 +244,15 @@ var TrainRunTimePage = function () {
 	 * @returns
 	 */
 	function GetDateDiff(data) {
-		 if(data.childIndex == 0 
-				 || data.dptTime == '-' 
+		if(data.dptTime == '-' 
 				 || data.dptTime == null 
 				 || data.arrTime == null
 				 || data.arrTime == '-'){
 			return "";
 		}
+		
 		var startTime = new Date(data.arrTime);
-		var endTime = new Date(data.dptTime);  
+		var endTime = new Date(data.dptTime);
 		var result = "";
 		
 		var date3=endTime.getTime()-startTime.getTime(); //时间差的毫秒数 
@@ -222,7 +276,8 @@ var TrainRunTimePage = function () {
 		var leave3=leave2%(60*1000);          //计算分钟数后剩余的毫秒数
 		var seconds=Math.round(leave3/1000);
 		
-		result += seconds > 0 ? seconds + "秒" : "";  
+		result += seconds > 0 ? seconds + "秒" : "";
+
 		 
 		return result == "" ? "" : result; 
 	};

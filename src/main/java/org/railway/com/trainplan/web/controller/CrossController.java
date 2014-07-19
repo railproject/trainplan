@@ -321,8 +321,34 @@ public class CrossController {
 		 String crossStartDate = "";
 		 String crossEndDate = "";
 		 
-		 logger.debug("unitCrossId---unit=="+ unitCrossId);
-	
+		 logger.info("unitCrossId---unit=="+ unitCrossId);
+		 //用于纵坐标的列车list
+		 List<Station> stationDictList = new LinkedList<Station>(); 
+		 //标识纵坐标数据是否来源与经由字典
+		 boolean isDictDate = false;
+	     //查看经由字典是否有数据
+		 List<CrossDictStnInfo> listDitStnInfo = crossDictService.getCrossDictStnForUnitCorssId(unitCrossId);
+		 
+		 if(listDitStnInfo != null && listDitStnInfo.size() > 0){
+			 isDictDate = true;
+			 for(CrossDictStnInfo dictStnInfo : listDitStnInfo){
+				 Station station = new Station();
+				 station.setStnName(dictStnInfo.getStnName());
+				 String stationType = dictStnInfo.getStnType();
+				 //车站类型（1:发到站，2:分界口，3:停站,4:不停站）
+				 if("1".equals(stationType)){
+					 stationType = "0";
+				 }else if("4".equals(stationType)){
+					 stationType = "BT";
+				 }else if("3".equals(stationType)){
+					 stationType = "TZ";
+				 }else if("2".equals(stationType)){
+					 stationType = "FJK";
+				 }
+				 station.setStationType(stationType);
+				 stationDictList.add(station);
+			 }
+		 }
 		 //众坐标的站列表
 		 List<String> stationList = new ArrayList<String>();
 		//通过unitCrossId获取unitCross列表信息
@@ -381,13 +407,16 @@ public class CrossController {
 								 crossEndDate = crossEndDate.substring(0,10);
 							 }
 						 }	
-						//合并始发站和终到站
-						 if(!stationList.contains(subInfo.getStartStn())){
-							 stationList.add(subInfo.getStartStn());
+						 if(!isDictDate){
+							//合并始发站和终到站
+							 if(!stationList.contains(subInfo.getStartStn())){
+								 stationList.add(subInfo.getStartStn());
+							 }
+							 if(!stationList.contains(subInfo.getEndStn())){
+								 stationList.add(subInfo.getEndStn());
+							 } 
 						 }
-						 if(!stationList.contains(subInfo.getEndStn())){
-							 stationList.add(subInfo.getEndStn());
-						 }
+						
 						
 					 } 
 				 }
@@ -401,9 +430,16 @@ public class CrossController {
 				 dataList.add(crossMap);
 			 }
 		 }
-		 
-		 //组装坐标
-		 grid = getPlanLineGrid(stationList,crossStartDate,crossEndDate);
+		 logger.info("isDictDate==" + isDictDate );
+		 if(isDictDate){
+			 List<PlanLineGridY> listGridY = getPlanLineGridY(stationDictList); 
+			 List<PlanLineGridX> listGridX = getPlanLineGridX(crossStartDate,crossEndDate);
+		     grid = new PlanLineGrid(listGridX, listGridY);
+		 }else{
+			 //组装坐标
+			 grid = getPlanLineGrid(stationList,crossStartDate,crossEndDate);	 
+		 }
+		
 		 String myJlData = objectMapper.writeValueAsString(dataList);
 			//图形数据
 			result.addObject("myJlData",myJlData);
@@ -444,7 +480,18 @@ public class CrossController {
 				 for(CrossDictStnInfo dictStnInfo : listDicStn){
 					 Station station = new Station();
 					 station.setStnName(dictStnInfo.getStnName());
-					 station.setStationType(dictStnInfo.getStnType());
+					 String stationType = dictStnInfo.getStnType();
+					 //车站类型（1:发到站，2:分界口，3:停站,4:不停站）
+					 if("1".equals(stationType)){
+						 stationType = "0";
+					 }else if("4".equals(stationType)){
+						 stationType = "BT";
+					 }else if("3".equals(stationType)){
+						 stationType = "TZ";
+					 }else if("2".equals(stationType)){
+						 stationType = "FJK";
+					 }
+					 station.setStationType(stationType);
 					 stationList.add(station);
 				 }
 			 }
@@ -550,18 +597,40 @@ public class CrossController {
 						 //获取纵坐标信息
 						 List<PlanLineGridY> listGridY =  grid.getCrossStns();
 						 int height = 0;
+						 int stnsort = 0;
 						 for(PlanLineGridY gridY : listGridY){
 							 CrossDictStnInfo crossStnInfo = new CrossDictStnInfo();
 							 crossStnInfo.setDrawGrapId(drawGrapId);
 							 crossStnInfo.setDrawGrapStnId(UUID.randomUUID().toString());
 							 //TODO 所属局简称
 							 crossStnInfo.setBureau("");
-							 crossStnInfo.setHeight(String.valueOf(height+100));
+							 //默认每个站的间隔为100
+							 height = height+100;
+							 crossStnInfo.setHeight(String.valueOf(height));
 							 crossStnInfo.setStnName(gridY.getStnName());
-							 crossStnInfo.setStnSort(gridY.getStnSort());
-							 crossStnInfo.setStnType(gridY.getStationType());
+							 crossStnInfo.setStnSort(stnsort++);
+							 String stationType = gridY.getStationType();
+							 //车站类型（1:发到站，2:分界口，3:停站,4:不停站）
+							 if("0".equals(stationType)){
+								 stationType = "1";
+							 }else if("BT".equals(stationType)){
+								 stationType = "4";
+							 }else if("TZ".equals(stationType)){
+								 stationType = "3";
+							 }else if("FJK".equals(stationType)){
+								 stationType = "2";
+							 }
+							 crossStnInfo.setStnType(stationType);
 							 listDictStn.add(crossStnInfo);
 						 }
+						 ////for test
+						 for(CrossDictStnInfo stnInfo :listDictStn ){
+							 System.err.println("name=" + stnInfo.getStnName());
+							 System.err.println("stnSort=" + stnInfo.getStnSort());
+							 System.err.println("stnType=" + stnInfo.getStnType());
+							 System.err.println("height=" + stnInfo.getHeight());
+						 }
+						 ///////
 						 //保存数据
 						 int countDicStn = crossDictService.batchAddCrossDictStnInfo(listDictStn);
 						 logger.debug("countDicStn=="+ countDicStn);
@@ -665,31 +734,71 @@ public class CrossController {
 				 
 				 PlanLineGrid grid = null;
 				 ObjectMapper objectMapper = new ObjectMapper();
+				 
 				 //组装坐标
-				 //获取stationList
-				 List<Map<String,Object>> stationList = crossService.getStationListForPlanCrossId(planCrossId,bureauShortName);
+				 //首先查看经由字典中是否有数据
+				 boolean isHaveDate = false;
+				 PlanCrossInfo planCrossInfo = crossService.getPlanCrossInfoForPlanCrossId(planCrossId);
+				 if(planCrossInfo != null){
+					 String baseCrossId = planCrossInfo.getBaseCrossId(); 
+					 //通过baseCrossid查询经由站信息
+					 List<CrossDictStnInfo> listDictStn = crossDictService.getCrossDictStnForBaseCrossId(baseCrossId);
+				     if(listDictStn != null && listDictStn.size() > 0){
+				    	 isHaveDate = true;
+				    	 List<Station> listStation = new ArrayList<Station>();
+				    	 for(CrossDictStnInfo dictStn : listDictStn){
+				    		 Station station = new Station();
+				    		 station.setStnName(dictStn.getStnName());
+				    		 String stationType = dictStn.getStnType();
+				    		 //车站类型（1:发到站，2:分界口，3:停站,4:不停站）
+							 if("1".equals(stationType)){
+								 stationType = "0";
+							 }else if("4".equals(stationType)){
+								 stationType = "BT";
+							 }else if("3".equals(stationType)){
+								 stationType = "TZ";
+							 }else if("2".equals(stationType)){
+								 stationType = "FJK";
+							 }
+							 station.setStationType(stationType);
+							 listStation.add(station);
+				    	 }
+				    	 //生成横纵坐标
+				    	 List<PlanLineGridY> listGridY = getPlanLineGridY(listStation); 
+						 List<PlanLineGridX> listGridX = getPlanLineGridX(startTime,endTime);
+					     grid = new PlanLineGrid(listGridX, listGridY);
+				     }
 				 
-				 List<Map<String,Object>> stationTempList = new ArrayList<Map<String,Object>>();
-				 
-				
-				 Map<String,Object> startMap = null;
-				
-				 if(stationList != null && stationList.size() > 0){
-					 for(Map<String,Object> map : stationList){
-						 String stnName = StringUtil.objToStr(map.get("STNNAME"));
-						
-						 String sort = StringUtil.objToStr(map.get("SORT"));
-						 if("1".equals(sort) && startMap == null){
-							 startMap = map;
-							 stationTempList.add(startMap);
-						 }else if("2".equals(sort)){
-							 stationTempList.add(map);
-						 }else if("3".equals(sort) && !stnName.equals(StringUtil.objToStr(startMap.get("STNNAME"))) ){
-							 stationTempList.add(map);
+				 }
+				 logger.info("isHaveDate===" + isHaveDate);
+				 //经由字典中没有数据，则组装
+				 if(!isHaveDate){
+					 //获取stationList
+					 List<Map<String,Object>> stationList = crossService.getStationListForPlanCrossId(planCrossId,bureauShortName);
+					 
+					 List<Map<String,Object>> stationTempList = new ArrayList<Map<String,Object>>();
+					 
+					
+					 Map<String,Object> startMap = null;
+					
+					 if(stationList != null && stationList.size() > 0){
+						 for(Map<String,Object> map : stationList){
+							 String stnName = StringUtil.objToStr(map.get("STNNAME"));
+							
+							 String sort = StringUtil.objToStr(map.get("SORT"));
+							 if("1".equals(sort) && startMap == null){
+								 startMap = map;
+								 stationTempList.add(startMap);
+							 }else if("2".equals(sort)){
+								 stationTempList.add(map);
+							 }else if("3".equals(sort) && !stnName.equals(StringUtil.objToStr(startMap.get("STNNAME"))) ){
+								 stationTempList.add(map);
+							 }
 						 }
 					 }
+					 grid = getPlanLineGridForPlanLine(stationTempList,startTime,endTime);	 
 				 }
-				 grid = getPlanLineGridForPlanLine(stationTempList,startTime,endTime);
+				
 				 String myJlData = objectMapper.writeValueAsString(dataList);
 			     //图形数据
 				 Map<String,Object> dataMap = new HashMap<String,Object>();

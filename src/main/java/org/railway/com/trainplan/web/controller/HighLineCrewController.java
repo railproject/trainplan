@@ -252,7 +252,32 @@ public class HighLineCrewController {
         return result;
     }
 
+    /**
+     * 根据日期和车次获取乘务计划列表信息
+     * @param reqMap
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getHighlineCrewForCrewDateAndTrainNbr", method = RequestMethod.POST) 
+    public Result getHighlineCrewForCrewDateAndTrainNbr(@RequestBody Map<String, Object> reqMap){
+    	Result result = new Result();
+        try {
+        	System.err.println("getHighlineCrewForCrewDateAndTrainNbr~~~~~reqMap=" + reqMap);
+            logger.debug("getHighlineCrewForCrewDateAndTrainNbr~~~~~reqMap=" + reqMap);
+            String crewDate = StringUtil.objToStr(reqMap.get("crewDate"));
+            String trainNbr =  StringUtil.objToStr(reqMap.get("trainNbr"));
+            //提交状态（0：编辑，1：提交）
+            String submitType = "1";
+            List<HighLineCrewInfo> queryResult = highLineCrewService.getHighlineCrewForCrewDateAndTrainNbr(crewDate, trainNbr,submitType);
+            result.setData(queryResult);
+        } catch (Exception e) {
+            logger.error(e);
+            result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+            result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());
+        }
 
+        return result;
+    }
     /**
      * 导出excel
      *

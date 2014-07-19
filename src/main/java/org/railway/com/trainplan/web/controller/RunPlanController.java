@@ -57,7 +57,21 @@ public class RunPlanController {
 	 @RequestMapping(value="/trainRunTimePage" ,method = RequestMethod.GET)
      public ModelAndView trainRunTimePage(HttpServletRequest request) {
 		 return new ModelAndView("runPlan/train_runTime").addObject("trainNbr", request.getParameter("trainNbr"))
-		 		.addObject("trainPlanId", request.getParameter("trainPlanId"));
+		 		.addObject("trainPlanId", request.getParameter("trainPlanId"))
+		 		.addObject("startStn",request.getParameter("startStn"))
+		 		.addObject("endStn",request.getParameter("endStn"));
+     }
+	 
+	 
+	 /**
+	  * 查看乘务信息跳转页面
+	  * @param request
+	  * @return
+	  */
+	 @RequestMapping(value="/trainCrewPage" ,method = RequestMethod.GET)
+     public ModelAndView trainCrewPage(HttpServletRequest request) {
+		 return new ModelAndView("runPlan/train_crew").addObject("trainNbr", request.getParameter("trainNbr"))
+		 		.addObject("runDate", request.getParameter("runDate"));
      }
 	 
 	 

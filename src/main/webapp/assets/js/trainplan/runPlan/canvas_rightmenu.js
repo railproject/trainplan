@@ -209,7 +209,7 @@ var CanvasEventComponent = function(canvasDivId) {
 	this.showTrainPersonnel = function() {
     	$(".rightMenu").hide();
     	
-		showWarningDialog("抱歉！查看乘务信息功能尚未开发，请耐心等待！");
+    	cross.loadTrainPersonnel(_currentTrainObj.obj);
 		return;
 	};
 	

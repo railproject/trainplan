@@ -1,13 +1,16 @@
 package org.railway.com.trainplan.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.StringUtil;
-import org.railway.com.trainplan.entity.PlanTrain;
 import org.railway.com.trainplan.entity.SchemeInfo;
 import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.service.JBTCXService;
@@ -180,16 +183,33 @@ public class JBTCXController {
 	@RequestMapping(value = "/editPlanLineTrainTimes", method = RequestMethod.POST)
 	public Result editPlanLineTrainTimes(@RequestBody String reqStr){
 		Result result = new Result();
+		logger.info("editPlanLineTrainTimes~~reqStr==" + reqStr);
 		try{
-			
-			
-			logger.info("editPlanLineTrainTimes~~reqStr==" + reqStr);
+			JSONArray reqObj = JSONArray.fromObject(reqStr);
+			List<TrainTimeInfo> list = new ArrayList<TrainTimeInfo>();
+			if(reqObj != null && reqObj.size() > 0){
+				for(int i = 0;i<reqObj.size();i++){
+					TrainTimeInfo temp = new TrainTimeInfo();
+					JSONObject obj = reqObj.getJSONObject(i);
+					temp.setPlanTrainStnId(StringUtil.objToStr(obj.get("planTrainStnId")));
+					temp.setArrTime(StringUtil.objToStr(obj.get("arrTime")));
+					temp.setDptTime(StringUtil.objToStr(obj.get("dptTime")));
+					temp.setTrackName(StringUtil.objToStr(obj.get("trackName")));
+					list.add(temp);
+				}
+			}
+			//保存数据
+			int count = trainTimeService.editPlanLineTrainTimes(list);
+			logger.info("editPlanLineTrainTimes~~count==" + count);
 			
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
 		}
+		/**
+		 * public int editPlanLineTrainTimes(List<TrainTimeInfo> list)
+		 */
 		return result;
 	} 
 	
