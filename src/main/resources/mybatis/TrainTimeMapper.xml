@@ -191,6 +191,13 @@ select  t.child_index childIndex,
    
    </update>
    
+   <update id="updateSpareFlag" parameterType="map">
+        UPDATE PLAN_TRAIN  SET 
+        SPARE_FLAG = ${spareFlag}
+        WHERE PLAN_TRAIN_ID=#{planTrainId}
+   
+   </update>
+   
    
    
 </mapper>

@@ -194,6 +194,8 @@ public class Constants {
     public static final String TRAININFO_GETPLANLINE_TRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getPlanLineTrainTimeInfoByTrainId";
     //
     public static final String TRAININFO_GET_PLAN_TRAIN_STN_BY_TRAINID = "trainTimeDao.getPlanTrainStnInfoForPlanTrainId";
+    //更改spareFlag字段
+    public static final String TRAININFO_UPDATE_SPARE_FLAG = "trainTimeDao.updateSpareFlag";
     //getPlanTrainStnInfoForPlanTrainId
     public static final String GET_TRAIN_RUN_PLAN = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlans";
 	public static final String GET_PLAN_CROSS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getPlanCross";

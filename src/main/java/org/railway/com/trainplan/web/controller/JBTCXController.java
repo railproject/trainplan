@@ -231,9 +231,33 @@ public class JBTCXController {
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
 		}
-		/**
-		 * public int editPlanLineTrainTimes(List<TrainTimeInfo> list)
-		 */
+	
+		return result;
+	} 
+	
+	/**
+	 * 修改运行线的列车运行时刻表
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateSpareFlag", method = RequestMethod.POST)
+	public Result updateSpareFlag(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		logger.info("updateSpareFlag~~reqStr==" + reqMap);
+		String spareFlag = StringUtil.objToStr(reqMap.get("spareFlag"));
+		String planTrainId = StringUtil.objToStr(reqMap.get("planTrainId"));
+		try{
+			
+			int count = trainTimeService.updateSpareFlag(spareFlag,planTrainId);
+			
+			logger.info("updateSpareFlag~~count==" + count);	
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		
 		return result;
 	} 
 	

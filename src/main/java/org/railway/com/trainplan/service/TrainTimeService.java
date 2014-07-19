@@ -71,4 +71,19 @@ public class TrainTimeService {
 		return totalCount;
 	}
 
+	
+	/**
+	 * 更改spareFlag 备用及停运标记（1:开行；2:备用；9:停运）
+	 * @param spareFlag
+	 * @param planTrainId
+	 * @return
+	 */
+	public int updateSpareFlag(String spareFlag,String planTrainId){
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("spareFlag", spareFlag);
+		reqMap.put("planTrainId",planTrainId);
+		return baseDao.updateBySql(Constants.TRAININFO_UPDATE_SPARE_FLAG, reqMap);
+	}
+	
+	
 }
