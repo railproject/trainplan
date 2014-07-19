@@ -44,7 +44,7 @@ private final static String formartStr = "yyyy-MM-dd HH:mm:ss";
 //		System.out.println(list);
 	}
 	
-	private static LinkedList<Station> maergeList(LinkedList<LinkedList<Station>> list) throws ParseException{
+	public static LinkedList<Station> maergeList(List<LinkedList<Station>> list) throws ParseException{
 		LinkedList<Station> temp = list.get(0); 
 		for(LinkedList<Station> l : list){
 			if(temp != l){

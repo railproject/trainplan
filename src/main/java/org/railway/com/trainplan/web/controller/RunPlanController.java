@@ -1,11 +1,6 @@
 package org.railway.com.trainplan.web.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -21,11 +16,14 @@ import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/runPlan")
@@ -54,6 +52,33 @@ public class RunPlanController {
      public String runPlanGt() {
 		 return "runPlan/run_plan_gt";
      }
+	 
+	 
+	 /**
+	  * 跳转到列车运行时刻表编辑页面
+	  * @param request
+	  * @return
+	  */
+	 @RequestMapping(value="/trainRunTimePage" ,method = RequestMethod.GET)
+     public ModelAndView trainRunTimePage(HttpServletRequest request) {
+		 return new ModelAndView("runPlan/train_runTime").addObject("trainNbr", request.getParameter("trainNbr"))
+		 		.addObject("trainPlanId", request.getParameter("trainPlanId"))
+		 		.addObject("startStn",request.getParameter("startStn"))
+		 		.addObject("endStn",request.getParameter("endStn"));
+     }
+	 
+	 
+	 /**
+	  * 查看乘务信息跳转页面
+	  * @param request
+	  * @return
+	  */
+	 @RequestMapping(value="/trainCrewPage" ,method = RequestMethod.GET)
+     public ModelAndView trainCrewPage(HttpServletRequest request) {
+		 return new ModelAndView("runPlan/train_crew").addObject("trainNbr", request.getParameter("trainNbr"))
+		 		.addObject("runDate", request.getParameter("runDate"));
+     }
+	 
 	 
 	 @ResponseBody
 	 @RequestMapping(value = "/getRunPlans", method = RequestMethod.POST)
@@ -224,7 +249,19 @@ public class RunPlanController {
 		
 		return result;
 	}
-	
-	
-	
+
+    /**
+     *
+     * @return 正在生成计划的基本交路id
+     */
+    @RequestMapping(value = "/plantrain/gen", method = RequestMethod.POST)
+     public ResponseEntity<List<String>> generatePlanTrainBySchemaId(@RequestBody Map<String, Object> params) {
+        String baseChartId = MapUtils.getString(params, "baseChartId");
+        String startDate = MapUtils.getString(params, "startDate");
+        int days = MapUtils.getIntValue(params, "days");
+        List<String> unitcrossId = (List<String>) params.get("unitcrossId");
+        String msgReceiveUrl = MapUtils.getString(params, "msgReceiveUrl");
+        List<String> unitCrossIds = runPlanService.generateRunPlan(baseChartId, startDate, days, unitcrossId, msgReceiveUrl);
+        return new ResponseEntity<>(unitCrossIds, HttpStatus.OK);
+    }
 }

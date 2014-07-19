@@ -132,6 +132,13 @@ public class AuditController {
         return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
     }
 
+    /**
+     * 上图状态统计图接口
+     * @param date 日期，格式：yyyymmdd
+     * @param type 是否高线，0：既有线，1：高线
+     * @param name 车次
+     * @return 统计结果
+     */
     @RequestMapping(value = "plan/chart/planline/{date}/{type}", method = RequestMethod.GET)
     public ResponseEntity<List<ChartDto>> getPlanLine(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
@@ -159,33 +166,16 @@ public class AuditController {
         chart3.setName("未知");
         chart3.setCount(MapUtils.getIntValue(result, "UNKNOWN", 0));
         charts.add(chart3);
-        return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(charts, httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "plancross/test", method = RequestMethod.GET)
-    public ResponseEntity<List<PlanCross>> getUnitCross() {
-        List<PlanCross> result = runPlanService.findPlanCross();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<List<PlanCross>>(result, httpHeaders, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "runplan/test", method = RequestMethod.GET)
-    public ResponseEntity<List<RunPlan>> getRunPlan() {
-        List<RunPlan> result = runPlanService.findRunPlan();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<List<RunPlan>>(result, httpHeaders, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "runplan/generate/{date}/{days}/{planCrossId}")
-    public ResponseEntity<Integer> generateRunPlan(@PathVariable String date, @PathVariable int days, @PathVariable String planCrossId) {
-        List<String> list = Lists.newArrayList();
-        list.add(planCrossId);
-        int i = runPlanService.generateRunPlan(list, date, days);
-        return new ResponseEntity<Integer>(i, HttpStatus.OK);
-    }
-
+    /**
+     * 一级审核统计图
+     * @param date 日期
+     * @param type 是否高线，0：否，1：是
+     * @param name 车次
+     * @return 统计结果
+     */
     @RequestMapping(value = "plan/chart/lev1check/{date}/{type}", method = RequestMethod.GET)
     public ResponseEntity<List<ChartDto>> getLev1CheckPie(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
@@ -211,6 +201,13 @@ public class AuditController {
         return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
     }
 
+    /**
+     * 二级审核统计图
+     * @param date 日期
+     * @param type 是否高线，0：否， 1：是
+     * @param name 车次
+     * @return 统计结果
+     */
     @RequestMapping(value = "plan/chart/lev2check/{date}/{type}", method = RequestMethod.GET)
     public ResponseEntity<List<ChartDto>> getLev2CheckPie(@PathVariable String date, @PathVariable int type, @RequestParam(defaultValue = "") String name) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
@@ -236,6 +233,11 @@ public class AuditController {
         return new ResponseEntity<List<ChartDto>>(charts, httpHeaders, HttpStatus.OK);
     }
 
+    /**
+     * 查询找不到对应客运计划的运行线数量（冗余运行线数量）
+     * @param date 日期
+     * @return 数量
+     */
     @RequestMapping(value = "check/line/{date}/unknown", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> findUnknownRunLine(@PathVariable String date) {
         ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();

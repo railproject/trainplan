@@ -192,6 +192,11 @@ public class Constants {
     public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";
     //根据plan_train_id获取运行线列车时刻表 
     public static final String TRAININFO_GETPLANLINE_TRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getPlanLineTrainTimeInfoByTrainId";
+    //
+    public static final String TRAININFO_GET_PLAN_TRAIN_STN_BY_TRAINID = "trainTimeDao.getPlanTrainStnInfoForPlanTrainId";
+    //更改spareFlag字段
+    public static final String TRAININFO_UPDATE_SPARE_FLAG = "trainTimeDao.updateSpareFlag";
+    //getPlanTrainStnInfoForPlanTrainId
     public static final String GET_TRAIN_RUN_PLAN = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlans";
 	public static final String GET_PLAN_CROSS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getPlanCross";
 	public static final String CROSSDAO_DELETE_PLANCROSS_INFO_TRAIN_FOR_CROSSIDS = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.deletePlanCrossByPlanCrossIds";
@@ -201,7 +206,9 @@ public class Constants {
     public static final String CROSSDAO_UPDATE_CHECKTYPE_FOR_PLANCROSSID="org.railway.com.trainplan.repository.mybatis.RunPlanDao.updateCheckTypeForPlanCrossId";
 	public static final String GETTRAINLINES_JHPT_COUNT = "trainInfoDao.getTrainlineTotalCount";
 	public static final String GETTRAINLINES_JHPT = "trainInfoDao.getTrainlineForPage";
-	public static String GET_TRAINLINES_BY_TRAINLINEID = "trainTimeDao.getTrainLineTimes";
+	public static final String GET_TRAINLINES_BY_TRAINLINEID = "trainTimeDao.getTrainLineTimes";
+	//更新运行线时刻表
+	public static final String EDIT_PLAN_LINE_TRAIN_TIMES = "trainTimeDao.editPlanLineTrainTimes";
 	
 	public static final String  HIGHLINECREWDAO_FIND_RUNPLAN_LIST = "org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.findRunPlanList";
 	public static final String HIGHLINECREWDAO_FIND_HIGHLINE_CREW_LIST = "org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.findHighlineCrewList";
@@ -214,8 +221,20 @@ public class Constants {
 	public static final String HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO_FOR_PAGE = "org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.getHighlineCrewBaseInfoForPage";
 	//
 	public static final String HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO="org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.getHighlineCrewBaseInfo";
+	//
+	public static final String GET_HIGHLINE_CREW_FOR_CREWDATE_AND_TRAINNBR ="org.railway.com.trainplan.repository.mybatis.HighLineCrewDao.getHighlineCrewForCrewDateAndTrainNbr";
 	//获取交路字典信息
 	public static final String SQL_ID_CROSSDICT_INFO = "crossDictDao.findCrossDictList";
+	//增加交路字典信息
+	public static final String SQL_ADD_CROSS_DIC_INFO = "crossDictDao.addCrossDictInfo";
+	//通过unitCrossId查询drawGraphStn信息 
+	public static final String GET_CROSS_DICT_STN_FOR_UNITCROSSID = "crossDictDao.getCrossDictStnForUnitCorssId";
+	//批量增加交路字典经由站信息
+	public static final String SQL_BATCH_ADD_CROSS_DIC_STN_INFO="crossDictDao.batchAddCrossDictStnInfo";
+	//通过baseCrossId查询draw_graph对象
+	public static final String SQL_GET_DRAW_GRAPH_FOR_BASECROSSID = "crossDictDao.getDrawGraphForBaseCrossId";
+	//通过baseCrossId查询draw_graph_stn对象
+	public static final String SQL_GET_CROSS_DIC_STN_FOR_BASECROSSID = "crossDictDao.getCrossDictStnForBaseCrossId";
 	public static final String GET_PLANCROSSINFO_BY_STARTDATE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getRunPlanByStartDate";
  
 	public static final String TRAINPLANDAO_FIND_BY_GROUPSERIALBRR = "trainPlanDao.findPlanTrainByGroupSerialNbr";

@@ -12,7 +12,7 @@ String basePath = request.getContextPath();
 <body class="Iframe_body">
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
-  <li><a href="<%=basePath %>/crew/page/sj">乘务计划->机械师乘务计划上报</a></li>
+  <li><a href="javascript:void(0);">机械师乘务计划上报</a></li>
 </ol>
 <!--以上为必须要的--> 
 
@@ -134,7 +134,7 @@ String basePath = request.getContextPath();
               </tr>
             </thead>
 			<tbody data-bind="foreach: planTrainRows.rows">
-			  <tr data-bind="click: $parent.setCurrentTrainPlan,style:{color: $parent.currentRowPlanTrainId() == planTrainId ? 'blue':''}, attr:{class : isMatch()==1? 'label-success':''}">
+			  <tr data-bind="click: $parent.setCurrentTrainPlan,style:{color: $parent.currentRowPlanTrainId() == planTrainId ? 'blue':''}, attr:{class : isMatch()==1? 'success':''}">
                 <td style="width:40px;" data-bind=" text: ($index() + 1)"></td>
                 <td style="width:120px;" data-bind=" text: trainNbr, attr:{title: trainNbr}"></td>
                 <td style="width:120px;" data-bind=" text: startStn, attr:{title: startStn}"></td>

@@ -5,10 +5,17 @@ public class Station {
 	private String stnName;
 	//离站时间
 	private String dptTime;
-	
+	private int isCurrentBureau; 
 	private Integer minites;
 	private String stationType;
+	private int stnSort;
 	public Station(){}
+	public Station(String stnName,String stationType,int stnSort,int isCurrentBureau){
+		this.stnName = stnName;
+		this.stationType = stationType;
+		this.isCurrentBureau = isCurrentBureau;	
+		this.stnSort = stnSort;
+	}
 	public Station(String stnName,String dptTime,Integer minites){
 		this(stnName,dptTime);
 		this.minites = minites;
@@ -20,6 +27,18 @@ public class Station {
 	}
 	
 	
+	public int getStnSort() {
+		return stnSort;
+	}
+	public void setStnSort(int stnSort) {
+		this.stnSort = stnSort;
+	}
+	public int getIsCurrentBureau() {
+		return isCurrentBureau;
+	}
+	public void setIsCurrentBureau(int isCurrentBureau) {
+		this.isCurrentBureau = isCurrentBureau;
+	}
 	public String getStationType() {
 		return stationType;
 	}

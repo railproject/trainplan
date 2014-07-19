@@ -11,5 +11,5 @@ import java.util.Map;
 @MyBatisRepository
 public interface BaseTrainDao {
 
-    List<RunPlan> findBaseTrainByPlanCrossid(Map<String, Object> map);
+    List<RunPlan> findBaseTrainByUnitCrossid(Map<String, Object> map);
 }

@@ -114,7 +114,7 @@
     <nav class="Navigation">
         <ul>
             <li>
-                <a href="http://10.1.186.116:8090/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor: hand;"><i class="fa fa-bar-chart-o"></i>首页（看板） </a>
+                <a href="http://10.1.186.117:8080/dashboard/kanban/kanban.html" id="kanban" target="contentFrame" class="menu_one" style="cursor: hand;"><i class="fa fa-bar-chart-o"></i>首页（看板） </a>
             </li>
             <shiro:authenticated>
                 <li><a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>发布计划<i class="fa fa-caret-down pull-right"></i></a>
@@ -208,8 +208,8 @@
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>日历运行图<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-level-down"></i>始发统计</a></li>
-                        <li><a href="http://10.1.186.116:8090/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-level-up"></i>接入统计</a></li>
+                        <li><a href="http://10.1.186.115:8090/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-level-down"></i>始发统计</a></li>
+                        <li><a href="http://10.1.186.115:8090/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-level-up"></i>接入统计</a></li>
                         <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-search"></i>明细查询</a></li>
                     </ul>
                 </li>

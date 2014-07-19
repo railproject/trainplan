@@ -41,7 +41,7 @@
         <result column="TRACKNAME" property="trackName"/>
     </resultMap>
 
-    <select id="findBaseTrainByPlanCrossid" parameterType="string" resultMap="baseTrain">
+    <select id="findBaseTrainByUnitCrossid" parameterType="string" resultMap="baseTrain">
         SELECT M.*, N.* FROM
         (
         select O.BASE_TRAIN_ID              BASETRAINID1,
@@ -72,8 +72,8 @@
         (select DISTINCT A.BASE_TRAIN_ID, A.TRAIN_NBR,A.DAY_GAP,A.SPARE_FLAG,A.SPARE_APPLY_FLAG,A.HIGHLINE_FLAG, A.HIGHLINE_RULE,A.COMMONLINE_RULE,A.APPOINT_WEEK,A.APPOINT_DAY
         from UNIT_CROSS_TRAIN A, PLAN_CROSS B
         WHERE A.UNIT_CROSS_ID = B.UNIT_CROSS_ID AND A.BASE_TRAIN_ID IS NOT NULL
-        <if test="planCrossId != null">
-            AND B.PLAN_CROSS_ID = #{planCrossId}
+        <if test="unitCrossId != null">
+            AND A.UNIT_CROSS_ID = #{unitCrossId}
         </if>
         ) O
         WHERE t.ID = O.BASE_TRAIN_ID
@@ -102,8 +102,8 @@
         T.TRACK_NAME
         FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_SITEM T,
         (select A.BASE_TRAIN_ID from UNIT_CROSS_TRAIN A,PLAN_CROSS B WHERE A.UNIT_CROSS_ID = B.UNIT_CROSS_ID AND A.BASE_TRAIN_ID IS NOT NULL
-        <if test="planCrossId != null">
-            AND B.PLAN_CROSS_ID = #{planCrossId}
+        <if test="unitCrossId != null">
+            AND A.UNIT_CROSS_ID = #{unitCrossId}
         </if>
         GROUP BY A.BASE_TRAIN_ID
         ) O
@@ -122,8 +122,8 @@
         T.TRACK_NAME
         FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_RITEM T,
         (select A.BASE_TRAIN_ID from UNIT_CROSS_TRAIN A,PLAN_CROSS B WHERE A.UNIT_CROSS_ID = B.UNIT_CROSS_ID AND A.BASE_TRAIN_ID IS NOT NULL
-        <if test="planCrossId != null">
-            AND B.PLAN_CROSS_ID = #{planCrossId}
+        <if test="unitCrossId != null">
+            AND A.UNIT_CROSS_ID = #{unitCrossId}
         </if>
         GROUP BY A.BASE_TRAIN_ID
         ) O
@@ -142,8 +142,8 @@
         T.TRACK_NAME
         FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_TITEM T,
         (select A.BASE_TRAIN_ID from UNIT_CROSS_TRAIN A,PLAN_CROSS B WHERE A.UNIT_CROSS_ID = B.UNIT_CROSS_ID AND A.BASE_TRAIN_ID IS NOT NULL
-        <if test="planCrossId != null">
-            AND B.PLAN_CROSS_ID = #{planCrossId}
+        <if test="unitCrossId != null">
+            AND A.UNIT_CROSS_ID = #{unitCrossId}
         </if>
         GROUP BY A.BASE_TRAIN_ID
         ) O

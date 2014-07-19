@@ -176,4 +176,18 @@ public class HighLineCrewService {
 			return baseDao.selectListBySql(Constants.HIGHLINECREWDAO_GET_HIGHLINE_CREW_BASE_INFO, reqMap);
 	}
 	
+	
+	/**
+	 * 通过crewDate和trainNbr查询HighLineCrewInfo对象列表
+	 * @param crewDate 时间格式：yyyyMMdd
+	 * @param trainNbr 车次
+	 * @return
+	 */
+	public List<HighLineCrewInfo> getHighlineCrewForCrewDateAndTrainNbr(String crewDate,String trainNbr,String submitType){
+		   Map<String,Object> reqMap = new HashMap<String,Object>();
+		   reqMap.put("crewDate",crewDate);
+		   reqMap.put("trainNbr",trainNbr);
+		   reqMap.put("submitType", submitType);
+		   return baseDao.selectListBySql(Constants.GET_HIGHLINE_CREW_FOR_CREWDATE_AND_TRAINNBR, reqMap);
+	}
 }

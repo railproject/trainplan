@@ -190,9 +190,9 @@ var HightLineCrewSjPage = function () {
 		_self.checkCrew = function() {
 			
 			for(var i=0; i<_self.planTrainRows.rows().length;i++) {
+				_self.planTrainRows.rows()[i].isMatch("0");//恢复匹配颜色默认值;
 				var _trainNbr = _self.planTrainRows.rows()[i].trainNbr();
 				for(var j=0; j<_self.hightLineCrewRows.rows().length;j++) {
-					_self.planTrainRows.rows()[i].isMatch("0");//恢复匹配颜色默认值;
 					var crewCrossArray = _self.hightLineCrewRows.rows()[j].crewCross.split("-");
 					
 					if($.inArray(_trainNbr, crewCrossArray) > -1) {

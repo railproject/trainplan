@@ -1,6 +1,7 @@
 package org.railway.com.trainplan.entity;
 
 public class TrainTimeInfo {
+	 private String planTrainStnId;
 	 private int childIndex;
 	 private String stnName;
 	 private String bureauShortName;
@@ -13,6 +14,12 @@ public class TrainTimeInfo {
 	 private String nodeId;
 	 
 	 
+	public String getPlanTrainStnId() {
+		return planTrainStnId;
+	}
+	public void setPlanTrainStnId(String planTrainStnId) {
+		this.planTrainStnId = planTrainStnId;
+	}
 	public String getNodeId() {
 		return nodeId;
 	}

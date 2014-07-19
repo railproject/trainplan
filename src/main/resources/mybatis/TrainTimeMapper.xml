@@ -83,6 +83,37 @@ select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t
    </select> 
    
    
+   <select id="getPlanTrainStnInfoForPlanTrainId" parameterType="string" resultType="org.railway.com.trainplan.entity.TrainTimeInfo">
+   
+  SELECT  
+   PLAN_TRAIN_STN_ID AS planTrainStnId ,
+PLAN_TRAIN_ID,
+STN_SORT,
+STN_NAME AS stnName,
+STN_BUREAU AS bureauShortName ,
+STN_BUREAU_FULL,
+ARR_TRAIN_NBR,
+DPT_TRAIN_NBR,
+ARR_TIME AS arrTime,
+DPT_TIME AS dptTime,
+BASE_ARR_TIME,
+BASE_DPT_TIME,
+UP_DOWN,
+TRACK_NBR,
+TRACK_NAME AS trackName,
+PLATFORM,
+PSG_FLG,
+LOCO_FLAG,
+TEC_TYPE,
+STN_TYPE,
+BOUNDARY_IN_OUT,
+RUN_DAYS AS runDays
+   
+   FROM PLAN_TRAIN_STN WHERE PLAN_TRAIN_ID= #{planTrainId}  ORDER BY STN_SORT
+
+	 
+   
+   </select>
 <select id="getPlanLineTrainTimeInfoByTrainId" parameterType="string" resultType="org.railway.com.trainplan.entity.TrainTimeInfo">
 SELECT  T1.*,
  case 
@@ -106,7 +137,7 @@ SELECT  T1.*,
 end stationFlag 
 FROM 
 (
-SELECT A.TRAIN_NBR,TO_CHAR(A.START_TIME,'yyyy-MM-dd hh24:mi:SS') AS STARTTIME,TO_CHAR(A.END_TIME,'yyyy-MM-dd hh24:mi:SS') AS ENDTIME,A.START_STN,A.END_STN,
+SELECT B.PLAN_TRAIN_STN_ID AS PLANTRAINSTNID,A.TRAIN_NBR,TO_CHAR(A.START_TIME,'yyyy-MM-dd hh24:mi:SS') AS STARTTIME,TO_CHAR(A.END_TIME,'yyyy-MM-dd hh24:mi:SS') AS ENDTIME,A.START_STN,A.END_STN,
 B.STN_SORT AS childIndex,B.STN_NAME AS STNNAME,B.STN_BUREAU AS bureauShortName,B.STN_BUREAU_FULL AS STNBUREAUFULL,TO_CHAR(B.ARR_TIME,'yyyy-MM-dd hh24:mi:SS') AS ARRTIME,TO_CHAR(B.DPT_TIME,'yyyy-MM-dd hh24:mi:SS') AS DPTTIME,
 B.RUN_DAYS AS RUNDAYS,B.TRACK_NAME AS TRACKNAME,
 CASE
@@ -150,5 +181,23 @@ select  t.child_index childIndex,
  where t.parent_id = #{trainId} order by childIndex
    
    </select>
+   
+   <update id="editPlanLineTrainTimes" parameterType="map">
+   UPDATE PLAN_TRAIN_STN SET 
+     ARR_TIME = TO_DATE(#{arrTime},'yyyy-MM-dd hh24:mi:SS'),
+     DPT_TIME = TO_DATE(#{dptTime},'yyyy-MM-dd hh24:mi:SS'),
+     TRACK_NAME = #{trackName}
+     WHERE PLAN_TRAIN_STN_ID=#{planTrainStnId}
+   
+   </update>
+   
+   <update id="updateSpareFlag" parameterType="map">
+        UPDATE PLAN_TRAIN  SET 
+        SPARE_FLAG = ${spareFlag}
+        WHERE PLAN_TRAIN_ID=#{planTrainId}
+   
+   </update>
+   
+   
    
 </mapper>

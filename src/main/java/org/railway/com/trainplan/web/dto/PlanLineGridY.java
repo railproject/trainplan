@@ -6,13 +6,20 @@ package org.railway.com.trainplan.web.dto;
 public class PlanLineGridY {
     private String stnName;
     private int isCurrentBureau;
+    //车站类型（1:发到站，2:分界口，3:停站,4:不停站）
     private String stationType;
     private String dptTime;
+    private int stnSort;
     public PlanLineGridY(String stnName,int isCurrentBureau,String dptTime,String stationType){
     	this(stnName);
     	this.isCurrentBureau = isCurrentBureau;
     	this.dptTime = dptTime;
     	this.stationType = stationType;
+    }
+    public PlanLineGridY(String stnName,String stationType,int stnSort){
+    	this.stnName = stnName;
+    	this.stationType = stationType;
+    	this.stnSort = stnSort;
     }
     public PlanLineGridY(String stnName,int isCurrentBureau,String stationType){
     	this(stnName);
@@ -24,7 +31,13 @@ public class PlanLineGridY {
     }
 
     
-    public String getDptTime() {
+    public int getStnSort() {
+		return stnSort;
+	}
+	public void setStnSort(int stnSort) {
+		this.stnSort = stnSort;
+	}
+	public String getDptTime() {
 		return dptTime;
 	}
 	public void setDptTime(String dptTime) {
