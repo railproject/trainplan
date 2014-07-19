@@ -10,19 +10,10 @@ String basePath = request.getContextPath();
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 </head>
 <body class="Iframe_body">
-<input id="trainCrew_trainNbr_hidden" type="hidden" value="${trainNbr}">
+<input id="trainCrew_trainNbr_hidden" type="text" value="${trainNbr}">
 <input id="trainCrew_runDate_hidden" type="hidden" value="${runDate}">
 <input id="trainCrew_startStn_hidden" type="hidden" value="${startStn}">
 <input id="trainCrew_endStn_hidden" type="hidden" value="${endStn}">
-<div id="div_form" class="row" style="padding-top:10px;padding-bottom:10px;">
-  <form class="form-horizontal" role="form">
-    <div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
-      <label for="exampleInputEmail2" class="control-label pull-left" data-bind="html: currentTrainInfoMessage()"></label>
-    </div>
-    <a type="button" href="#" class="btn btn-success btn-xs" data-bind="click: saveTrainTime" style="float:right;margin-right:20px;margin-bottom:0;"><i class="fa fa-floppy-o"></i>保存</a>
-  </form>
-</div>
-
 
 <div class="row">
     <div class="panel panel-default">

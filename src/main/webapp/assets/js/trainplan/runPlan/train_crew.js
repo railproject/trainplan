@@ -26,13 +26,8 @@ var TrainCrewPage = function () {
 	 */
 	function PageModel() {
 		var _self = this;
-		
-		var _message = "车次："+$("#trainCrew_trainNbr_hidden").val()+"&nbsp;&nbsp;&nbsp;&nbsp;"
-					+"开行日期：" + $("#trainCrew_runDate_hidden").val()
-					+"&nbsp;&nbsp;&nbsp;&nbsp;"  + $("#trainCrew_startStn_hidden").val() + "&nbsp;→&nbsp;" +  $("#trainCrew_endStn_hidden").val();
 									
 		_self.trainCrewRows = ko.observableArray();	//列车经由站列表
-		_self.currentTrainInfoMessage = ko.observable(_message);
 
 		
 		
@@ -60,7 +55,6 @@ var TrainCrewPage = function () {
 						
 			            // 表头固定
 						
-			            $("#div_form").freezeHeader();
 			            $("#table_run_plan_train_crew_edit").freezeHeader();
 					} else {
 						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
