@@ -62,7 +62,7 @@
             UNION
             SELECT 0 AS RUNNING, 0 AS BACKUP, COUNT(DISTINCT PT.PLAN_TRAIN_ID) AS STOPPED, 0 AS UNKNOWN FROM PLAN_TRAIN PT
             INNER JOIN PLAN_TRAIN_STN PTS ON PT.PLAN_TRAIN_ID = PTS.PLAN_TRAIN_ID
-            WHERE PT.SPARE_FLAG = 0 AND (TO_CHAR(PTS.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(PTS.DPT_TIME, 'yyyymmdd') = '${date}') AND PTS.STN_BUREAU = '${bureau}'
+            WHERE PT.SPARE_FLAG = 9 AND (TO_CHAR(PTS.ARR_TIME, 'yyyymmdd') = '${date}' OR TO_CHAR(PTS.DPT_TIME, 'yyyymmdd') = '${date}') AND PTS.STN_BUREAU = '${bureau}'
             <if test="type == 1">
                 AND PT.START_BUREAU = '${bureau}' AND PT.END_BUREAU = '${bureau}'
             </if>
