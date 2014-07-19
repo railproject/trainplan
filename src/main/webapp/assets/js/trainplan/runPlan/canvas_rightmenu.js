@@ -174,9 +174,69 @@ var CanvasEventComponent = function(canvasDivId) {
 	this.stopTrain = function() {
     	$(".rightMenu").hide();
     	
-		showWarningDialog("抱歉！停运功能尚未开发，请耐心等待！");
+    	showConfirmDiv("提示", "您确定要执行停运操作?</br>" +
+    			"（车次："+_currentTrainObj.obj.trainName+"   始发日期："+_currentTrainObj.obj.startDate+"）", function (r) { 
+	        if (r) {
+				$.ajax({
+					url : basePath+"/jbtcx/updateSpareFlag",
+					cache : false,
+					type : "POST",
+					dataType : "json",
+					contentType : "application/json",
+					data :JSON.stringify({
+						spareFlag : "9",
+						planTrainId : _currentTrainObj.obj.planTrainId
+					}),
+					success : function(result) {
+						if(result.code == 0){
+							showSuccessDialog("(车次："+_currentTrainObj.obj.trainName+")停运成功");
+						}else{
+							showErrorDialog("(车次："+_currentTrainObj.obj.trainName+")停运失败");
+						};
+					}
+				});
+	        }
+	        
+		});
 		return;
 	};
+	
+	
+    /**
+     * 启动备用
+     */
+	this.heartBeat = function() {
+    	$(".rightMenu").hide();
+    	
+    	showConfirmDiv("提示", "您确定要执行启动备用操作?</br>" +
+    			"（车次："+_currentTrainObj.obj.trainName+"   始发日期："+_currentTrainObj.obj.startDate+"）", function (r) { 
+	        if (r) {
+				$.ajax({
+					url : basePath+"/jbtcx/updateSpareFlag",
+					cache : false,
+					type : "POST",
+					dataType : "json",
+					contentType : "application/json",
+					data :JSON.stringify({
+						spareFlag : "1",
+						planTrainId : _currentTrainObj.obj.planTrainId
+					}),
+					success : function(result) {
+						if(result.code == 0){
+							showSuccessDialog("(车次："+_currentTrainObj.obj.trainName+")启动备用成功");
+						}else{
+							showErrorDialog("(车次："+_currentTrainObj.obj.trainName+")启动备用失败");
+						};
+					}
+				});
+	        }
+	        
+		});
+		return;
+	};
+	
+	
+	
 	
 
     /**
@@ -285,7 +345,7 @@ var CanvasEventComponent = function(canvasDivId) {
 			  "<li class='vm-list'><i class='fa fa-eye'></i>&nbsp;计划调整<i class='fa fa-caret-right pull-right vm-list-right'></i>" +
 		      	"<ul class='vm-dropdown-menu'>" +
 		      		"<li><a href='javascript:_canvasEventComponent.stopTrain();'><i class='fa fa-caret-square-o-up'></i>&nbsp;停运</a></li>" +
-		      		"<li><a href='javascript:_canvasEventComponent.stopTrain();'><i class='fa fa-caret-square-o-up'></i>&nbsp;启动备用</a></li>" +
+		      		"<li><a href='javascript:_canvasEventComponent.heartBeat();'><i class='fa fa-caret-square-o-up'></i>&nbsp;启动备用</a></li>" +
 				    "<li><a href='javascript:_canvasEventComponent.editTrainPath();'><i class='fa fa-pencil'></i>&nbsp;调整径路</a></li>" +
 				    "<li><a href='javascript:_canvasEventComponent.editTrainRunTime();'><i class='fa fa-pencil'></i>&nbsp;调整时刻</a></li>" +
 			     "</ul>" +
