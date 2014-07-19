@@ -15,6 +15,7 @@ String basePath = request.getContextPath();
 <input id="trainCrew_startStn_hidden" type="hidden" value="${startStn}">
 <input id="trainCrew_endStn_hidden" type="hidden" value="${endStn}">
 
+
 <div class="row">
     <div class="panel panel-default">
       

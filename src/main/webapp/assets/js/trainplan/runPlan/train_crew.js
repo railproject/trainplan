@@ -44,7 +44,7 @@ var TrainCrewPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					trainNbr: $("#trainCrew_trainNbr_hidden").val(),
-					runDate: moment($("#trainCrew_runDate_hidden").val()).format("YYYYMMDD")
+					crewDate: moment($("#trainCrew_runDate_hidden").val()).format("YYYYMMDD")
 				}),
 				success : function(result) {
 					if (result != null && result != "undefind" && result.code == "0") {

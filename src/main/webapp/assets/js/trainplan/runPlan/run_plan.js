@@ -222,9 +222,10 @@ function CrossModel() {
 		console.dir(currentTrain);
 //		if($('#run_plan_train_crew_dialog').is(":hidden")){
 			var _param = "trainNbr="+currentTrain.trainName+"&runDate=" + currentTrain.startDate+"&startStn="+currentTrain.startStn+"&endStn="+currentTrain.endStn;
-			var _title = "车次："+currentTrain.trainName+"&nbsp;&nbsp;&nbsp;&nbsp;"
-						+"开行日期：" + currentTrain.startDate
-						+"&nbsp;&nbsp;&nbsp;&nbsp;"  + currentTrain.startStn + "&nbsp;→&nbsp;" +  currentTrain.endStn;
+			var _title = "车次："+currentTrain.trainName
+						+"&nbsp;&nbsp;&nbsp;&nbsp;"  + currentTrain.startStn + "&nbsp;→&nbsp;" +  currentTrain.endStn
+						+"&nbsp;&nbsp;&nbsp;&nbsp;" + "始发时间：" + currentTrain.startDate
+						+"&nbsp;&nbsp;&nbsp;&nbsp;" + "终到时间：" + currentTrain.endDate;
 
 			$("#run_plan_train_crew_dialog").find("iframe").attr("src", basePath+"/runPlan/trainCrewPage?"+_param);
 			$('#run_plan_train_crew_dialog').dialog({title: "乘务信息【"+_title+"】", autoOpen: true, modal: false, draggable: true, resizable:true,
