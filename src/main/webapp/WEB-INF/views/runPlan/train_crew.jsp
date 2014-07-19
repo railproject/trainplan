@@ -40,9 +40,9 @@ String basePath = request.getContextPath();
                 <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
                 <th colspan="3" class="text-center" style="vertical-align: middle">乘务员1</th>
                 <th colspan="3" class="text-center" style="vertical-align: middle">乘务员2</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle">备注</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">路局</th>
                 <th rowspan="2" class="text-center" style="vertical-align: middle">部门</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">备注</th>
               </tr>
               <tr>
                 <th class="text-center">姓名</th>
@@ -54,8 +54,8 @@ String basePath = request.getContextPath();
               </tr>
             </thead>
             <tbody data-bind="foreach: trainCrewRows">
-              <tr data-bind="click: $parent.setCurrentRec,style:{color: $parent.currentRowCrewHighlineId() == crewHighlineId ? 'blue':''}">
-                <td data-bind=" text: ($parent.hightLineCrewRows.currentIndex()+$index() + 1)"></td>
+              <tr>
+                <td data-bind=" text: ($index() + 1)"></td>
                 <td data-bind=" text: crewTypeName"></td>
                 <td data-bind=" text: crewDate"></td>
                 <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
@@ -67,9 +67,9 @@ String basePath = request.getContextPath();
                 <td data-bind=" text: name2, attr:{title: name2}"></td>
                 <td data-bind=" text: tel2, attr:{title: tel2}"></td>
                 <td data-bind=" text: identity2, attr:{title: identity2}"></td>
+                <td data-bind=" text: note, attr:{title: note}"></td>
                 <td data-bind=" text: crewBureau"></td>
                 <td data-bind=" text: recordPeopleOrg, attr:{title: recordPeopleOrg}"></td>
-                <td data-bind=" text: note, attr:{title: note}"></td>
               </tr>
             </tbody>
           </table>

@@ -42,7 +42,7 @@ var TrainCrewPage = function () {
 		_self.initPageData = function() {
 			commonJsScreenLock();
 			$.ajax({
-				url : basePath+"/jbtcx/queryPlanLineTrainTimes",
+				url : basePath+"/crew/highline/getHighlineCrewForCrewDateAndTrainNbr",
 				cache : false,
 				type : "POST",
 				dataType : "json",
