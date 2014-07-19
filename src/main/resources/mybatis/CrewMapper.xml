@@ -422,7 +422,7 @@
 	        RECORD_TIME as recordTime,
 	        SUBMIT_TYPE AS submitType
 	      
-	      from highline_crew ) A  WHERE A.crewDate=#{crewDate} AND A.submitType=${submitType} A.crewCross LIKE '%-${trainNbr}-%'
+	      from highline_crew ) A  WHERE A.crewDate=#{crewDate} AND A.submitType=${submitType} AND A.crewCross LIKE '%-${trainNbr}-%'
       
     
     
