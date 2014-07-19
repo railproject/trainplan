@@ -10,7 +10,7 @@ String basePath = request.getContextPath();
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
 </head>
 <body class="Iframe_body">
-<input id="trainCrew_trainNbr_hidden" type="text" value="${trainNbr}">
+<input id="trainCrew_trainNbr_hidden" type="hidden" value="${trainNbr}">
 <input id="trainCrew_runDate_hidden" type="hidden" value="${runDate}">
 <input id="trainCrew_startStn_hidden" type="hidden" value="${startStn}">
 <input id="trainCrew_endStn_hidden" type="hidden" value="${endStn}">
