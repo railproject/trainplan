@@ -48,8 +48,8 @@ String basePath = request.getContextPath();
             <tbody data-bind="foreach: trainCrewRows">
               <tr>
                 <td data-bind=" text: ($index() + 1)"></td>
-                <td data-bind=" text: crewTypeName"></td>
-                <td data-bind=" text: crewDate"></td>
+                <td data-bind=" text: crewTypeName, attr:{title: crewTypeName}"></td>
+                <td data-bind=" text: crewDate, attr:{title: crewDate}"></td>
                 <td data-bind=" text: crewCross, attr:{title: crewCross}"></td>
                 <td data-bind=" text: crewGroup, attr:{title: crewGroup}"></td>
                 <td data-bind=" text: throughLine, attr:{title: throughLine}"></td>

@@ -801,7 +801,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	
 	<div id="run_plan_train_crew_dialog" class="easyui-dialog" title="调整时刻表"
 		data-options="iconCls:'icon-save'"
-		style="width: 1000px; height: 400px;overflow: hidden;">
+		style="width: 1200px; height: 400px;overflow: hidden;">
 		 <iframe style="width: 100%; height: 395px;border: 0;overflow: hidden;" src=""></iframe>
 	</div>
 	
