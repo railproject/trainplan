@@ -45,6 +45,11 @@ public class RunPlanController {
 		 return "runPlan/run_plan";
      }
 	 
+	 @RequestMapping(value="/runPlanCreate", method = RequestMethod.GET)
+     public String runPlanCreate() {
+		 return "runPlan/run_plan_create";
+     }
+	 
 	 @RequestMapping(value="/runPlanGt" ,method = RequestMethod.GET)
      public String runPlanGt() {
 		 return "runPlan/run_plan_gt";
