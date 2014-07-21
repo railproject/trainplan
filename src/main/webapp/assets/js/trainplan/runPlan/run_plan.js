@@ -65,7 +65,7 @@ function CrossModel() {
 			self.planDays.push({"day": self.dayHeader(currentTime)}); 
 		} 
 		 $.ajax({
-				url : "runPlan/getRunPlans",
+				url : basePath+"/runPlan/getRunPlans",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -119,7 +119,7 @@ function CrossModel() {
 		});
 		commonJsScreenLock();
 		 $.ajax({ 
-				url : "jbtcx/queryPlanLineTrainTimes",
+				url : basePath+"/jbtcx/queryPlanLineTrainTimes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -551,7 +551,7 @@ function CrossModel() {
 		var initFlag = 0;
 		//获取当期系统日期 
 		 $.ajax({
-				url : "jbtcx/querySchemes",
+				url : basePath+"/jbtcx/querySchemes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -575,7 +575,7 @@ function CrossModel() {
 		    }); 
 		 
 	    $.ajax({
-			url : "plan/getFullStationInfo",
+			url : basePath+"/plan/getFullStationInfo",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -641,14 +641,14 @@ function CrossModel() {
 			return true;
 		}); 
 		$.ajax({
-				url : "runPlan/getPlanCross",
+				url : basePath+"/runPlan/getPlanCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
 					tokenVehBureau : bureauCode, 
-					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
+//					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
 					checkFlag : checkFlag == null ? null : checkFlag.value,
 					startBureau : startBureauCode,
 					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
@@ -745,7 +745,7 @@ function CrossModel() {
 //			 
 //		}else{
 //			$.ajax({
-//				url : "jbtcx/queryTrainTimes",
+//				url : basePath+"/jbtcx/queryTrainTimes",
 //				cache : false,
 //				type : "POST",
 //				dataType : "json",
@@ -796,7 +796,7 @@ function CrossModel() {
 		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
 	        if (r) { 
 				$.ajax({
-					url : "runPlan/deletePlanCrosses",
+					url : basePath+"/runPlan/deletePlanCrosses",
 					cache : false,
 					type : "POST",
 					dataType : "json",
@@ -847,7 +847,7 @@ function CrossModel() {
 		 }
 		 commonJsScreenLock();
 		 $.ajax({
-				url : "runPlan/handleTrainLinesWithCross",
+				url : basePath+"/runPlan/handleTrainLinesWithCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -965,7 +965,7 @@ function CrossModel() {
 		}
 		commonJsScreenLock();
 		 $.ajax({
-				url : "runPlan/checkCrossRunLine",
+				url : basePath+"/runPlan/checkCrossRunLine",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -1006,7 +1006,7 @@ function CrossModel() {
 		 var planEndDate =  $("#runplan_input_endDate").val();
 		 
 		 $.ajax({
-				url : "cross/createCrossMap",
+				url : basePath+"/cross/createCrossMap",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -1059,7 +1059,7 @@ function CrossModel() {
 		self.loadRunPlans(row.planCrossId()); 
 		
 		 $.ajax({
-				url : "cross/getPlanCrossInfo",
+				url : basePath+"/cross/getPlanCrossInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
