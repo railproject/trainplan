@@ -257,11 +257,16 @@ public class RunPlanController {
     @RequestMapping(value = "/plantrain/gen", method = RequestMethod.POST)
      public ResponseEntity<List<String>> generatePlanTrainBySchemaId(@RequestBody Map<String, Object> params) {
         String baseChartId = MapUtils.getString(params, "baseChartId");
+        System.out.println(baseChartId);
         String startDate = MapUtils.getString(params, "startDate");
+        System.out.println(startDate);
         int days = MapUtils.getIntValue(params, "days");
+        System.out.println(days);
         List<String> unitcrossId = (List<String>) params.get("unitcrossId");
+        System.out.println(unitcrossId);
         String msgReceiveUrl = MapUtils.getString(params, "msgReceiveUrl");
+        System.out.println(msgReceiveUrl);
         List<String> unitCrossIds = runPlanService.generateRunPlan(baseChartId, startDate, days, unitcrossId, msgReceiveUrl);
-        return new ResponseEntity<>(unitCrossIds, HttpStatus.OK);
+        return new ResponseEntity<List<String>>(unitCrossIds, HttpStatus.OK);
     }
 }
