@@ -75,7 +75,8 @@ public class JBTCXController {
 	 */
 	@RequestMapping(value="/getTrainTimeCanvasPage" ,method = RequestMethod.GET)
 	public ModelAndView getTrainTimeCanvasPage(HttpServletRequest request) {
-		return new ModelAndView("plan/train_runline_canvas").addObject("planTrainId", request.getParameter("planTrainId"));
+		return new ModelAndView("plan/train_runline_canvas").addObject("planTrainId", request.getParameter("planTrainId"))
+				.addObject("trainNbr", request.getParameter("trainNbr"));
 	}
  
 	@ResponseBody
