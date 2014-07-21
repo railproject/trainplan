@@ -334,10 +334,14 @@ public class JBTCXController {
 					 if( i == 0){
 						 String arrTime = subInfo.getArrTime();
 						 arrDate = DateUtil.format(DateUtil.parseDate(arrTime,"yyyy-MM-dd hh:mm:ss"),"yyyy-MM-dd");
+					     //设置始发站
+						 dto.setStartStn(subInfo.getStnName());
 					 }
 					 if( i == list.size()-1){
 						 String dptTime = subInfo.getDptTime();
 						 dptDate = DateUtil.format(DateUtil.parseDate(dptTime,"yyyy-MM-dd hh:mm:ss"),"yyyy-MM-dd");
+					     //设置终到站
+						 dto.setEndStn(subInfo.getStnName());
 					 }
 					 //纵坐标数据
 					 Station station = new Station();
@@ -351,22 +355,18 @@ public class JBTCXController {
 			 crossMap.put("trains", trains);
 			 dataList.add(crossMap);
 			 PlanLineGrid grid = null;
-			 ObjectMapper objectMapper = new ObjectMapper();
+			
 			 //生成横纵坐标
 	    	 List<PlanLineGridY> listGridY = getPlanLineGridY(listStation); 
 			 List<PlanLineGridX> listGridX = getPlanLineGridX(arrDate,dptDate);
 		     grid = new PlanLineGrid(listGridX, listGridY);
-		     //String myJlData = objectMapper.writeValueAsString(dataList);
 		     //图形数据
 			 Map<String,Object> dataMap = new HashMap<String,Object>();
-			 //String gridStr = objectMapper.writeValueAsString(grid);
 			 dataMap.put("myJlData",dataList);
 			 dataMap.put("gridData", grid);
-			 //System.err.println("myJlData==" + myJlData);
-			// System.err.println("gridStr==" + gridStr);
 			 System.err.println("dataMap=="+dataMap);
 			result.setData(dataMap);
-			//result.setData(list);
+			
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);
 			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
