@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 
 
@@ -51,6 +54,17 @@ public class JBTCXController {
      public String content() {
 		 return "plan/plan_runline_check";
      }
+	 
+
+	/**
+	 * 跳转到列车运行时刻表图形页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/getTrainTimeCanvasPage" ,method = RequestMethod.GET)
+	public ModelAndView getTrainTimeCanvasPage(HttpServletRequest request) {
+		return new ModelAndView("plan/train_runline_canvas").addObject("planTrainId", request.getParameter("planTrainId"));
+	}
  
 	@ResponseBody
 	@RequestMapping(value = "/querySchemes", method = RequestMethod.POST)

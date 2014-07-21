@@ -138,6 +138,7 @@ var basePath = "<%=basePath %>";
 					模糊</label>    
 		        </div> 
 				<a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_createRunLine"  data-bind="click: loadTrains">查询</a>
+				<a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_canvas_trainTime"  data-bind="click: showTrainTimeCanvas">查看图形</a>
 				 
 		        <!--col-md-3 col-sm-4 col-xs-4-->
 		      </form> 
@@ -226,6 +227,21 @@ var basePath = "<%=basePath %>";
     <!--分栏框结束--> 
   </div>
   <!--分栏框结束--> 
-</div> 
+</div>
+
+
+
+
+
+	   
+<!--时刻表图形显示-->
+<div id="run_plan_train_times_canvas_dialog" class="easyui-dialog" title="调整时刻表"
+	data-options="iconCls:'icon-save'"
+	style="width: 700px; height: 600px;overflow: hidden;">
+	 <iframe style="width: 100%; height: 590px;border: 0;overflow: hidden;" src=""></iframe>
+</div>
+	
+	
+	
 </body>
 </html>

@@ -202,7 +202,6 @@ function ApplicationModel() {
 	self.trainRows = new PageModle(50, self.loadTrainsForPage);
 	 
 	self.showTrainTimes = function(row) {
-		console.log(row);
 		self.currentTrain(row);
 		self.trainLines.remove(function(item){
 			return true;
@@ -257,6 +256,38 @@ function ApplicationModel() {
 		}else{
 			self.searchModle().fuzzyFlag(0);
 		}
+	};
+	
+	
+	
+	/**
+	 * 图形化显示列车运行时刻
+	 */
+	self.showTrainTimeCanvas = function(){
+		console.dir(self.currentTrain());
+		if (self.currentTrain() == null || self.currentTrain().id ==null || self.currentTrain().id =="undefind") {
+			showWarningDialog("请选择列车记录");
+			return;
+		}
+		
+		$("#run_plan_train_times_canvas_dialog").find("iframe").attr("src", basePath+"/jbtcx/getTrainTimeCanvasPage?planTrainId=" + self.currentTrain().id);
+		$('#run_plan_train_times_canvas_dialog').dialog({title: "列车运行时刻", autoOpen: true, modal: false, draggable: true, resizable:true,
+			onResize:function() {
+				var iframeBox = $("#run_plan_train_times_canvas_dialog").find("iframe");
+				var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+				var WH = $('#run_plan_train_times_canvas_dialog').height();
+				var WW = $('#run_plan_train_times_canvas_dialog').width();
+                if (isChrome) {
+                	iframeBox.css({ "height": (WH) + "px"});
+                	iframeBox.css({ "min-height": (WH) + "px"});
+                	iframeBox.attr("width", (WW));
+
+                }else{
+                	iframeBox.css({ "height": (WH)  + "px"});
+                	iframeBox.css({ "min-height": (WH) + "px"});
+                	iframeBox.attr("width", (WW));
+                }
+		}});
 	};
 }
 
