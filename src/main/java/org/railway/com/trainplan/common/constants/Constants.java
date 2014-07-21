@@ -192,6 +192,8 @@ public class Constants {
     public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";
     //根据plan_train_id获取运行线列车时刻表 
     public static final String TRAININFO_GETPLANLINE_TRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getPlanLineTrainTimeInfoByTrainId";
+    //根据plan_train_id从基本图的库中获取列车时刻表getTrainTimeInfoByPlanTrainId
+    public static final String TRAININFO_GET_TRAINTIMEINFO_BY_PLAN_TRAIN_ID = "trainTimeDao.getTrainTimeInfoByPlanTrainId";
     //
     public static final String TRAININFO_GET_PLAN_TRAIN_STN_BY_TRAINID = "trainTimeDao.getPlanTrainStnInfoForPlanTrainId";
     //更改spareFlag字段

@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.railway.com.trainplan.common.constants.StaticCodeType;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.SchemeInfo;
 import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.service.JBTCXService;
@@ -260,6 +261,28 @@ public class JBTCXController {
 		
 		return result;
 	} 
-	
+	/**
+	 * 根据plant_train_id从基本图库中查询列车时刻表
+	 * @param reqMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTrainTimeInfoByPlanTrainId", method = RequestMethod.POST)
+	public Result getTrainTimeInfoByPlanTrainId(@RequestBody Map<String,Object> reqMap){
+		Result result = new Result();
+		logger.info("getTrainTimeInfoByPlanTrainId~~reqMap==" + reqMap);
+		String planTrainId = StringUtil.objToStr(reqMap.get("planTrainId"));
+		try{
+			
+			List<BaseCrossTrainInfoTime> list = trainTimeService.getTrainTimeInfoByPlanTrainId(planTrainId);
+			result.setData(list);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+		}
+		
+		return result;
+	}
 	
 }

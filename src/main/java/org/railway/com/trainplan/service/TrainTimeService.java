@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,15 @@ public class TrainTimeService {
 		  
 	  }
 
+	  
+	  /**
+	   * 通过plan_train_id从基本图库中获取列车时刻表
+	   * @param planTrainId
+	   * @return
+	   */
+	  public List<BaseCrossTrainInfoTime> getTrainTimeInfoByPlanTrainId(String planTrainId){
+		  return baseDao.selectListBySql(Constants.TRAININFO_GET_TRAINTIMEINFO_BY_PLAN_TRAIN_ID, planTrainId);
+	  }
 	  /**
 	   * 根据planTrainId查询plan_train_stn表信息
 	   * @param planTrainId
