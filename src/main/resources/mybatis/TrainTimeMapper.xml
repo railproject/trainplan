@@ -133,7 +133,7 @@ RUN_DAYS AS runDays
 	        THEN 'BT'
 	        ELSE 'TZ'
 	      END
-		end stationFlag ,
+		end stationType ,
 		T1.BASE_TRAIN_ID ,
 		T1.STN_SORT AS stnSort,
 		T1.STN_NAME AS stnName,
