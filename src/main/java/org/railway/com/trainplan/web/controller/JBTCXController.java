@@ -356,14 +356,15 @@ public class JBTCXController {
 	    	 List<PlanLineGridY> listGridY = getPlanLineGridY(listStation); 
 			 List<PlanLineGridX> listGridX = getPlanLineGridX(arrDate,dptDate);
 		     grid = new PlanLineGrid(listGridX, listGridY);
-		     String myJlData = objectMapper.writeValueAsString(dataList);
+		     //String myJlData = objectMapper.writeValueAsString(dataList);
 		     //图形数据
 			 Map<String,Object> dataMap = new HashMap<String,Object>();
-			 String gridStr = objectMapper.writeValueAsString(grid);
-			 dataMap.put("myJlData",myJlData);
-			 dataMap.put("gridData", gridStr);
-			 System.err.println("myJlData==" + myJlData);
-			 System.err.println("gridStr==" + gridStr);
+			 //String gridStr = objectMapper.writeValueAsString(grid);
+			 dataMap.put("myJlData",dataList);
+			 dataMap.put("gridData", grid);
+			 //System.err.println("myJlData==" + myJlData);
+			// System.err.println("gridStr==" + gridStr);
+			 System.err.println("dataMap=="+dataMap);
 			result.setData(dataMap);
 			//result.setData(list);
 		}catch(Exception e){
