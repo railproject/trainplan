@@ -32,7 +32,7 @@ public class DateUtil {
 	private static String defaultDatePattern = "yyyy-MM-dd hh:mm:ss";
 	private static String defaultDatePattern1 = "yyyy-MM-dd";
 	private static String defaultDatePattern2 = "yyyyMMdd";
-	
+
 	
 	/**
 	 * 
@@ -245,6 +245,21 @@ public class DateUtil {
 		return format(date,defaultDatePattern1);
 	}
 	
+	/**
+	 * 将yyyyMMdd格式时间转为yyyy-MM-dd格式
+	 * @param day 格式为yyyyMMdd
+	 * @return 格式为yyyy-MM-dd
+	 */
+	public static String getFormateDaytest(String day){
+		Date date = null;
+		try {
+			date = parseDate(day,defaultDatePattern2);
+		} catch (ParseException e) {
+			
+			//e.printStackTrace();
+		}
+		return format(date,defaultDatePattern1);
+	}
 	
 	/**
 	 * 计算两个时间的差值
@@ -496,6 +511,14 @@ public class DateUtil {
 	        e.printStackTrace();
 	     }
 
+	    
+	    try {
+			String str = format(parseDate("2014-06-16 18:58:00",defaultDatePattern),defaultDatePattern1);
+		    System.out.println("str==" + str);
+	    } catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	  }
 	
 	  
