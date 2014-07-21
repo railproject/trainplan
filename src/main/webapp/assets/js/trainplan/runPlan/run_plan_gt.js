@@ -65,7 +65,7 @@ function CrossModel() {
 			self.planDays.push({"day": self.dayHeader(currentTime)}); 
 		} 
 		 $.ajax({
-				url : basePath + "/runPlan/getRunPlans",
+				url : basePath+"/runPlan/getRunPlans",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -119,7 +119,7 @@ function CrossModel() {
 		});
 		commonJsScreenLock();
 		 $.ajax({ 
-				url : basePath + "/jbtcx/queryPlanLineTrainTimes",
+				url : basePath+"/jbtcx/queryPlanLineTrainTimes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -184,6 +184,71 @@ function CrossModel() {
 		   
 		// $("#run_plan_train_times").dialog("open");
 	};
+	
+	
+	/**
+	 * 用于调整时刻表
+	 * @param currentTrain
+	 */
+	self.loadTrainAllStns = function(currentTrain){
+//		if($('#run_plan_train_times_edit_dialog').is(":hidden")){
+			$("#run_plan_train_times_edit_dialog").find("iframe").attr("src", basePath+"/runPlan/trainRunTimePage?trainNbr="+currentTrain.trainName+"&trainPlanId=" + currentTrain.planTrainId);
+			$('#run_plan_train_times_edit_dialog').dialog({title: "编辑列车运行时刻", autoOpen: true, modal: false, draggable: true, resizable:true,
+				onResize:function() {
+					var iframeBox = $("#run_plan_train_times_edit_dialog").find("iframe");
+					var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+					var WH = $('#run_plan_train_times_edit_dialog').height();
+					var WW = $('#run_plan_train_times_edit_dialog').width();
+	                if (isChrome) {
+	                	iframeBox.css({ "height": (WH) + "px"});
+	                	iframeBox.css({ "min-height": (WH) + "px"});
+	                	iframeBox.attr("width", (WW));
+
+	                }else{
+	                	iframeBox.css({ "height": (WH)  + "px"});
+	                	iframeBox.css({ "min-height": (WH) + "px"});
+	                	iframeBox.attr("width", (WW));
+	                }
+				}});
+//		}
+	};
+	
+	
+	/**
+	 * 查看列车乘务信息
+	 * @param currentTrain
+	 */
+	self.loadTrainPersonnel = function(currentTrain){
+		console.dir(currentTrain);
+//		if($('#run_plan_train_crew_dialog').is(":hidden")){
+			var _param = "trainNbr="+currentTrain.trainName+"&runDate=" + currentTrain.startDate+"&startStn="+currentTrain.startStn+"&endStn="+currentTrain.endStn;
+			var _title = "车次："+currentTrain.trainName
+						+"&nbsp;&nbsp;&nbsp;&nbsp;"  + currentTrain.startStn + "&nbsp;→&nbsp;" +  currentTrain.endStn
+						+"&nbsp;&nbsp;&nbsp;&nbsp;" + "始发时间：" + currentTrain.startDate
+						+"&nbsp;&nbsp;&nbsp;&nbsp;" + "终到时间：" + currentTrain.endDate;
+
+			$("#run_plan_train_crew_dialog").find("iframe").attr("src", basePath+"/runPlan/trainCrewPage?"+_param);
+			$('#run_plan_train_crew_dialog').dialog({title: "乘务信息【"+_title+"】", autoOpen: true, modal: false, draggable: true, resizable:true,
+				onResize:function() {
+					var iframeBox = $("#run_plan_train_crew_dialog").find("iframe");
+					var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+					var WH = $('#run_plan_train_crew_dialog').height();
+					var WW = $('#run_plan_train_crew_dialog').width();
+	                if (isChrome) {
+	                	iframeBox.css({ "height": (WH) + "px"});
+	                	iframeBox.css({ "min-height": (WH) + "px"});
+	                	iframeBox.attr("width", (WW));
+
+	                }else{
+	                	iframeBox.css({ "height": (WH)  + "px"});
+	                	iframeBox.css({ "min-height": (WH) + "px"});
+	                	iframeBox.attr("width", (WW));
+	                }
+				}});
+//		}
+	};
+	
+	
 	self.setCurrentTrain = function(train){ 
 		self.currentTrain(train); 
 	};
@@ -371,7 +436,9 @@ function CrossModel() {
 	
 	self.init = function(){  
  
-		$("#run_plan_train_times").dialog("close"); 
+		$("#run_plan_train_times").dialog("close");
+		$("#run_plan_train_times_edit_dialog").dialog("close");
+		$("#run_plan_train_crew_dialog").dialog("close");
  
 		$("#runplan_input_startDate").datepicker();
 		$("#runplan_input_endDate").datepicker();
@@ -480,10 +547,11 @@ function CrossModel() {
 		self.searchModle().planStartDate(self.currdate());
 		self.searchModle().planEndDate(self.get40Date());
 		
-		commonJsScreenLock(2); 
-		//获取当期系统日期  
+		commonJsScreenLock(2);
+		var initFlag = 0;
+		//获取当期系统日期 
 		 $.ajax({
-				url : basePath + "/jbtcx/querySchemes",
+				url : basePath+"/jbtcx/querySchemes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -505,14 +573,15 @@ function CrossModel() {
 					commonJsScreenUnLock();  
 				}
 		    }); 
-		 
+
 	    $.ajax({
-			url : basePath + "/plan/getFullStationInfo",
+			url : basePath+"/plan/getFullStationInfo",
 			cache : false,
 			type : "GET",
 			dataType : "json",
 			contentType : "application/json", 
 			success : function(result) {    
+				console.dir(result);
 				if (result != null && result != "undefind" && result.code == "0") { 
 					self.searchModle().loadBureau(result.data); 
 					if (result.data !=null) { 
@@ -573,14 +642,14 @@ function CrossModel() {
 			return true;
 		}); 
 		$.ajax({
-				url : basePath + "/runPlan/getPlanCross",
+				url : basePath+"/runPlan/getPlanCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
 					tokenVehBureau : bureauCode, 
-					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
+					highlineFlag : "1",//高铁//highlingFlag == null ? null : highlingFlag.value,  
 					checkFlag : checkFlag == null ? null : checkFlag.value,
 					startBureau : startBureauCode,
 					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
@@ -677,7 +746,7 @@ function CrossModel() {
 //			 
 //		}else{
 //			$.ajax({
-//				url : basePath + "/jbtcx/queryTrainTimes",
+//				url : basePath+"/jbtcx/queryTrainTimes",
 //				cache : false,
 //				type : "POST",
 //				dataType : "json",
@@ -728,7 +797,7 @@ function CrossModel() {
 		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
 	        if (r) { 
 				$.ajax({
-					url : basePath + "/runPlan/deletePlanCrosses",
+					url : basePath+"/runPlan/deletePlanCrosses",
 					cache : false,
 					type : "POST",
 					dataType : "json",
@@ -779,7 +848,7 @@ function CrossModel() {
 		 }
 		 commonJsScreenLock();
 		 $.ajax({
-				url : basePath + "/runPlan/handleTrainLinesWithCross",
+				url : basePath+"/runPlan/handleTrainLinesWithCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -897,7 +966,7 @@ function CrossModel() {
 		}
 		commonJsScreenLock();
 		 $.ajax({
-				url : basePath + "/runPlan/checkCrossRunLine",
+				url : basePath+"/runPlan/checkCrossRunLine",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -938,7 +1007,7 @@ function CrossModel() {
 		 var planEndDate =  $("#runplan_input_endDate").val();
 		 
 		 $.ajax({
-				url : basePath + "/cross/createCrossMap",
+				url : basePath+"/cross/createCrossMap",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -991,7 +1060,7 @@ function CrossModel() {
 		self.loadRunPlans(row.planCrossId()); 
 		
 		 $.ajax({
-				url : basePath + "/cross/getPlanCrossInfo",
+				url : basePath+"/cross/getPlanCrossInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",

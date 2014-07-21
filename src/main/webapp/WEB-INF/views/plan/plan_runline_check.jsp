@@ -14,6 +14,7 @@ String basePath = request.getContextPath();
 <link href="<%=basePath %>/assets/css/cross/custom-bootstrap.css" rel="stylesheet">
 <link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
 <!--font-awesome-->
+<link href="<%=basePath %>/assets/easyui/themes/default/easyui.css" rel="stylesheet">
 <link href="<%=basePath %>/assets/css/datepicker.css" rel="stylesheet">
 <link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/css/font-awesome.min.css"/>
 <link  type="text/css" rel="stylesheet" href="<%=basePath %>/assets/css/datepicker.css">
@@ -21,6 +22,7 @@ String basePath = request.getContextPath();
 <link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
 <script src="<%=basePath %>/assets/js/jquery.js"></script>
 <script src="<%=basePath %>/assets/js/html5.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/easyui/jquery.easyui.min.js"></script>
 <script src="<%=basePath %>/assets/js/bootstrap.min.js"></script> 
 <script src="<%=basePath %>/assets/js/respond.min.js"></script>
 <script src="<%=basePath %>/assets/js/jquery.dataTables.js"></script>
@@ -144,6 +146,7 @@ var basePath = "<%=basePath %>";
 					模糊</label>    
 		        </div> 
 				<a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_createRunLine"  data-bind="click: loadTrains">查询</a>
+				<a type="button"  style="margin-left:1px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_canvas_trainTime"  data-bind="click: showTrainTimeCanvas">查看图形</a>
 				 
 		        <!--col-md-3 col-sm-4 col-xs-4-->
 		      </form> 
@@ -232,6 +235,21 @@ var basePath = "<%=basePath %>";
     <!--分栏框结束--> 
   </div>
   <!--分栏框结束--> 
-</div> 
+</div>
+
+
+
+
+
+	   
+<!--时刻表图形显示-->
+<div id="run_plan_train_times_canvas_dialog" class="easyui-dialog" title="调整时刻表"
+	data-options="iconCls:'icon-save'"
+	style="width: 700px; height: 600px;overflow: hidden;">
+	 <iframe style="width: 100%;border: 0;overflow: hidden;" src=""></iframe>
+</div>
+	
+	
+	
 </body>
 </html>

@@ -21,11 +21,9 @@ function SelectCheckModle(){
 	 
 	self.selectCross = function(row){
 //		self.crossAllcheckBox();
-		console.log(row.selected());
 		if(row.selected() == 0){
 			self.crossAllcheckBox(1);
 			$.each(self.crossRows.rows(), function(i, crossRow){ 
-				console.log("==="+ crossRow.selected());
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.allcheckBox(0);
 					return false;
@@ -65,7 +63,8 @@ function ApplicationModel() {
 	
 	
 	self.init = function(){   
-		
+
+		$("#run_plan_train_times_canvas_dialog").dialog("close");
 		
 		
 		 $.ajax({
@@ -154,7 +153,6 @@ function ApplicationModel() {
 					rownumend : endIndex
 				}),
 				success : function(result) {  
-					console.log(result) 
 					if (result != null && result != "undefind" && result.code == "0") {  
 							if (result.data !=null) {   
 								var rows = [];
@@ -202,7 +200,6 @@ function ApplicationModel() {
 	self.trainRows = new PageModle(50, self.loadTrainsForPage);
 	 
 	self.showTrainTimes = function(row) {
-		console.log(row);
 		self.currentTrain(row);
 		self.trainLines.remove(function(item){
 			return true;
@@ -226,7 +223,6 @@ function ApplicationModel() {
 					trainId : row.id
 				}),
 				success : function(result) {  
-					console.log(result) 
 					if (result != null && result != "undefind" && result.code == "0") {  
 						row.loadTimes(result.data);  
 						$.each(row.times(), function(i, n){
@@ -251,12 +247,42 @@ function ApplicationModel() {
 	};  
 	
 	self.fuzzyChange = function(){
-		console.log(self.searchModle().fuzzyFlag())
 		if(self.searchModle().fuzzyFlag() == 0){
 			self.searchModle().fuzzyFlag(1);
 		}else{
 			self.searchModle().fuzzyFlag(0);
 		}
+	};
+	
+	
+	
+	/**
+	 * 图形化显示列车运行时刻
+	 */
+	self.showTrainTimeCanvas = function(){
+		if (self.currentTrain() == null || self.currentTrain().id ==null || self.currentTrain().id =="undefind") {
+			showWarningDialog("请选择列车记录");
+			return;
+		}
+
+		$("#run_plan_train_times_canvas_dialog").find("iframe").attr("src", basePath+"/jbtcx/getTrainTimeCanvasPage?planTrainId=" + self.currentTrain().id+"&trainNbr="+self.currentTrain().name);
+		$('#run_plan_train_times_canvas_dialog').dialog({title: "列车运行时刻图 &nbsp;&nbsp;&nbsp;车次："+self.currentTrain().name, autoOpen: true, modal: false, draggable: true, resizable:true,
+			onResize:function() {
+				var iframeBox = $("#run_plan_train_times_canvas_dialog").find("iframe");
+				var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
+				var WH = $('#run_plan_train_times_canvas_dialog').height();
+				var WW = $('#run_plan_train_times_canvas_dialog').width();
+                if (isChrome) {
+                	iframeBox.css({ "height": (WH) + "px"});
+                	iframeBox.css({ "min-height": (WH) + "px"});
+                	iframeBox.attr("width", (WW));
+
+                }else{
+                	iframeBox.css({ "height": (WH)  + "px"});
+                	iframeBox.css({ "min-height": (WH) + "px"});
+                	iframeBox.attr("width", (WW));
+                }
+		}});
 	};
 }
 
@@ -282,7 +308,6 @@ function searchModle(){
 	
 	self.loadBureau = function(bureaus){   
 		for ( var i = 0; i < bureaus.length; i++) {   
-			console.log(bureaus[i]);
 			self.startBureaus.push(new BureausRow(bureaus[i]));  
 			self.endBureaus.push(new BureausRow(bureaus[i]));
 		} 
@@ -355,7 +380,6 @@ function GetDateDiff(data)
 };
 function TrainRow(data) {   
 	var self = this;  
-	console.log(data)
 	self.id = data.planTrainId;
 	self.name = data.trainNbr; 
 	self.times = ko.observableArray();  

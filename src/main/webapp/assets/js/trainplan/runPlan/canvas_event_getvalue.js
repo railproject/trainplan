@@ -14,7 +14,6 @@ var currentYScale = 1;	//y轴缩放比例
 var currentYScaleCount = 1;//y轴放大总倍数
 var _canvas_select_groupSerialNbr = null;
 var _currentGroupSerialNbr = "";		//当前组号
-var dataIsNull = false;
     
 var RunPlanCanvasPage = function(cross) {
 	var _self = this; 

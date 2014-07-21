@@ -78,6 +78,10 @@ FROM
               
       from plan_cross t
       where 1=1 
+      <choose>
+        <when test="highlineFlag != null">  AND t.HIGHLINE_FLAG = #{highlineFlag}</when>
+        <otherwise>  AND t.HIGHLINE_FLAG IN ('0','2')</otherwise>
+      </choose>
       <if test="trainNbr != null">
 			AND t.cross_name like '%' || #{trainNbr} || '%'
 	  </if>
@@ -86,9 +90,6 @@ FROM
         </if>
         <if test="startBureau != null">
             AND t.START_BUREAU = #{startBureau}
-        </if>
-        <if test="highlineFlag != null">
-            AND t.HIGHLINE_FLAG = #{highlineFlag}
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">

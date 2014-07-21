@@ -95,6 +95,12 @@ public class RunPlanController {
      }
 	 
 	 
+	 /**
+	  * 图定开行计划查询
+	  * @param reqMap
+	  * @return
+	  * @throws Exception
+	  */
 	 @ResponseBody
 	 @RequestMapping(value = "/getPlanCross", method = RequestMethod.POST)
 	 public Result getPlanCross(@RequestBody Map<String,Object> reqMap) throws Exception{

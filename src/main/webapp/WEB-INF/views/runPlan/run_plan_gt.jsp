@@ -22,7 +22,7 @@ String basePath = request.getContextPath();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>高铁图定开行计划</title>
+<title>高铁开行计划</title>
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -53,7 +53,6 @@ String basePath = request.getContextPath();
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
-console.log(basePath);
 var all_role = "<%=userRolesString %>";
 var _isZgsUser = <%=isZgsUser%>;//当前用户是否为总公司用户
 var currentUserBureau = "<%=currentUserBureau %>";
@@ -86,7 +85,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">高铁图定开行计划</a></li>
+		<li><a href="#">既有图定开行计划</a></li>
 	</ol>  
 	   <div class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
@@ -119,12 +118,13 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												</div> 
 											</div>     
 											<div class="row"  style="margin-top: 5px;">
-												<label for="exampleInputEmail3" class="control-label pull-left" >
-													铁路线类型:</label>
-												<div class="pull-left" style="margin-left: 5px;">
-												    <select  style="width:55px" class="form-control" data-bind="options: searchModle().highlingFlags, value: searchModle().highlingFlag, optionsText: 'text' , optionsCaption: ''"></select>
-												</div>
-												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
+												 <input type="checkBox" class="pull-left" class="form-control"
+													value="1" data-bind="checked: searchModle().currentBureanFlag"
+													style="width: 20px; margin-top: 5px; margin-left:-1px"
+													class="form-control"> 
+												<label for="exampleInputEmail5" class="control-label pull-left">
+													本局相关</label> 
+												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 77px;">
 													 审核状态:</label>
 												<div class="pull-left" style="margin-left: 5px;">
 													<select style="width:50px" id="input_cross_sure_flag"
@@ -735,6 +735,64 @@ var currentUserBureau = "<%=currentUserBureau %>";
 			        </div>
       		</div>
 	   </div> 
+	   
+	   
+	   
+	   
+	<!--调整时刻表-->
+	<div id="run_plan_train_times_edit_dialog" class="easyui-dialog" title="调整时刻表"
+		data-options="iconCls:'icon-save'"
+		style="width: 800px; height: 400px;overflow: hidden;">
+		 <iframe style="width: 100%; height: 395px;border: 0;overflow: hidden;" src=""></iframe>
+	</div>
+	
+	<div id="run_plan_train_crew_dialog" class="easyui-dialog" title="调整时刻表"
+		data-options="iconCls:'icon-save'"
+		style="width: 1200px; height: 400px;overflow: hidden;">
+		 <iframe style="width: 100%; height: 395px;border: 0;overflow: hidden;" src=""></iframe>
+	</div>
+	
+	<!--<div id="run_plan_train_times_edit_div" class="easyui-dialog" title="调整时刻表" data-options="iconCls:'icon-save'"
+		style="width: 500px; height: 500px; padding: 10px; "> 
+			      panle-heading
+			      <div class="panel-body" style="padding:10px;margin-right:10px;">
+						  <div style="float:right;position:fixed;z-index:2;" ><span style="font: -webkit-small-control;" data-bind="html: currentTrainInfoMessage()"></span></div>
+						Tab panes
+			        	<div class="panel panel-default" id="train_run_allTimes" > 
+					      	<div class="table-responsive"> 
+					            <table class="table table-bordered table-striped table-hover">
+							        <thead style="position:fixed;z-index:2;">
+							        <tr>
+							          <th style="width:40px">序号</th>
+					                  <th style="width:200px">站名</th>
+					                  <th style="width:50px">路局</th>
+					                  <th style="width:110px">到达时间</th>
+					                  <th style="width:110px">出发时间</th>
+					                  <th style="width:50px">停留时间</th>
+					                  <th style="width:50px">天数</th> 
+					                  <th style="width:50px" colspan="2">股道</th>  
+					                 </tr>
+							        </thead>
+														 <tbody data-bind="foreach: times">
+												           <tr>  
+															<td align="center" data-bind=" text: $index() + 1"></td>
+															<td data-bind="text: stnName, attr:{title: stnName}"></td>
+															<td align="center" data-bind="text: bureauShortName"></td>
+															<td align="center" data-bind="text: sourceTime" contentEditable="true"></td>
+															<td align="center" data-bind="text: targetTime" contentEditable="true"></td>
+															<td align="center" data-bind="text: stepStr"></td>
+															<td align="center" data-bind="text: runDays"></td>
+															<td align="center" data-bind="text: trackName" contentEditable="true"></td>
+												        	</tr>
+												        </tbody>
+						        </table>
+			        		</div>   
+			        	</div>
+      		</div>
+	   </div>  -->
+		<!--调整时刻表	end--> 
+	   
+	   
 </body>  
  <script type="text/html" id="tablefooter-short-template"> 
   <table style="width:100%;height:20px;">

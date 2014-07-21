@@ -740,59 +740,6 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	   
 	   
 	<!--调整时刻表-->
-	
-		<!-- <div id="run_plan_train_times_edit_div" class="easyui-dialog" title="调整时刻表" data-options="iconCls:'icon-save'"
-		style="width: 500px; height: 500px; padding: 0px; ">
-			<div class="row" style="padding-top:10px;padding-bottom:10px;">
-			  <form class="form-horizontal" role="form">
-			    <div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
-			      <label for="exampleInputEmail2" class="control-label pull-left" data-bind="html: currentTrainInfoMessage()"></label>
-			    </div>
-			    <a type="button" href="#" class="btn btn-success btn-xs" style="float:right;margin-right:20px;margin-bottom:0;"><i class="fa fa-search"></i>保存</a>
-			  </form>
-			</div>
-			<div class="row">
-				分栏框开始
-			    <div class="panel panel-default">
-			      
-			      <div class="panel-body">
-			        <div class="table-responsive table-hover" style="overflow:auto">
-			          <table id="table_run_plan_train_times_edit" class="table table-bordered table-striped table-hover">
-			            <thead>
-					        <tr>
-					          <th style="width:40px">序号</th>
-			                  <th style="width:200px">站名</th>
-			                  <th style="width:50px">路局</th>
-			                  <th style="width:120px">到达时间</th>
-			                  <th style="width:120px">出发时间</th>
-			                  <th style="width:50px">停留时间</th>
-			                  <th style="width:50px">天数</th> 
-			                  <th style="width:50px" colspan="2">股道</th>  
-			                 </tr>
-			            </thead>
-			            <tbody data-bind="foreach: times">
-				           <tr>  
-							<td align="center" data-bind=" text: $index() + 1"></td>
-							<td data-bind="text: stnName, attr:{title: stnName}"></td>
-							<td align="center" data-bind="text: bureauShortName"></td>
-							<td align="center" data-bind="text: sourceTime" contentEditable="true"></td>
-							<td align="center" data-bind="text: targetTime" contentEditable="true"></td>
-							<td align="center" data-bind="text: stepStr"></td>
-							<td align="center" data-bind="text: runDays"></td>
-							<td align="center" data-bind="text: trackName" contentEditable="true"></td>
-				        	</tr>
-				        </tbody>
-			          </table>
-			        </div>
-			      </div>
-			      panel-body 
-			      
-			    </div>
-				
-			</div>
-		</div> -->
-	
-	
 	<div id="run_plan_train_times_edit_dialog" class="easyui-dialog" title="调整时刻表"
 		data-options="iconCls:'icon-save'"
 		style="width: 800px; height: 400px;overflow: hidden;">

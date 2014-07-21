@@ -38,6 +38,11 @@ var TrainRunTimePage = function () {
 		 * 保存
 		 */
 		_self.saveTrainTime = function() {
+			if(_trainUpdateList.length == 0) {
+				showWarningDialog("操作取消！当前车次客运时刻未做任何改动。");
+				return;
+			}
+			
 			commonJsScreenLock();
 			$.ajax({
 				url : basePath+"/jbtcx/editPlanLineTrainTimes",
