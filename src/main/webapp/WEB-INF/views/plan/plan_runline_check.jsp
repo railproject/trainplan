@@ -58,27 +58,33 @@ var basePath = "<%=basePath %>";
 	  <!-- ko if: $index() == 0 -->
 		<li data-bind="attr:{class: $parent.currentPage() == 0 ? 'disabled' : ''}"><a data-bind="text:'<<', click: $parent.loadPre"></a></li>
 	  <!-- /ko --> 
-	  <!-- ko if: $parent.pageCount() > 7 && $index() > 0 && $index() < $parent.pageCount() --> 
-              <!-- ko if:($index() > $parent.currentPage() - 1) && ($index() < $parent.currentPage() + 1)-->
-		            <!-- ko if: $index() < 3 && $parent.currentPage() > 2 --> 
-	         		    <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
-	                <!-- /ko --> 
-					<li data-bind="attr:{class: $parent.currentPage() == 0 ? 'disabled' : ''}"><a data-bind="text:'<<', click: $parent.loadPre"></a></li>
-	         <!-- /ko --> 
-	          <!-- ko if: $index() < 3 && $parent.currentPage() > 2 --> 
-	         		<li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
-	          <!-- /ko --> 
-	          <!-- ko if: (($index() == parseInt($parent.pageCount()/2) - 1) || ($index() == parseInt($parent.pageCount()) - 2))-->  
-	                 <li><a>...</a></li>
-	                 <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
-	          <!-- /ko -->  
-	          <!-- ko if:  ( $index() >=parseInt($parent.pageCount()/2) && ($index() <= parseInt($parent.pageCount()/2) + 1)) || (($index() > $parent.pageCount() - 2) && ($index() <= $parent.pageCount() - 1)) -->   
-	                 <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
-	          <!-- /ko -->  
-	  <!-- /ko -->   
-	  <!-- ko if: $parent.pageCount() <= 7 && $index() > 0 && $index() < $parent.pageCount()--> 
+ 
+	  <!-- ko if: $parent.pageCount() > 7 && $index() > 0 && $index() < $parent.pageCount() - 1 -->  
+              <!-- ko if: ($index() > $parent.currentPage() - 2) && ($index() <= $parent.currentPage() + 2) -->
+		            <!-- ko if: $index() == $parent.currentPage() - 1 && $parent.currentPage() > 3 && $parent.currentPage() < $parent.pageCount() - 4 --> 
+                         <li><a>...</a></li>
+	                     <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
+	                <!-- /ko -->  
+					<!-- ko if: $index() == $parent.currentPage() - 1 && ($parent.currentPage() <= 3 || $parent.currentPage() >= $parent.pageCount() - 4 )--> 
+                         <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
+	                <!-- /ko -->  
+                   <!-- ko if: $index() > $parent.currentPage() - 1 && $index() <= $parent.currentPage() + 2 --> 
+						 <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
+	               <!-- /ko --> 
+			  <!-- /ko -->   
+              <!-- ko if: $index() <= $parent.currentPage() - 2 &&  $index() < 4-->   
+						<li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
+              <!-- /ko -->   
+
+              <!-- ko if: $index() >= $parent.currentPage() + 2 && $index() > $parent.pageCount() - 4 -->  
+						<li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
+              <!-- /ko --> 
+	  <!-- /ko --> 
+  
+	  <!-- ko if: $parent.pageCount() <= 7 && $index() > 0 && $index() < $parent.pageCount() - 1 --> 
 	      <li data-bind="attr:{class: $parent.currentPage() == $index() ? 'active' : ''}" style="cursor:pointer"><a data-bind="text: $index()+1, click: $parent.loadPage.bind($data, $index())"></a></li>
-	  <!-- /ko -->   
+	  <!-- /ko -->
+   
 	  <!-- ko if: $index() == $parent.pageCount() - 1 -->
 		<li data-bind="attr:{class: $parent.currentPage() == $parent.pageCount()-1 ? 'disabled' : ''}" style="cursor:pointer"><a data-bind="text:'>>', click: $parent.loadNext"></a></li>
 	  <!-- /ko -->
