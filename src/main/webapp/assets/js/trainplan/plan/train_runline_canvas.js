@@ -81,12 +81,6 @@ var TrainRunLineCanvaPage = function() {
 		});
 		
 		
-		
-		//刷新按钮点击事件
-		$("#canvas_event_btn_refresh").click(function(){
-			_self.drawChart();
-		});
-		
 
 		//显示停站时刻 复选框事件
 		$("#canvas_checkbox_trainTime").click(function(){

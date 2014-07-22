@@ -42,6 +42,9 @@ function ApplicationModel() {
 	//列车列表
 	self.trains = ko.observableArray();
 	
+
+	self.trainAllTimes = ko.observableArray();//保存列车详情时刻所有数据，用于简图复选框点击事件列表值变更来源
+	
 	self.trainLines = ko.observableArray();
 	//交路列表   
 	self.gloabBureaus = [];   
@@ -115,7 +118,39 @@ function ApplicationModel() {
 				commonJsScreenUnLock();
 			}
 	    });
-		
+	    
+	    
+	    /**
+	     * 详情时刻表中 简图复选框点击事件
+	     */
+	    $("#input_checkbox_stationType_jt").click(function(){
+		    var _stationTypeArray = [];
+			$("[name='input_checkbox_stationType']").each(function(){
+				if($(this).is(":checked")) {
+					//查看简图 只包含始发、终到
+					_stationTypeArray = ["SFZ","FJK","TZ","ZDZ"];
+					//_stationTypeArray.push($(this).val());
+				} else {
+					//显示所有 包含始发、终到、分界口、停站、不停站
+					_stationTypeArray = ["SFZ","FJK","BTZ","TZ","ZDZ"];//"0","FJK","TZ","BT"
+				}
+		    });
+			
+
+			self.trainLines.remove(function(item){
+				return true;
+			});
+			
+			$.each(self.trainAllTimes(), function(i, n){
+				if ($.inArray(n.stationFlag, _stationTypeArray) > -1) {
+					self.trainLines.push(n);
+				}
+				
+				if(i == self.trainAllTimes().length - 1){
+					$("#plan_runline_table_trainLine").freezeHeader(); 
+				}
+			});
+	    });
 		
 	};  
 	
@@ -201,6 +236,9 @@ function ApplicationModel() {
 	 
 	self.showTrainTimes = function(row) {
 		self.currentTrain(row);
+		self.trainAllTimes.remove(function(item){
+			return true;
+		});
 		self.trainLines.remove(function(item){
 			return true;
 		});
@@ -224,9 +262,26 @@ function ApplicationModel() {
 				}),
 				success : function(result) {  
 					if (result != null && result != "undefind" && result.code == "0") {  
-						row.loadTimes(result.data);  
+						row.loadTimes(result.data);
+						var _stationTypeArray = [];
+						$("[name='input_checkbox_stationType']").each(function(){
+							if($(this).is(":checked")) {
+								//查看简图 只包含始发、终到
+								_stationTypeArray = ["SFZ","FJK","TZ","ZDZ"];
+								//_stationTypeArray.push($(this).val());
+							} else {
+								//显示所有 包含始发、终到、分界口、停站、不停站
+								_stationTypeArray = ["SFZ","FJK","BTZ","TZ","ZDZ"];//"0","FJK","TZ","BT"
+							}
+					    });
+						
 						$.each(row.times(), function(i, n){
-							self.trainLines.push(n);
+							self.trainAllTimes.push(n);
+							
+							if ($.inArray(n.stationFlag, _stationTypeArray) > -1) {
+								self.trainLines.push(n);
+							}
+							
 							if(i == row.times().length - 1){
 								$("#plan_runline_table_trainLine").freezeHeader(); 
 							}
@@ -242,7 +297,12 @@ function ApplicationModel() {
 					commonJsScreenUnLock();
 				}
 			}); 
-		}
+		};
+		
+		
+		if(!$("#run_plan_train_times_canvas_dialog").is(":hidden")){
+			self.showTrainTimeCanvas();
+		};
 		
 	};  
 	
@@ -340,6 +400,7 @@ function TrainTimeRow(data) {
 	self.stepStr = GetDateDiff(data); 
 	self.trackName = filterValue(data.trackName);  
 	self.runDays = data.runDays;
+	self.stationFlag = data.stationFlag;
 	 
 }; 
 function GetDateDiff(data)
