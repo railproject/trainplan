@@ -480,7 +480,6 @@ public class RunPlanService {
          * 生成计划列表
          * @param startDate 起始日期
          * @param baseRunPlanList 基本图数据
-         * @return 计划列表
          * @throws WrongDataException
          * @throws Exception
          */
@@ -510,7 +509,6 @@ public class RunPlanService {
                 throw new WrongDataException("交路数据错误，每组车数量不一样");
             }
             int trainCount = unitCrossTrainList.size() / totalGroupNbr;
-            List<RunPlan> resultList = Lists.newArrayList();
             // 计算结束时间
             LocalDate lastDate = startDate.plusDays(this.days);
             // 记录daygap
@@ -609,6 +607,7 @@ public class RunPlanService {
                                 break;
                             } catch (Exception e) {
                                 logger.error("生成客运计划出错", e);
+                                sendUnitCrossMsg(this.unitCross.getUnitCrossId(), -1);
                                 throw e;
                             }
                         }
@@ -621,7 +620,7 @@ public class RunPlanService {
             } else {
                 planCrossDao.update(planCrossInfo);
             }
-            sendUnitCrossMsg(this.unitCross.getUnitCrossId());
+            sendUnitCrossMsg(this.unitCross.getUnitCrossId(), 2);
         }
 
         private void sendRunPlanMsg(String unitCrossId, RunPlan runPlan) {
@@ -643,13 +642,13 @@ public class RunPlanService {
             }
         }
 
-        private void sendUnitCrossMsg(String unitCrossId) {
+        private void sendUnitCrossMsg(String unitCrossId, int status) {
             if(this.msgReceiveUrl == null) {
                 return;
             }
             Map<String, Object> msg = Maps.newHashMap();
             msg.put("unitCrossId", unitCrossId);
-            msg.put("status", 2);
+            msg.put("status", status);
             ObjectMapper jsonUtil = new ObjectMapper();
 
             try {
