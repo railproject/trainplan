@@ -196,7 +196,12 @@ var basePath = "<%=basePath %>";
     <!--分栏框开始-->
     <div id="plan_view_div_palnDayDetail" class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title" style="float: left;"> <i class="fa fa fa-folder-open"></i>详情时刻表  <span style="margin-left:5px" data-bind="text:currentTrain() == null ? '' : '车次:' + currentTrain().name"></span><label id="plan_view_div_palnDayDetail_title"></label></h3>
+        <h3 class="panel-title" style="float: left;"> 
+        	<i class="fa fa fa-folder-open"></i>详情时刻表  
+        	<span><input type="checkbox" id="input_checkbox_stationType_jt" name="input_checkbox_stationType" checked="checked" style="margin-left:10px">简图</span>
+        	<span style="margin-left:5px" data-bind="text:currentTrain() == null ? '' : '车次:' + currentTrain().name"></span>
+        	<label id="plan_view_div_palnDayDetail_title"></label>
+        </h3>
       </div>
       <!--panle-heading-->
       <div class="panel-body" style="padding:10px;">
