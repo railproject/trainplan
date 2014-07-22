@@ -22,7 +22,7 @@ String basePath = request.getContextPath();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>生成开行计划</title>
+<title>生成运行线</title>
 <!-- Bootstrap core CSS -->
 
 <!--font-awesome-->
@@ -85,7 +85,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">生成开行计划</a></li>
+		<li><a href="#">生成运行线</a></li>
 	</ol>  
 	   <div class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
@@ -194,7 +194,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 <script type="text/javascript" src="<%=basePath %>/assets/js/knockout.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/runPlan/run_plan_create.js"></script>  
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/runPlan/run_plan_line_create.js"></script>  
 <script type="text/javascript" src="<%=basePath %>/assets/js/datepicker.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.gritter.min.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script> 
