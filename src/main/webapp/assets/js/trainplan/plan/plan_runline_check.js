@@ -242,7 +242,12 @@ function ApplicationModel() {
 					commonJsScreenUnLock();
 				}
 			}); 
-		}
+		};
+		
+		
+		if(!$("#run_plan_train_times_canvas_dialog").is(":hidden")){
+			self.showTrainTimeCanvas();
+		};
 		
 	};  
 	
