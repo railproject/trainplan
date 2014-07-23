@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -477,7 +478,9 @@ public class RunPlanService {
         }
 
         /**
-         * 生成计划列表
+         * 生成开行计划，可以重复生成。
+         * 原则：保证生成的计划是在一个连续的时间区间内。
+         * TODO：切换方案重复生成
          * @param startDate 起始日期
          * @param baseRunPlanList 基本图数据
          * @throws WrongDataException
@@ -488,18 +491,25 @@ public class RunPlanService {
             String planCrossId = this.unitCross.getPlanCrossId();
             boolean isNewPlanCrossInfo = false;
             PlanCrossInfo planCrossInfo;
-            if(planCrossId == null) {
+            // 按组别保存最后一个计划
+            Map<Integer, RunPlan> lastRunPlans;
+            int initTrainSort = 0;
+            if(planCrossId == null) { // 之前未生成过开行计划
                 planCrossInfo = new PlanCrossInfo();
                 BeanUtils.copyProperties(planCrossInfo, this.unitCross);
                 planCrossInfo.setPlanCrossId(UUID.randomUUID().toString());
                 planCrossInfo.setCrossStartDate(this.startDate);
                 planCrossId = planCrossInfo.getPlanCrossId();
                 isNewPlanCrossInfo = true;
-            } else {
+                lastRunPlans = Maps.newHashMap();
+            } else { // 之前已经生成过开行计划
+                // 按时间删除已存在的开行计划，后面重新生成
+                // 查询planCross对象，生成完开行计划后需要更新crossEndDate
                 planCrossInfo = crossService.getPlanCrossInfoForPlanCrossId(planCrossId);
+                // 查询每组车最新的计划，作为新计划的前序车
+                lastRunPlans = this.getLastRunPlans(planCrossId);
+                initTrainSort = lastRunPlans.keySet().size();
             }
-            // 按组别保存最后一个计划
-            Map<Integer, RunPlan> lastRunPlans = Maps.newHashMap();
             // 用来保存最后一个交路起点
             RunPlan lastStartPoint = null;
             List<UnitCrossTrain> unitCrossTrainList = this.unitCross.getUnitCrossTrainList();
@@ -515,7 +525,7 @@ public class RunPlanService {
             int totalDayGap = 0;
             // 开始生成
             generate: {
-                for(int i = 0; i < 10000; i ++) {
+                for(int i = initTrainSort; i < 10000; i ++) {
                     UnitCrossTrain unitCrossTrain = unitCrossTrainList.get(i % unitCrossTrainList.size());
                     LocalDate runDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
                     LocalDate endDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getEndDate());
@@ -550,7 +560,7 @@ public class RunPlanService {
                                 runPlan.setAppointDay(unitCrossTrain.getAppointDay());
 
                                 RunPlan preRunPlan = lastRunPlans.get(runPlan.getGroupSerialNbr());
-                                if(preRunPlan != null) {
+                                if(preRunPlan != null) { // 有前序车
                                     // 当前列车的开始日期，是前车的结束日期+daygap
                                     LocalDate preEndDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime()));
                                     runPlan.setRunDate(preEndDate.plusDays(unitCrossTrain.getDayGap()).toString("yyyyMMdd"));
@@ -558,11 +568,11 @@ public class RunPlanService {
                                     // 前后车互基
                                     runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
                                     preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
-                                } else if(i == 0) {
+                                } else if(i == 0) { // 第一组第一个车
                                     LocalDate unitCrossTrainStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
                                     int initInterval = Days.daysBetween(unitCrossTrainStartDate, startDate).getDays();
                                     runPlan.setRunDate(unitCrossTrainStartDate.plusDays(initInterval).toString("yyyyMMdd"));
-                                } else {
+                                } else { // 每组第一个车（除了第一组）
                                     LocalDate unitCrossTrainStartDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
                                     int initInterval = Days.daysBetween(unitCrossTrainStartDate, startDate).getDays();
                                     totalDayGap += unitCrossTrain.getGroupGap();
@@ -621,6 +631,27 @@ public class RunPlanService {
                 planCrossDao.update(planCrossInfo);
             }
             sendUnitCrossMsg(this.unitCross.getUnitCrossId(), 2);
+        }
+
+        /**
+         * 根据plancrossid查询前序列车，日期有重叠的开行计划，按新日期一刀切
+         * 1、不管三七二十一，切一刀再说
+         * 2、查询每组车的最后一个车
+         * @param planCrossId 外键plan_cross表id
+         * @return 按groupserianbr保存最新计划
+         */
+        private Map<Integer, RunPlan> getLastRunPlans(String planCrossId) throws ParseException {
+            // 按时间切一刀
+            Map<String, Object> params = Maps.newHashMap();
+            params.put("startTime", new Timestamp(simpleDateFormat.parse(this.startDate + " 00:00:00").getTime()));
+            runPlanDao.deleteRunPlanByStartTime(params);
+            // 每组车的最新一组开行计划
+            Map<Integer, RunPlan> lastRunPlans = Maps.newHashMap();
+            List<RunPlan> preGroup = runPlanDao.findPreRunPlanByPlanCrossId(planCrossId);
+            for(RunPlan runPlan: preGroup) {
+                lastRunPlans.put(runPlan.getGroupSerialNbr(), runPlan);
+            }
+            return lastRunPlans;
         }
 
         private void sendRunPlanMsg(String unitCrossId, RunPlan runPlan) {

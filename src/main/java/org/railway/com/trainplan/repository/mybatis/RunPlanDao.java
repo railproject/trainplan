@@ -95,4 +95,17 @@ public interface RunPlanDao {
      * @return 计划列表
      */
     List<Map<String, Object>> findRunPlan_all(Map<String, Object> map);
+
+    /**
+     * 根据plancrossid查询已生成的、group_serial_nbr值最大的所有列车的信息，用来继续生成后面的开行计划
+     * @param planCrossId 外键
+     * @return
+     */
+    List<RunPlan> findPreRunPlanByPlanCrossId(String planCrossId);
+
+    /**
+     * 删除某个时间点之后的列车
+     * @param map 参数
+     */
+    void deleteRunPlanByStartTime(Map<String, Object> map);
 }
