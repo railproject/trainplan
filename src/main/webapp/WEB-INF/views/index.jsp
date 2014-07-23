@@ -182,8 +182,8 @@
                     <ul>
                         <shiro:hasPermission name="JHPT.KYJH.JYXKD">
                             <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-external-link"></i>既有图定开行计划</a></li>
-                        <li><a href="${ctx}/runPlanLk/addMainPage" target="contentFrame"><i class="fa fa-list-ol"></i>既有临客上图</a></li>
-                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-ol"></i>既有临客开行计划</a></li>
+                        <li><a href="${ctx}/runPlanLk/addPage" target="contentFrame"><i class="fa fa-list-ol"></i>既有临客上图</a></li>
+                        <li><a href="${ctx}/runPlanLk/mainPage" target="contentFrame"><i class="fa fa-list-ol"></i>既有临客开行计划</a></li>
                         </shiro:hasPermission>
                         <shiro:hasPermission name="JHPT.KYJH.GTKD">
                             <li><a href="${ctx}/runPlan/runPlanGt" target="contentFrame"><i class="fa fa-list-alt"></i>高铁开行计划</a></li>
