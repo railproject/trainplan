@@ -68,9 +68,33 @@
               t.end_stn endStn,
               t.spare_flag runFlag 
       from plan_train t 
-      where CREAT_TYPE = 3 and t.train_nbr=#{trainNbr}  and t.run_date>=#{startDay} and t.run_date &lt;=#{endDay} order by t.TRAIN_SORT, t.run_date
+      where CREAT_TYPE = 3 and t.train_nbr=#{trainNbr}  and t.run_date>=#{startDate} and t.run_date &lt;=#{endDate} order by t.TRAIN_SORT, t.run_date
     </select>
     
+    
+    <select id="getTrainLkInfoForPlanTrainId"  parameterType="string"  resultType="org.railway.com.trainplan.entity.BaseCrossTrainInfoTime">
+       select 
+	      CASE 
+	        WHEN 
+	          (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE T3.CNAME=T1.stn_name) >0 
+	        THEN 'FJK'
+	        WHEN T1.ARR_TIME=T1.DPT_TIME
+	        THEN 'BT'
+	        ELSE 'TZ'
+	      END stationType ,
+    T1.PLAN_TRAIN_STN_ID AS planTrainId,
+		T1.PLAN_TRAIN_ID ,
+		T1.STN_SORT AS stnSort,
+		T1.STN_NAME AS stnName,
+		T1.STN_BUREAU ,
+		T1.STN_BUREAU_FULL  ,
+		T1.ARR_TIME AS arrTime ,
+		T1.DPT_TIME AS dptTime,
+		T1.run_days AS runDays,
+		T1.TRACK_NAME AS trackName
+    from plan_train_stn T1 where T1.plan_train_id=#{planTrainId} order by T1.stn_sort
+    
+    </select>
     
     
 </mapper>

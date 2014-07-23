@@ -529,13 +529,13 @@ function CrossModel() {
 		var planEndDate =  $("#runplan_input_endDate").val();
 		 
 		 $.ajax({
-				url : basePath+"/jbtcx/getTrainTimeInfoByPlanTrainId",
+				url : basePath+"/runPlanLk/getTrainLkInfoForPlanTrainId",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					planTrainId : row.planTrainId,
+					planTrainId : row.planTrainId(),
 					trainNbr : row.trainNbr()
 				}),
 				success : function(result) {    
@@ -562,8 +562,8 @@ function CrossModel() {
 	};
 	self.showTrains = function(row) {   
 		self.setCurrentCross(row); 
-		commonJsScreenLock(1);//锁屏2次
-//		self.createCrossMap(row);
+		commonJsScreenLock(2);//锁屏2次
+		self.createCrossMap(row);
 		
 		self.trains.remove(function(item) {
 			return true;

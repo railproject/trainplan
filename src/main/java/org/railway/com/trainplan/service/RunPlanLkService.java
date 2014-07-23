@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.CrossRunPlanInfo;
 import org.railway.com.trainplan.entity.RunPlan;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
@@ -53,8 +54,8 @@ public class RunPlanLkService {
 		List<RunPlanTrainDto> runPlans = Lists.newArrayList();
 		Map<String, RunPlanTrainDto> runPlanTrainMap = Maps.newHashMap();
 		List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.RUNPLANLKDAO_GET_TRAINLK_RUNPLAN, map);
-		String startDay = map.get("startDay").toString();
-		String endDay = map.get("endDay").toString();
+		String startDay = map.get("startDate").toString();
+		String endDay = map.get("endDate").toString();
 		for(CrossRunPlanInfo runPlan: crossRunPlans){
 				RunPlanTrainDto currTrain =  runPlanTrainMap.get(runPlan.getTrainNbr());
 				if(currTrain == null){
@@ -67,4 +68,17 @@ public class RunPlanLkService {
 		runPlans.addAll(runPlanTrainMap.values());   
 		return runPlans;
     }
+	
+	
+	
+	 /**
+	   * 通过plan_train_id从PLAN_TRAIN_STN中获取列车时刻表
+	   * @param planTrainId
+	   * @return
+	   */
+	  public List<BaseCrossTrainInfoTime> getTrainLkInfoForPlanTrainId(String planTrainId){
+		  return baseDao.selectListBySql(Constants.RUNPLANLKDAO_GET_TRAINLK_FOR_PLAN_TRAIN_ID, planTrainId);
+	  }
+	  
+	  
 }

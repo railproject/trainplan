@@ -263,4 +263,6 @@ public class Constants {
     public static final String RUNPLANLKDAO_GET_PLANTRAIN_LK_INFO = "runPlanLkDao.getPlanTrainLkInfo";
     //
     public static final String RUNPLANLKDAO_GET_TRAINLK_RUNPLAN = "runPlanLkDao.getTrainLkRunPlans";
+    //查询临客的图形数据 
+    public static final String RUNPLANLKDAO_GET_TRAINLK_FOR_PLAN_TRAIN_ID = "runPlanLkDao.getTrainLkInfoForPlanTrainId";
 }
