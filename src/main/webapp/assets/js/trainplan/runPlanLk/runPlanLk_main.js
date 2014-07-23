@@ -521,7 +521,7 @@ function CrossModel() {
 	
 	self.createCrossMap = function(row){
 		console.log("----------------    画图------------------  row.planTrainId="+row.planTrainId()+"     row.trainNbr="+row.trainNbr());
-		console.log("----------------    画图------------------");
+		
 		
 		self.runPlanCanvasPage.clearChart();	//清除画布
 		var planStartDate = $("#runplan_input_startDate").val();
@@ -538,7 +538,9 @@ function CrossModel() {
 					planTrainId : row.planTrainId(),
 					trainNbr : row.trainNbr()
 				}),
-				success : function(result) {    
+				success : function(result) {
+					console.dir(result);
+					console.log("----------------    画图------------------");
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null) {
 							canvasData = {
