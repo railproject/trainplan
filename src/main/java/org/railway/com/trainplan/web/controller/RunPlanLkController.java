@@ -173,8 +173,8 @@ public class RunPlanLkController {
 						 trainStns.add(stnDtoStart);
 						 //纵坐标数据
 						 Station station = new Station();
-			    		 station.setStnName(subInfo.getStnName());
-						 station.setStationType(subInfo.getStationType());
+			    		 station.setStnName(stnDtoStart.getStnName());
+						 station.setStationType(stnDtoStart.getStationType());
 						 listStation.add(station);
 					 }
 					 dto.setTrainStns(trainStns);
