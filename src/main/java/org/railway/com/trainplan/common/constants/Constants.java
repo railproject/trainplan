@@ -261,4 +261,6 @@ public class Constants {
     
     /***与临客相关的mapper配置******/
     public static final String RUNPLANLKDAO_GET_PLANTRAIN_LK_INFO = "runPlanLkDao.getPlanTrainLkInfo";
+    //
+    public static final String RUNPLANLKDAO_GET_TRAINLK_RUNPLAN = "runPlanLkDao.getTrainLkRunPlans";
 }

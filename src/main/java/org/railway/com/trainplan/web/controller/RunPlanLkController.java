@@ -10,6 +10,7 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.RunPlan;
 import org.railway.com.trainplan.service.RunPlanLkService;
 import org.railway.com.trainplan.service.ShiroRealm;
+import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,9 +70,33 @@ public class RunPlanLkController {
 			 result.setData(runPlans);
 		 }catch(Exception e){
 			 result.setCode("-1");
-			 result.setMessage("查询运行线出错:" + e.getMessage());
+			 result.setMessage("查询临客运行线出错:" + e.getMessage());
 		 } 
 		 return result; 
      }
+	 
+	 
+	 /**
+	  * 查询临客开行情况
+	  * @param reqMap
+	  * @return
+	  * @throws Exception
+	  */
+	 @ResponseBody
+	 @RequestMapping(value = "/getTrainLkRunPlans", method = RequestMethod.POST)
+	 public Result getTrainLkRunPlans(@RequestBody Map<String,Object> reqMap) throws Exception{
+		 Result result = new Result();
+		 try{ 
+			 List<RunPlanTrainDto> runPlans = runPlanLkService.getTrainLkRunPlans(reqMap);
+			 result.setData(runPlans);
+		 }catch(Exception e){
+			 result.setCode("-1");
+			 result.setMessage("查询临客运行线开行规律出错:" + e.getMessage());
+		 } 
+		 return result; 
+     }
+	 
+	 
+	 
 	 
 }
