@@ -95,6 +95,64 @@
     from plan_train_stn T1 where T1.plan_train_id=#{planTrainId} order by T1.stn_sort
     
     </select>
+ 
+
+	 <select id="getCmdTrainInfoForCmdTxtmlId" parameterType="Integer"  resultType="org.railway.com.trainplan.entity.CmdTrain">
+		SELECT 
+		    CMD_TRAIN_ID  AS cmdTrainId,
+			CMD_BUREAU  AS cmdBureau,
+			CMD_TYPE  AS cmdType,
+			CMD_TXTMLID  AS cmdTxtMlId,
+			CMD_TXTMLITEMID  AS cmdTxtMlItemId,
+			CMD_NBR_BUREAU  AS cmdNbrBureau,
+			CMD_ITEM  AS cmdItem,
+			CMD_NBR_SUPERIOR  AS cmdNbrSuperior,
+			TRAIN_NBR  AS trainNbr,
+			START_STN  AS startStn,
+			END_STN  AS endStn,
+			START_DATE  AS startDate,
+			END_DATE  AS endDate,
+			RULE  AS rule,
+			SELECTED_DATE  AS selectedDate,
+			PASS_BUREAU  AS passBureau,
+			SELECT_STATE  AS selectState,
+			CREATE_STATE  AS createState,
+			TO_CHAR(UPDATE_TIME,'yyyy-MM-dd hh24:mi:SS')  AS updateTime,
+			TO_CHAR(CMD_TIME,'yyyy-MM-dd hh24:mi:SS')  AS cmdTime
+		
+		
+		FROM CMD_TRAIN WHERE CMD_TXTMLID=${cmdTxtmlId}
+     </select>
+
+
+   
     
+    
+    
+    <select id="getCmdTrainStnInfo"  parameterType="string"  resultType="org.railway.com.trainplan.entity.CmdTrainStn">
+      SELECT
+        CMD_TRAIN_STN_ID AS cmdTrainStnId ,
+		CMD_TRAIN_ID AS  cmdTrainId,
+		STN_SORT AS  stnSort,
+		STN_NAME AS stnName ,
+		STN_BUREAU AS stnBureau ,
+		TO_CHAR(ARR_TRAIN_NBR,) AS  arrTrainNbr,
+		DPT_TRAIN_NBR AS  dptTrainNbr,
+		ARR_TIME AS arrTime ,
+		DPT_TIME AS  dptTime,
+		BASE_ARR_TIME AS  baseArrTime,
+		BASE_DPT_TIME AS  baseDptTime,
+		RUN_DAYS AS  runDays,
+		TRACK_NBR AS trackNbr ,
+		PLATFORM AS  platform,
+		PSG_FLG AS  psgFlg,
+		LOCO_FLAG AS  locoFlag,
+		TEC_TYPE AS tecType ,
+		STN_TYPE AS  stnType
+		      
+      
+      FROM CMDTRAINSTN  WHERE CMD_TRAIN_ID=#{cmdTrainId}
+    
+    </select>
     
 </mapper>

@@ -600,8 +600,8 @@ public class RunPlanService {
                                     runPlan.getRunPlanStnList().add(runPlanStn);
                                     runPlanStn.setPlanTrainId(runPlan.getPlanTrainId());
                                     runPlanStn.setPlanTrainStnId(UUID.randomUUID().toString());
-                                    runPlanStn.setArrTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
-                                    runPlanStn.setDptTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
+                                    runPlanStn.setArrTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getsRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
+                                    runPlanStn.setDptTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.gettRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
                                     runPlanStn.setBaseArrTime(runPlanStn.getArrTime());
                                     runPlanStn.setBaseDptTime(runPlanStn.getDptTime());
                                 }
@@ -711,8 +711,8 @@ public class RunPlanService {
                                 runPlan.getRunPlanStnList().add(runPlanStn);
                                 runPlanStn.setPlanTrainId(runPlan.getPlanTrainId());
                                 runPlanStn.setPlanTrainStnId(UUID.randomUUID().toString());
-                                runPlanStn.setArrTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
-                                runPlanStn.setDptTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
+                                runPlanStn.setArrTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getsRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
+                                runPlanStn.setDptTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.gettRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
                                 runPlanStn.setBaseArrTime(runPlanStn.getArrTime());
                                 runPlanStn.setBaseDptTime(runPlanStn.getDptTime());
                             }

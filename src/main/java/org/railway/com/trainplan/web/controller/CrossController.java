@@ -644,10 +644,10 @@ public class CrossController {
 					 }
 					
 					 //fortest
-					 List<PlanLineGridY> listy = grid.getCrossStns();
-					 for(PlanLineGridY y :listy){
-						 System.err.println(y.getStnName() + "#" + y.getDptTime()+"#"+y.getStationType());
-					 }
+					// List<PlanLineGridY> listy = grid.getCrossStns();
+					 //for(PlanLineGridY y :listy){
+					///	 System.err.println(y.getStnName() + "#" + y.getDptTime()+"#"+y.getStationType());
+					 //}
 					 //////
 					 String myJlData = objectMapper.writeValueAsString(dataList);
 					  //图形数据
