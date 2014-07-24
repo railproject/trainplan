@@ -31,7 +31,8 @@ public class RunPlanStn {
     private String tecType;
     private String stnType;
     private int boundaryInOut;
-    private int runDays;
+    private int sRunDays;
+    private int tRunDays;
 
     public String getPlanTrainStnId() {
         return planTrainStnId;
@@ -201,15 +202,23 @@ public class RunPlanStn {
         this.boundaryInOut = boundaryInOut;
     }
 
-    public int getRunDays() {
-        return runDays;
-    }
+    public int getsRunDays() {
+		return sRunDays;
+	}
 
-    public void setRunDays(int runDays) {
-        this.runDays = runDays;
-    }
+	public void setsRunDays(int sRunDays) {
+		this.sRunDays = sRunDays;
+	}
 
-    public String getArrTimeStr() {
+	public int gettRunDays() {
+		return tRunDays;
+	}
+
+	public void settRunDays(int tRunDays) {
+		this.tRunDays = tRunDays;
+	}
+
+	public String getArrTimeStr() {
         return arrTimeStr;
     }
 
