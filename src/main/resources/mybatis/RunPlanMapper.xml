@@ -613,10 +613,16 @@ FROM
         FROM PLAN_TRAIN)
         WHERE PLAN_CROSS_ID = #{planCrossId}
         AND START_TIME = MAX_TIME
-        ORDER BY PLAN_CROSS_ID, GROUP_SERIAL_NBR, TRAIN_SORT
+        ORDER BY PLAN_CROSS_ID, GROUP_SERIAL_NBR, START_TIME
     </select>
 
     <delete id="deleteRunPlanByStartTime" parameterType="java.util.Map">
-        DELETE FROM PLAN_TRAIN WHERE START_TIME = #{startTime}
+        DELETE FROM PLAN_TRAIN WHERE START_TIME > #{startTime}
     </delete>
+
+    <update id="updateNextTrainId" parameterType="org.railway.com.trainplan.entity.RunPlan">
+        UPDATE PLAN_TRAIN
+        SET NEXT_TRAIN_ID = #{nextTrainId, jdbcType=VARCHAR}
+        WHERE PLAN_TRAIN_ID = #{planTrainId, jdbcType=VARCHAR}
+    </update>
 </mapper> 

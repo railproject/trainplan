@@ -108,4 +108,10 @@ public interface RunPlanDao {
      * @param map 参数
      */
     void deleteRunPlanByStartTime(Map<String, Object> map);
+
+    /**
+     * 保存后续车id
+     * @param runPlan
+     */
+    void updateNextTrainId(RunPlan runPlan);
 }
