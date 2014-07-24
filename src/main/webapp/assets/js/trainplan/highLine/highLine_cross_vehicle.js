@@ -32,7 +32,22 @@ function CrossModel() {
 	self.searchModle = ko.observable(new searchModle());
 	 
 	//当前日期可调整的交路
-	self.highLineCrossRows =  ko.observableArray();    
+	self.highLineCrossRows =  ko.observableArray();     
+	
+	self.vehicles = [  
+	             "Google","NetEase", "Sohu", "Sina", "Sogou", "我爱北京", "我爱北京天安门我爱北京天安门","Tencent",   
+	             "Taobao", "Tom", "Yahoo", "JavaEye", "Csdn", "Alipay" ,"abc" 
+	         ];  
+	       
+	self.vehicleOnfocus = function(n, event){
+		$(event.target).autocomplete(self.vehicles,{  
+             max: 12,    //列表里的条目数
+   		   width: 400,     //提示的宽度，溢出隐藏
+   		   scrollHeight: 120,   //提示的高度，溢出显示滚动条
+   		   matchContains: false,    //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
+   		   autoFill: false    //是否自动填充
+       });   
+	};
 	
 	self.vehicle1Change = function(row){
 		row.updateFlag(true);
@@ -257,7 +272,7 @@ function CrossModel() {
 		self.searchModle().planStartDate(self.getDateByInt(1)); 
 		
 		commonJsScreenLock();  
-		 
+		 //加载路局列表
 	    $.ajax({
 			url : "../plan/getFullStationInfo",
 			cache : false,
@@ -279,6 +294,32 @@ function CrossModel() {
 			},
 			error : function() {
 				showErrorDialog("获取路局列表失败");
+			},
+			complete : function(){ 
+				commonJsScreenUnLock(); 
+			}
+	    });
+	    
+	    //加载当前局可选车底列表
+	    $.ajax({
+			url : "../highLine/getVehicle",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					if (result.data !=null) { 
+						$.each(result.data,function(n, v){  
+							self.vehicles.push(v);
+						});
+					} 
+				} else {
+					showErrorDialog("获取本局可用车底失败");
+				} 
+			},
+			error : function() {
+				showErrorDialog("获取本局可用车底失败");
 			},
 			complete : function(){ 
 				commonJsScreenUnLock(); 
@@ -354,7 +395,16 @@ function CrossModel() {
 						if(result.data != null){  
 							$.each(result.data,function(n, crossInfo){ 
 								self.highLineCrossRows.push(new CrossRow(crossInfo));  
-							}); 
+							});
+							
+							  
+							 $("#highline_train_vehicle_panel_body input").autocomplete(self.vehicles,{  
+				                   max: 12,    //列表里的条目数
+				         		   width: 400,     //提示的宽度，溢出隐藏
+				         		   scrollHeight: 120,   //提示的高度，溢出显示滚动条
+				         		   matchContains: false,    //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
+				         		   autoFill: false    //是否自动填充
+				             });   
 							//self.crossRows.loadPageRows(result.data.totalRecord, rows);
 						}   
 						 
@@ -370,6 +420,8 @@ function CrossModel() {
 				}
 			}); 
 	};
+	
+	
 	//必须定义在load函数之后
 	self.crossRows = new PageModle(50, self.loadCrosseForPage); 
 	 

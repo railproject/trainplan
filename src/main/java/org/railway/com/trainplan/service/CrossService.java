@@ -801,6 +801,7 @@ public class CrossService{
 	
 	public void actionExcel(InputStream inputStream, String chartId, String startDay, String chartName, String addFlag) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// TODO Auto-generated method stub
+		//初始化表头映射，因为映射的标题是符合标题行目前不支持，所以直接使用顺序映射
 		LinkedHashMap<String, String> pm = new LinkedHashMap<String, String>();
 		pm.put("crossIdForExcel", "");
 		pm.put("crossName", "");
@@ -841,6 +842,7 @@ public class CrossService{
 		valuesMap.put("tokenPsgBureau", tokenPsgDeptValuesMap); 
 		valuesMap.put("tokenVehBureau", tokenPsgDeptValuesMap);  
 		
+		//初始化一个线程池，在解析出交路信息以后，把每一条交路信息作为一个参数用来初始化一个CrossCompletionService作为一个县城丢到线程池中做异步处理
 		ExecutorService service = Executors.newFixedThreadPool(10);
 		CompletionService<String> completion = new ExecutorCompletionService<String>(service);
 		 
@@ -850,10 +852,11 @@ public class CrossService{
 			int allNum = 0;
 			int num = workbook.getNumberOfSheets();		
 			//List<CrossInfo> alllist = new ArrayList<CrossInfo>();
-			//全部清空再导入
+			//全部清空再导入，如果界面上选择为清空再倒入的时候
 			if("1".equals(addFlag)){
 				clearCrossInfoByChartId(chartId);
 			}
+			//迭代excel中的每一个sheet
 			for(int i = 0; i < num; i++){
 				HSSFSheet sheet = workbook.getSheetAt(i);
 				ExcelUtil<CrossInfo> test = new ExcelUtil<CrossInfo>(pm, sheet, CrossInfo.class);
@@ -873,6 +876,7 @@ public class CrossService{
 				} 
 				allNum += list.size();
 			} 
+			//基于ExecutorCompletionService 县城管理模式，必须把结果集县城中的所有结果都显示的处理一次才认为当前线程完成了，当所有线程都被处理才表示当前线程组完成了
 			for(int i = 0; i < allNum; i++){
 				try {
 					completion.take().get();
@@ -931,7 +935,7 @@ public class CrossService{
 
 
 	/**
-	 * 用于并行处理交路
+	 * 用于并行处理单个交路信息的完善
 	 * @author Administrator
 	 *
 	 */
@@ -1170,7 +1174,9 @@ public class CrossService{
 				setDayGap(crossTrains.get(i), crossTrains.get(i - 1 < 0 ? crossTrains.size() - 1 : i - 1)); 
 			}
 		} 
-		 
+		/**
+		 * 设置交路的结束日期和列车的开始和结束日期
+		 */
 		private void setEndDateForCross(LinkedList<CrossTrainInfo> crossTrains, CrossInfo cross){
 			 int dayGapForCross = 0;
 			 String crossStartDate = cross.getCrossStartDate();
@@ -1215,7 +1221,11 @@ public class CrossService{
 				 logger.error("设置结束时间出错 ", e);
 			 }
 		}
-		
+		/**
+		 * 设置交路的结束时间和开始时间，同时设置列车的开行日期
+		 * @param crossTrains
+		 * @param cross
+		 */
 		private void setStartAndEndTime(LinkedList<CrossTrainInfo> crossTrains, CrossInfo cross){
 			//有多线程问题  
 			 int dayGapForCross = 0;

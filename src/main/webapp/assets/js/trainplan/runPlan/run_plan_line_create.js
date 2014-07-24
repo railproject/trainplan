@@ -23,8 +23,7 @@ function hasActiveRole(bureau){
 
 //{unitCrossId:"1",status: "1"}
 function updateTrainRunPlanStatus(message){  
-	var runPlan = $.parseJSON(message);
-	console.log(runPlan)
+	var runPlan = $.parseJSON(message); 
 	cross.updateTrainRunPlanStatus(runPlan);
 	
 }
@@ -61,31 +60,43 @@ function CrossModel() {
 	
 	self.createRunPlanCompletedCount = ko.observable(0);
 	
+	self.createRunPlanErrorCount = ko.observable(0);
+	
+	self.selectedRunPlan = ko.observableArray();
+	
+	self.selectRunPlan = function(row){ 
+		if(row.selected() == 0){
+			row.selected(1);
+			self.selectedRunPlan.push(row);
+		}else{
+			self.selectedRunPlan.remove(row);
+			row.selected(0);
+		}  
+	};
+	
 	self.completedMessage = ko.computed(function(){ 
-		return self.createRunPlanTotalCount() == 0 ? "" : "当前总共生成：" + self.createRunPlanTotalCount() + "条，目前已生成：" + self.createRunPlanCompletedCount() + "条";
+		return self.createRunPlanTotalCount() == 0 ? "" : "选中：" + self.createRunPlanTotalCount() + "个计划，目前已成功生成：" + self.createRunPlanCompletedCount() + "个运行线，另有：" + self.createRunPlanErrorCount() + "个运行线失败";
 	});
 	
-	self.updateTrainRunPlanDayFlag = function(runPlan){
-		$.each(self.trainPlans(), function(x, n){ 
-			if(n.unitCrossId == runPlan.unitCrossId && n.trainNbr == runPlan.trainNbr){
-				for(var i = 0; i < n.runPlans().length; i++){ 
-					if(n.runPlans()[i].day.replace(/-/g, "") == runPlan.day){
-						n.runPlans()[i].runFlag(runPlan.runFlag);
-						break;
-					};
-				};
+	self.updateTrainRunPlanDayFlag = function(runPlan){ 
+		$.each(self.selectedRunPlan(), function(x, n){ 
+			if(n.planTrainId == runPlan.planTrainId){
+				n.createFlag(runPlan.createFlag);
 				return false;
 			};
 		});
 	};
 	
 	self.updateTrainRunPlanStatus = function(runPlan){
-		if(runPlan.status == 2){
+		if(runPlan.createFlag == 1){
 			self.createRunPlanCompletedCount(self.createRunPlanCompletedCount() + 1);
+		}else{
+			self.createRunPlanErrorCount(self.createRunPlanErrorCount() + 1);
 		}
-		$.each(self.trainPlans(), function(x, n){ 
-			if(n.unitCrossId == runPlan.unitCrossId && n.trainSort == 0){ 
-				n.createStatus(runPlan.status); 
+		$.each(self.selectedRunPlan(), function(x, n){ 
+			if(n.planTrainId() == runPlan.planTrainId){
+				n.selected(0);
+				n.createFlag(runPlan.createFlag);
 				return false;
 			};
 		});
@@ -105,8 +116,22 @@ function CrossModel() {
 		$.each(self.trainPlans(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
 				crossRow.selected(0); 
+				$.each(self.trainPlans(), function(i, train){ 
+						$.each(train.runPlans(), function(z, n){
+							if(n.createFlag() == 0){
+								n.selected(0);
+							} 
+						}); 
+				});
 			}else{ 
 				crossRow.selected(1);   
+				$.each(self.trainPlans(), function(i, train){ 
+					$.each(train.runPlans(), function(z, n){
+						if(n.createFlag() == 0){
+							n.selected(1);
+						} 
+					}); 
+			   });
 			}  
 		});  
 	};
@@ -118,10 +143,29 @@ function CrossModel() {
 				if(crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
 					return false;
-				}  
+				} 
 			});  
+			$.each(self.trainPlans(), function(i, train){
+				if(train.planTrainId == row.planTrainId){
+					$.each(train.runPlans(), function(z, n){
+						if(n.createFlag() == 0){
+							n.selected(1);
+						} 
+					});
+				}
+			});
+			
 		}else{
 			self.crossAllcheckBox(0); 
+			$.each(self.trainPlans(), function(i, train){
+				if(train.planTrainId == row.planTrainId){
+					$.each(train.runPlans(), function(z, n){
+						if(n.createFlag() == 0){
+							n.selected(0);
+						} 
+					});
+				}
+			});
 		}; 
 	};
 	
@@ -316,10 +360,16 @@ function CrossModel() {
 		var startDate = $("#runplan_input_startDate").val(); 
 		var endDate =  $("#runplan_input_endDate").val();  
 		
+		self.createRunPlanTotalCount(0);
+		
+		self.createRunPlanCompletedCount(0);
+		
+		self.createRunPlanErrorCount(0);
+		
 		self.initDataHeader();
 		 
 		$.ajax({
-				url : "../cross/getUnitCrossInfo",
+				url : "../runPlan/getTrainRunPlansForCreateLine",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -328,40 +378,65 @@ function CrossModel() {
 					tokenVehBureau : bureauCode, 
 					startBureau : startBureauCode,
 					trainNbr : trainNbr,
-					chartId : chart.chartId,
+					startDay : startDate.replace(/-/g, ""),
+					endDay : endDate.replace(/-/g, ""),
 					rownumstart : startIndex, 
 					rownumend : endIndex,
 				}),
 				success : function(result) {    
- 
+                    var trainPlans = {};
 					if (result != null && result != "undefind" && result.code == "0") { 
-						if(result.data.data != null){  
-							$.each(result.data.data,function(n, crossInfo){
-								var trainPlanData = {
-										crossName: crossInfo.crossName, 
-										unitCrossId: crossInfo.unitCrossId,
-										tokenVehBureau: crossInfo.tokenVehBureau,
-										startDate: startDate,
-										endDate: endDate, 
-										trainSort: 0 
-								};
-								self.trainPlans.push(new TrainRunPlanRow(trainPlanData));
-								var crossNames = crossInfo.crossName.split("-");
-								for(var i = 0; i < crossNames.length; i++){
-									var trainPlanData = {
-											crossName: crossInfo.crossName, 
+						console.log(result.data);
+						 $.each(result.data, function(z, n){ 
+							 var planCross = trainPlans[n.planCrossId];
+							 if(planCross == null){
+								 var trainPlanData = {
+											crossName: n.crossName, 
+											planCrossId: n.planCrossId,
+											tokenVehBureau: n.tokenVehBureau,
 											startDate: startDate,
-											endDate: endDate,
-											unitCrossId: crossInfo.unitCrossId,
-											trainNbr: crossNames[i],
-											trainSort: i + 1,
-											tokenVehBureau: crossInfo.tokenVehBureau
+											endDate: endDate, 
+											baseTrainId: n.baseTrainId,
+											createFlag: 0,
+											trainSort: 0 
 									};
-									self.trainPlans.push(new TrainRunPlanRow(trainPlanData));
-								} ; 
-							});  
-						}   
-						 
+									//默认吧交路作为第一条记录
+								    var planCross = new TrainRunPlanRow(trainPlanData);
+									self.trainPlans.push(planCross);
+									var crossNames = n.crossName.split("-");
+									//把交路拆分成车，然后依次添加在她的后面
+									for(var i = 0; i < crossNames.length; i++){
+										var trainPlanData = {
+												crossName: n.crossName, 
+												startDate: startDate,
+												endDate: endDate,
+												planCrossId: n.planCrossId,
+												trainNbr: crossNames[i], 
+												trainSort: i + 1,
+												createFlag: 0,
+												tokenVehBureau: n.tokenVehBureau
+										};
+										self.trainPlans.push(new TrainRunPlanRow(trainPlanData));
+									} ; 
+									trainPlans[n.planCrossId] = planCross; 
+							 }else{
+								 $.each(self.trainPlans(), function(x, t){ 
+										if(t.planCrossId == n.planCrossId && t.trainNbr == n.trainNbr){
+											for(var i = 0; i < t.runPlans().length; i++){ 
+												if(t.runPlans()[i].day.replace(/-/g, "") == n.runDay){ 
+													t.runPlans()[i].runFlag(parseInt(n.runFlag));
+													t.runPlans()[i].createFlag(parseInt(n.createFlag));
+													t.runPlans()[i].planTrainId(n.planTrainId);
+													t.runPlans()[i].baseTrainId(n.baseTrainId);
+													break;
+												};
+											};
+											return false;
+										};
+									});
+							 } 
+						 });
+						
 					} else {
 						showErrorDialog("获取交路单元信息失败");
 					};
@@ -378,62 +453,40 @@ function CrossModel() {
 	self.crossRows = new PageModle(50, self.loadCrosseForPage);  
    
 	
-	self.createTrainLines = function(){  
-		 var crossIds = [];
-		 var createCrosses = [];
-		 var crosses = self.trainPlans();
-		 for(var i = 0; i < crosses.length; i++){   
-			if(crosses[i].selected() == 1){  
-				crossIds.push(crosses[i].unitCrossId);
-				crosses[i].createStatus(1);
-				createCrosses.push(crosses[i]); 
-			 }   
-		 }   
-		 var startDate = $("#runplan_input_startDate").val(); 
-		 var endDate =  $("#runplan_input_endDate").val();  
+	self.createTrainLines = function(){   
+		 var planTrains = []; 
 		 
-		 var days = GetDays(startDate, endDate);
-		 
-		 var chart = self.searchModle().chart();
-		    
-	     if(chart == null){
-	    	showErrorDialog("请选择一个方案"); 
-	    	return;
-	     }  
-		 
-		 if(crossIds.length == 0){
-			 showWarningDialog("未选中数据");
-			 return;
+		 for(var i = 0; i < self.selectedRunPlan().length; i++){
+			 planTrains.push({planTrainId: self.selectedRunPlan()[i].planTrainId(),
+				 baseTrainId: self.selectedRunPlan()[i].baseTrainId(),
+				 day: self.selectedRunPlan()[i].day});
 		 }
 		 
-		 self.createRunPlanTotalCount(createCrosses.length); 
+		 self.createRunPlanTotalCount(self.selectedRunPlan().length);
+		 
 		 self.createRunPlanCompletedCount(0);
+			
+		 self.createRunPlanErrorCount(0);
 		 
 		 commonJsScreenLock();
 		 $.ajax({
-				url : "../runPlan/plantrain/gen",
+				url : "../runPlan/createRunPlanForPlanTrain",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					baseChartId: chart.chartId,
-					startDate: startDate.replace(/-/g, ""), 
-					days: days + 1, 
-					unitcrossId: crossIds,
-					msgReceiveUrl: "/trainplan/runPlan/runPlanCreate"}),
+					planTrains:  planTrains, 
+					msgReceiveUrl: "/trainplan/runPlan/runPlanLineCreate"}),
 				success : function(result) { 
-					if(result != null && result.length >= 0){ 
+					if(result != null && result.code == 0){ 
 						showSuccessDialog("正在生成开行计划");
 					}else{
 						showErrorDialog("生成开行计划失败");
 					}
 				},
 				error : function() {
-					showErrorDialog("生成开行计划失败");
-					 for(var i = 0; i < createCrosses.length; i++){   
-						 createCrosses.createStatus(0);
-					 }  
+					showErrorDialog("生成开行计划失败"); 
 				},
 				complete : function(){
 					
@@ -799,7 +852,7 @@ function filterValue(value){
 function TrainRunPlanRow(data){
 	var self = this; 
 	
-	self.unitCrossId = data.unitCrossId;
+	self.planCrossId = data.planCrossId;
 	self.trainNbr = data.trainNbr;
 	self.crossName = data.crossName;
 	self.runPlans =  ko.observableArray();  
@@ -876,33 +929,40 @@ function TrainRunPlanRow(data){
 			return true;
 		});   
 		var curDay = self.yyyyMMdd(currentTime); 
-		self.runPlans.push(new RunPlanRow({"day": curDay, "runFlag": null})); 
+		self.runPlans.push(new RunPlanRow({"day": curDay, "runFlag": null, "createFlag": null, planCrossId: data.planCrossId, baseChartId: data.baseChartId})); 
 		while(curDay != endTimeStr){
 			currentTime.setDate(currentTime.getDate() + 1); 
 			curDay = self.yyyyMMdd(currentTime);
-			self.runPlans.push(new RunPlanRow({"day": curDay, "runFlag": null})); 
+			self.runPlans.push(new RunPlanRow({"day": curDay, "runFlag": null, "createFlag": null, planCrossId: data.planCrossId, baseChartId: data.baseChartId})); 
 		} 
 	}  
 }
 
 function RunPlanRow(data){
-	var self = this; 
-	self.color = ko.observable("gray");
+	var self = this;  
 	self.day = data.day;
-	self.runFlag = ko.observable(""); 
-	
+	self.runFlag = ko.observable("");  
+	self.createFlag = ko.observable("");  
+	self.planCrossId = data.planCrossId;
+	self.planTrainId = ko.observable("");  
+	self.baseTrainId =  ko.observable("");  
+	self.selected = ko.observable(0);
+	self.color = ko.computed(function(){
+		if(self.createFlag() == 1){
+			return "green";
+		}else{
+			return"gray";
+		} 
+	});
 	self.runFlagShowValue = ko.computed(function(){ 
 		switch (self.runFlag()) {
-		case 0:
-			self.color("gray");
+		case 0: 
 			return "停";
 			break;
-		case 1:
-			self.color("green");
+		case 1: 
 			return "开";
 			break;
-		case 2:
-			self.color("blue");
+		case 2: 
 			return "备";
 			break;
 		default: 

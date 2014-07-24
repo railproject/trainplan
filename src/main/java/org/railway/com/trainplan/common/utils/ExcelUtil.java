@@ -18,7 +18,37 @@ import java.util.regex.Pattern;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.railway.com.trainplan.entity.CrossInfo;
 
+/**
+ * 该类用于帮助解析和天聪EXCEL,目前没有分页的实现，所以数据量太大可能导致类存溢出
+ * 使用凡是如下，
+ * 先定义一个javabean
+ * 然后做标题和bean的属性的map映射，
+ *      LinkedHashMap<String, String> pm = new LinkedHashMap<String, String>();
+		pm.put("crossIdForExcel", "序号");
+		pm.put("crossName", "交路名");
+		pm.put("crossSpareName", "备用交路名"); 
+		pm.put("tokenVehBureau", "");  
+ *    定义属性值得映射MAP
+ *    Map<String,  Map<String, String>> valuesMap = new HashMap<String, Map<String, String>>();
+ *    
+ *    如tokenVehBureau 属性在EXCEL中保存的可能是路局的简称 如“京”，但是实际保存导数据库可鞥想装换成他的拼音码，就可以这样做:
+ *    Map<String, String> tokenVehBureauMap = new  new HashMap<String, String>();
+ *    tokenVehBureauMap.put("京"， "p");
+ *    valuesMap。put("tokenVehBureau", tokenVehBureauMap);
+ *    
+ *    然后初始化一个帮助类
+ *    ExcelUtil<CrossInfo> test = new ExcelUtil<CrossInfo>(pm, sheet, CrossInfo.class);
+	       设  置 属性映射
+	  test.setValueMapping(valuesMap);
+	  getEntitiesHasNoHeader函数在你直接指导哪一行是数据行的开始，你可以直接闯入进行数据解析，但是这个时候pm的顺序一定要和标题行吻合
+	      否者请使用getEntities(-1),它会自动找到合标题行吻合的行并从该行一下开始读取数据行
+	  List<CrossInfo> list = test.getEntitiesHasNoHeader(4);  
+ * @author Administrator
+ *
+ * @param <T>
+ */
 public class ExcelUtil<T> {
 	private LinkedHashMap<String, String> propertyMapping;
 	private HSSFSheet sheet;

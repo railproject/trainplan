@@ -145,7 +145,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 						<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
 					</div>
 					<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
-										data-target="#" id="btn_cross_createTrainLines" data-bind="click: createTrainLines">生成运行线</a>
+										data-target="#" id="btn_cross_createTrainLines" data-bind="click: createTrainLines">生成开行计划</a>
 				</div>
 				  <div class="row" style="margin: 5px 10px 10px 10px;" data-bind="html: completedMessage()">       
 				  </div>

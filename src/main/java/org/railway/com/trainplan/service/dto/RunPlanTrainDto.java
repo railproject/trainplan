@@ -57,6 +57,17 @@ public class RunPlanTrainDto {
 		 }
 	}
 	
+	public void setRunFlag(String runDay, String runFlag, String createFlag) {
+		 for(TrainRunDto tr : this.runPlans){
+			 if(tr.getDay().equals(runDay)){
+				 tr.setRunFlag(runFlag); 
+				 tr.setCreateFlag(createFlag);
+				 return;
+			 }
+		 }
+	}
+	
+	
 	
 	public static void main(String[] args) {
 		new RunPlanTrainDto("20140527", "20140706");
