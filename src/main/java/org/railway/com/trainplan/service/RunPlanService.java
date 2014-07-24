@@ -745,6 +745,7 @@ public class RunPlanService {
         private int getLastRunPlans(String planCrossId, Map<Integer, RunPlan> lastRunPlans) throws ParseException {
             // 按时间切一刀
             Map<String, Object> params = Maps.newHashMap();
+            params.put("planCrossId", planCrossId);
             params.put("startTime", new Timestamp(simpleDateFormat.parse(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.startDate).toString("yyyy-MM-dd") + " 00:00:00").getTime()));
             runPlanDao.deleteRunPlanByStartTime(params);
             // 每组车的最新一组开行计划
