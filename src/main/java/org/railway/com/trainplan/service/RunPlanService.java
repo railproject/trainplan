@@ -815,7 +815,7 @@ public class RunPlanService {
 
             try {
                 this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("发送消息失败", e);
             }
@@ -832,7 +832,7 @@ public class RunPlanService {
 
             try {
                 this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("发送消息失败", e);
             }
