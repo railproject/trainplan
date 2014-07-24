@@ -112,7 +112,7 @@ public class RunPlanLkController {
      }
 	 
 	 
-	 /**
+	    /**
 		 * 根据plant_train_id从PLAN_TRAIN_STN中查询列车时刻表
 		 * @param reqMap
 		 * @return
@@ -199,6 +199,60 @@ public class RunPlanLkController {
 				result.setData(dataMap);
 				
 			}catch(Exception e){
+				logger.error(e.getMessage(), e);
+				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+			}
+			
+			return result;
+		}
+	
+		
+		 /**
+		 * 查询cmdTrain信息
+		 * @param reqMap
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/getCmdTrainInfo", method = RequestMethod.POST)
+		public Result getCmdTrainInfo(@RequestBody Map<String,Object> reqMap){
+			Result result = new Result();
+			logger.info("getCmdTrainInfo~~reqMap==" + reqMap);
+			String startDate = StringUtil.objToStr(reqMap.get("startDate"));
+			String endDate = StringUtil.objToStr(reqMap.get("endDate"));
+			String trainNbr = StringUtil.objToStr(reqMap.get("trainNbr"));
+			//局令号
+			String cmdNbrBureau = StringUtil.objToStr(reqMap.get("cmdNbrBureau"));
+			//部令号
+			String cmdNbrSuperior = StringUtil.objToStr(reqMap.get("cmdNbrSuperior"));
+			//选线状态0：未选择 1：已选择
+			String selectState = StringUtil.objToStr(reqMap.get("selectState"));
+			//生成状态0：未生成 1：已生成
+			String createState =  StringUtil.objToStr(reqMap.get("createState"));
+			try{}catch(Exception e){
+				logger.error(e.getMessage(), e);
+				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+			}
+			
+			return result;
+		}
+		
+		
+		 /**
+		 * 查询cmdTrainStn信息
+		 * @param reqMap
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/getCmdTrainStnInfo", method = RequestMethod.POST)
+		public Result getCmdTrainStnInfo(@RequestBody Map<String,Object> reqMap){
+			Result result = new Result();
+			logger.info("getCmdTrainStnInfo~~reqMap==" + reqMap);
+			//cmdTrain表主键
+			String startDate = StringUtil.objToStr(reqMap.get("cmdTrainId"));
+			
+			try{}catch(Exception e){
 				logger.error(e.getMessage(), e);
 				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
