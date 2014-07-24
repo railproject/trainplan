@@ -266,6 +266,12 @@ public class Constants {
     public static final String RUNPLANLKDAO_GET_TRAINLK_RUNPLAN = "runPlanLkDao.getTrainLkRunPlans";
     //查询临客的图形数据 
     public static final String RUNPLANLKDAO_GET_TRAINLK_FOR_PLAN_TRAIN_ID = "runPlanLkDao.getTrainLkInfoForPlanTrainId";
+    
+    public static final String BASEDAO_GET_THROUGHLINE = "highlineCrossDao.getThroughLine";
+    public static final String BASEDAO_GET_CRHTYPE = "highlineCrossDao.getCrhType";
+    public static final String BASEDAO_GET_DEPOT = "highlineCrossDao.getDepot";
+    public static final String BASEDAO_GET_ACC = "highlineCrossDao.getAcc";
+    
     //查询cmdTrainStn信息 
     public static final String RUNPLANLKDAO_GET_CMD_TRAINSTN_INFO = "runPlanLkDao.getCmdTrainStnInfo";
     //查询表cmdTrain

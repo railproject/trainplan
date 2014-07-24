@@ -120,6 +120,7 @@ function CrossModel() {
 						$.each(train.runPlans(), function(z, n){
 							if(n.createFlag() == 0){
 								n.selected(0);
+								self.selectedRunPlan.remove(n);
 							} 
 						}); 
 				});
@@ -129,6 +130,7 @@ function CrossModel() {
 					$.each(train.runPlans(), function(z, n){
 						if(n.createFlag() == 0){
 							n.selected(1);
+							self.selectedRunPlan().push(n);
 						} 
 					}); 
 			   });
@@ -150,6 +152,7 @@ function CrossModel() {
 					$.each(train.runPlans(), function(z, n){
 						if(n.createFlag() == 0){
 							n.selected(1);
+							self.selectedRunPlan().push(n);
 						} 
 					});
 				}
@@ -162,6 +165,7 @@ function CrossModel() {
 					$.each(train.runPlans(), function(z, n){
 						if(n.createFlag() == 0){
 							n.selected(0);
+							self.selectedRunPlan.remove(n);
 						} 
 					});
 				}
