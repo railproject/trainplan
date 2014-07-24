@@ -188,6 +188,9 @@
                         <shiro:hasPermission name="JHPT.KYJH.GTKD">
                             <li><a href="${ctx}/runPlan/runPlanGt" target="contentFrame"><i class="fa fa-list-alt"></i>高铁开行计划</a></li>
                         </shiro:hasPermission>
+                        <shiro:hasRole name="总公司客调">
+                            <li><a href="${ctx}/runPlan/runPlanLineCreate" target="contentFrame"><i class="fa fa-sign-out"></i>生成运行线</a></li>
+                        </shiro:hasRole>
                     </ul>
                 </li>
 
@@ -198,7 +201,7 @@
                         <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表管理</a>
                         <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>交路单元管理</a></li>
                         <shiro:hasRole name="总公司客调">
-                            <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>启用新图</a></li>
+                            <li><a href="${ctx}/runPlan/runPlanCreate" target="contentFrame"><i class="fa fa-sign-out"></i>生成开行计划</a></li>
                         </shiro:hasRole>
                         <!-- 
                         <li><a href="${ctx}/crossdict/mainpage" target="contentFrame"><i class="fa fa-retweet"></i>交路图字典管理</a></li>
