@@ -32,7 +32,9 @@ public class CmdTrain {
 	private String endStn;
 	private String rule;
 	//择日 (加开令填择日日期;停运令填停运日期)
-	private Date selectedDate;
+	private String selectedDate;
+	private String startDate;
+	private String endDate;
 	//途径局 (按顺序列出途经局简称)
 	private String passBureau;
 	//选线状态
@@ -115,11 +117,24 @@ public class CmdTrain {
 	public void setRule(String rule) {
 		this.rule = rule;
 	}
-	public Date getSelectedDate() {
+	
+	public String getSelectedDate() {
 		return selectedDate;
 	}
-	public void setSelectedDate(Date selectedDate) {
+	public void setSelectedDate(String selectedDate) {
 		this.selectedDate = selectedDate;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 	public String getPassBureau() {
 		return passBureau;

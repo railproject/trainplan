@@ -6,6 +6,8 @@ import java.util.Map;
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
+import org.railway.com.trainplan.entity.CmdTrain;
+import org.railway.com.trainplan.entity.CmdTrainStn;
 import org.railway.com.trainplan.entity.CrossRunPlanInfo;
 import org.railway.com.trainplan.entity.RunPlan;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
@@ -80,5 +82,24 @@ public class RunPlanLkService {
 		  return baseDao.selectListBySql(Constants.RUNPLANLKDAO_GET_TRAINLK_FOR_PLAN_TRAIN_ID, planTrainId);
 	  }
 	  
+	  
+	  /**
+	   * 查询cmdTrainStn表信息
+	   * @param cmdTrainId cmdTrain表主键
+	   * @return
+	   */
+	  public List<CmdTrainStn> getCmdTrainStnInfo(String cmdTrainId){
+		  return  baseDao.selectListBySql(Constants.RUNPLANLKDAO_GET_CMD_TRAINSTN_INFO, cmdTrainId);
+	  }
+	  
+	  
+	  /**
+	   * 根据cmdTxtmlId查询cmdTrain信息
+	   * @param cmdTxtmlId
+	   * @return
+	   */
+	  public CmdTrain  getCmdTrainInfoForCmdTxtmlId(int cmdTxtmlId){
+		  return (CmdTrain) baseDao.selectListBySql(Constants.RUNPLANLKDAO_GET_CMD_TRAININFO_FOR_CMDMLID, cmdTxtmlId);
+	  }
 	  
 }
