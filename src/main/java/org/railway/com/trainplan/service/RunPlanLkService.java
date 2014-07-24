@@ -1,10 +1,19 @@
 package org.railway.com.trainplan.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import mor.railway.cmd.adapter.model.CmdInfoModel;
+import mor.railway.cmd.adapter.service.ICmdAdapterService;
+import mor.railway.cmd.adapter.service.impl.CmdAdapterServiceImpl;
+import mor.railway.cmd.adapter.util.ConstantUtil;
+import mor.railway.cmd.adapter.util.StringAndTimeUtil;
+
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
+import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.CmdTrain;
 import org.railway.com.trainplan.entity.CmdTrainStn;
@@ -100,6 +109,53 @@ public class RunPlanLkService {
 	   */
 	  public CmdTrain  getCmdTrainInfoForCmdTxtmlId(int cmdTxtmlId){
 		  return (CmdTrain) baseDao.selectListBySql(Constants.RUNPLANLKDAO_GET_CMD_TRAININFO_FOR_CMDMLID, cmdTxtmlId);
+	  }
+	  
+	  /**
+	   * 
+	   * @param startDate 格式:yyyy-MM-dd
+	   * @param endDate 格式:yyyy-MM-dd
+	   * @param bureuaCode 局码
+	   * @return
+	   */
+	  public List<CmdInfoModel>  getCmdTrainInfoFromRemote(String startDate,String endDate,String bureuaCode){
+		 
+		  Date startDay = DateUtil.parse(startDate);
+		  Date endDay = DateUtil.parse(endDate);
+		  //构造接口服务实例
+		  ICmdAdapterService service = CmdAdapterServiceImpl.getInstance();
+		  //服务初始化
+		  service.initilize(bureuaCode);
+		  //根据开始结束时间，查询符合条件的临客命令对象集合
+		  List<CmdInfoModel> list = service.findCmdInfoModelListByDateAndBureau(startDay, endDay);
+		  //关闭服务资源
+		  service.closeResource();
+		  return list;
+	  }
+	  
+	  
+	  /**
+	   * 根据CMD_TRAIN(命令生成开行计划列车表)中字段计算可以生成开行计划(停运开行计划)的日期集合
+	   * @param startDate 格式yyyy-MM-dd
+	   * @param endDate 格式yyyy-MM-dd
+	   * @param cmdType 命令类型 (既有加开；既有停运；高铁加开；高铁停运)
+	   * @param rule
+	   * @param selectedDate
+	   * @return
+	   */
+	  public List<Date> getSelectedDateListFromRemote(String startDate,String endDate,String cmdType,String rule,String selectedDate){
+		    //创建临客命令对象
+			CmdInfoModel model = new CmdInfoModel();
+			model.setStartDate(DateUtil.parse(startDate));
+			model.setEndDate(DateUtil.parse(endDate));
+	        // 命令类型
+			model.setCmdType(cmdType);
+	        // 开行规律
+			model.setRule(rule);
+	        // 或者择日
+	        model.setSelectedDate(selectedDate);
+			
+			return ConstantUtil.getSelectedDateList(model);
 	  }
 	  
 }
