@@ -6,6 +6,7 @@
 
     <resultMap id="preRunPlan" type="org.railway.com.trainplan.entity.RunPlan">
         <id column="PLAN_TRAIN_ID" property="planTrainId"/>
+        <result column="PLAN_CROSS_ID" property="planCrossId"/>
         <result column="GROUP_SERIAL_NBR" property="groupSerialNbr"/>
         <result column="TRAIN_SORT" property="trainSort"/>
         <result column="START_TIME" property="startDateTime"/>
