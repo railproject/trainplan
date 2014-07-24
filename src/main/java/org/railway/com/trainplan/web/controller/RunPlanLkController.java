@@ -162,6 +162,7 @@ public class RunPlanLkController {
 						     //设置始发站
 							 dto.setStartStn(subInfo.getStnName());
 							 stnDtoStart.setStationType("0");
+							 
 						 }
 						 if( i == list.size()-1){
 							 String dptTime = subInfo.getDptTime();
@@ -178,6 +179,8 @@ public class RunPlanLkController {
 						 listStation.add(station);
 					 }
 					 dto.setTrainStns(trainStns);
+					 //设置planTrainId
+					 dto.setPlanTrainId(planTrainId);
 					 trains.add(dto);
 				 }
 				 crossMap.put("trains", trains);
