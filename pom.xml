@@ -359,6 +359,28 @@
             <version>4.1.0.BUILD-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+        <!-- cmd  adapter-->
+        <dependency>
+            <groupId>mor.railway.cmd.adapter</groupId>
+            <artifactId>mor.railway.cmd.adapter</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>itcmor.util</groupId>
+            <artifactId>itcmor.util</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>TableEditor</groupId>
+            <artifactId>TableEditor</artifactId>
+            <version>1.0</version>
+        </dependency>      
+       
     </dependencies>
     <build>
         <finalName>${project.name}</finalName>
