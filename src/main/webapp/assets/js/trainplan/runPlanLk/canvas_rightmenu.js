@@ -347,7 +347,7 @@ var CanvasEventComponent = function(canvasDivId) {
 		      		"<li><a href='javascript:_canvasEventComponent.stopTrain();'><i class='fa fa-caret-square-o-up'></i>&nbsp;停运</a></li>" +
 		      		"<li><a href='javascript:_canvasEventComponent.heartBeat();'><i class='fa fa-caret-square-o-up'></i>&nbsp;启动备用</a></li>" +
 				    "<li><a href='javascript:_canvasEventComponent.editTrainPath();'><i class='fa fa-pencil'></i>&nbsp;调整径路</a></li>" +
-				    "<li><a href='javascript:_canvasEventComponent.editTrainRunTime();'><i class='fa fa-pencil'></i>&nbsp;调整时刻</a></li>" +
+//				    "<li><a href='javascript:_canvasEventComponent.editTrainRunTime();'><i class='fa fa-pencil'></i>&nbsp;调整时刻</a></li>" +
 			     "</ul>" +
 			  "</li>" +
 //		  	"<li><a href='javascript:_canvasEventComponent.highlightJl();'><i class='fa fa-crosshairs'></i>&nbsp;交路突出显示</a></li>" +
