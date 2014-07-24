@@ -30,7 +30,7 @@
             #{item.tecType, jdbcType=VARCHAR},
             #{item.stnType, jdbcType=VARCHAR},
             #{item.boundaryInOut, jdbcType=VARCHAR},
-            #{item.runDays, jdbcType=VARCHAR} FROM DUAL
+            #{item.tRunDays, jdbcType=VARCHAR} FROM DUAL
         </foreach>
     </insert>
 
