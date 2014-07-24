@@ -69,7 +69,7 @@
               t.end_stn endStn,
               t.spare_flag runFlag 
       from plan_train t 
-      where t.plan_cross_id=#{planCrossId}  and t.run_date>=#{startDay} and t.run_date &lt;=#{endDay} order by t.run_date, T.train_NBR
+      where t.plan_cross_id=#{planCrossId}  and t.run_date>=#{startDay} and t.run_date &lt;=#{endDay} order by t.TRAIN_SORT, t.run_date
     </select>
     
     <select id="getPlanCross" parameterType="map" resultType="org.railway.com.trainplan.service.dto.PlanCrossDto">

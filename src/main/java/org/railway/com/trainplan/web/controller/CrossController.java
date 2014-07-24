@@ -903,41 +903,7 @@ public class CrossController {
 	}
 	
 	
-	private PlanLineGrid getPlanLineGridForAllTest(List<LinkedList<Station>> list1,String crossStartDate,String crossEndDate) throws Exception{
-		//纵坐标
-		 List<PlanLineGridY> planLineGridYList = new ArrayList<PlanLineGridY>();
-		 //横坐标
-		 List<PlanLineGridX> gridXList = new ArrayList<PlanLineGridX>(); 
-		 
-		 /****组装纵坐标****/
-		 int trainSize = list1.size();
-		 
-		 List<Station>  mergeList = StationMerge.maergeList(list1);
-		  
-			for(Station station : mergeList){
-			    if(station != null){
-			    	//planLineGridYList.add(new PlanLineGridY(stationName));
-			    	planLineGridYList.add(new PlanLineGridY(
-			    			station.getStnName(),
-			    			0,
-			    			station.getStationType()));
-			    }
-				
-			}
-					
-			
-		 
-		/*****组装横坐标  *****/
-		
-		 LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(crossStartDate);
-	     LocalDate end = new LocalDate(DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(crossEndDate));
-	     while(!start.isAfter(end)) {
-	            gridXList.add(new PlanLineGridX(start.toString("yyyy-MM-dd")));
-	            start = start.plusDays(1);
-	        }
-	     
-		 return new PlanLineGrid(gridXList, planLineGridYList);
-	}
+	
 	/**
 	 * 组装坐标轴数据
 	 * @param list1  列车列表

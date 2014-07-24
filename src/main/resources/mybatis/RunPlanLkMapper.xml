@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="runPlanLkDao">
+
+   <select id="getPlanTrainLkInfo"  parameterType="map" resultType="org.railway.com.trainplan.entity.RunPlan">
+     
+		SELECT  
+				PLAN_TRAIN_ID AS planTrainId,
+				TRAIN_SORT AS trainSort,
+				RUN_DATE AS runDate,
+				TRAIN_NBR AS trainNbr,
+				TO_CHAR(START_TIME,'yyyy-MM-dd hh24:mi:SS') AS startTimeStr,
+				TO_CHAR(END_TIME,'yyyy-MM-dd hh24:mi:SS') AS endTimeStr,
+				START_BUREAU AS startBureauShortName,
+				START_BUREAU_FULL AS startBureauFullName,
+				START_STN AS startStn,
+				END_BUREAU AS endBureauShortName,
+				END_BUREAU_FULL AS endBureauFullName,
+				END_STN AS endStn,
+				PASS_BUREAU AS passBureau,
+				TOKEN_VEH_BUREAU AS tokenVehBureau,
+				TRAIN_SCOPE AS trainScope,
+				TRAIN_TYPE_ID AS trainTypeId,
+				HIGHLINE_FLAG AS highLineFlag,
+				BASE_CHART_ID AS baseChartId,
+				BASE_TRAIN_ID AS baseTrainId,
+				HIGHLINE_RULE AS hightLineRule,
+				COMMONLINE_RULE AS commonLineRule,
+				APPOINT_WEEK AS appointWeek,
+				APPOINT_DAY AS appointDay,
+				SPARE_FLAG AS spareFlag ,
+				SPARE_APPLY_FLAG AS spareApplyFlag,
+				TEL_BUREAU AS telBureau,
+				TEL_ID AS telId,
+				TEL_NUM AS telNum,
+				CMD_BUREAU AS cmdBureau ,
+				CMD_TXTMLID AS cmdTxtmlId,
+				CMD_TXTMLITEMID AS cmdTxtmlitemId,
+				CMD_SHORTINFO AS cmdShortInfo,
+				NOTE AS note,
+				CREAT_TYPE AS createType,
+				DAILYPLAN_FLAG AS dailyPlanFlag,
+				DAILYPLAN_TIMES AS dailyPlanTimes,
+				DAILYPLAN_TIME AS dailyPlanTime,
+				DAILYPLAN_ID AS dailyPlanId
+				
+				FROM PLAN_TRAIN
+				
+		
+		WHERE 1=1 AND CREAT_TYPE = 3
+		<if test="startDate != null and startDate !='' ">AND RUN_DATE>=#{startDate}</if>
+		<if test="endDate !=null and endDate !='' ">AND RUN_DATE &lt;=#{endDate}</if>
+		<if test="trainNbr !=null and trainNbr !='' ">AND TRAIN_NBR =#{trainNbr}</if>
+		<if test="startBureau != null and startBureau !='' ">AND START_BUREAU = #{startBureau}</if>
+		<if test="isRelationBureau == '1' ">AND #{bureau} in (PASS_BUREAU)</if>
+		<if test="tokenVehBureau !=null and tokenVehBureau !='' ">AND TOKEN_VEH_BUREAU =#{tokenVehBureau}</if>
+		 ORDER BY TRAIN_NBR
+   
+   </select>
+   
+   
+    <select id="getTrainLkRunPlans" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossRunPlanInfo">
+       select t.run_date runDay,
+			  t.train_nbr trainNbr,
+              t.start_stn startStn,
+              t.end_stn endStn,
+              t.spare_flag runFlag 
+      from plan_train t 
+      where CREAT_TYPE = 3 and t.train_nbr=#{trainNbr}  and t.run_date>=#{startDate} and t.run_date &lt;=#{endDate} order by t.TRAIN_SORT, t.run_date
+    </select>
+    
+    
+    <select id="getTrainLkInfoForPlanTrainId"  parameterType="string"  resultType="org.railway.com.trainplan.entity.BaseCrossTrainInfoTime">
+       select 
+	      CASE 
+	        WHEN 
+	          (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE T3.CNAME=T1.stn_name) >0 
+	        THEN 'FJK'
+	        WHEN T1.ARR_TIME=T1.DPT_TIME
+	        THEN 'BT'
+	        ELSE 'TZ'
+	      END stationType ,
+    T1.PLAN_TRAIN_STN_ID AS planTrainId,
+		T1.PLAN_TRAIN_ID ,
+		T1.STN_SORT AS stnSort,
+		T1.STN_NAME AS stnName,
+		T1.STN_BUREAU ,
+		T1.STN_BUREAU_FULL  ,
+		T1.ARR_TIME AS arrTime ,
+		T1.DPT_TIME AS dptTime,
+		T1.run_days AS runDays,
+		T1.TRACK_NAME AS trackName
+    from plan_train_stn T1 where T1.plan_train_id=#{planTrainId} order by T1.stn_sort
+    
+    </select>
+    
+    
+</mapper>

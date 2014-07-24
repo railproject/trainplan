@@ -53,9 +53,30 @@ public class RunPlan {
     private Date dailyPlanTime;
     // 上图次数
     private int dailyPlanTimes;
+    private String telBureau;
+    private int telId;
+    //文电名
+    private String telNum;
+    private String cmdBureau;
+    private String cmdTxtmlId;
+    private String cmdTxtmlitemId;
+    private String cmdShortInfo;
+    private String note;
+    private String dailyPlanId;
+    //车辆担当局TOKEN_VEH_BUREAU
+    private String tokenVehBureau;
     private List<RunPlanStn> runPlanStnList;
 
-    public String getPlanTrainId() {
+    
+    public String getTokenVehBureau() {
+		return tokenVehBureau;
+	}
+
+	public void setTokenVehBureau(String tokenVehBureau) {
+		this.tokenVehBureau = tokenVehBureau;
+	}
+
+	public String getPlanTrainId() {
         return planTrainId;
     }
 
@@ -382,4 +403,78 @@ public class RunPlan {
     public void setDailyPlanTime(Date dailyPlanTime) {
         this.dailyPlanTime = dailyPlanTime;
     }
+
+	public String getTelBureau() {
+		return telBureau;
+	}
+
+	public void setTelBureau(String telBureau) {
+		this.telBureau = telBureau;
+	}
+
+	public int getTelId() {
+		return telId;
+	}
+
+	public void setTelId(int telId) {
+		this.telId = telId;
+	}
+
+	public String getTelNum() {
+		return telNum;
+	}
+
+	public void setTelNum(String telNum) {
+		this.telNum = telNum;
+	}
+
+	public String getCmdBureau() {
+		return cmdBureau;
+	}
+
+	public void setCmdBureau(String cmdBureau) {
+		this.cmdBureau = cmdBureau;
+	}
+
+	public String getCmdTxtmlId() {
+		return cmdTxtmlId;
+	}
+
+	public void setCmdTxtmlId(String cmdTxtmlId) {
+		this.cmdTxtmlId = cmdTxtmlId;
+	}
+
+	public String getCmdTxtmlitemId() {
+		return cmdTxtmlitemId;
+	}
+
+	public void setCmdTxtmlitemId(String cmdTxtmlitemId) {
+		this.cmdTxtmlitemId = cmdTxtmlitemId;
+	}
+
+	public String getCmdShortInfo() {
+		return cmdShortInfo;
+	}
+
+	public void setCmdShortInfo(String cmdShortInfo) {
+		this.cmdShortInfo = cmdShortInfo;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public String getDailyPlanId() {
+		return dailyPlanId;
+	}
+
+	public void setDailyPlanId(String dailyPlanId) {
+		this.dailyPlanId = dailyPlanId;
+	}
+    
+    
 }
