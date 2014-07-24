@@ -113,6 +113,11 @@ var TrainRunTimePage = function () {
 				}),
 				success : function(result) {
 					if (result != null && result != "undefind" && result.code == "0") {
+						if (result.data.length == 0) {
+							showWarningDialog("当前车次客运时刻数据不存在。");
+							return;
+						}
+						
 						var message = "车次："+$("#trainRunTime_trainNbr_hidden").val()+"&nbsp;&nbsp;&nbsp;&nbsp;" + result.data[0].stnName + "&nbsp;→&nbsp;" +  result.data[result.data.length-1].stnName;
 						_self.currentTrainInfoMessage(message);
 					

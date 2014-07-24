@@ -742,6 +742,8 @@ public class CrossController {
 				 PlanLineGrid grid = null;
 				 ObjectMapper objectMapper = new ObjectMapper();
 				 
+				 //纵坐标
+				 List<Station> listStation = new ArrayList<Station>();
 				 //组装坐标
 				 //首先查看经由字典中是否有数据
 				 boolean isHaveDate = false;
@@ -752,7 +754,7 @@ public class CrossController {
 					 List<CrossDictStnInfo> listDictStn = crossDictService.getCrossDictStnForBaseCrossId(baseCrossId);
 				     if(listDictStn != null && listDictStn.size() > 0){
 				    	 isHaveDate = true;
-				    	 List<Station> listStation = new ArrayList<Station>();
+				    	
 				    	 for(CrossDictStnInfo dictStn : listDictStn){
 				    		 Station station = new Station();
 				    		 station.setStnName(dictStn.getStnName());
@@ -780,30 +782,24 @@ public class CrossController {
 				 logger.info("isHaveDate===" + isHaveDate);
 				 //经由字典中没有数据，则组装
 				 if(!isHaveDate){
-					 //获取stationList
-					 List<Map<String,Object>> stationList = crossService.getStationListForPlanCrossId(planCrossId,bureauShortName);
 					 
-					 List<Map<String,Object>> stationTempList = new ArrayList<Map<String,Object>>();
-					 
-					
-					 Map<String,Object> startMap = null;
-					
-					 if(stationList != null && stationList.size() > 0){
-						 for(Map<String,Object> map : stationList){
-							 String stnName = StringUtil.objToStr(map.get("STNNAME"));
-							
-							 String sort = StringUtil.objToStr(map.get("SORT"));
-							 if("1".equals(sort) && startMap == null){
-								 startMap = map;
-								 stationTempList.add(startMap);
-							 }else if("2".equals(sort)){
-								 stationTempList.add(map);
-							 }else if("3".equals(sort) && !stnName.equals(StringUtil.objToStr(startMap.get("STNNAME"))) ){
-								 stationTempList.add(map);
-							 }
-						 }
-					 }
-					 grid = getPlanLineGridForPlanLine(stationTempList,startTime,endTime);	 
+					 if(dataList != null && dataList.size() > 0){
+						 Map<String,Object> crossmap = dataList.get(0);
+						 List<TrainInfoDto> trains = (List<TrainInfoDto>) crossmap.get("trains");
+						 //取交路中的第一辆车的经由站信息
+						 TrainInfoDto dto = trains.get(0);
+						 List<PlanLineSTNDto> listTrainStn = dto.getTrainStns();
+						 for(PlanLineSTNDto trainStn : listTrainStn){
+				    		 Station station = new Station();
+				    		 station.setStnName(trainStn.getStnName());
+							 station.setStationType(trainStn.getStationType());
+							 listStation.add(station);
+				    	 }
+						 //生成横纵坐标
+				    	 List<PlanLineGridY> listGridY = getPlanLineGridY(listStation); 
+						 List<PlanLineGridX> listGridX = getPlanLineGridX(startTime,endTime);
+					     grid = new PlanLineGrid(listGridX, listGridY);
+					 }	 
 				 }
 				
 				 String myJlData = objectMapper.writeValueAsString(dataList);
@@ -861,83 +857,9 @@ public class CrossController {
 	        }
 	     return gridXList ;
 	}
-	/**
-	 * 组装运行线坐标轴数据
-	 * @param stationsInfo 经由站信息对象
-	 * @param crossStartDate 交路开始日期，格式yyyy-MM-dd
-	 * @param crossEndDate 交路终到日期，格式yyyy-MM-dd
-	 * @return 坐标轴对象
-	 */
-	private PlanLineGrid getPlanLineGridForPlanLine(List<Map<String,Object>> stationsInfo,String crossStartDate,String crossEndDate){
-		//纵坐标
-		 List<PlanLineGridY> planLineGridYList = new ArrayList<PlanLineGridY>();
-		 //横坐标
-		 List<PlanLineGridX> gridXList = new ArrayList<PlanLineGridX>(); 
-		 
-		 /****组装纵坐标****/
-		 if(stationsInfo != null){
-			  
-				for(Map<String,Object> map : stationsInfo){
-				    if(map != null){
-				    	planLineGridYList.add(new PlanLineGridY(
-				    			StringUtil.objToStr(map.get("STNNAME")),
-				    			((BigDecimal)map.get("ISCURRENTBUREAU")).intValue(),
-				    			StringUtil.objToStr(map.get("STATIONTYPE"))
-				    			));
-				    }
-					
-				}
-					
-			}
-		 
-		/*****组装横坐标  *****/
-		
-		 LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(crossStartDate);
-	     LocalDate end = new LocalDate(DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(crossEndDate));
-	     while(!start.isAfter(end)) {
-	            gridXList.add(new PlanLineGridX(start.toString("yyyy-MM-dd")));
-	            start = start.plusDays(1);
-	        }
-	     
-		 return new PlanLineGrid(gridXList, planLineGridYList);
-	}
 	
 	
-	private PlanLineGrid getPlanLineGridForAllTest(List<LinkedList<Station>> list1,String crossStartDate,String crossEndDate) throws Exception{
-		//纵坐标
-		 List<PlanLineGridY> planLineGridYList = new ArrayList<PlanLineGridY>();
-		 //横坐标
-		 List<PlanLineGridX> gridXList = new ArrayList<PlanLineGridX>(); 
-		 
-		 /****组装纵坐标****/
-		 int trainSize = list1.size();
-		 
-		 List<Station>  mergeList = StationMerge.maergeList(list1);
-		  
-			for(Station station : mergeList){
-			    if(station != null){
-			    	//planLineGridYList.add(new PlanLineGridY(stationName));
-			    	planLineGridYList.add(new PlanLineGridY(
-			    			station.getStnName(),
-			    			0,
-			    			station.getStationType()));
-			    }
-				
-			}
-					
-			
-		 
-		/*****组装横坐标  *****/
-		
-		 LocalDate start = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(crossStartDate);
-	     LocalDate end = new LocalDate(DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(crossEndDate));
-	     while(!start.isAfter(end)) {
-	            gridXList.add(new PlanLineGridX(start.toString("yyyy-MM-dd")));
-	            start = start.plusDays(1);
-	        }
-	     
-		 return new PlanLineGrid(gridXList, planLineGridYList);
-	}
+	
 	/**
 	 * 组装坐标轴数据
 	 * @param list1  列车列表

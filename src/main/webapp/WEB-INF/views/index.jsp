@@ -182,12 +182,15 @@
                     <ul>
                         <shiro:hasPermission name="JHPT.KYJH.JYXKD">
                             <li><a href="${ctx}/runPlan" target="contentFrame"><i class="fa fa-external-link"></i>既有图定开行计划</a></li>
-                        <li><a href="${ctx}/runPlanLk/addMainPage" target="contentFrame"><i class="fa fa-list-ol"></i>既有临客上图</a></li>
-                        <li><a href="#" target="contentFrame" onclick="return false"><i class="fa fa-list-ol"></i>既有临客开行计划</a></li>
+                        <li><a href="${ctx}/runPlanLk/addPage" target="contentFrame"><i class="fa fa-list-ol"></i>既有临客上图</a></li>
+                        <li><a href="${ctx}/runPlanLk/mainPage" target="contentFrame"><i class="fa fa-list-ol"></i>既有临客开行计划</a></li>
                         </shiro:hasPermission>
                         <shiro:hasPermission name="JHPT.KYJH.GTKD">
                             <li><a href="${ctx}/runPlan/runPlanGt" target="contentFrame"><i class="fa fa-list-alt"></i>高铁开行计划</a></li>
                         </shiro:hasPermission>
+                        <shiro:hasRole name="总公司客调">
+                            <li><a href="${ctx}/runPlan/runPlanLineCreate" target="contentFrame"><i class="fa fa-sign-out"></i>生成运行线</a></li>
+                        </shiro:hasRole>
                     </ul>
                 </li>
 
@@ -198,7 +201,7 @@
                         <li><a href="${ctx}/cross" target="contentFrame"><i class="fa fa-pencil"></i>对数表管理</a>
                         <li><a href="${ctx}/cross/unit" target="contentFrame"><i class="fa fa-retweet"></i>交路单元管理</a></li>
                         <shiro:hasRole name="总公司客调">
-                            <li><a href="${ctx}/default/transfer/planDesign" target="contentFrame"><i class="fa fa-sign-out"></i>启用新图</a></li>
+                            <li><a href="${ctx}/runPlan/runPlanCreate" target="contentFrame"><i class="fa fa-sign-out"></i>生成开行计划</a></li>
                         </shiro:hasRole>
                         <!-- 
                         <li><a href="${ctx}/crossdict/mainpage" target="contentFrame"><i class="fa fa-retweet"></i>交路图字典管理</a></li>
@@ -209,8 +212,8 @@
                 <li>
                     <a target="contentFrame" class="menu_one"><i class="fa fa-list-ul"></i>日历运行图<i class="fa fa-caret-down pull-right"></i></a>
                     <ul>
-                        <li><a href="http://10.1.186.115:8090/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-level-down"></i>始发统计</a></li>
-                        <li><a href="http://10.1.186.115:8090/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-level-up"></i>接入统计</a></li>
+                        <li><a href="http://10.1.186.117:8080/dashboard/kanban/railline_sf.html" target="contentFrame"><i class="fa fa-level-down"></i>始发统计</a></li>
+                        <li><a href="http://10.1.186.117:8080/dashboard/kanban/railline_jr.html" target="contentFrame"><i class="fa fa-level-up"></i>接入统计</a></li>
                         <li><a href="${ctx}/default/transfer/planReviewLines" target="contentFrame"><i class="fa fa-search"></i>明细查询</a></li>
                     </ul>
                 </li>

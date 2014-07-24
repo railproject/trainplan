@@ -260,4 +260,10 @@ public class Constants {
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_CHECKINFO="highlineCrossDao.updateHiglineCheckInfo";
 	public static String GET_TRAIN_RUN_PLANS_FOR_CREATElINE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlansForCreateLine";
     
+    /***与临客相关的mapper配置******/
+    public static final String RUNPLANLKDAO_GET_PLANTRAIN_LK_INFO = "runPlanLkDao.getPlanTrainLkInfo";
+    //
+    public static final String RUNPLANLKDAO_GET_TRAINLK_RUNPLAN = "runPlanLkDao.getTrainLkRunPlans";
+    //查询临客的图形数据 
+    public static final String RUNPLANLKDAO_GET_TRAINLK_FOR_PLAN_TRAIN_ID = "runPlanLkDao.getTrainLkInfoForPlanTrainId";
 }

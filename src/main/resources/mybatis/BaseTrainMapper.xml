@@ -118,7 +118,7 @@
         T.Bureau_Name      STN_BUREAU_FULL,
         decode(TO_CHAR(T.SOURCE_TIME, 'hh24:mi:SS'),null,'00:00:00',TO_CHAR(T.SOURCE_TIME, 'hh24:mi:SS'))  ARR_TIME,
         decode(TO_CHAR(T.TARGET_TIME, 'hh24:mi:SS'),null,'00:00:00',TO_CHAR(T.TARGET_TIME, 'hh24:mi:SS'))  DPT_TIME,
-        t.relative_source_time_day run_days,
+        T.RELATIVE_TARGET_TIME_DAY run_days,
         T.TRACK_NAME
         FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_RITEM T,
         (select A.BASE_TRAIN_ID from UNIT_CROSS_TRAIN A,PLAN_CROSS B WHERE A.UNIT_CROSS_ID = B.UNIT_CROSS_ID AND A.BASE_TRAIN_ID IS NOT NULL

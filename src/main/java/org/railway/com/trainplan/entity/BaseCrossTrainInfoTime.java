@@ -2,6 +2,7 @@ package org.railway.com.trainplan.entity;
 
 public class BaseCrossTrainInfoTime {
 
+	private String planTrainId;
 	private String id;
 	private String stnName;
 	private int stnSort;
@@ -17,6 +18,12 @@ public class BaseCrossTrainInfoTime {
 	
 	
 	
+	public String getPlanTrainId() {
+		return planTrainId;
+	}
+	public void setPlanTrainId(String planTrainId) {
+		this.planTrainId = planTrainId;
+	}
 	public String getStationType() {
 		return stationType;
 	}

@@ -30,7 +30,7 @@
                T.Bureau_Name as STN_BUREAU_FULL,
                TO_CHAR(T.SOURCE_TIME, 'hh24:mi:SS') AS ARR_TIME,
                TO_CHAR(T.TARGET_TIME, 'hh24:mi:SS') AS DPT_TIME,
-               t.relative_source_time_day run_days,
+               t.relative_TARGET_time_day run_days,
                T.TRACK_NAME AS TRACK_NAME
           FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_RITEM T
         UNION all
@@ -249,7 +249,7 @@
                T.Bureau_Name      STN_BUREAU_FULL,
                TO_CHAR(T.SOURCE_TIME, 'hh24:mi:SS') ARR_TIME,
                TO_CHAR(T.TARGET_TIME, 'hh24:mi:SS') DPT_TIME,
-               t.relative_source_time_day run_days,
+               t.relative_TARGET_time_day run_days,
                T.TRACK_NAME     
           FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_RITEM T
         WHERE t.parent_id = #{baseTrainId}
