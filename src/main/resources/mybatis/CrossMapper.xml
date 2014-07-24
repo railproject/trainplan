@@ -769,7 +769,7 @@ from PLAN_TRAIN a
 where a.plan_cross_id=#{planCrossId}
 )t2,
 PLAN_TRAIN_STN t1
-where (t1.STN_NAME = T2.startStn OR t1.STN_NAME = T2.endStn  OR (SELECT COUNT(*) FROM JHPT_JCSJ.ZDFJK T3 WHERE  T3.CNAME=t1.stn_name) >0) AND 
+where
 t2.planTrainId = t1.plan_train_id 
 ORDER BY t2.groupSerialNbr, T1.arr_time
 

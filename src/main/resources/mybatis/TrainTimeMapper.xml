@@ -170,7 +170,7 @@ RUN_DAYS AS runDays
 		         T.Bureau_Name    STN_BUREAU_FULL,
 		       TO_CHAR(T.SOURCE_TIME, 'yyyy-MM-dd hh24:mi:SS')  ARR_TIME,
 		       TO_CHAR(T.TARGET_TIME, 'yyyy-MM-dd hh24:mi:SS')  DPT_TIME,
-		         t.relative_source_time_day run_days,
+		         t.relative_TARGET_time_day run_days,
 		          '1'              stnType,
 		         T.TRACK_NAME     
 		    FROM JHPT_RJH.M_TRAINLINETEMP_SCHEDULE_RITEM T
