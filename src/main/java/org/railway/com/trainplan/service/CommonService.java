@@ -148,6 +148,7 @@ public class CommonService {
    					temp.put("time", dto.getTime());
    					temp.put("source", dto.getSource());
    					temp.put("action", dto.getAction());
+   					temp.put("msgReceiveUrl", dto.getMsgReceiveUrl());
    					jsonArray.add(temp);
    				}
    			}
