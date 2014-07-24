@@ -105,9 +105,13 @@ function CrossModel() {
 	self.selectCrosses = function(){
 		$.each(self.trainPlans(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
-				crossRow.selected(0); 
+				if(crossRow.trainSort == 0){
+					crossRow.selected(0);
+				} 
 			}else{ 
-				crossRow.selected(1);   
+				if(crossRow.trainSort == 0){
+					crossRow.selected(1);
+				}    
 			}  
 		});  
 	};
@@ -117,7 +121,7 @@ function CrossModel() {
 		if(row.selected() == 0){  
 			self.crossAllcheckBox(1);   
 			$.each(self.trainPlans(), function(i, crossRow){   
-				if(crossRow.selected() != 1 && crossRow != row){
+				if(crossRow.trainSort == 0 && crossRow.selected() != 1 && crossRow != row){
 					self.crossAllcheckBox(0);
 					return false;
 				}  
@@ -314,7 +318,6 @@ function CrossModel() {
 				success : function(result) {    
  
 					if (result != null && result != "undefind" && result.code == "0") { 
-						console.log(result.data.data);
 						if(result.data.data != null){  
 							$.each(result.data.data,function(n, crossInfo){
 								var trainPlanData = {
@@ -386,39 +389,40 @@ function CrossModel() {
 			 return;
 		 }
 		 //重置生成总数和已生成数
-		 self.createRunPlanTotalCount(createCrosses.length); 
-		 self.createRunPlanCompletedCount(0);
-		 
-		 commonJsScreenLock();
-		 $.ajax({
-				url : "../runPlan/plantrain/gen",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({
-					baseChartId: chart.chartId,
-					startDate: startDate.replace(/-/g, ""), 
-					days: days + 1, 
-					unitcrossId: crossIds,
-					msgReceiveUrl: "/trainplan/runPlan/runPlanCreate"}),
-				success : function(result) { 
-					if(result != null && result.length >= 0){ 
-						showSuccessDialog("正在生成开行计划");
-					}else{
-						showErrorDialog("生成开行计划失败");
-					}
-				},
-				error : function() {
-					showErrorDialog("生成开行计划失败");
-					 for(var i = 0; i < createCrosses.length; i++){   
-						 createCrosses.createStatus(0);
-					 }  
-				},
-				complete : function(){ 
-					commonJsScreenUnLock();
-				}
-			}); 
+		 console.log(createCrosses.length);
+//		 self.createRunPlanTotalCount(createCrosses.length); 
+//		 self.createRunPlanCompletedCount(0);
+//		 
+//		 commonJsScreenLock();
+//		 $.ajax({
+//				url : "../runPlan/plantrain/gen",
+//				cache : false,
+//				type : "POST",
+//				dataType : "json",
+//				contentType : "application/json",
+//				data :JSON.stringify({
+//					baseChartId: chart.chartId,
+//					startDate: startDate.replace(/-/g, ""), 
+//					days: days + 1, 
+//					unitcrossId: crossIds,
+//					msgReceiveUrl: "/trainplan/runPlan/runPlanCreate"}),
+//				success : function(result) { 
+//					if(result != null && result.length >= 0){ 
+//						showSuccessDialog("正在生成开行计划");
+//					}else{
+//						showErrorDialog("生成开行计划失败");
+//					}
+//				},
+//				error : function() {
+//					showErrorDialog("生成开行计划失败");
+//					 for(var i = 0; i < createCrosses.length; i++){   
+//						 createCrosses.createStatus(0);
+//					 }  
+//				},
+//				complete : function(){ 
+//					commonJsScreenUnLock();
+//				}
+//			}); 
 	};
 	
 	self.clearData = function(){ 
