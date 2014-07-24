@@ -42,7 +42,7 @@
     <logger name="org.springframework.amqp" level="ERROR" />
 
 	<!-- root -->
-	<root level="DEBUG">
+	<root level="INFO">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />
 	</root>

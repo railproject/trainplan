@@ -526,10 +526,10 @@ public class RunPlanService {
             LocalDate lastDate = startDate.plusDays(this.days);
             // 记录daygap
             int totalDayGap = 0;
-            // 一刀切后可能存在不完整交路，先补全不完整的计划
-//            lastRunPlans = completeUnitCross(lastRunPlans);
+            // 一刀切后可能存在不完整交路，先补全不完整的交路
+            lastRunPlans = completeUnitCross(lastRunPlans);
 
-            // 找到最先生成第几组车，然后继续生成下去
+            // 找到最先结束的计划车组，然后继续生成下去
             int firstGroup = getFirstEndedGroup(lastRunPlans);
             initTrainSort = (firstGroup - 1) * trainCount;
             // 继续生成
@@ -642,6 +642,97 @@ public class RunPlanService {
                 planCrossDao.update(planCrossInfo);
             }
             sendUnitCrossMsg(this.unitCross.getUnitCrossId(), 2);
+        }
+
+        private Map<Integer, RunPlan> completeUnitCross(Map<Integer, RunPlan> lastRunPlans) throws NoSuchMethodException, InstantiationException, IllegalAccessException, ParseException, InvocationTargetException {
+            Map<Integer, RunPlan> newMap = Maps.newHashMap(lastRunPlans);
+            for(RunPlan runPlan: Lists.newArrayList(lastRunPlans.values())) {
+                newMap.put(runPlan.getGroupSerialNbr(), generateRunPlan(runPlan));
+            }
+            return newMap;
+        }
+
+        private RunPlan generateRunPlan(RunPlan preRunPlan) throws InvocationTargetException, NoSuchMethodException, InstantiationException, ParseException, IllegalAccessException {
+            UnitCrossTrain unitCrossTrain;
+            RunPlan runPlan = preRunPlan;
+            int groupSeriaNbr = preRunPlan.getGroupSerialNbr();
+            int trainSort = preRunPlan.getTrainSort();
+            while((unitCrossTrain = getNextUnitCrossTrain(groupSeriaNbr, trainSort)) != null) {
+
+                LocalDate runDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getRunDate());
+                LocalDate endDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getEndDate());
+                int interval = Days.daysBetween(runDate, endDate).getDays();
+
+                for(RunPlan baseRunPlan: baseRunPlanList) {
+                    if (unitCrossTrain.getBaseTrainId().equals(baseRunPlan.getBaseTrainId())) {
+                        try {
+                            runPlan = (RunPlan) BeanUtils.cloneBean(baseRunPlan);
+                            // 克隆的对象里，列表没有克隆，重新new一个列表
+                            runPlan.setRunPlanStnList(new ArrayList<RunPlanStn>());
+
+                            // 基本信息
+                            runPlan.setPlanTrainId(UUID.randomUUID().toString());
+                            runPlan.setPlanCrossId(preRunPlan.getPlanCrossId());
+                            runPlan.setBaseChartId(baseRunPlan.getBaseChartId());
+                            runPlan.setBaseTrainId(baseRunPlan.getBaseTrainId());
+                            runPlan.setDailyPlanFlag(1);
+
+                            // unitcross里的信息
+                            runPlan.setGroupSerialNbr(unitCrossTrain.getGroupSerialNbr());
+                            runPlan.setTrainSort(unitCrossTrain.getTrainSort());
+                            runPlan.setMarshallingName(unitCrossTrain.getMarshallingName());
+                            runPlan.setTrainNbr(unitCrossTrain.getTrainNbr());
+                            runPlan.setDayGap(unitCrossTrain.getDayGap());
+                            runPlan.setSpareFlag(unitCrossTrain.getSpareFlag());
+                            runPlan.setSpareApplyFlag(unitCrossTrain.getSpareApplyFlag());
+                            runPlan.setHighLineFlag(unitCrossTrain.getHighLineFlag());
+                            runPlan.setHightLineRule(unitCrossTrain.getHighLineFlag());
+                            runPlan.setCommonLineRule(unitCrossTrain.getCommonLineRule());
+                            runPlan.setAppointWeek(unitCrossTrain.getAppointWeek());
+                            runPlan.setAppointDay(unitCrossTrain.getAppointDay());
+
+                            // 当前列车的开始日期，是前车的结束日期+daygap
+                            LocalDate preEndDate = LocalDate.fromDateFields(new Date(preRunPlan.getEndDateTime().getTime()));
+                            runPlan.setRunDate(preEndDate.plusDays(unitCrossTrain.getDayGap()).toString("yyyyMMdd"));
+
+                            // 前后车互基
+                            runPlan.setPreTrainId(preRunPlan.getPlanTrainId());
+                            preRunPlan.setNextTrainId(runPlan.getPlanTrainId());
+
+                            runPlan.setStartDateTime(new Timestamp(simpleDateFormat.parse(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate()).toString("yyyy-MM-dd") + " " + runPlan.getStartTimeStr()).getTime()));
+                            runPlan.setEndDateTime(new Timestamp(simpleDateFormat.parse(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate()).plusDays(interval).toString("yyyy-MM-dd") + " " + runPlan.getEndTimeStr()).getTime()));
+                            runPlan.setPlanTrainSign(runPlan.getRunDate() + "-" + runPlan.getTrainNbr() + "-" + runPlan.getStartStn() + "-" + runPlan.getStartTimeStr());
+
+                            LocalDate runPlanDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(runPlan.getRunDate());
+                            // 计算计划从表信息
+                            List<RunPlanStn> runPlanStnList = baseRunPlan.getRunPlanStnList();
+                            for(RunPlanStn baseRunPlanStn: runPlanStnList) {
+                                RunPlanStn runPlanStn = (RunPlanStn) BeanUtils.cloneBean(baseRunPlanStn);
+                                runPlan.getRunPlanStnList().add(runPlanStn);
+                                runPlanStn.setPlanTrainId(runPlan.getPlanTrainId());
+                                runPlanStn.setPlanTrainStnId(UUID.randomUUID().toString());
+                                runPlanStn.setArrTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getArrTimeStr()).getTime()));
+                                runPlanStn.setDptTime(new Timestamp(simpleDateFormat.parse(runPlanDate.plusDays(runPlanStn.getRunDays()).toString() + " " + runPlanStn.getDptTimeStr()).getTime()));
+                                runPlanStn.setBaseArrTime(runPlanStn.getArrTime());
+                                runPlanStn.setBaseDptTime(runPlanStn.getDptTime());
+                            }
+
+                            runPlanDao.addRunPlan(runPlan);
+                            runPlanStnDao.addRunPlanStn(runPlan.getRunPlanStnList());
+                            runPlanDao.updateNextTrainId(preRunPlan);
+
+                            // 把当前车设置为前车进行下一次循环
+                            preRunPlan = runPlan;
+                            groupSeriaNbr = preRunPlan.getGroupSerialNbr();
+                            trainSort = preRunPlan.getTrainSort();
+                        } catch (Exception e) {
+                            logger.error("补全交路出错", e);
+                            throw e;
+                        }
+                    }
+                }
+            }
+            return runPlan;
         }
 
         /**
