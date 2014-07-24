@@ -72,6 +72,34 @@
       from plan_train t 
       where t.plan_cross_id=#{planCrossId}  and t.run_date>=#{startDay} and t.run_date &lt;=#{endDay} order by t.TRAIN_SORT, t.run_date
     </select>
+    <select id="getTrainRunPlansForCreateLine" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossRunPlanInfo">
+        select t.run_date runDay,
+			   t.train_nbr trainNbr,
+	           t1.cross_name crossName,
+	           t.start_stn startStn,
+	           t1.TOKEN_VEH_BUREAU as tokenVehBureau ,
+	           t.end_stn endStn,
+	           t.spare_flag runFlag, 
+	           case when t.DAILYPLAN_ID is not null  then '1' else '0' end as createFlag,
+	           t1.plan_cross_id planCrossId ,
+			   t.plan_train_id planTrainId,
+               t.base_train_id baseTrainId
+       from  plan_cross t1, plan_train t
+       where t.plan_cross_id=t1.PLAN_CROSS_ID and  t.run_date>=#{startDay} and t.run_date &lt;=#{endDay} 
+       <if test="tokenVehBureau != null">
+            AND t1.TOKEN_VEH_BUREAU= #{tokenVehBureau}
+        </if>
+        <if test="chartId != null">
+            AND t1.BASE_CHART_ID= #{chartId}
+        </if>
+        <if test="startBureau != null">
+            AND t1.START_BUREAU = #{startBureau}
+        </if> 
+        <if test="trainNbr != null">
+            AND t1.CROSS_NAME like '%' || #{trainNbr} || '%'
+        </if> 
+         order by t1.CROSS_NAME, t.TRAIN_SORT ,t.run_date
+    </select>
     
     <select id="getPlanCross" parameterType="map" resultType="org.railway.com.trainplan.service.dto.PlanCrossDto">
     select 

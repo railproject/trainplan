@@ -7,7 +7,9 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.json.types.JsonObject;
 import org.railway.com.trainplan.common.utils.StringUtil;
+import org.railway.com.trainplan.service.message.SendMsgService;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class MessageHandler implements MessageListener{
 
 	private static Log logger = LogFactory.getLog(MessageHandler.class.getName());
-
+	@Autowired
+	private SendMsgService sendMsgService;
 	@Autowired
 	private PlanTrainStnService planTrainStnService;
 	@Override
@@ -25,25 +28,24 @@ public class MessageHandler implements MessageListener{
 		
 		logger.debug("----------------------------------------------");
 		logger.debug("response==" + new String(message.getBody()));
+		System.out.println("=================" + new String(message.getBody()));
 		//JSONObject json = new JSONObject();
 		//JSONObject map = json.fromObject(object)
 		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> msg = null;
+		JSONObject msg = null;
 		try {
-			 msg= mapper.readValue(message.getBody(), Map.class);
+//			 msg= mapper.readValue(message.getBody(), Map.class);
+			 msg = JSONObject.fromObject(new String(message.getBody()));
 			 logger.debug("msg======" + msg);
 			 //System.err.println("msg======" + msg);
-			 if(msg != null && msg.size()>0){
-				 Map<String,Object> result = ((Map<String,Object>)msg.get("result"));
-				 String resultString = (String)result.get("result");
+			 if(msg != null ){ 
 				 JSONObject json = new JSONObject();
-				 JSONObject result1 = json.fromObject(resultString);
+				 JSONObject result1 = msg.getJSONObject("result");
 				 //System.err.println("result1==" + result1);
 				// Map<String,Object> result1 = mapper.readValue(resultString, Map.class);
-				 if(result1 != null && result1.size()>0){
-					 String code = StringUtil.objToStr(result.get("code"));
-					 String userparamStr = (String)result.get("userparam");
-					 JSONObject paramObj = json.fromObject(userparamStr);
+				 if(result1 != null){
+					 String code = StringUtil.objToStr(result1.get("code"));
+					 JSONObject paramObj = result1.getJSONObject("userparam");
 					 //成功
 					 if("0".equals(code)){
 						 Map<String,Object> reqMap = new HashMap<String,Object>();
@@ -54,6 +56,18 @@ public class MessageHandler implements MessageListener{
 						 reqMap.put("daylyPlanId",daylyPlanId );
 						 //更新表plan_train中字段DAILYPLAN_FLAG值为0
 						 planTrainStnService.updatePlanTrainDaylyPlanFlag(reqMap);
+						 
+						 if(paramObj.containsKey("msgReceiveUrl")){
+							JSONObject jsonMsg = new JSONObject();
+							jsonMsg.put("planTrainId", planTrainId);
+							jsonMsg.put("createFlag", 1);
+							 sendMsgService.sendMessage(jsonMsg.toString(), paramObj.getString("msgReceiveUrl"), "updateTrainRunPlanStatus");
+						 }
+					 }else{
+						   JSONObject jsonMsg = new JSONObject();
+						   jsonMsg.put("planTrainId", paramObj.getString("planTrainId"));
+						   jsonMsg.put("createFlag", 0);
+						   sendMsgService.sendMessage(jsonMsg.toString(), paramObj.getString("msgReceiveUrl"), "updateTrainRunPlanStatus");
 					 }
 				 }	 
 			 }

@@ -48,23 +48,27 @@ function CrossModel() {
 	self.trainPlans = ko.observableArray();
 	//表头的数据列表
 	self.planDays = ko.observableArray(); 
-	
+	//路局列表
 	self.gloabBureaus = [];    
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());  
-	
+	//数据表格的宽度
 	self.runPlanTableWidth = ko.computed(function(){
 		return self.planDays().length * 40 + 80 + 'px';
 	});
-	
+	//总共需要生成的数量
 	self.createRunPlanTotalCount = ko.observable(0);
-	
+	//已生成数量
 	self.createRunPlanCompletedCount = ko.observable(0);
 	
+	//已生成数量
+	self.createRunPlanErrorCount = ko.observable(0);
+	//生成说明文字
 	self.completedMessage = ko.computed(function(){ 
-		return self.createRunPlanTotalCount() == 0 ? "" : "当前总共生成：" + self.createRunPlanTotalCount() + "条，目前已生成：" + self.createRunPlanCompletedCount() + "条";
+		return self.createRunPlanTotalCount() == 0 ? "" : "选中：" + self.createRunPlanTotalCount() + "个交路，目前已成功生成：" + self.createRunPlanCompletedCount() + "个交路的开行计划，另有：" + self.createRunPlanErrorCount() + "个交路生成开行计划失败";
 	});
 	
+	//更新列车某天的开行情况
 	self.updateTrainRunPlanDayFlag = function(runPlan){
 		$.each(self.trainPlans(), function(x, n){ 
 			if(n.unitCrossId == runPlan.unitCrossId && n.trainNbr == runPlan.trainNbr){
@@ -78,10 +82,12 @@ function CrossModel() {
 			};
 		});
 	};
-	
+	//更新交路的当前状态
 	self.updateTrainRunPlanStatus = function(runPlan){
 		if(runPlan.status == 2){
 			self.createRunPlanCompletedCount(self.createRunPlanCompletedCount() + 1);
+		}else if(runPlan.status == -1){
+			self.createRunPlanErrorCount(self.createRunPlanErrorCount() + 1);
 		}
 		$.each(self.trainPlans(), function(x, n){ 
 			if(n.unitCrossId == runPlan.unitCrossId && n.trainSort == 0){ 
@@ -89,18 +95,13 @@ function CrossModel() {
 				return false;
 			};
 		});
-	};
-	
-	self.trainRunPlanChange = function(row, event){ 
-		console.log(row);
-		console.log(event.target.name);
-		console.log("trainRunPlanChange test");
-	};
+	}; 
 	
 	self.dragRunPlan = function(n,event){
 		$(event.target).dialog("open"); 
 	};  
 	
+	//全选按钮
 	self.selectCrosses = function(){
 		$.each(self.trainPlans(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
@@ -111,6 +112,7 @@ function CrossModel() {
 		});  
 	};
 	
+	//数据checkbox点击事件
 	self.selectCross = function(row){ 
 		if(row.selected() == 0){  
 			self.crossAllcheckBox(1);   
@@ -137,28 +139,10 @@ function CrossModel() {
 		} 
 	};
 	
+	//列车输入框的大写转换事件
 	self.trainNbrChange = function(n,  event){
 		self.searchModle().filterTrainNbr(event.target.value.toUpperCase());
-	};
-	
-	self.filterCrosses = function(){  
-		 var filterTrainNbr = self.searchModle().filterTrainNbr();
-		 filterTrainNbr = filterTrainNbr || filterTrainNbr != "" ? filterTrainNbr.toUpperCase() : "all";
-		 if(filterTrainNbr == "all"){
-			 $.each(self.crossRows.rows(),function(n, crossRow){
-				  crossRow.visiableRow(true);
-			  });
-		 }else{
-			 $.each(self.crossRows.rows(),function(n, crossRow){
-				 if(crossRow.crossName().indexOf(filterTrainNbr) > -1){
-					 crossRow.visiableRow(true);
-				 }else{
-					 crossRow.visiableRow(false);
-				 } 
-			  }); 
-		 };
-	};   
-	  
+	}; 
 	 
 	//currentIndex 
 	//格式化出yyyy-MM-dd这样的字符串
@@ -195,6 +179,7 @@ function CrossModel() {
 		return week;
 	 };
 	
+	 //获取30天后的时日期
 	self.get40Date = function(){
 		var d = new Date();
 		d.setDate(d.getDate() + 30);
@@ -205,23 +190,19 @@ function CrossModel() {
 		month = ("" + month).length == 1 ? "0" + month : month;
 		days = ("" + days).length == 1 ? "0" + days : days;
 		return year + "-" + month + "-" + days;
-	};
+	}; 
 	
-	
-	
-	self.init = function(){  
- 
-		$("#run_plan_train_times").dialog("close"); 
- 
+	self.init = function(){   
+		
 		$("#runplan_input_startDate").datepicker();
 		$("#runplan_input_endDate").datepicker();
 		//x放大2倍 
-		self.searchModle().startDay(self.currdate()); 
+		 
 		self.searchModle().planStartDate(self.currdate());
 		self.searchModle().planEndDate(self.get40Date());
 		
 		commonJsScreenLock(2);
-		//获取当期系统日期 
+		//获取方案列表
 		 $.ajax({
 				url : "../jbtcx/querySchemes",
 				cache : false,
@@ -245,7 +226,7 @@ function CrossModel() {
 					commonJsScreenUnLock();  
 				}
 		    }); 
-		 
+		//获取路局列表
 	    $.ajax({
 			url : "../plan/getFullStationInfo",
 			cache : false,
@@ -279,6 +260,7 @@ function CrossModel() {
 	self.loadCrosses = function(){
 		self.loadCrosseForPage(0, 5000);
 	};
+	//初始化数据表的表头数据
 	self.initDataHeader = function(){
 		var startDate = $("#runplan_input_startDate").val(); 
 		var endDate =  $("#runplan_input_endDate").val();   
@@ -306,11 +288,8 @@ function CrossModel() {
 	self.loadCrosseForPage = function(startIndex, endIndex) {  
 	 		commonJsScreenLock();
 		 
-		var bureauCode = self.searchModle().bureau(); 
-		var highlingFlag = self.searchModle().highlingFlag();
-		var trainNbr = self.searchModle().filterTrainNbr(); 
-		var checkFlag = self.searchModle().checkFlag();
-		var unitCreateFlag = self.searchModle().unitCreateFlag();
+		var bureauCode = self.searchModle().bureau();  
+		var trainNbr = self.searchModle().filterTrainNbr();  
 		var startBureauCode = self.searchModle().startBureau();   
 		var chart = self.searchModle().chart();   
 		var startDate = $("#runplan_input_startDate").val(); 
@@ -335,6 +314,7 @@ function CrossModel() {
 				success : function(result) {    
  
 					if (result != null && result != "undefind" && result.code == "0") { 
+						console.log(result.data.data);
 						if(result.data.data != null){  
 							$.each(result.data.data,function(n, crossInfo){
 								var trainPlanData = {
@@ -345,8 +325,10 @@ function CrossModel() {
 										endDate: endDate, 
 										trainSort: 0 
 								};
+								//默认吧交路作为第一条记录
 								self.trainPlans.push(new TrainRunPlanRow(trainPlanData));
 								var crossNames = crossInfo.crossName.split("-");
+								//把交路拆分成车，然后依次添加在她的后面
 								for(var i = 0; i < crossNames.length; i++){
 									var trainPlanData = {
 											crossName: crossInfo.crossName, 
@@ -377,7 +359,7 @@ function CrossModel() {
 	//必须定义在load函数之后
 	self.crossRows = new PageModle(50, self.loadCrosseForPage);  
    
-	
+	//生成运行线
 	self.createTrainLines = function(){  
 		 var crossIds = [];
 		 var createCrosses = [];
@@ -391,9 +373,7 @@ function CrossModel() {
 		 }   
 		 var startDate = $("#runplan_input_startDate").val(); 
 		 var endDate =  $("#runplan_input_endDate").val();  
-		 
-		 var days = GetDays(startDate, endDate);
-		 
+		 var days = GetDays(startDate, endDate); 
 		 var chart = self.searchModle().chart();
 		    
 	     if(chart == null){
@@ -405,7 +385,7 @@ function CrossModel() {
 			 showWarningDialog("未选中数据");
 			 return;
 		 }
-		 
+		 //重置生成总数和已生成数
 		 self.createRunPlanTotalCount(createCrosses.length); 
 		 self.createRunPlanCompletedCount(0);
 		 
@@ -435,12 +415,12 @@ function CrossModel() {
 						 createCrosses.createStatus(0);
 					 }  
 				},
-				complete : function(){
-					
+				complete : function(){ 
 					commonJsScreenUnLock();
 				}
 			}); 
 	};
+	
 	self.clearData = function(){ 
 		 self.currentCross(new CrossRow({"crossId":"",
 				"crossName":"", 
@@ -497,6 +477,7 @@ function CrossModel() {
 		 });  
 		 self.currentTrain = ko.observable();
 	};
+	
 	self.bureauChange = function(){ 
 		if(hasActiveRole(self.searchModle().bureau())){
 			self.searchModle().activeFlag(1); 
@@ -505,156 +486,8 @@ function CrossModel() {
 			self.searchModle().activeFlag(0);
 			self.clearData();
 		}
-	};
-	
-	//审核
-	self.checkCrossInfo = function(){ 
-		var crossIds = "";
-		var checkedCrosses = [];
-		var crosses = self.planCrossRows();
-		for(var i = 0; i < crosses.length; i++){  
-			if(crosses[i].checkFlag() == 2 && crosses[i].selected() == 1){ 
-				showWarningDialog(crosses[i].crossName() + "已审核"); 
-				return;
-			}else if(crosses[i].checkedBureau() != null && crosses[i].checkedBureau().indexOf(currentUserBureau) > -1 && crosses[i].selected() == 1){  
-				showWarningDialog(crosses[i].crossName() + "本局已审核"); 
-				return;
-			}else if(crosses[i].selected() == 1){
-				crossIds += (crossIds == "" ? "" : ";");
-				crossIds += crosses[i].planCrossId() + "#" + crosses[i].relevantBureau();
-				checkedCrosses.push(crosses[i]); 
-			}; 
-		}  
-		var planStartDate = $("#runplan_input_startDate").val(); 
-		var planEndDate =  $("#runplan_input_endDate").val();
-		
-		if(crossIds == ""){
-			showWarningDialog("没有可审核的");
-			return;
-		}
-		commonJsScreenLock();
-		 $.ajax({
-				url : "runPlan/checkCrossRunLine",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({   
-					startTime : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
-					endTime : (planEndDate != null ? planEndDate : self.get40Date()).replace(/-/g, ''),
-					planCrossIds : crossIds
-				}),
-				success : function(result) {     
-					if(result.code == 0){
-						$.each(checkedCrosses, function(i, n){
-							n.checkedBureau(n.checkedBureau() + "," + currentUserBureau); 
-						});
-						showSuccessDialog("审核成功");
-					}else{
-						showErrorDialog("审核失败");
-					}
-				},
-				error : function() {
-					showErrorDialog("审核失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-			}); 
-		
-	};
-//	{unitCrossId:"1",trainNbr: "G1", day:"20140723", runFlag: "1"}; 
-//	{unitCrossId:"1",status: "1"}
-	self.createCrossMap = function(row){ 
-		
-//		 var planStartDate = self.searchModle().planStartDate();
-//		
-//		 var planEndDate = self.searchModle().planEndDate(); 
-		 var planStartDate = $("#runplan_input_startDate").val();
-			
-		 var planEndDate =  $("#runplan_input_endDate").val();
-		 
-		 $.ajax({
-				url : "cross/createCrossMap",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({  
-					planCrossId : row.planCrossId(),  
-					startTime : planStartDate != null ? planStartDate : self.currdate(),
-					endTime : planEndDate != null ? planEndDate : self.get40Date()
-				}),
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null) {   
-						}
-						 
-					} else {
-						showErrorDialog("获取车底交路绘图数据失败");
-					} 
-				},
-				error : function() {
-					showErrorDialog("获取车底交路绘图数据失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-			}); 
-	};
-	self.showTrains = function(row) {   
-		self.setCurrentCross(row); 
-		commonJsScreenLock(3);
-		self.createCrossMap(row);
-//		self.stns.remove(function(item) {
-//			return true;
-//		});
-		self.trains.remove(function(item) {
-			return true;
-		});
-		
-		var trains = row.crossName().split("-");
-		
-		$.each(trains, function(n, trainNbr){
-			var row = new TrainRow({"trainNbr": trainNbr});
-			self.trains.push(row); 
-		}); 
-		 
-		self.loadRunPlans(row.planCrossId()); 
-		
-		 $.ajax({
-				url : "cross/getPlanCrossInfo",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({  
-					planCrossId : row.planCrossId()
-				}),
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {   
-							if(result.data[0].crossInfo != null){
-								self.setCurrentCross(new CrossRow(result.data[0].crossInfo)); 
-							}else{ 
-								self.setCurrentCross(new CrossRow(self.defualtCross));
-								showWarningDialog("没有找打对应的交路被找到");
-							}  
-						}
-						 
-					} else {
-						showErrorDialog("获取列车列表失败");
-					} 
-				},
-				error : function() {
-					showErrorDialog("获取列车列表失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-			}); 
-		
 	};  
+	 
 	self.removeArrayValue = function(arr, value){
 		var index = -1;
 		for(var i = 0 ; i < arr.length; i++){
@@ -667,6 +500,7 @@ function CrossModel() {
 			arr.splice(index, 1);
 		}
 	};
+	
 	self.drawFlagChange = function(a, n){  
 		if(n.target.checked){
 			self.searchModle().drawFlags.push(n.target.value);
@@ -692,17 +526,9 @@ function CrossModel() {
 function searchModle(){
 	self = this;  
 	 
-	self.activeFlag = ko.observable(0);  
-	
-	self.checkActiveFlag = ko.observable(0);  
-	
-	self.activeCurrentCrossFlag = ko.observable(0);  
-	
-	self.drawFlags =ko.observableArray(['0']); 
-	
-	self.planStartDate = ko.observable();
-	
-	self.currentBureanFlag = ko.observable(0);
+	self.activeFlag = ko.observable(0);   
+	 
+	self.planStartDate = ko.observable(); 
 	
 	self.planEndDate = ko.observable();
 	
@@ -711,36 +537,14 @@ function searchModle(){
 	self.startBureaus = ko.observableArray();
 	
 	self.charts = ko.observableArray();
-	 
-	self.highlingFlags = highlingFlags;
-	
-	self.unitCreateFlags = unitCreateFlags; 
-	
-	self.filterCheckFlag = ko.observable(0);
-	
-	self.filterUnitCreateFlag = ko.observable(0);
-		
-	self.checkFlags = checkFlags;
-	
-	self.highlingFlag = ko.observable();
-	
-	self.checkFlag = ko.observable(); 
-	 
-	self.unitCreateFlag = ko.observable(); 
-	
+	  
 	self.bureau = ko.observable();
 	 
-	self.chart =  ko.observable();
-	
-	self.startDay = ko.observable();
+	self.chart =  ko.observable(); 
 	
 	self.startBureau = ko.observable();
 	
-	self.filterTrainNbr = ko.observable();
-	
-	self.showCrossMap = ko.observable(0);
-	
-	self.shortNameFlag = ko.observable(2);
+	self.filterTrainNbr = ko.observable(); 
 	
 	self.loadBureau = function(bureaus){   
 		for ( var i = 0; i < bureaus.length; i++) {  
@@ -762,36 +566,14 @@ function BureausRow(data) {
 	self.shortName = data.ljjc;   
 	self.code = data.ljpym;   
 	//方案ID 
-}  
- 
+}   
 
 function TrainModel() {
 	var self = this;
 	self.rows = ko.observableArray();
 	self.rowLookup = {};
-}
-
-function TrainRow(data) {
-	var self = this; 
-	self.crossTainId  = data.crossTainId;//BASE_CROSS_TRAIN_ID
-	self.crossId = data.crossId;//BASE_CROSS_ID
-	self.trainSort = data.trainSort;//TRAIN_SORT
-	self.baseTrainId = data.baseTrainId;
-	self.trainNbr = data.trainNbr;//TRAIN_NBR
-	self.startStn = data.startStn;//START_STN
-	
-	self.times = ko.observableArray(); 
-	self.simpleTimes = ko.observableArray(); 
-	self.loadTimes = function(times){
-		$.each(times, function(i, n){ 
-			var timeRow = new TrainTimeRow(n);
-			self.times.push(timeRow);
-			if(n.stationFlag != 'BTZ'){
-				self.simpleTimes.push(timeRow);
-			}
-		});
-	}; 
-} ;
+} 
+ 
 function filterValue(value){
 	return value == null || value == "null" ? "--" : value;
 };
@@ -832,10 +614,13 @@ function TrainRunPlanRow(data){
 			return "";
 			break;
 		case 1: 
-			return "(正在生成。。。。。。)";
+			return "(正在生成......)";
 			break;
 		case 2: 
 			return "(已生成开行计划)";
+			break;	
+		case -1: 
+			return "(发生异常)";
 			break;
 		default: 
 			return '';
@@ -910,21 +695,7 @@ function RunPlanRow(data){
 			break;
 		}
 	});
-}
-
-function TrainTimeRow(data) { 
-	var self = this; 
-	self.index = data.childIndex + 1; 
-	self.stnName = filterValue(data.stnName);
-	self.bureauShortName = filterValue(data.bureauShortName);
-	self.sourceTime = filterValue(data.arrTime != null ? data.arrTime.replace(/-/g, "").substring(4) : "");
-	self.targetTime = filterValue(data.dptTime != null ? data.dptTime.replace(/-/g, "").substring(4) : "");
-	self.stepStr = GetDateDiff(data); 
-	self.trackName = filterValue(data.trackName);  
-	self.runDays = data.runDays;
-	self.stationFlag = data.stationFlag;
-	 
-}; 
+} 
 
 function GetDays(data1, data2)
 {  
@@ -974,8 +745,5 @@ function GetDateDiff(data)
 	result += seconds > 0 ? seconds + "秒" : "";  
 	 
 	return result == "" ? "" : result; 
-};
-function openLogin() {
-	$("#file_upload_dlg").dialog("open");
-}
+}; 
  

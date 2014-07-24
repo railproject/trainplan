@@ -258,6 +258,7 @@ public class Constants {
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID = "highlineCrossDao.deleteHighlienCrossForHighlineCrossId";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_VEHICLE="highlineCrossDao.updateHighLineVehicle";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_CHECKINFO="highlineCrossDao.updateHiglineCheckInfo";
+	public static String GET_TRAIN_RUN_PLANS_FOR_CREATElINE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlansForCreateLine";
     
     /***与临客相关的mapper配置******/
     public static final String RUNPLANLKDAO_GET_PLANTRAIN_LK_INFO = "runPlanLkDao.getPlanTrainLkInfo";

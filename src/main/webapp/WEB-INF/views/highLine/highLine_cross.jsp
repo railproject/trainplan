@@ -87,19 +87,51 @@ var currentUserBureau = "";
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">高铁交路计划审核</a></li>
 	</ol>  
+	 <div class="row" style="margin:15px 0 10px 0;"> 
+	    <form class="form-horizontal" role="form">
+	   
+	      <div class="pull-left"> 
+	        <div class="pull-left"> 
+				 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
+													日期:&nbsp;</label> 
+				 <input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
+			 </div>
+			 <div class="pull-left"> 
+				 <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">铁路线:&nbsp;</label> 
+				 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+						 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+				 </select>  
+			  </div>
+			   <div class="pull-left"> 
+				 <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">担当局:&nbsp;</label> 
+				 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+						 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+				 </select> 
+			  </div>
+			   <div class="pull-left"> 
+				 <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">动车所:&nbsp;</label> 
+				 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+						 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+				 </select> 
+			  </div>
+			  <div class="pull-left"> 
+				 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
+													车次:&nbsp;</label> 
+				 <input type="text" class="form-control" style="width:75px;" placeholder="" />
+			 </div>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
+		 </div>
+	      <!--col-md-3 col-sm-4 col-xs-4-->
+	    </form> 
+	  </div>  
 	    <div class="row" style="margin: 10px 10px 10px 10px;">   
 		    <!--分栏框开始-->
 		    <div id="plan_view_div_palnDayDetail" class="panel panel-default">
 		       <div class="row" style="margin:15px 0 10px 0;"> 
 				      <form class="form-horizontal" role="form">
 				     
-				        <div class="pull-left">  
-						 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
-															日期:&nbsp;</label>
-							<div class="pull-left" style="margin-left: 5px;">
-								<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
-							</div>
-						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
+				        <div class="pull-left">   
+						  <a type="button"  style="margin-left:15px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >清空</a>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载</a>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整</a>
@@ -381,7 +413,7 @@ var currentUserBureau = "";
 							 </div>
 							  <div class="row" style="margin-top:5px"> 
 							    <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: cjHighLineCross">拆解</a>
-								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: hbHighLineCross">组合</a>
+								<a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: hbHighLineCrossConfirm">组合</a>
 							  </div> 
 						</div>
 					</section>
@@ -434,7 +466,79 @@ var currentUserBureau = "";
 			      <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: submitHighLineCross">确定交路</a>
 		        </div>
 		     </div>
-	    </div>
+	    </div> 
+	    <div id="hb_highLine_cross" class="easyui-dialog" title="合并交路"
+			data-options="iconCls:'icon-save'"
+			style="width: 400px; height: 280px; padding: 10px"> 
+				 <div class="row" style="width: 100%; margin-top: 5px;">
+						<label for="exampleInputEmail3" class="control-label pull-left">
+										动车台:&nbsp;</label> 
+						<div class="pull-left">
+							<select style="width: 273px" id="input_cross_chart_id"
+								class="form-control" data-bind="options:searchModle().tokenVehDepts, value: searchModle().tokenVehDept, optionsText: 'name', optionsCaption: ''">
+							</select>
+						</div>   
+				 </div> 
+				 <div class="row" style="width: 100%; margin-top: 5px;">
+						<label for="exampleInputEmail3" class="control-label pull-left">
+										动车所:&nbsp;</label> 
+						<div class="pull-left">
+							<select style="width: 273px" id="input_cross_chart_id"
+								class="form-control" data-bind="options:searchModle().tokenVehDepots, value: searchModle().tokenVehDepot, optionsText: 'name', optionsCaption: ''">
+							</select>
+						</div>   
+				 </div>
+				 <div class="row" style="width: 100%; margin-top: 5px;">
+						<label for="exampleInputEmail3" class="control-label pull-left">
+										客运担当局:&nbsp;</label> 
+						<div class="pull-left">
+							<select style="width: 273px" id="input_cross_chart_id"
+								class="form-control" data-bind="options:searchModle().tokenPsgBureaus, value: searchModle().tokenPsgBureau, optionsText: 'name', optionsCaption: ''">
+							</select>
+						</div>   
+				 </div> 
+				 <div class="row" style="width: 100%; margin-top: 5px;">
+						<label for="exampleInputEmail3" class="control-label pull-left">
+										担当客运段:&nbsp;</label> 
+						<div class="pull-left">
+							<select style="width: 273px" id="input_cross_chart_id"
+								class="form-control" data-bind="options:searchModle().crhTypes, value: searchModle().crhType, optionsText: 'name', optionsCaption: ''">
+							</select>
+						</div>   
+				 </div>  
+				  <div class="row" style="width: 100%; margin-top: 5px;">
+						<label for="exampleInputEmail3" class="control-label pull-left">
+										铁路线:&nbsp;</label> 
+						<div class="pull-left">
+							<select style="width: 273px" id="input_cross_chart_id"
+								class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+							</select>
+						</div>   
+				 </div>
+				   <div class="row" style="width: 100%; margin-top: 5px;">
+						<label for="exampleInputEmail3" class="control-label pull-left">
+										 动车组车型 :&nbsp;</label> 
+						<div class="pull-left">
+							<select style="width: 273px" id="input_cross_chart_id"
+								class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+							</select>
+						</div>   
+				 </div>
+				
+				 <div class="row" style="margin: 10px 0 5px 0;">
+					<label for="exampleInputEmail2" class="control-label pull-left">来源:&nbsp;</label>
+			        <div class="pull-left">
+			           <input class="form-control"  style="width:150px;" placeholder="" data-bind="value: searchModle().startDay">
+			        </div> 
+			   </div> 
+			   <div  class="row" style="width: 100%; margin-top: 10px;">
+				     <a type="button" id="btn_fileToUpload"
+						class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: $root.hbHighLineCrossYes">确定</a>
+					 <a type="button" id="btn_fileToUpload"
+						class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: $root.hbHighLineCrossCancel">取消</a>
+					<!-- <input type="submit"  value="上传" data-bind=/> -->
+				</div> 
+		</div>  
 </body>  
  <script type="text/html" id="tablefooter-short-template"> 
   <table style="width:100%;height:20px;">
@@ -446,8 +550,7 @@ var currentUserBureau = "";
 		<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
 	    <input type="text"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
 		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
-       </ul> 
-	 
+       </ul>  
      </td >
   </tr>
 </table> 

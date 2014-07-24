@@ -13,19 +13,25 @@ var checkFlags = [{"value": "1", "text": "已"},{"value": "0", "text": "未"}];
 var unitCreateFlags = [{"value": "0", "text": "未"}, {"value": "1", "text": "已"},{"value": "2", "text": "全"}];
 var highlingrules = [{"value": "1", "text": "平日"},{"value": "2", "text": "周末"},{"value": "3", "text": "高峰"}];
 var commonlinerules = [{"value": "1", "text": "每日"},{"value": "2", "text": "隔日"}];
- 
+
+
 var _cross_role_key_pre = "JHPT.KYJH.JHBZ.";
+//判断是否包含对某局的炒作权限
 function hasActiveRole(bureau){ 
 	var roleKey = _cross_role_key_pre + bureau;
 	return all_role.indexOf(roleKey) > -1; 
 }
 
 var gloabBureaus = [];   
-
+/**
+ * 抽象的模型，可以包含任意的列车，他的所有基本信息都是由他所包含的列车决定
+ * @returns
+ */
 function HighLineCrossModle(){
 	var self = this;
+	//当前对象包含的列车
 	self.trains = ko.observableArray();  
-	
+	//加载列车到列车数组中
 	self.loadTrains = function(trains){
 		$.each(trains, function(i, n){
 			var train = new TrainRow(n);
@@ -34,12 +40,12 @@ function HighLineCrossModle(){
 			
 		});
 	};
-	
+	//添加列车到当前数组的末尾
 	self.addTrain = function(train){
 		train.trainSort(self.trains().length);
 		self.trains.push(train);
 	};
-	 
+	//当前交路的第一个列车的起始日期，取第一列车的发车时间 
 	self.crossStartDate = ko.computed(function(){  
 		return self.trains().length > 0 ? self.trains()[0].times()[0].targetTime : ""; 
 	});;
@@ -48,7 +54,7 @@ function HighLineCrossModle(){
 		return self.trains().length > 0 ? self.trains()[self.trains().length - 1].times()[self.trains()[self.trains().length - 1].times().length - 1].sourceTime : ""; 
 	});
 	
-	
+	//获取
 	self.crossStartStn = ko.computed(function(){  
 		return self.trains().length > 0 ? self.trains()[0].times()[0].stnName : ""; 
 	});;
@@ -79,23 +85,23 @@ function HighLineCrossModle(){
 		return result; 
 	});
 	
-	self.tokenVehBureau = "";
+	self.tokenVehBureau = ko.observable("");
 	 
 	//担当车辆段/动车段
-	self.tokenVehDept = "";
+	self.tokenVehDept = ko.observable("");
 	//担当动车所（用于高铁）
-	self.tokenVehDepot = "";
+	self.tokenVehDepot = ko.observable("");
 	//客运担当局（局码）
-	self.tokenPsgBureau = "";
+	self.tokenPsgBureau = ko.observable("");
 	//担当客运段
-	self.tokenPsgDept = "";
+	self.tokenPsgDept = ko.observable("");
 	//动车组车型（用于高铁）
-	self.crhType = "";
+	self.crhType = ko.observable("");
 	//动车组车组号1（用于高铁）
 	self.vehicle1 = "";
 	//动车组车组号2（用于高铁）
 	self.vehicle2 = "";
-	
+	//crossName是由所有的列车编号 加上“-”组成的
 	self.crossName = ko.computed(function(){ 
 		var result = ""; 
 		var trains = self.trains();
@@ -106,11 +112,14 @@ function HighLineCrossModle(){
 	});
 }
 
+/**
+ * 实际暴露给用户的model对象,knockout的最外层
+ */
 function CrossModel() {
 	var self = this;
-		//列车列表
+	//列车列表 用于左下角的显示使用
 	self.trains = ko.observableArray();
-	
+	//经由站列表左下角的显示使用
 	self.stns = ko.observableArray();
 	//交路列表 
 	self.crossAllcheckBox = ko.observable(0);
@@ -129,11 +138,9 @@ function CrossModel() {
 	
 	self.currentTrainInfoMessage = ko.observable("");
 	
-	self.currentTrain = ko.observable(); 
-	
+	self.currentTrain = ko.observable();  
 	//中间多选列表的对象
-	self.acvtiveHighLineCrosses = ko.observableArray(); 
-	
+	self.acvtiveHighLineCrosses = ko.observableArray();  
 	//组合拆解功能 从左边交路中拉过来未处理的
 	self.oldHighLineCrosses = ko.observableArray();  
 	//车辆担当局
@@ -145,15 +152,14 @@ function CrossModel() {
 	//中间的列表选中的记录列表
 	self.selectedActiveHighLineCrossRows = ko.observableArray(); 
 	//车次组合后的时刻点单，用于显示
-	self.activeTimes = ko.observableArray(); 
+	self.activeTimes = ko.observableArray();  
 	
-	
-	
+	//上移事件
 	self.activeCrossUp = function(){
 		var currentCorss = self.selectedActiveHighLineCrossRows()[0]; 
 		var acvtiveHighLineCrosses = self.acvtiveHighLineCrosses();
 		for(var i = 0 ; i < acvtiveHighLineCrosses.length; i++){
-			console.log(currentCorss);
+			//如果当前的交路和选中的交路，就把他和他前面的交路交换
 			if(acvtiveHighLineCrosses[i] == currentCorss){ 
 				if(i > 0){ 
 					var temp = acvtiveHighLineCrosses[i - 1];
@@ -162,13 +168,15 @@ function CrossModel() {
 				break;
 			}
 		}
-	};
-	
+	}; 
+	//下移事件
 	self.activeCrossDown = function(){
+		//当前选中的对象
 		var currentCorss = self.selectedActiveHighLineCrossRows()[0]; 
+		//调整列表的中的所有交路
 		var acvtiveHighLineCrosses = self.acvtiveHighLineCrosses();
 		for(var i = 0 ; i < acvtiveHighLineCrosses.length; i++){
-			console.log(currentCorss);
+			//如果当前的交路和选中的交路，就把他和他后面的交路交换
 			if(acvtiveHighLineCrosses[i] == currentCorss){ 
 				if(i < acvtiveHighLineCrosses.length - 1){  
 					var temp = acvtiveHighLineCrosses[i + 1];
@@ -178,7 +186,7 @@ function CrossModel() {
 			}
 		}
 	};
-	
+	//当重新选择了列车以后触发，重新把选中的交路的列车中的时刻加载出来
 	self.selectedActiveHighLineCrossChange = function(){  
 		self.activeTimes.remove(function(item){
 			return true;
@@ -192,6 +200,7 @@ function CrossModel() {
 		});
 	};
 	
+	//点击单条记录前面的单选框
 	self.selectedCrosse = function(){ 
 		 var currentCorss = self.selectedHighLineCrossRows()[0]; 
 		 //做恢复使用
@@ -223,7 +232,7 @@ function CrossModel() {
 				}
 		    });   
 	};
-	
+	//拆解交路
 	self.cjHighLineCross = function(){
 		$.each(self.selectedActiveHighLineCrossRows(), function(i, n){
 			$.each(n.trains(), function(a, t){ 
@@ -236,21 +245,45 @@ function CrossModel() {
 		});
 	};
 	
+	self.hbHighLineCrossConfirm = function(){
+		$("#hb_highLine_cross").dialog("open");
+	};
+	
+	self.hbHighLineCrossCancel = function(){
+		$("#hb_highLine_cross").dialog("close");
+	};
 	//合并交路
-	self.hbHighLineCross = function(){ 
+	self.hbHighLineCrossYes = function(){ 
 		var selectedActiveHighLineCrossRows = self.selectedActiveHighLineCrossRows();  
 		var cross = new HighLineCrossModle(); 
+		
+		$("#hb_highLine_cross").dialog("close");
+		
+		cross.tokenVehDept(self.searchModel().tokenVehDept());
+		//担当动车所（用于高铁）
+		cross.tokenVehDepot(self.searchModle().tokenVehDepot());
+		//客运担当局（局码）
+		cross.tokenPsgBureau(self.searchModle().tokenPsgBureau());
+		//担当客运段
+		cross.tokenPsgDept(self.searchModle().tokenPsgDept());
+		//动车组车型（用于高铁）
+		cross.crhType(self.searchModle().crhType());
 		
 		for(var i = 0; i < selectedActiveHighLineCrossRows.length; i++){
 			var cr = selectedActiveHighLineCrossRows[i];
 			if(i > 0){
 				var pre = selectedActiveHighLineCrossRows[i - 1]; 
-				if(!timeCompare(pre.crossEndDate(), cr.crossStartDate()) || pre.crossEndStn() != cr.crossStartStn()){
-					showConfirmDiv("提示", "车次" + cr.crossName() + "无法与" + pre.crossName() + "前车接续", function(r){
+				if(!timeCompare(pre.crossEndDate(), cr.crossStartDate())){
+					showConfirmDiv("提示", "车次" + cr.crossName() + "无法与" + pre.crossName() + "前车接续,时间间隔允许", function(r){
 						return;
 					});
 					return;
-				}  
+				}else if(pre.crossEndStn() != cr.crossStartStn()){
+					showConfirmDiv("提示", "车次" + cr.crossName() + "无法与" + pre.crossName() + "前车接续,接续车站不一致", function(r){
+						return;
+					});
+					return;
+				};  
 			} 
 			var trains = cr.trains();  
 			for(var j = 0; j < trains.length; j++ ){  
@@ -311,7 +344,7 @@ function CrossModel() {
 		    });  
 		
 	};
-	
+	//当填报第一个列车车底的时候触发
 	self.vehicle1Change = function(row){
 		row.updateFlag(true);
 		var highLineCrossRows = self.highLineCrossRows();
@@ -337,6 +370,8 @@ function CrossModel() {
 			} 
 		}
 	};
+	
+	//当填报第二个列车车底的时候触发
 	self.vehicle2Change = function(row){ 
 		row.updateFlag(true);
 		var highLineCrossRows = self.highLineCrossRows();
@@ -688,8 +723,11 @@ function CrossModel() {
 	self.init = function(){  
  
 		$("#run_plan_train_times").dialog("close"); 
+		
+		$("#hb_highLine_cross").dialog("close");  
  
 		$("#runplan_input_startDate").datepicker();
+		
 		$("#runplan_input_endDate").datepicker();
 		
 		$("#current_highLineCrosses").on("dblclick", self.selectedCrosse);
@@ -1283,12 +1321,10 @@ function CrossModel() {
 		
 	};
 	
-	self.createCrossMap = function(row){ 
-		
-//		 var planStartDate = self.searchModle().planStartDate();
-//		
-//		 var planEndDate = self.searchModle().planEndDate();
+	self.createCrossMap = function(row){  
+ 
 		self.runPlanCanvasPage.clearChart();	//清除画布
+		
 		 var planStartDate = $("#runplan_input_startDate").val();
 			
 		 var planEndDate =  $("#runplan_input_endDate").val();
@@ -1445,7 +1481,27 @@ function searchModle(){
 	
 	self.showCrossMap = ko.observable(0);
 	
-	self.shortNameFlag = ko.observable(2);
+	self.shortNameFlag = ko.observable(2); 
+	
+	self.tokenVehDepts = ko.observableArray();
+	//担当动车所（用于高铁）
+	self.tokenVehDepots = ko.observableArray();
+	//客运担当局（局码）
+	self.tokenPsgBureaus = ko.observableArray();
+	//担当客运段
+	self.tokenPsgDepts =ko.observableArray();
+	//动车组车型（用于高铁）
+	self.crhTypes = ko.observableArray();
+	
+	self.tokenVehDept = ko.observable();
+	//担当动车所（用于高铁）
+	self.tokenVehDepot = ko.observable();
+	//客运担当局（局码）
+	self.tokenPsgBureau = ko.observable();
+	//担当客运段
+	self.tokenPsgDept = ko.observable();
+	//动车组车型（用于高铁）
+	self.crhType = ko.observable();
 	
 	self.loadBureau = function(bureaus){   
 		for ( var i = 0; i < bureaus.length; i++) {  
@@ -1679,10 +1735,7 @@ function TrainRow(data) {
 	});;
 	self.endStn = ko.computed(function(){  
 		return self.times().length > 0 ? self.times()[self.times().length - 1].stnName : ""; 
-	});
-	 
- 
-	
+	}); 
 	
 	self.loadTimes = function(times){
 		$.each(times, function(i, n){ 

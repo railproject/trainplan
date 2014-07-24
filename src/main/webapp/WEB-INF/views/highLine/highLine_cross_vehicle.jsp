@@ -37,6 +37,8 @@ String basePath = request.getContextPath();
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/font-awesome.min.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/datepicker.css">
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/style.css"> 
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/jquery.autocomplete.css"> 
+
 	
 <link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
 <link type="text/css" rel="stylesheet" href="<%=basePath %>/assets/css/font-awesome.min.css" />
@@ -133,15 +135,15 @@ var currentUserBureau = "";
 									<tbody style="padding:0">
 										 <tr style="padding:0">
 										   <td colspan="11" style="padding:0">
-												 <div id="plan_train_panel_body" style="height: 650px; overflow-y:auto;"> 
+												 <div id="highline_train_vehicle_panel_body" style="height: 650px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														<tbody data-bind="foreach: highLineCrossRows">
 															<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
 																<!-- <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td> -->
 														        <td style="width: 36px" data-bind="text: $index() + 1"></td> 
 															     <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
-															     <td style="width: 8%"><input type="text" data-bind="value: vehicle1, event:{change: $parent.vehicle1Change}"></td>
-															     <td style="width: 8%"><input type="text" data-bind="value: vehicle2, event:{change: $parent.vehicle2Change}"></td>
+															     <td style="width: 8%"><input type="text" data-bind="value: vehicle1, event:{change: $parent.vehicle1Change, focus: $parent.vehicleOnfocus}"></td>
+															     <td style="width: 8%"><input type="text" data-bind="value: vehicle2, event:{change: $parent.vehicle2Change, focus: $parent.vehicleOnfocus}"></td>
 															     <td style="width: 8%" data-bind="text: ''"></td> 
 															     <td style="width: 8%" data-bind="text: startStn"></td>
 															     <td style="width: 8%" data-bind="text: endStn"></td>
@@ -159,7 +161,7 @@ var currentUserBureau = "";
 					        </div> 
 				       </div>
 				  </div>  
-	    </div>  
+	    </div> 
 </body>  
  <script type="text/html" id="tablefooter-short-template"> 
   <table style="width:100%;height:20px;">
@@ -202,6 +204,9 @@ var currentUserBureau = "";
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_rightmenu.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script>
+
+<script src="<%=basePath %>/assets/js/trainplan/jquery.autocomplete.js"></script>
+
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 </script>

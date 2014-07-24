@@ -727,7 +727,6 @@ public class RunPlanService {
                             trainSort = preRunPlan.getTrainSort();
                         } catch (Exception e) {
                             logger.error("补全交路出错", e);
-                            throw e;
                         }
                     }
                 }
@@ -815,13 +814,13 @@ public class RunPlanService {
 
             try {
                 this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("发送消息失败", e);
             }
         }
 
-        private void sendUnitCrossMsg(String unitCrossId, int status) {
+        private void sendUnitCrossMsg(String unitCrossId, int status) throws JsonProcessingException {
             if(this.msgReceiveUrl == null) {
                 return;
             }
@@ -831,8 +830,13 @@ public class RunPlanService {
             ObjectMapper jsonUtil = new ObjectMapper();
 
             try {
-                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
+ 
+                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanStatus");
             } catch (JsonProcessingException e) {
+ 
+                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
+            } catch (Exception e) {
+ 
                 e.printStackTrace();
                 logger.error("发送消息失败", e);
             }
@@ -956,5 +960,10 @@ public class RunPlanService {
 		reqMap.put("planCrossIds", bf.toString()); 
 		
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANTRAIN_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
+	}
+
+	public List getTrainRunPlansForCreateLine(Map<String, Object> params) {
+		List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.GET_TRAIN_RUN_PLANS_FOR_CREATElINE, params);
+		return crossRunPlans;
 	}
 }

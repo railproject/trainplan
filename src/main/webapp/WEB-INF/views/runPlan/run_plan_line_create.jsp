@@ -46,9 +46,6 @@ String basePath = request.getContextPath();
 <link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/rightmenu.css">
 
-
-
-   
 <jsp:include page="/assets/commonpage/include-dwr-script.jsp" flush="true" /> 
 <script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script type="text/javascript">
@@ -119,7 +116,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 									<div class="pull-left" style="margin-left: 10px;">
 											<a type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
-										</div>   
+										</div>  
 										
 						</div>
 					</div> 
@@ -238,7 +235,11 @@ var basePath = "<%=basePath %>";
     <td data-bind="text: '', attr:{rowspan: $parent.rowspan} " colspan="2"></td> 
     <td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->   
- 	<td  align='center' data-bind="text: runFlagShowValue, style:{'color': color}"></td>
+ 	<td  align='center' data-bind="style:{'color': color}">
+          <!-- ko if: runFlagShowValue() != '' -->  
+             <input type='checkbox' value='1' data-bind="event:{change: $root.selectRunPlan}, checked: selected, attr:{class: createFlag() == 1 ? 'ckbox disabled' : ''}" ><span data-bind="html: runFlagShowValue"></span>
+          <!-- /ko -->  
+    </td>
  </tr> 
  <!-- /ko -->
  <!-- ko if: trainSort > 1 --> 
@@ -246,7 +247,11 @@ var basePath = "<%=basePath %>";
     <!-- ko if: $index() == 0 -->  
     <td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->   
- 	<td  align='center' data-bind="text: runFlagShowValue, style:{'color': color}"></td>
+ 	<td  align='center' data-bind="style:{'color': color}">
+          <!-- ko if: runFlagShowValue() != '' -->  
+             <input type='checkbox' value='1' data-bind="event:{change: $root.selectRunPlan}, checked: selected, attr:{class: createFlag() == 1 ? 'ckbox disabled' : ''}" ><span data-bind="html: runFlagShowValue"></span>
+          <!-- /ko -->  
+    </td>
  </tr> 
  <!-- /ko -->
 </script>

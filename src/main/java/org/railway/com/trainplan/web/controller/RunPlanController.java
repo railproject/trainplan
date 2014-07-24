@@ -1,5 +1,7 @@
 package org.railway.com.trainplan.web.controller;
 
+import net.sf.json.JSONArray;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,6 +53,12 @@ public class RunPlanController {
 	 @RequestMapping(value="/runPlanGt" ,method = RequestMethod.GET)
      public String runPlanGt() {
 		 return "runPlan/run_plan_gt";
+     }
+	 
+	 
+	 @RequestMapping(value="/runPlanLineCreate" ,method = RequestMethod.GET)
+     public String runPlanLineCreate() {
+		 return "runPlan/run_plan_line_create";
      }
 	 
 	 
@@ -263,16 +271,67 @@ public class RunPlanController {
     @RequestMapping(value = "/plantrain/gen", method = RequestMethod.POST)
      public ResponseEntity<List<String>> generatePlanTrainBySchemaId(@RequestBody Map<String, Object> params) {
         String baseChartId = MapUtils.getString(params, "baseChartId");
-        System.out.println(baseChartId);
         String startDate = MapUtils.getString(params, "startDate");
-        System.out.println(startDate);
         int days = MapUtils.getIntValue(params, "days");
-        System.out.println(days);
         List<String> unitcrossId = (List<String>) params.get("unitcrossId");
-        System.out.println(unitcrossId);
         String msgReceiveUrl = MapUtils.getString(params, "msgReceiveUrl");
-        System.out.println(msgReceiveUrl);
         List<String> unitCrossIds = runPlanService.generateRunPlan(baseChartId, startDate, days, unitcrossId, msgReceiveUrl);
         return new ResponseEntity<List<String>>(unitCrossIds, HttpStatus.OK);
     }
+    
+    /**
+    *
+    * @return 为生成运行线界面查询数据
+    */
+   @ResponseBody
+   @RequestMapping(value = "/getTrainRunPlansForCreateLine", method = RequestMethod.POST)
+    public Result getTrainRunPlansForCreateLine(@RequestBody Map<String, Object> params) {
+	   Result result = new Result();
+	   try{
+	       List trainPlans = runPlanService.getTrainRunPlansForCreateLine(params); 
+	       result.setData(trainPlans);
+	   }catch(Exception e){
+		   e.printStackTrace();
+	   }
+       
+       return result;
+   }
+   
+   /**
+   *
+   * @return 为生成运行线界面查询数据
+   */
+  @ResponseBody
+  @RequestMapping(value = "/createRunPlanForPlanTrain", method = RequestMethod.POST)
+   public Result createRunPlanForPlanTrain(@RequestBody Map<String, Object> params) {
+	   Result result = new Result(); 
+	   List<Map<String, String>> planTrains =  (List<Map<String, String>>)params.get("planTrains");
+	   String msgReceiveUrl = (String)params.get("msgReceiveUrl");
+	   List<ParamDto> listDto = new ArrayList<ParamDto>();
+	   try{
+	       for(Map<String, String> planTrain: planTrains){
+	    	   ParamDto pd = new ParamDto();
+	    	   pd.setSourceEntityId(planTrain.get("baseTrainId"));
+	    	   pd.setPlanTrainId(planTrain.get("planTrainId"));
+	    	   pd.setTime(planTrain.get("day"));
+	    	   pd.setMsgReceiveUrl(msgReceiveUrl);
+	    	   listDto.add(pd);  
+	       }
+	       String jsonStr = commonService.combinationMessage(listDto); 
+   		   logger.debug("jsonStr====" + jsonStr);
+			//System.err.println("jsonStr====" + jsonStr);
+			//向rabbit发送消息
+			amqpTemplate.convertAndSend("crec.event.trainplan",jsonStr);
+	   }catch(Exception e){
+		   e.printStackTrace();
+	   }
+      
+      return result;
+  }
+  
+   
+   
+   
+    
+    
 }
