@@ -108,7 +108,9 @@ function CrossModel() {
 	
 	
 	
-	self.loadStns = function(currentTrain){  
+	self.loadStns = function(currentTrain){
+		console.log("-----------------     查看时刻表      条件     ----------------------");
+		console.dir(currentTrain);
 		self.times.remove(function(item){
 			return true;
 		});
@@ -125,9 +127,16 @@ function CrossModel() {
 				data :JSON.stringify({
 					trainId: currentTrain.obj.planTrainId
 				}),
-				success : function(result) {    
+				success : function(result) {
+					console.dir(result);
+					console.log("-----------------     查看时刻表           ----------------------");
 					if (result != null && result != "undefind" && result.code == "0") { 
 							var message = "车次：" + currentTrain.obj.trainName + "&nbsp;&nbsp;&nbsp;";
+							
+							if (result.data.length == 0) {
+								showWarningDialog("当前车次客运时刻数据不存在。");
+								return;
+							}
 							
 							$.each(result.data, function(i, n){
 								var timeRow = new TrainTimeRow(n); 
@@ -521,7 +530,7 @@ function CrossModel() {
 	
 	self.createCrossMap = function(row){
 		console.log("----------------    画图------------------  row.planTrainId="+row.planTrainId()+"     row.trainNbr="+row.trainNbr());
-		console.log("----------------    画图------------------");
+		
 		
 		self.runPlanCanvasPage.clearChart();	//清除画布
 		var planStartDate = $("#runplan_input_startDate").val();
@@ -538,7 +547,9 @@ function CrossModel() {
 					planTrainId : row.planTrainId(),
 					trainNbr : row.trainNbr()
 				}),
-				success : function(result) {    
+				success : function(result) {
+					console.dir(result);
+					console.log("----------------    画图------------------");
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null) {
 							canvasData = {

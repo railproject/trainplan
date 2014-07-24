@@ -94,8 +94,7 @@ var RunPlanCanvasPage = function(cross) {
 			scale.yScale = currentYScale;				//y轴缩放比例
 			scale.stationTypeArray = _stationTypeArray;	//分界口复选框
 			scale.isDrawTrainTime = _canvasIsDrawTrainTime;	//是否绘制列车经由站到达及出发时间
-			scale.currentGroupSerialNbr = _canvas_select_groupSerialNbr.val();	//当前组号
-			scale.isZgsUser = _isZgsUser;//当前用户是否为总公司用户
+//			scale.isZgsUser = _isZgsUser;//当前用户是否为总公司用户
 			return scale;
 		} else {
 			return {
@@ -103,9 +102,7 @@ var RunPlanCanvasPage = function(cross) {
 				xScaleCount : currentXScaleCount,	//x轴当前放大倍数，用于控制时刻线条数
 				yScale : currentYScale,				//y轴缩放比例
 				stationTypeArray:_stationTypeArray,	//分界口复选框
-				isDrawTrainTime:_canvasIsDrawTrainTime,	//是否绘制列车经由站到达及出发时间
-				currentGroupSerialNbr : _canvas_select_groupSerialNbr.val(),	//当前组号
-				isZgsUser : _isZgsUser//当前用户是否为总公司用户
+				isDrawTrainTime:_canvasIsDrawTrainTime	//是否绘制列车经由站到达及出发时间
 			};
 		}
 		

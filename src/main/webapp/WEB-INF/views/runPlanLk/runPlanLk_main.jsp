@@ -24,6 +24,8 @@ String basePath = request.getContextPath();
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>既有临客开行计划</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
+<link href="<%=basePath %>/assets/easyui/themes/default/easyui.css" rel="stylesheet">
+<link href="<%=basePath %>/assets/easyui/themes/icon.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/cross/cross.css">
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/table.scroll.css">
 

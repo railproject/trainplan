@@ -117,16 +117,16 @@ var CanvasEventComponent = function(canvasDivId) {
             c.drawLine(context, expandObj);
         }
         
-        for (var i=0, _len=jlList.length; i<_len; i++) {
-			var _obj = jlList[i];
-			var _color = _obj.color;
-			
-			//2.2 绘制交路接续关系
-			myCanvasComponent.drawJxgx(_color, _obj.data.jxgx, i);
-			
-			//2.3绘制交路起止标识
-			myCanvasComponent.drawJlStartAndEnd(_color, _obj.data.trains, i);
-		};
+//        for (var i=0, _len=jlList.length; i<_len; i++) {
+//			var _obj = jlList[i];
+//			var _color = _obj.color;
+//			
+//			//2.2 绘制交路接续关系
+//			myCanvasComponent.drawJxgx(_color, _obj.data.jxgx, i);
+//			
+//			//2.3绘制交路起止标识
+//			myCanvasComponent.drawJlStartAndEnd(_color, _obj.data.trains, i);
+//		};
     };
 	
 

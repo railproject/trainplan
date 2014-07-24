@@ -4,6 +4,16 @@
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="org.railway.com.trainplan.repository.mybatis.RunPlanDao">
 
+    <resultMap id="preRunPlan" type="org.railway.com.trainplan.entity.RunPlan">
+        <id column="PLAN_TRAIN_ID" property="planTrainId"/>
+        <result column="PLAN_CROSS_ID" property="planCrossId"/>
+        <result column="GROUP_SERIAL_NBR" property="groupSerialNbr"/>
+        <result column="TRAIN_SORT" property="trainSort"/>
+        <result column="START_TIME" property="startDateTime"/>
+        <result column="END_TIME" property="endDateTime"/>
+    </resultMap>
+
+
     <!-- 校验列车主体信息： 客运计划vs日计划 -->
     <select id="checkTrainInfo" parameterType="map" resultType="map">
         SELECT CASE WHEN PT.TRAIN_NBR = TL.NAME THEN 1 ELSE 0 END AS TRAIN_NAME,
@@ -594,5 +604,26 @@ FROM
     <update id="updateCheckTypeForPlanCrossId" parameterType="map" >
        update plan_cross
        set check_type=#{checkType} where plan_cross_id=#{planCrossId}
+    </update>
+
+    <!-- 重复生成开行计划的时候需要的，用来查询前序列车。暂时只用到了GROUP_SERIAL_NBR, TRAIN_SORT, PLAN_TRAIN_ID, END_TIME几个字段，详细看RunPlanService.java中的generateRunPlan -->
+    <select id="findPreRunPlanByPlanCrossId" parameterType="string" resultMap="preRunPlan">
+        SELECT DISTINCT START_TIME, GROUP_SERIAL_NBR, TRAIN_SORT, PLAN_CROSS_ID, PLAN_TRAIN_ID, END_TIME FROM (
+        SELECT MAX(START_TIME) OVER (PARTITION BY PLAN_CROSS_ID, GROUP_SERIAL_NBR, TRAIN_SORT) AS MAX_TIME,
+        GROUP_SERIAL_NBR, TRAIN_SORT, START_TIME, PLAN_CROSS_ID, END_TIME, PLAN_TRAIN_ID
+        FROM PLAN_TRAIN)
+        WHERE PLAN_CROSS_ID = #{planCrossId}
+        AND START_TIME = MAX_TIME
+        ORDER BY PLAN_CROSS_ID, GROUP_SERIAL_NBR, START_TIME
+    </select>
+
+    <delete id="deleteRunPlanByStartTime" parameterType="java.util.Map">
+        DELETE FROM PLAN_TRAIN WHERE START_TIME > #{startTime}
+    </delete>
+
+    <update id="updateNextTrainId" parameterType="org.railway.com.trainplan.entity.RunPlan">
+        UPDATE PLAN_TRAIN
+        SET NEXT_TRAIN_ID = #{nextTrainId, jdbcType=VARCHAR}
+        WHERE PLAN_TRAIN_ID = #{planTrainId, jdbcType=VARCHAR}
     </update>
 </mapper> 
