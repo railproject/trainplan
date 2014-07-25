@@ -13,4 +13,6 @@ import java.util.Map;
 public interface UnitCrossDao {
 
     List<UnitCross> findUnitCrossBySchemaId(Map<String, Object> params);
+
+    List<UnitCross> findUnitCrossByName(String unitCrossName);
 }
