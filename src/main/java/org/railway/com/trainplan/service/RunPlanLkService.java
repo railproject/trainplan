@@ -1,7 +1,7 @@
 package org.railway.com.trainplan.service;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +9,6 @@ import mor.railway.cmd.adapter.model.CmdInfoModel;
 import mor.railway.cmd.adapter.service.ICmdAdapterService;
 import mor.railway.cmd.adapter.service.impl.CmdAdapterServiceImpl;
 import mor.railway.cmd.adapter.util.ConstantUtil;
-import mor.railway.cmd.adapter.util.StringAndTimeUtil;
 
 import org.javasimon.aop.Monitored;
 import org.railway.com.trainplan.common.constants.Constants;
@@ -107,8 +106,10 @@ public class RunPlanLkService {
 	   * @param cmdTxtmlId
 	   * @return
 	   */
-	  public CmdTrain  getCmdTrainInfoForCmdTxtmlId(int cmdTxtmlId){
-		  return (CmdTrain) baseDao.selectListBySql(Constants.RUNPLANLKDAO_GET_CMD_TRAININFO_FOR_CMDMLID, cmdTxtmlId);
+	  public CmdTrain  getCmdTrainInfoForCmdTxtmlId(String cmdTxtmlId){
+		  Map<String,String> reqMap = new HashMap<String,String>();
+		  reqMap.put("cmdTxtmlId", cmdTxtmlId);
+		  return (CmdTrain) baseDao.selectOneBySql(Constants.RUNPLANLKDAO_GET_CMD_TRAININFO_FOR_CMDMLID, reqMap);
 	  }
 	  
 	  /**

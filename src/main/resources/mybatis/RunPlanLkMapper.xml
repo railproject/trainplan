@@ -97,7 +97,7 @@
     </select>
  
 
-	 <select id="getCmdTrainInfoForCmdTxtmlId" parameterType="Integer"  resultType="org.railway.com.trainplan.entity.CmdTrain">
+	 <select id="getCmdTrainInfoForCmdTxtmlId" parameterType="map"  resultType="org.railway.com.trainplan.entity.CmdTrain">
 		SELECT 
 		    CMD_TRAIN_ID  AS cmdTrainId,
 			CMD_BUREAU  AS cmdBureau,

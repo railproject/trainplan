@@ -249,6 +249,7 @@ public class RunPlanLkController {
 				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 				 //本局局码
 				 String bureuaCode = user.getBureau();
+				
 				 logger.debug("bureuaCode==" + bureuaCode);
 				 List<CmdInfoModel> listModel = runPlanLkService.getCmdTrainInfoFromRemote(startDate, endDate, bureuaCode);
 				 List<CmdTrain> returnList = new ArrayList<CmdTrain>();
@@ -257,7 +258,7 @@ public class RunPlanLkController {
 						 CmdTrain cmdTrainTempl = new CmdTrain();
 						 Integer cmdTxtMlId = infoModel.getCmdTxtMlId();
 						 //从本地数据库中查询
-						 CmdTrain cmdTrain = runPlanLkService.getCmdTrainInfoForCmdTxtmlId(cmdTxtMlId);
+						 CmdTrain cmdTrain = runPlanLkService.getCmdTrainInfoForCmdTxtmlId(String.valueOf(cmdTxtMlId));
 						 if(cmdTrain == null){
 							 cmdTrainTempl.setCreateState("0");
 							 cmdTrainTempl.setSelectState("0");
