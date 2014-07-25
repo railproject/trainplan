@@ -389,106 +389,46 @@ function CrossModel() {
 			 return;
 		 }
 		 //重置生成总数和已生成数
-		 console.log(createCrosses.length);
-//		 self.createRunPlanTotalCount(createCrosses.length); 
-//		 self.createRunPlanCompletedCount(0);
-//		 
-//		 commonJsScreenLock();
-//		 $.ajax({
-//				url : "../runPlan/plantrain/gen",
-//				cache : false,
-//				type : "POST",
-//				dataType : "json",
-//				contentType : "application/json",
-//				data :JSON.stringify({
-//					baseChartId: chart.chartId,
-//					startDate: startDate.replace(/-/g, ""), 
-//					days: days + 1, 
-//					unitcrossId: crossIds,
-//					msgReceiveUrl: "/trainplan/runPlan/runPlanCreate"}),
-//				success : function(result) { 
-//					if(result != null && result.length >= 0){ 
-//						showSuccessDialog("正在生成开行计划");
-//					}else{
-//						showErrorDialog("生成开行计划失败");
-//					}
-//				},
-//				error : function() {
-//					showErrorDialog("生成开行计划失败");
-//					 for(var i = 0; i < createCrosses.length; i++){   
-//						 createCrosses.createStatus(0);
-//					 }  
-//				},
-//				complete : function(){ 
-//					commonJsScreenUnLock();
-//				}
-//			}); 
-	};
-	
-	self.clearData = function(){ 
-		 self.currentCross(new CrossRow({"crossId":"",
-				"crossName":"", 
-				"chartId":"",
-				"chartName":"",
-				"crossStartDate":"",
-				"crossEndDate":"",
-				"crossSpareName":"",
-				"alterNateDate":"",
-				"alterNateTranNbr":"",
-				"spareFlag":"",
-				"cutOld":"",
-				"groupTotalNbr":"",
-				"pairNbr":"",
-				"highlineFlag":"",
-				"highlineRule":"",
-				"commonlineRule":"",
-				"appointWeek":"",
-				"appointDay":"",
-				"crossSection":"",
-				"throughline":"",
-				"startBureau":"",
-				"tokenVehBureau":"",
-				"tokenVehDept":"",
-				"tokenVehDepot":"",
-				"appointPeriod":"",
-				"tokenPsgBureau":"",
-				"tokenPsgDept":"",
-				"tokenPsgDepot":"",
-				"locoType":"",
-				"crhType":"",
-				"elecSupply":"",
-				"dejCollect":"",
-				"airCondition":"",
-				"note":"", 
-				"createPeople":"", 
-				"createPeopleOrg":"",  
-				"createTime":""})); 
-		 self.stns.remove(function(item){
-			return true;
-		 });
-		 self.planCrossRows.remove(function(item){
-			return true;
-		 });
+		 self.createRunPlanTotalCount(createCrosses.length); 
+		 self.createRunPlanCompletedCount(0);
 		 
-		 self.trainPlans.remove(function(item){
-			return true;
-		 }); 
-		self.planDays.remove(function(item){
-			return true;
-		 }); 
-		 self.trains.remove(function(item){
-			return true;
-		 });  
-		 self.currentTrain = ko.observable();
-	};
+		 commonJsScreenLock();
+		 $.ajax({
+				url : "../runPlan/plantrain/gen",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({
+					baseChartId: chart.chartId,
+					startDate: startDate.replace(/-/g, ""), 
+					days: days + 1, 
+					unitcrossId: crossIds,
+					msgReceiveUrl: "/trainplan/runPlan/runPlanCreate"}),
+				success : function(result) { 
+					if(result != null && result.length >= 0){ 
+						showSuccessDialog("正在生成开行计划");
+					}else{
+						showErrorDialog("生成开行计划失败");
+					}
+				},
+				error : function() {
+					showErrorDialog("生成开行计划失败");
+					 for(var i = 0; i < createCrosses.length; i++){   
+						 createCrosses.createStatus(0);
+					 }  
+				},
+				complete : function(){ 
+					commonJsScreenUnLock();
+				}
+			}); 
+	}; 
 	
 	self.bureauChange = function(){ 
 		if(hasActiveRole(self.searchModle().bureau())){
-			self.searchModle().activeFlag(1); 
-			self.clearData();
+			self.searchModle().activeFlag(1);  
 		}else if(self.searchModle().activeFlag() == 1){
-			self.searchModle().activeFlag(0);
-			self.clearData();
+			self.searchModle().activeFlag(0); 
 		}
 	};  
 	 
