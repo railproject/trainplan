@@ -276,4 +276,9 @@ public class Constants {
     public static final String RUNPLANLKDAO_GET_CMD_TRAINSTN_INFO = "runPlanLkDao.getCmdTrainStnInfo";
     //查询表cmdTrain
     public static final String RUNPLANLKDAO_GET_CMD_TRAININFO_FOR_CMDMLID="runPlanLkDao.getCmdTrainInfoForCmdTxtmlId";
+    // 保存表cmd_train_stn的数据
+    public static final String RUNPLANLKDAO_INSERT_CMD_TRAIN_STN = "runPlanLkDao.insertCmdTrainStn";
+    //保存表cmd_train的数据
+    public static final String RUNPLANLKDAO_INSERT_CMD_TRAIN = "runPlanLkDao.insertCmdTrain";
+
 }

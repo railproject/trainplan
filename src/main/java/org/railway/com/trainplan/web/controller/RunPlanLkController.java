@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import mor.railway.cmd.adapter.model.CmdInfoModel;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +23,7 @@ import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.CmdTrain;
 import org.railway.com.trainplan.entity.CmdTrainStn;
 import org.railway.com.trainplan.entity.RunPlan;
+import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.service.RunPlanLkService;
 import org.railway.com.trainplan.service.ShiroRealm;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
@@ -35,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 临客相关操作
@@ -62,6 +67,13 @@ public class RunPlanLkController {
      public String mainPage() {
 		 return "runPlanLk/runPlanLk_main";
      }
+	 
+
+	 @RequestMapping(value="/jbtTrainInfoPage", method = RequestMethod.GET)
+     public ModelAndView jbtTrainInfoPage(HttpServletRequest request) {
+		 return new ModelAndView("runPlanLk/jbt_traininfo").addObject("tabType", request.getParameter("tabType"));
+     }
+	 
 	 
 	 
 	 /**
@@ -237,6 +249,7 @@ public class RunPlanLkController {
 				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 				 //本局局码
 				 String bureuaCode = user.getBureau();
+				
 				 logger.debug("bureuaCode==" + bureuaCode);
 				 List<CmdInfoModel> listModel = runPlanLkService.getCmdTrainInfoFromRemote(startDate, endDate, bureuaCode);
 				 List<CmdTrain> returnList = new ArrayList<CmdTrain>();
@@ -245,7 +258,7 @@ public class RunPlanLkController {
 						 CmdTrain cmdTrainTempl = new CmdTrain();
 						 Integer cmdTxtMlId = infoModel.getCmdTxtMlId();
 						 //从本地数据库中查询
-						 CmdTrain cmdTrain = runPlanLkService.getCmdTrainInfoForCmdTxtmlId(cmdTxtMlId);
+						 CmdTrain cmdTrain = runPlanLkService.getCmdTrainInfoForCmdTxtmlId(String.valueOf(cmdTxtMlId));
 						 if(cmdTrain == null){
 							 cmdTrainTempl.setCreateState("0");
 							 cmdTrainTempl.setSelectState("0");
@@ -313,6 +326,36 @@ public class RunPlanLkController {
 		}
 		
 	
+		/**
+		 * 保存临客列车运行时刻表
+		 * @param reqMap
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/saveLkTrainTimes", method = RequestMethod.POST)
+		public Result saveLkTrainTimes(@RequestBody String reqStr){
+			Result result = new Result();
+			logger.info("saveLkTrainTimes~~reqStr==" + reqStr);
+			try{
+				JSONObject reqObj = JSONObject.fromObject(reqStr);
+				Map<String,Object> trainMap = (Map<String,Object>)reqObj.get("cmdTrainMap");
+				List<CmdTrainStn>  trainStnList = reqObj.getJSONArray("cmdTrainStnList");
+			    
+			
+				//保存数据
+				//int count = trainTimeService.editPlanLineTrainTimes(list);
+				//logger.info("editPlanLineTrainTimes~~count==" + count);
+				
+			}catch(Exception e){
+				logger.error(e.getMessage(), e);
+				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+			}
+		
+			return result;
+		} 
+		
+		
 		/**
 		 * 组装纵坐标
 		 * @param list

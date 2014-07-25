@@ -97,7 +97,7 @@
     </select>
  
 
-	 <select id="getCmdTrainInfoForCmdTxtmlId" parameterType="Integer"  resultType="org.railway.com.trainplan.entity.CmdTrain">
+	 <select id="getCmdTrainInfoForCmdTxtmlId" parameterType="map"  resultType="org.railway.com.trainplan.entity.CmdTrain">
 		SELECT 
 		    CMD_TRAIN_ID  AS cmdTrainId,
 			CMD_BUREAU  AS cmdBureau,
@@ -124,10 +124,6 @@
 		FROM CMD_TRAIN WHERE CMD_TXTMLID=${cmdTxtmlId}
      </select>
 
-
-   
-    
-    
     
     <select id="getCmdTrainStnInfo"  parameterType="string"  resultType="org.railway.com.trainplan.entity.CmdTrainStn">
       SELECT
@@ -136,12 +132,12 @@
 		STN_SORT AS  stnSort,
 		STN_NAME AS stnName ,
 		STN_BUREAU AS stnBureau ,
-		TO_CHAR(ARR_TRAIN_NBR,) AS  arrTrainNbr,
+		ARR_TRAIN_NBR AS  arrTrainNbr,
 		DPT_TRAIN_NBR AS  dptTrainNbr,
-		ARR_TIME AS arrTime ,
-		DPT_TIME AS  dptTime,
-		BASE_ARR_TIME AS  baseArrTime,
-		BASE_DPT_TIME AS  baseDptTime,
+		TO_CHAR(ARR_TIME,'yyyy-MM-dd hh24:mi:SS') AS arrTime ,
+		TO_CHAR(DPT_TIME,'yyyy-MM-dd hh24:mi:SS') AS  dptTime,
+		TO_CHAR(BASE_ARR_TIME,'yyyy-MM-dd hh24:mi:SS') AS  baseArrTime,
+		TO_CHAR(BASE_DPT_TIME,'yyyy-MM-dd hh24:mi:SS') AS  baseDptTime,
 		RUN_DAYS AS  runDays,
 		TRACK_NBR AS trackNbr ,
 		PLATFORM AS  platform,
@@ -151,8 +147,103 @@
 		STN_TYPE AS  stnType
 		      
       
-      FROM CMDTRAINSTN  WHERE CMD_TRAIN_ID=#{cmdTrainId}
+      FROM CMD_TRAIN_STN  WHERE CMD_TRAIN_ID=#{cmdTrainId}
     
     </select>
+    
+    
+    <insert id="insertCmdTrain" parameterType="org.railway.com.trainplan.entity.CmdTrain">
+     insert into CMD_TRAIN(
+            CMD_TRAIN_ID ,
+			CMD_BUREAU  ,
+			CMD_TYPE ,
+			CMD_TXTMLID ,
+			CMD_TXTMLITEMID  ,
+			CMD_NBR_BUREAU ,
+			CMD_ITEM ,
+			CMD_NBR_SUPERIOR ,
+			TRAIN_NBR ,
+			START_STN ,
+			END_STN ,
+			START_DATE ,
+			END_DATE ,
+			RULE  ,
+			SELECTED_DATE ,
+			PASS_BUREAU ,
+			SELECT_STATE ,
+			CREATE_STATE ,
+			UPDATE_TIME, 
+			CMD_TIME
+		)values(
+		    #{cmdTrainId},
+		    #{cmdBureau},
+		    #{cmdType},
+		    #{cmdTxtMlId},
+		    #{cmdTxtMlItemId},
+		    #{cmdNbrBureau},
+		    #{cmdItem},
+		    #{cmdNbrSuperior},
+		    #{trainNbr},
+		    #{startStn},
+		    #{endStn},
+		    TO_DATE(#{startDate},'yyyy-MM-dd hh24:mi:SS'),
+		    TO_DATE(#{endDate},'yyyy-MM-dd hh24:mi:SS'),
+		    #{rule},
+		    #{selectedDate},
+		    #{passBureau},
+		    #{selectState},
+		    #{createState},
+		    TO_DATE(#{updateTime},'yyyy-MM-dd hh24:mi:SS'),
+		    TO_DATE(#{cmdTime},'yyyy-MM-dd hh24:mi:SS')		    
+		)
+		
+    
+    </insert>
+    
+    
+    <insert id="insertCmdTrainStn" parameterType="org.railway.com.trainplan.entity.CmdTrainStn">
+      insert into CMD_TRAIN_STN (
+            CMD_TRAIN_STN_ID  ,
+			CMD_TRAIN_ID ,
+			STN_SORT ,
+			STN_NAME ,
+			STN_BUREAU  ,
+			ARR_TRAIN_NBR ,
+			DPT_TRAIN_NBR ,
+			ARR_TIME  ,
+			DPT_TIME,
+			BASE_ARR_TIME  ,
+			BASE_DPT_TIME  ,
+			RUN_DAYS,
+			TRACK_NBR  ,
+			PLATFORM ,
+			PSG_FLG,
+			LOCO_FLAG ,
+			TEC_TYPE ,
+			STN_TYPE  
+         )values(
+            #{cmdTrainStnId},
+            #{cmdTrainId},
+            #{stnSort},
+            #{stnName},
+            #{stnBureau},
+            #{arrTrainNbr},
+            #{DPT_TRAIN_NBR},
+            TO_DATE(#{arrTime},'yyyy-MM-dd hh24:mi:SS'),
+            TO_DATE(#{dptTime},'yyyy-MM-dd hh24:mi:SS'),
+            TO_DATE(#{baseArrTime},'yyyy-MM-dd hh24:mi:SS'),
+            TO_DATE(#{baseDptTime},'yyyy-MM-dd hh24:mi:SS'),
+            #{runDays},
+            #{trackNbr},
+            #{platform},
+            #{psgFlg},
+            #{locoFlag},
+            #{tecType},
+            #{stnType}
+	       )
+  
+  </insert>
+  
+  
     
 </mapper>
