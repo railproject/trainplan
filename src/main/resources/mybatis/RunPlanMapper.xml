@@ -639,18 +639,24 @@ FROM
     </update>
 
     <!-- 重复生成开行计划的时候需要的，用来查询前序列车。暂时只用到了GROUP_SERIAL_NBR, TRAIN_SORT, PLAN_TRAIN_ID, END_TIME几个字段，详细看RunPlanService.java中的generateRunPlan -->
-    <select id="findPreRunPlanByPlanCrossId" parameterType="string" resultMap="preRunPlan">
-        SELECT DISTINCT START_TIME, GROUP_SERIAL_NBR, TRAIN_SORT, PLAN_CROSS_ID, PLAN_TRAIN_ID, END_TIME FROM (
-        SELECT MAX(START_TIME) OVER (PARTITION BY PLAN_CROSS_ID, GROUP_SERIAL_NBR, TRAIN_SORT) AS MAX_TIME,
-        GROUP_SERIAL_NBR, TRAIN_SORT, START_TIME, PLAN_CROSS_ID, END_TIME, PLAN_TRAIN_ID
-        FROM PLAN_TRAIN)
-        WHERE PLAN_CROSS_ID = #{planCrossId}
-        AND START_TIME = MAX_TIME
-        ORDER BY PLAN_CROSS_ID, GROUP_SERIAL_NBR, START_TIME
+    <select id="findPreRunPlanByPlanCrossName" parameterType="string" resultMap="preRunPlan">
+        SELECT DISTINCT START_TIME, GROUP_SERIAL_NBR, TRAIN_SORT, PLAN_TRAIN_ID, END_TIME, CROSS_NAME, PLAN_CROSS_ID
+        FROM (
+            SELECT MAX(PT.START_TIME) OVER (PARTITION BY PT.GROUP_SERIAL_NBR) AS MAX_TIME,
+            PT.GROUP_SERIAL_NBR AS GROUP_SERIAL_NBR, PT.TRAIN_SORT AS TRAIN_SORT, PT.START_TIME AS START_TIME,
+            PT.END_TIME AS END_TIME, PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, PC.CROSS_NAME AS CROSS_NAME, PT.PLAN_CROSS_ID AS PLAN_CROSS_ID
+            FROM PLAN_TRAIN PT INNER JOIN PLAN_CROSS PC ON PT.PLAN_CROSS_ID = PC.PLAN_CROSS_ID
+            WHERE CROSS_NAME = #{unitCrossName}
+        )
+        WHERE START_TIME = MAX_TIME
+        ORDER BY GROUP_SERIAL_NBR, START_TIME
     </select>
 
     <delete id="deleteRunPlanByStartTime" parameterType="java.util.Map">
-        DELETE FROM PLAN_TRAIN WHERE START_TIME > #{startTime} AND PLAN_CROSS_ID = #{planCrossId}
+        DELETE FROM PLAN_TRAIN PT WHERE PT.START_TIME > #{startTime} AND EXISTS
+        (
+        SELECT 1 FROM PLAN_CROSS PC WHERE PC.CROSS_NAME = #{unitCrossName} AND PT.PLAN_CROSS_ID = PC.PLAN_CROSS_ID
+        )
     </delete>
 
     <update id="updateNextTrainId" parameterType="org.railway.com.trainplan.entity.RunPlan">
