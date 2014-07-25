@@ -411,6 +411,11 @@ var RunPlanLkCmdPage = function () {
 		 * @param 
 		 */
 		_self.loadTrainInfoFromJbt = function(currentTrain){
+			if(_self.currentCmdTxtMl()==null || _self.currentCmdTxtMl().cmdTxtMlId=="") {
+				showWarningDialog("请选择临客命令记录");
+				return;
+			}
+			
 //			if($('#run_plan_train_times_edit_dialog').is(":hidden")){
 				$("#jbt_traininfo_dialog").find("iframe").attr("src", basePath+"/runPlanLk/jbtTrainInfoPage?tabType=bjdd");
 				$('#jbt_traininfo_dialog').dialog({title: "选择车次", autoOpen: true, modal: false, draggable: true, resizable:true,
