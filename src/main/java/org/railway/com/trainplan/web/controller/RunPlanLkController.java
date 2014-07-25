@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mor.railway.cmd.adapter.model.CmdInfoModel;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +21,7 @@ import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.CmdTrain;
 import org.railway.com.trainplan.entity.CmdTrainStn;
 import org.railway.com.trainplan.entity.RunPlan;
+import org.railway.com.trainplan.entity.TrainTimeInfo;
 import org.railway.com.trainplan.service.RunPlanLkService;
 import org.railway.com.trainplan.service.ShiroRealm;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
@@ -313,6 +315,36 @@ public class RunPlanLkController {
 		}
 		
 	
+		/**
+		 * 保存临客列车运行时刻表
+		 * @param reqMap
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/saveLkTrainTimes", method = RequestMethod.POST)
+		public Result saveLkTrainTimes(@RequestBody String reqStr){
+			Result result = new Result();
+			logger.info("saveLkTrainTimes~~reqStr==" + reqStr);
+			try{
+				JSONObject reqObj = JSONObject.fromObject(reqStr);
+				Map<String,Object> trainMap = (Map<String,Object>)reqObj.get("cmdTrainMap");
+				List<CmdTrainStn>  trainStnList = reqObj.getJSONArray("cmdTrainStnList");
+			    
+			
+				//保存数据
+				//int count = trainTimeService.editPlanLineTrainTimes(list);
+				//logger.info("editPlanLineTrainTimes~~count==" + count);
+				
+			}catch(Exception e){
+				logger.error(e.getMessage(), e);
+				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+			}
+		
+			return result;
+		} 
+		
+		
 		/**
 		 * 组装纵坐标
 		 * @param list

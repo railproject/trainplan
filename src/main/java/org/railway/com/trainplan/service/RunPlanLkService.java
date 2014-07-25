@@ -158,4 +158,21 @@ public class RunPlanLkService {
 			return ConstantUtil.getSelectedDateList(model);
 	  }
 	  
+	  /**
+	   * 保存表cmd_train_stn中数据
+	   * @param cmdTrainStn
+	   * @return
+	   */
+	  public int insertCmdTrainStn(CmdTrainStn cmdTrainStn){
+		  return baseDao.insertBySql(Constants.RUNPLANLKDAO_INSERT_CMD_TRAIN_STN, cmdTrainStn);
+	  }
+	  
+	  /**
+	   * 保存表cmd_train中数据
+	   * @param cmdTrain
+	   * @return
+	   */
+	  public int insertCmdTrain(CmdTrain cmdTrain){
+		  return baseDao.insertBySql(Constants.RUNPLANLKDAO_INSERT_CMD_TRAIN, cmdTrain);
+	  }
 }
