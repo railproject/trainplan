@@ -471,7 +471,7 @@ public class RunPlanService {
             LocalDate start = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.startDate);
 
             try {
-                generateRunPlan(start, this.baseRunPlanList);
+                generateRunPlan(start);
             } catch (WrongDataException e) {
                 logger.error("数据错误：unitCross_id = " + this.unitCross.getPlanCrossId(), e);
             } catch (Exception e) {
@@ -486,18 +486,16 @@ public class RunPlanService {
          * 原则：保证生成的计划是在一个连续的时间区间内。
          * TODO：切换方案重复生成
          * @param startDate 起始日期
-         * @param baseRunPlanList 基本图数据
          * @throws WrongDataException
          * @throws Exception
          */
-        private void generateRunPlan(LocalDate startDate, List<RunPlan> baseRunPlanList) throws WrongDataException, Exception {
+        private void generateRunPlan(LocalDate startDate) throws WrongDataException, Exception {
             //生成plan_cross逻辑
             String planCrossId = this.unitCross.getPlanCrossId();
             boolean isNewPlanCrossInfo = false;
             PlanCrossInfo planCrossInfo;
             // 按组别保存最后一个计划
             Map<Integer, RunPlan> lastRunPlans = Maps.newHashMap();
-            int initTrainSort = 0;
             if(planCrossId == null) { // 之前未生成过开行计划
                 planCrossInfo = new PlanCrossInfo();
                 BeanUtils.copyProperties(planCrossInfo, this.unitCross);
@@ -510,7 +508,7 @@ public class RunPlanService {
                 // 查询planCross对象，生成完开行计划后需要更新crossEndDate
                 planCrossInfo = crossService.getPlanCrossInfoForPlanCrossId(planCrossId);
                 // 查询每组车最新的计划，作为新计划的前序车
-                initTrainSort = this.getLastRunPlans(planCrossId, lastRunPlans);
+                lastRunPlans = this.getLastRunPlans(planCrossId);
             }
             // 用来保存最后一个交路起点
             RunPlan lastStartPoint = null;
@@ -531,7 +529,7 @@ public class RunPlanService {
 
             // 找到最先结束的计划车组，然后继续生成下去
             int firstGroup = getFirstEndedGroup(lastRunPlans);
-            initTrainSort = (firstGroup - 1) * trainCount;
+            int initTrainSort = (firstGroup - 1) * trainCount;
             // 继续生成
             generate: {
                 for(int i = initTrainSort; i < 10000; i ++) {
@@ -540,7 +538,7 @@ public class RunPlanService {
                     LocalDate endDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getEndDate());
                     int interval = Days.daysBetween(runDate, endDate).getDays();
 
-                    for(RunPlan baseRunPlan: baseRunPlanList) {
+                    for(RunPlan baseRunPlan: this.baseRunPlanList) {
                         if (unitCrossTrain.getBaseTrainId().equals(baseRunPlan.getBaseTrainId())) {
                             try {
                                 RunPlan runPlan = (RunPlan) BeanUtils.cloneBean(baseRunPlan);
@@ -663,7 +661,7 @@ public class RunPlanService {
                 LocalDate endDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(unitCrossTrain.getEndDate());
                 int interval = Days.daysBetween(runDate, endDate).getDays();
 
-                for(RunPlan baseRunPlan: baseRunPlanList) {
+                for(RunPlan baseRunPlan: this.baseRunPlanList) {
                     if (unitCrossTrain.getBaseTrainId().equals(baseRunPlan.getBaseTrainId())) {
                         try {
                             runPlan = (RunPlan) BeanUtils.cloneBean(baseRunPlan);
@@ -739,32 +737,21 @@ public class RunPlanService {
          * 1、不管三七二十一，切一刀再说
          * 2、查询每组车的最后一次生成的每个车（可以和unitcrosstrain匹配），通过参数lastRunPlans传出去
          * @param planCrossId 外键plan_cross表id
-         * @param lastRunPlans 每组车的最后一个车
          * @return 按groupserianbr保存最新计划
          */
-        private int getLastRunPlans(String planCrossId, Map<Integer, RunPlan> lastRunPlans) throws ParseException {
+        private Map<Integer, RunPlan> getLastRunPlans(String planCrossId) throws ParseException {
             // 按时间切一刀
             Map<String, Object> params = Maps.newHashMap();
             params.put("planCrossId", planCrossId);
             params.put("startTime", new Timestamp(simpleDateFormat.parse(DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(this.startDate).toString("yyyy-MM-dd") + " 00:00:00").getTime()));
             runPlanDao.deleteRunPlanByStartTime(params);
             // 每组车的最新一组开行计划
+            Map<Integer, RunPlan> lastRunPlans = Maps.newHashMap();
             List<RunPlan> preGroup = runPlanDao.findPreRunPlanByPlanCrossId(planCrossId);
             for(RunPlan runPlan: preGroup) {
                 lastRunPlans.put(runPlan.getGroupSerialNbr(), runPlan);
             }
-            RunPlan preRunPlan = null;
-            List<RunPlan> sortList = Lists.newArrayList();
-            for(RunPlan runPlan: preGroup) {
-                if(preRunPlan != null && preRunPlan.getGroupSerialNbr() == runPlan.getGroupSerialNbr() && preRunPlan.getTrainSort() > runPlan.getTrainSort()) {
-                    sortList.remove(preRunPlan);
-                    preRunPlan = runPlan;
-                } else {
-                    preRunPlan = runPlan;
-                }
-                sortList.add(runPlan);
-            }
-            return sortList.size();
+            return lastRunPlans;
         }
 
         /**
