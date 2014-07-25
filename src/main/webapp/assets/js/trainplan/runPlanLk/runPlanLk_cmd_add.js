@@ -359,7 +359,6 @@ var RunPlanLkCmdPage = function () {
 		 * 查询cmdTrainStn信息
 		 */
 		function loadCmdTrainStnInfo(_cmdTrainId) {
-			alert(_cmdTrainId);
 			if(_cmdTrainId==null || _cmdTrainId=="undefind") {
 				return;
 			}
