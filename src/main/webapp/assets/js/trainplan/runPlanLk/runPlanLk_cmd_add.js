@@ -168,6 +168,7 @@ var RunPlanLkCmdPage = function () {
 		 */
 		_self.cmdTrainStnTimeRow = function(data) {
 			var _self = this;
+			_self.data = data;
 			_self.childIndex = ko.observable(data.childIndex);
 			_self.stnName = ko.observable(data.stnName);
 			_self.arrTrainNbr = ko.observable(data.arrTrainNbr);
@@ -229,6 +230,9 @@ var RunPlanLkCmdPage = function () {
 					trackNbr:"",
 					platform:"",
 			}));
+			_self.runPlanLkCMDRows.remove(function(item) {
+				return true;
+			});
 			_self.runPlanLkCMDTrainStnRows.remove(function(item) {
 				return true;
 			});
@@ -314,14 +318,14 @@ var RunPlanLkCmdPage = function () {
 		 * 命令列表全选复选框change事件
 		 */
 		_self.checkBoxSelectAllChange = function() {
-			console.log("~~~~~~~~ 全选标识  _self.isSelectAll="+_self.isSelectAll());
+//			console.log("~~~~~~~~ 全选标识  _self.isSelectAll="+_self.isSelectAll());
 			if (!_self.isSelectAll()) {//全选     将runPlanLkCMDRows中isSelect属性设置为1
-				console.log("全选");
+//				console.log("全选");
 				$.each(_self.runPlanLkCMDRows(), function(i, row){
 					row.isSelect = 1;
 				});
 			} else {//全不选    将runPlanLkCMDRows中isSelect属性设置为0
-				console.log("全不选");
+//				console.log("全不选");
 				$.each(_self.runPlanLkCMDRows(), function(i, row){
 					row.isSelect = 0;
 				});
@@ -334,8 +338,6 @@ var RunPlanLkCmdPage = function () {
 		 * 命令列表行点击事件
 		 */
 		_self.setCurrentRec = function(row) {
-			console.log("~~~~~~~~~~~~~~~ 命令列表行点击事件  ~~~~~~~~~~~~~~~~~~~");
-			console.dir(row);
 			_self.currentCmdTxtMl(row);//.cmdTxtMlId);
 			
 			//查询cmdTrainStn信息
@@ -347,8 +349,6 @@ var RunPlanLkCmdPage = function () {
 		 * 时刻列表行点击事件
 		 */
 		_self.setCMDTrainStnCurrentRec = function(row) {
-			console.log("~~~~~~~~~~~~~~~ 时刻列表行点击事件  ~~~~~~~~~~~~~~~~~~~");
-			console.dir(row.childIndex());
 			_self.currentCmdTrainStn(row);
 		};
 		
@@ -455,6 +455,14 @@ var RunPlanLkCmdPage = function () {
 			}
 			commonJsScreenLock();
 			
+			var _saveTrainStnArray = [];
+			$.each(_self.runPlanLkCMDTrainStnRows(),function(n, obj){
+				_saveTrainStnArray.push(obj.data);
+			});
+			
+			
+			
+			
 			$.ajax({
 				url : basePath+"/runPlanLk/saveLkTrainTimes",
 				cache : false,
@@ -463,7 +471,7 @@ var RunPlanLkCmdPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					cmdTrainMap : _self.currentCmdTxtMl(),
-					cmdTrainStnList : _self.runPlanLkCMDTrainStnRows()
+					cmdTrainStnList : _saveTrainStnArray
 				}),
 				success : function(result) {
 					
@@ -497,11 +505,6 @@ var RunPlanLkCmdPage = function () {
 				return;
 			}
 			
-//			var _maxLen = _self.runPlanLkCMDTrainStnRows().length -1;
-//			if(_self.currentCmdTrainStn().childIndex() == _maxLen) {
-//				showWarningDialog("当前记录顺序号已经为最大，不能执行下移操作");
-//				return;
-//			}
 			
 			//设置序号
 			var _arrayList = _self.runPlanLkCMDTrainStnRows();
