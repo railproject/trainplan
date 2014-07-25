@@ -98,10 +98,10 @@ public interface RunPlanDao {
 
     /**
      * 根据plancrossid查询已生成的、group_serial_nbr值最大的所有列车的信息，用来继续生成后面的开行计划
-     * @param planCrossId 外键
+     * @param crossName 交路名
      * @return
      */
-    List<RunPlan> findPreRunPlanByPlanCrossId(String planCrossId);
+    List<RunPlan> findPreRunPlanByPlanCrossName(String crossName);
 
     /**
      * 删除某个时间点之后的列车
