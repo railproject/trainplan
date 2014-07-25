@@ -440,6 +440,9 @@
         <if test="crossName != null">
             AND CROSS_NAME = #{crossName}
         </if>
+         <if test="chartId != null">
+            AND BASE_CHART_ID = #{chartId}
+        </if>
     </select>
 
     <select id="getStationListForPlanCrossId" parameterType="map" resultType="map">
@@ -1237,6 +1240,9 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
             <if test="endStn != null">
             	AND source_node_name= #{startStn} AND target_node_name= #{startStn}
             </if>
+        </if> 
+        <if test="chartId != null">
+            AND t.scheme_id=#{chartId}
         </if> 
     </select>
 

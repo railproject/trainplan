@@ -186,15 +186,15 @@
 		    #{trainNbr},
 		    #{startStn},
 		    #{endStn},
-		    TO_DATE(#{startDate},'yyyy-MM-dd hh24:mi:SS'),
-		    TO_DATE(#{endDate},'yyyy-MM-dd hh24:mi:SS'),
+		    TO_DATE(#{startDate},'yyyy-MM-dd'),
+		    TO_DATE(#{endDate},'yyyy-MM-dd'),
 		    #{rule},
 		    #{selectedDate},
 		    #{passBureau},
 		    #{selectState},
 		    #{createState},
-		    TO_DATE(#{updateTime},'yyyy-MM-dd hh24:mi:SS'),
-		    TO_DATE(#{cmdTime},'yyyy-MM-dd hh24:mi:SS')		    
+		    sysdate,
+		    TO_DATE(#{cmdTime},'yyyy-MM-dd')		    
 		)
 		
     
@@ -228,11 +228,11 @@
             #{stnName},
             #{stnBureau},
             #{arrTrainNbr},
-            #{DPT_TRAIN_NBR},
-            TO_DATE(#{arrTime},'yyyy-MM-dd hh24:mi:SS'),
-            TO_DATE(#{dptTime},'yyyy-MM-dd hh24:mi:SS'),
-            TO_DATE(#{baseArrTime},'yyyy-MM-dd hh24:mi:SS'),
-            TO_DATE(#{baseDptTime},'yyyy-MM-dd hh24:mi:SS'),
+            #{dptTrainNbr},
+            TO_DATE(#{arrTime},'hh24:mi:SS'),
+            TO_DATE(#{dptTime},'hh24:mi:SS'),
+            TO_DATE(#{baseArrTime},'hh24:mi:SS'),
+            TO_DATE(#{baseDptTime},'hh24:mi:SS'),
             #{runDays},
             #{trackNbr},
             #{platform},

@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import mor.railway.cmd.adapter.model.CmdInfoModel;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -257,6 +259,7 @@ public class RunPlanLkController {
 					 for(CmdInfoModel infoModel : listModel){
 						 CmdTrain cmdTrainTempl = new CmdTrain();
 						 Integer cmdTxtMlId = infoModel.getCmdTxtMlId();
+						 System.err.println("cmdTxtMlId==" + cmdTxtMlId);
 						 //从本地数据库中查询
 						 CmdTrain cmdTrain = runPlanLkService.getCmdTrainInfoForCmdTxtmlId(String.valueOf(cmdTxtMlId));
 						 if(cmdTrain == null){
@@ -283,7 +286,7 @@ public class RunPlanLkController {
 						 cmdTrainTempl.setSelectedDate(infoModel.getSelectedDate());
 						 cmdTrainTempl.setStartStn(infoModel.getStartStn());
 						 cmdTrainTempl.setTrainNbr(infoModel.getTrainNbr());
-						 
+						 cmdTrainTempl.setCmdTxtMlId(cmdTxtMlId);
 						 //添加到list中
 						 returnList.add(cmdTrainTempl);
 					 }
@@ -339,13 +342,83 @@ public class RunPlanLkController {
 			try{
 				JSONObject reqObj = JSONObject.fromObject(reqStr);
 				Map<String,Object> trainMap = (Map<String,Object>)reqObj.get("cmdTrainMap");
-				List<CmdTrainStn>  trainStnList = reqObj.getJSONArray("cmdTrainStnList");
+				List<JSONObject>  trainStnList = reqObj.getJSONArray("cmdTrainStnList");
+			    CmdTrain train = new CmdTrain();
+			    ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+				 //局简称
+				 String bureuaShortName = user.getBureauShortName();
+				 logger.debug("bureuaShortName=="+bureuaShortName);
+				 //表cmd_train主键
+				String cmdTrainId = UUID.randomUUID().toString();
+				train.setCmdTrainId(cmdTrainId);
+			    train.setCmdBureau(bureuaShortName);
+			    train.setCmdItem((Integer)trainMap.get("cmdItem"));
+			    train.setCmdNbrBureau(StringUtil.objToStr(trainMap.get("cmdNbrBureau")));
+			    train.setCmdNbrSuperior(StringUtil.objToStr(trainMap.get("cmdNbrSuperior")));
+			    train.setCmdTime(StringUtil.objToStr(trainMap.get("cmdTime")));
+			    train.setCmdTxtMlId((Integer)trainMap.get("cmdTxtMlId"));
+			    train.setCmdTxtMlItemId((Integer)trainMap.get("cmdTxtMlItemId"));
+			    train.setCmdType(StringUtil.objToStr(trainMap.get("cmdType")));
+			    train.setCreateState(StringUtil.objToStr(trainMap.get("createState")));
+			    train.setEndDate(StringUtil.objToStr(trainMap.get("endDate")));
+			    train.setEndStn(StringUtil.objToStr(trainMap.get("endStn")));
+			    train.setPassBureau(StringUtil.objToStr(trainMap.get("passBureau")));
+			    train.setRule(StringUtil.objToStr(trainMap.get("rule")));
+			    train.setSelectedDate(StringUtil.objToStr(trainMap.get("selectedDate")));
+			    train.setSelectState(StringUtil.objToStr(trainMap.get("selectState")));
+			    train.setStartDate(StringUtil.objToStr(trainMap.get("startDate")));
+			    train.setStartStn(StringUtil.objToStr(trainMap.get("startStn")));
+			    train.setTrainNbr(StringUtil.objToStr(trainMap.get("trainNbr")));
+			    train.setUpdateTime(StringUtil.objToStr(trainMap.get("updateTime")));
+				//保存数据到表cmd_train中
+			    runPlanLkService.insertCmdTrain(train);
+			    //循环设置子表cmd_train_stn中的数据对象
+			    for(JSONObject trainStn : trainStnList){
+			    	CmdTrainStn stn = new CmdTrainStn();
+			    	
+			    	stn.setCmdTrainId(cmdTrainId);
+			    	stn.setCmdTrainStnId(UUID.randomUUID().toString());
 			    
-			
-				//保存数据
-				//int count = trainTimeService.editPlanLineTrainTimes(list);
-				//logger.info("editPlanLineTrainTimes~~count==" + count);
-				
+			    	stn.setArrTrainNbr(StringUtil.objToStr(trainStn.get("arrTrainNbr")));
+			    	stn.setDptTrainNbr(StringUtil.objToStr(trainStn.get("dptTrainNbr")));
+			    	String arrTime = StringUtil.objToStr(trainStn.get("arrTime"));
+			    	String endTime = StringUtil.objToStr(trainStn.get("dptTime"));
+			    	String baseArrTime = StringUtil.objToStr(trainStn.get("baseArrTime"));
+			    	String baseDptTime = StringUtil.objToStr(trainStn.get("baseDptTime"));
+			    	stn.setArrTime(arrTime);
+			    	stn.setDptTime(endTime);
+			    	if(baseArrTime == null || "".equals(baseArrTime)){
+			    		stn.setBaseArrTime(arrTime);
+			    	}else{
+			    		stn.setBaseArrTime(baseArrTime);
+			    	}
+			    	
+			    	if(baseDptTime == null || "".equals(baseDptTime)){
+			    		stn.setBaseDptTime(endTime);
+			    	}else{
+			    		stn.setBaseDptTime(baseDptTime);
+			    	}
+			    	
+			    	
+			    	stn.setPlatform(StringUtil.objToStr(trainStn.get("platform")));
+			    	stn.setStnBureau(StringUtil.objToStr(trainStn.get("stnBureau")));
+			    	stn.setStnName(StringUtil.objToStr(trainStn.get("stnName")));
+			    	
+			    	stn.setStnType(StringUtil.objToStr(trainStn.get("stnType")));
+			    	stn.setTecType(StringUtil.objToStr(trainStn.get("tecType")));
+			    	stn.setTrackNbr(StringUtil.objToStr(trainStn.get("trackNbr")));
+			    	stn.setStnSort((Integer)trainStn.get("childIndex"));
+			    	
+			    	int psgFlg = trainStn.get("psgFlg")==null ?0:(Integer)trainStn.get("psgFlg");
+			    	int runDays =  trainStn.get("runDays")==null ?0:(Integer)trainStn.get("runDays");
+			    	int locoFlag =  trainStn.get("locoFlag")==null ?0:(Integer)trainStn.get("locoFlag");
+			    			
+			    	stn.setPsgFlg(psgFlg);
+			    	stn.setRunDays(runDays);
+			    	stn.setLocoFlag(locoFlag);
+			    	//保存数据到表cmd_train_stn中
+			    	runPlanLkService.insertCmdTrainStn(stn);
+			    }
 			}catch(Exception e){
 				logger.error(e.getMessage(), e);
 				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());

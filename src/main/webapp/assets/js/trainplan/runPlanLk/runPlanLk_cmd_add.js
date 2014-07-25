@@ -162,12 +162,43 @@ var RunPlanLkCmdPage = function () {
 	 */
 	function PageModel() {
 		var _self = this;
+		/**
+		 * 时刻表列表行对象
+		 * @param data
+		 */
+		_self.cmdTrainStnTimeRow = function(data) {
+			var _self = this;
+			_self.data = data;
+			_self.childIndex = ko.observable(data.childIndex);
+			_self.stnName = ko.observable(data.stnName);
+			_self.arrTrainNbr = ko.observable(data.arrTrainNbr);
+			_self.dptTrainNbr = ko.observable(data.dptTrainNbr);
+			_self.stnBureau = ko.observable(data.stnBureau);
+			_self.arrTime = ko.observable(data.arrTime);
+			_self.dptTime = ko.observable(data.dptTime);
+			_self.trackNbr = ko.observable(data.trackNbr);
+			_self.platform = ko.observable(data.platform);
+			
+		};
+		
+		
 		_self.searchModle = ko.observable(new SearchModle());		//页面查询对象
 		_self.runPlanLkCMDRows = ko.observableArray();		//页面命令列表
 		_self.runPlanLkCMDTrainStnRows = ko.observableArray();		//页面命令stn列表
 
 		_self.isSelectAll = ko.observable(false);	//本局担当命令列表是否全选 	全选标识  默认false
 		_self.currentCmdTxtMl = ko.observable();//命令列表选中行记录
+		_self.currentCmdTrainStn = ko.observable(new _self.cmdTrainStnTimeRow({
+			childIndex:-1,
+			stnName:"",
+			arrTrainNbr:"",
+			dptTrainNbr:"",
+			stnBureau:"",
+			arrTime:"",
+			dptTime:"",
+			trackNbr:"",
+			platform:"",
+		}));//列车时刻表选中行记录  用于上下移动
 		
 		
 		
@@ -186,7 +217,26 @@ var RunPlanLkCmdPage = function () {
 		 * 查询按钮事件
 		 */
 		_self.queryList = function(){
-			_self.currentCmdTxtMl(null);
+			//清除历史值
+			_self.currentCmdTxtMl({"cmdTxtMlId":""});
+			_self.currentCmdTrainStn(new _self.cmdTrainStnTimeRow({
+					childIndex:-1,
+					stnName:"",
+					arrTrainNbr:"",
+					dptTrainNbr:"",
+					stnBureau:"",
+					arrTime:"",
+					dptTime:"",
+					trackNbr:"",
+					platform:"",
+			}));
+			_self.runPlanLkCMDRows.remove(function(item) {
+				return true;
+			});
+			_self.runPlanLkCMDTrainStnRows.remove(function(item) {
+				return true;
+			});
+			
 			commonJsScreenLock();
 
 			//2.查询命令信息
@@ -243,7 +293,7 @@ var RunPlanLkCmdPage = function () {
 								//增加isSelect属性  便于全选复选框事件	默认0=false
 								obj.isSelect = 0;
 								
-								runPlanLkCMDRows.push(obj);
+								_self.runPlanLkCMDRows.push(obj);
 							});
 						}
 						 
@@ -268,14 +318,14 @@ var RunPlanLkCmdPage = function () {
 		 * 命令列表全选复选框change事件
 		 */
 		_self.checkBoxSelectAllChange = function() {
-			console.log("~~~~~~~~ 全选标识  _self.isSelectAll="+_self.isSelectAll());
+//			console.log("~~~~~~~~ 全选标识  _self.isSelectAll="+_self.isSelectAll());
 			if (!_self.isSelectAll()) {//全选     将runPlanLkCMDRows中isSelect属性设置为1
-				console.log("全选");
+//				console.log("全选");
 				$.each(_self.runPlanLkCMDRows(), function(i, row){
 					row.isSelect = 1;
 				});
 			} else {//全不选    将runPlanLkCMDRows中isSelect属性设置为0
-				console.log("全不选");
+//				console.log("全不选");
 				$.each(_self.runPlanLkCMDRows(), function(i, row){
 					row.isSelect = 0;
 				});
@@ -285,23 +335,31 @@ var RunPlanLkCmdPage = function () {
 		
 
 		/**
-		 * 列表行点击事件
+		 * 命令列表行点击事件
 		 */
 		_self.setCurrentRec = function(row) {
-			console.log("~~~~~~~~~~~~~~~ 列表行点击事件  ~~~~~~~~~~~~~~~~~~~");
-			console.dir(row);
 			_self.currentCmdTxtMl(row);//.cmdTxtMlId);
 			
 			//查询cmdTrainStn信息
 			loadCmdTrainStnInfo(row.cmdTrainId);
 		};
 		
+
+		/**
+		 * 时刻列表行点击事件
+		 */
+		_self.setCMDTrainStnCurrentRec = function(row) {
+			_self.currentCmdTrainStn(row);
+		};
+		
+		
+		
 		
 		/**
 		 * 查询cmdTrainStn信息
 		 */
 		function loadCmdTrainStnInfo(_cmdTrainId) {
-			if(cmdTrainId==null || cmdTrainId=="undefind") {
+			if(_cmdTrainId==null || _cmdTrainId=="undefind") {
 				return;
 			}
 			commonJsScreenLock();
@@ -320,7 +378,8 @@ var RunPlanLkCmdPage = function () {
 					if (result != null && typeof result == "object" && result.code == "0") {
 						if(result.data != null){
 							$.each(result.data,function(n, obj){
-								runPlanLkCMDTrainStnRows.push(obj);
+								obj.childIndex = n;	//增加元素在集合中的序号属性，便于调整顺序
+								_self.runPlanLkCMDTrainStnRows.push(new _self.cmdTrainStnTimeRow(obj));
 							});
 						}
 						 
@@ -341,6 +400,9 @@ var RunPlanLkCmdPage = function () {
 		
 		
 		
+		
+		
+		
 		/**
 		 * 选线按钮点击事件	打开基本图查询界面
 		 * 
@@ -348,6 +410,11 @@ var RunPlanLkCmdPage = function () {
 		 * @param 
 		 */
 		_self.loadTrainInfoFromJbt = function(currentTrain){
+			if(_self.currentCmdTxtMl()==null || _self.currentCmdTxtMl().cmdTxtMlId=="") {
+				showWarningDialog("请选择临客命令记录");
+				return;
+			}
+			
 //			if($('#run_plan_train_times_edit_dialog').is(":hidden")){
 				$("#jbt_traininfo_dialog").find("iframe").attr("src", basePath+"/runPlanLk/jbtTrainInfoPage?tabType=bjdd");
 				$('#jbt_traininfo_dialog').dialog({title: "选择车次", autoOpen: true, modal: false, draggable: true, resizable:true,
@@ -377,15 +444,23 @@ var RunPlanLkCmdPage = function () {
 		 * 保存按钮点击事件
 		 */
 		_self.saveCmdTxtMl = function() {
-//			if(_self.currentCmdTxtMl()==null || _self.currentCmdTxtMl()=="undefind") {
-//				showWarningDialog("请选择临客命令记录");
-//				return;
-//			}
+			if(_self.currentCmdTxtMl()==null || _self.currentCmdTxtMl().cmdTxtMlId=="") {
+				showWarningDialog("请选择临客命令记录");
+				return;
+			}
 			if(_self.runPlanLkCMDTrainStnRows().length==0) {
 				showWarningDialog("请补充列车时刻数据");
 				return;
 			}
 			commonJsScreenLock();
+			
+			var _saveTrainStnArray = [];
+			$.each(_self.runPlanLkCMDTrainStnRows(),function(n, obj){
+				_saveTrainStnArray.push(obj.data);
+			});
+			
+			
+			
 			
 			$.ajax({
 				url : basePath+"/runPlanLk/saveLkTrainTimes",
@@ -395,7 +470,7 @@ var RunPlanLkCmdPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					cmdTrainMap : _self.currentCmdTxtMl(),
-					cmdTrainStnList : _self.runPlanLkCMDTrainStnRows()
+					cmdTrainStnList : _saveTrainStnArray
 				}),
 				success : function(result) {
 					
@@ -415,8 +490,63 @@ var RunPlanLkCmdPage = function () {
 		};
 		
 		
+		/**
+		 * 上移
+		 */
+		_self.up = function() {
+			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind") {
+				showWarningDialog("请选择时刻表中需要调整顺序的记录");
+				return;
+			}
+			
+			if(_self.currentCmdTrainStn().childIndex() == 0) {
+				showWarningDialog("当前记录顺序号已经为最小，不能执行上移操作");
+				return;
+			}
+			
+			
+			//设置序号
+			var _arrayList = _self.runPlanLkCMDTrainStnRows();
+			for(var i=0;i<_arrayList.length;i++) {
+				if(i == (_self.currentCmdTrainStn().childIndex())) {
+					
+					_arrayList[i].childIndex(i-1);
+					_arrayList[i-1].childIndex(i);
+					_self.runPlanLkCMDTrainStnRows.splice(i - 1, 2, _arrayList[i], _arrayList[i-1]);
+					break;
+				}
+			}
+		};
 		
 		
+		
+		/**
+		 * 下移
+		 */
+		_self.down = function() {
+			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind") {
+				showWarningDialog("请选择时刻表中需要调整顺序的记录");
+				return;
+			}
+
+			var _maxLen = _self.runPlanLkCMDTrainStnRows().length -1;
+			if(_self.currentCmdTrainStn().childIndex() == _maxLen) {
+				showWarningDialog("当前记录顺序号已经为最大，不能执行下移操作");
+				return;
+			}
+			
+			//设置序号
+			var _arrayList = _self.runPlanLkCMDTrainStnRows();
+			for(var i=0;i<_arrayList.length;i++) {
+				if(i == (_self.currentCmdTrainStn().childIndex())) {
+					
+					_arrayList[i].childIndex(i+1);
+					_arrayList[i+1].childIndex(i);
+					_self.runPlanLkCMDTrainStnRows.splice(i , 2, _arrayList[i+1], _arrayList[i]);
+					break;
+				}
+			}
+		};
 		
 	};
 	

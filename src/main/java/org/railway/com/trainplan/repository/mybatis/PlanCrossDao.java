@@ -2,6 +2,8 @@ package org.railway.com.trainplan.repository.mybatis;
 
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 
+import java.util.List;
+
 /**
  * PlanCross操作类
  * Created by speeder on 2014/8/1.
@@ -30,11 +32,17 @@ public interface PlanCrossDao {
      * 根据unitcrossid查询一条记录，unitcross和plancross是一一对应的
      * @param unitCrossId 外键参数
      */
-    void findByUnitCrossId(String unitCrossId);
+    PlanCrossInfo findByUnitCrossId(String unitCrossId);
+
+    /**
+     * 根据unitcrossid查询一条记录，unitcross和plancross是一一对应的
+     * @param unitCrossName 交路名
+     */
+    List<PlanCrossInfo> findByUnitCrossName(String unitCrossName);
 
     /**
      * 根据主键查询一条记录
      * @param planCrossId 表主键
      */
-    void findById(String planCrossId);
+    PlanCrossInfo findById(String planCrossId);
 }
