@@ -18,7 +18,8 @@
     </resultMap>
 
     <resultMap id="planCrossInfo" type="org.railway.com.trainplan.entity.PlanCrossInfo">
-        <id column="UNIT_CROSS_ID" property="unitCrossId"/>
+        <id column="PLAN_CROSS_ID" property="planCrossId"/>
+        <result column="UNIT_CROSS_ID" property="unitCrossId"/>
         <result column="BASE_CROSS_ID" property="baseCrossId"/>
         <result column="BASE_CHART_ID" property="baseChartId"/>
         <result column="BASE_CHART_NAME" property="baseChartName"/>
@@ -235,7 +236,8 @@
     </select>
 
     <select id="findById" parameterType="string" resultMap="planCrossInfo">
-        SELECT UNIT_CROSS_ID,
+        SELECT PLAN_CROSS_ID,
+        UNIT_CROSS_ID,
         BASE_CROSS_ID,
         BASE_CHART_ID,
         BASE_CHART_NAME,
