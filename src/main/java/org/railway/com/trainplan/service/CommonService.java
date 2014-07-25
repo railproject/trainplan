@@ -18,10 +18,12 @@ import org.railway.com.trainplan.entity.Ljzd;
 import org.railway.com.trainplan.entity.TrainType;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.repository.mybatis.LjzdMybatisDao;
+import org.railway.com.trainplan.service.dto.OptionDto;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
 
 
 
@@ -38,13 +40,74 @@ public class CommonService {
 	private static final Logger logger = Logger.getLogger(CommonService.class);
 	
 	private static Map<String, Ljzd> map = new HashMap<String, Ljzd>(); 
-	private static Map<String, String> jcMap = new HashMap<String, String>();
+	private static Map<String, String> jcMap = new HashMap<String, String>(); 
+	
+	private static List<OptionDto> throughLines = new ArrayList<OptionDto>();
+	private static List<OptionDto> depots = new ArrayList<OptionDto>();
+	private static List<OptionDto> crhTypes = new ArrayList<OptionDto>();
+	private static Map<String, List<OptionDto>> accs = new HashMap<String, List<OptionDto>>(); 
+	
 	
 	@Autowired
 	private LjzdMybatisDao ljzdDao;
 	
 	@Autowired
 	private BaseDao baseDao;
+	
+	
+	public List<OptionDto> getThroughLines(){ 
+		if(throughLines.size() == 0){
+			List<OptionDto> result =  baseDao.selectListBySql(Constants.BASEDAO_GET_THROUGHLINE, null);
+			throughLines.addAll(result);
+		}
+		return throughLines;
+	}
+	
+	public List<OptionDto> getDepots(){ 
+		if(depots.size() == 0){
+			List<OptionDto> result =  baseDao.selectListBySql(Constants.BASEDAO_GET_DEPOT, null);
+			depots.addAll(result);
+		}
+		return depots;
+	} 
+	
+	public List<OptionDto> getCrhTypes(){ 
+		if(crhTypes.size() == 0){
+			List<OptionDto> result =  baseDao.selectListBySql(Constants.BASEDAO_GET_CRHTYPE, null);
+			crhTypes.addAll(result);
+		}
+		return crhTypes;
+	}
+	
+	public List<OptionDto> getAccs(String b){
+		if(b == null){ 
+			List<OptionDto> all = new ArrayList<OptionDto>();
+			if(accs.size() < 18){
+				List<OptionDto> result =  baseDao.selectListBySql(Constants.BASEDAO_GET_ACC, null); 
+				for(OptionDto o : result){
+					System.out.println("--------------acc+++--------------");
+					if(accs.get(o.getBureauCode()) == null){ 
+						List<OptionDto> list = new ArrayList<OptionDto>();
+						accs.put(o.getBureauCode(), list);
+					}
+					accs.get(o.getBureauCode()).add(o);
+				}
+			} 
+			for(List<OptionDto> l: accs.values()){
+				System.out.println("----------------------" + l.size());
+				all.addAll(l);
+			}
+			return all;
+		}else{
+			if(accs.get(b) == null){ 
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("bureauCode", b);
+				List<OptionDto> result =  baseDao.selectListBySql(Constants.BASEDAO_GET_ACC, params);
+				accs.put(b, result);
+			}
+		}
+		return accs.get(b);
+	}
 	/**
 	 * 通过路局全称查询路基基本信息
 	 */

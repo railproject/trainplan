@@ -256,6 +256,7 @@
         (
        HIGHLINE_CROSS_ID,
 		PLAN_CROSS_ID,
+		BASE_CROSS_ID,
 		CROSS_NAME,
 		CROSS_START_DATE,
 		CROSS_END_DATE,
@@ -271,7 +272,9 @@
 		CRH_TYPE, 
 		NOTE,
 		CREAT_PEOPLE, 
-		CREAT_TIME 
+		CREAT_TIME,
+		POST_ID,
+		POST_NAME 
         )
         ( 
         <foreach collection="hList" item="item" index="index"
@@ -280,6 +283,7 @@
 	       SELECT
 	       #{item.highLineCrossId,jdbcType=VARCHAR},
 	       #{item.planCrossId,jdbcType=VARCHAR},
+	       #{item.baseCrossId,jdbcType=VARCHAR},
 	       #{item.crossName,jdbcType=VARCHAR}, 
 	       #{item.crossStartDate,jdbcType=VARCHAR},
 	       #{item.crossEndDate,jdbcType=VARCHAR},
@@ -295,7 +299,9 @@
 	       #{item.crhType,jdbcType=VARCHAR},
 	       #{item.note,jdbcType=VARCHAR}, 
 	       #{item.createPeople,jdbcType=VARCHAR},  
-	        sysdate 
+	        sysdate,
+	        #{item.postId,jdbcType=VARCHAR}, 
+	        #{item.postName,jdbcType=VARCHAR} 
 	       from dual
 	       
         </foreach>

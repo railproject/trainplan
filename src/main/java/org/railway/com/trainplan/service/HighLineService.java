@@ -163,10 +163,9 @@ public class HighLineService{
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<HighlineCrossInfo> getHighlineCrossList(String crossStartDate){
-		Map<String,String> reqMap = new HashMap<String,String>();
-		reqMap.put("crossStartDate",crossStartDate );
-		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_LIST, reqMap);
+	public List<HighlineCrossInfo> getHighlineCrossList(Map<String, Object> reqMap2){
+		 
+		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_LIST, reqMap2);
 	}
 	
 	/**

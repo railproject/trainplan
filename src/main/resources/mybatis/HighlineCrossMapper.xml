@@ -40,32 +40,48 @@
   </select>
    <select id="getHighlineCrossList" parameterType="map" resultType="org.railway.com.trainplan.entity.HighlineCrossInfo">
       SELECT
-        HIGHLINE_CROSS_ID AS highlineCrossId,
-		PLAN_CROSS_ID AS planCrossId,
-		CROSS_START_DATE AS crossStartDate,
-		CROSS_END_DATE AS crossEndDate,
-		CROSS_START_STN AS crossStartStn,
-        CROSS_END_STN AS crossEndStn,
-		CROSS_NAME AS crossName,
-		SPARE_FLAG AS spareFlag,
-		RELEVANT_BUREAU AS relevantBureau,
-		TOKEN_VEH_BUREAU AS tokenVehBureau,
-		TOKEN_VEH_DEPT AS tokenVehDept,
-		TOKEN_VEH_DEPOT AS tokenVehDepot,
-		TOKEN_PSG_BUREAU AS tokenPsgBureau ,
-		TOKEN_PSG_DEPT AS tokenPsgDept,
-		CRH_TYPE AS crhType,
-		VEHICLE1 AS vehicle1,
-		VEHICLE2 AS vehicle2,
-		NOTE AS note,
-		CREAT_PEOPLE AS creatPeople,
-		CREAT_PEOPLE_ORG AS creatPeopleOrg ,
-		CREAT_TIME AS creatTime,
-		CHECK_TYPE AS checkType,
-		CHECK_PEOPLE AS checkPeople,
-		CHECK_PEOPLE_ORG AS checkPeopleOrg,
-		CHECK_TIME AS checkTime
-      FROM HIGHLINE_CROSS WHERE CROSS_START_DATE = #{crossStartDate} ORDER BY CROSS_NAME
+       t.HIGHLINE_CROSS_ID AS highlineCrossId,
+		 t.PLAN_CROSS_ID AS planCrossId,
+		 t.CROSS_START_DATE AS crossStartDate,
+		 t.CROSS_END_DATE AS crossEndDate,
+		 t.CROSS_START_STN AS crossStartStn,
+        t.CROSS_END_STN AS crossEndStn,
+		 t.CROSS_NAME AS crossName,
+		 t.SPARE_FLAG AS spareFlag,
+		 t.RELEVANT_BUREAU AS relevantBureau,
+		 t.TOKEN_VEH_BUREAU AS tokenVehBureau,
+		 t.TOKEN_VEH_DEPT AS tokenVehDept,
+		 t.TOKEN_VEH_DEPOT AS tokenVehDepot,
+		 t.TOKEN_PSG_BUREAU AS tokenPsgBureau ,
+		 t.TOKEN_PSG_DEPT AS tokenPsgDept,
+		 t.CRH_TYPE AS crhType,
+		 t.VEHICLE1 AS vehicle1,
+		 t.VEHICLE2 AS vehicle2,
+		 t.NOTE AS note,
+		 t.CREAT_PEOPLE AS creatPeople,
+		 t.CREAT_PEOPLE_ORG AS creatPeopleOrg ,
+		 t.CREAT_TIME AS creatTime,
+		 t.CHECK_TYPE AS checkType,
+		 t.CHECK_PEOPLE AS checkPeople,
+		 t.CHECK_PEOPLE_ORG AS checkPeopleOrg,
+		 t.CHECK_TIME AS checkTime,
+		 b.THROUGH_LINE AS throughLine,
+		 t.POST_ID AS postId,
+		 t.POST_Name AS postName
+      FROM HIGHLINE_CROSS t, dic_rela_cross_post b WHERE t.base_cross_id=b.base_cross_id and t.CROSS_START_DATE = #{crossStartDate}
+      <if test="tokenVehBureau != null">
+		  and t.TOKEN_VEH_BUREAU=#{tokenVehBureau}
+	  </if>
+	   <if test="trainNbr != null">
+		  and t.CROSS_NAME like '%' || #{trainNbr} || '%'
+	  </if>
+	   <if test="throughLine != null">
+		  and b.THROUGH_LINE=#{throughLine}
+	  </if>
+	   <if test="tokenVehDepot != null">
+		  and t.TOKEN_VEH_DEPOT=#{tokenVehDepot}
+	  </if>
+      ORDER BY t.CROSS_NAME
    </select>
 
    <select id="getHighlineCrossTrainList"  parameterType="map" resultType="org.railway.com.trainplan.entity.HighLineCrossTrainInfo">
@@ -127,4 +143,26 @@
      WHERE HIGHLINE_CROSS_ID IN (${highlineCrossIds})
    
    </update>
+   
+   
+   <select id="getThroughLine" resultType="org.railway.com.trainplan.service.dto.OptionDto">
+        select distinct THROUGH_LINE as name from dic_rela_cross_post
+    </select>
+    
+    <select id="getCrhType" resultType="org.railway.com.trainplan.service.dto.OptionDto">
+       select distinct CRH_TYPE as name from dic_crh_group
+    </select>
+    
+    <select id="getDepot" resultType="org.railway.com.trainplan.service.dto.OptionDto">
+        select DEPOT_ID as code, depot_name as name from dic_crh_depot order by depot_id
+    </select>
+     <select id="getAcc" parameterType="map" resultType="org.railway.com.trainplan.service.dto.OptionDto">
+	    select t3.ljpym as bureauCode, t2.acc_id as code,T2.ACC_NAME as name from tds1adm.ACCOUNT t2,tds1adm.department t3 where t2.acc_id in (select t1.acc_id from tds1adm.ACC_ROL_RELA t1 where t1.rol_id in (select t.rol_id from tds1adm.ROLE t where t.rol_name like '局动车调度'))
+		and t2.fenlei01 = t3.dep_id 
+		<if test="bureauCode != null">
+		  and t3.ljpym=#{bureauCode}
+		</if>
+		
+		order by  t2.acc_id
+	 </select>
 </mapper>
