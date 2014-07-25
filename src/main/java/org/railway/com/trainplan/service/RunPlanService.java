@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -412,7 +413,7 @@ public class RunPlanService {
         List<String> unitCrossIdList = Lists.newArrayList();
         try{
             for(UnitCross unitCross: unitCrossList) {
-                executorService.execute(new RunPlanGenerator(unitCross, runPlanDao, unitCrossDao, baseTrainDao, startDate, runPlanStnDao, days - 1, msgService, msgReceiveUrl));
+                executorService.execute(new RunPlanGenerator(unitCross, startDate, days - 1, msgReceiveUrl));
                 unitCrossIdList.add(unitCross.getUnitCrossId());
             }
         } finally {
@@ -426,38 +427,19 @@ public class RunPlanService {
         // 传入参数
         private UnitCross unitCross;
 
-        // 保存客运计划用
-        private RunPlanDao runPlanDao;
-
-        private RunPlanStnDao runPlanStnDao;
-
-        // 查询基本图数据用
-        private BaseTrainDao baseTrainDao;
-
         private String startDate;
 
         private int days;
 
-        private SendMsgService msgService;
-
         private String msgReceiveUrl;
-
-        private UnitCrossDao unitCrossDao;
 
         private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        RunPlanGenerator(UnitCross unitCross, RunPlanDao runPlanDao, UnitCrossDao unitCrossDao,
-                         BaseTrainDao baseTrainDao, String startDate,
-                         RunPlanStnDao runPlanStnDao, int days, SendMsgService msgService, String msgReceiveUrl) {
+        RunPlanGenerator(UnitCross unitCross, String startDate, int days, String msgReceiveUrl) {
 
             this.unitCross = unitCross;
-            this.runPlanDao = runPlanDao;
-            this.unitCrossDao = unitCrossDao;
-            this.baseTrainDao = baseTrainDao;
-            this.runPlanStnDao = runPlanStnDao;
             this.startDate = startDate;
             this.days = days;
-            this.msgService = msgService;
             this.msgReceiveUrl = msgReceiveUrl;
         }
 
@@ -468,19 +450,26 @@ public class RunPlanService {
             logger.debug("thread start:" + LocalTime.now().toString("hh:mm:ss"));
             try {
                 // 查询同名交路，用来补全时间空挡，只查询生成过计划的交路
-                List<UnitCross> unitCrossList = this.unitCrossDao.findUnitCrossByName(this.unitCross.getCrossName());
+                List<PlanCrossInfo> planCrossInfoList = planCrossDao.findByUnitCrossName(this.unitCross.getCrossName());
                 // 按启用时间排序
-                Collections.sort(unitCrossList, new Comparator<UnitCross>() {
+                Collections.sort(planCrossInfoList, new Comparator<PlanCrossInfo>() {
                     @Override
-                    public int compare(UnitCross o1, UnitCross o2) {
-                        LocalDate date1 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o1.getAlternateDate());
-                        LocalDate date2 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o2.getAlternateDate());
-                        return date1.compareTo(date2);
+                    public int compare(PlanCrossInfo o1, PlanCrossInfo o2) {
+                        LocalDate date1 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o1.getCrossEndDate());
+                        LocalDate date2 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o2.getCrossEndDate());
+                        if(date1.compareTo(date2) != 0) {
+                            return date1.compareTo(date2);
+                        } else {
+                            date1 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o1.getCrossStartDate());
+                            date2 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o2.getCrossStartDate());
+                            return date1.compareTo(date2);
+                        }
                     }
                 });
-                // 用最近启用的交路数据来补
-                if(unitCrossList.size() > 1) {
-                    UnitCross unitCross = unitCrossList.get(unitCrossList.size() - 1);
+                // 已存在的最新的交路不是当前要生成计划的交路，则先补齐已存在交路
+                if(planCrossInfoList.size() > 0 && !planCrossInfoList.get(planCrossInfoList.size() - 1).getUnitCrossId().equals(this.unitCross.getPlanCrossId())) {
+                    PlanCrossInfo planCrossInfo = planCrossInfoList.get(planCrossInfoList.size() - 1);
+                    UnitCross unitCross = unitCrossDao.findById(planCrossInfo.getUnitCrossId());
                     generateRunPlan(this.startDate, 0, unitCross);
                 }
                 // 生成这次请求的计划
@@ -784,6 +773,20 @@ public class RunPlanService {
             for(RunPlan runPlan: preGroup) {
                 lastRunPlans.put(runPlan.getGroupSerialNbr(), runPlan);
             }
+            Collections.sort(preGroup, new Comparator<RunPlan>() {
+                @Override
+                public int compare(RunPlan o1, RunPlan o2) {
+                    LocalDate t1 = LocalDate.fromDateFields(new Date(o1.getEndDateTime().getTime()));
+                    LocalDate t2 = LocalDate.fromDateFields(new Date(o2.getEndDateTime().getTime()));
+                    return t1.compareTo(t2);
+                }
+            });
+            if(preGroup.size() > 0) {
+                RunPlan runPlan = preGroup.get(preGroup.size() - 1);
+                PlanCrossInfo planCrossInfo = planCrossDao.findById(runPlan.getPlanCrossId());
+                planCrossInfo.setCrossEndDate(LocalDate.fromDateFields(new Date(runPlan.getEndDateTime().getTime())).toString("yyyyMMdd"));
+                planCrossDao.update(planCrossInfo);
+            }
             return lastRunPlans;
         }
 
@@ -834,7 +837,7 @@ public class RunPlanService {
             ObjectMapper jsonUtil = new ObjectMapper();
 
             try {
-                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
+                msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("发送消息失败", e);
@@ -852,12 +855,8 @@ public class RunPlanService {
 
             try {
  
-                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanStatus");
-            } catch (JsonProcessingException e) {
- 
-                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
+                msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanStatus");
             } catch (Exception e) {
- 
                 e.printStackTrace();
                 logger.error("发送消息失败", e);
             }
