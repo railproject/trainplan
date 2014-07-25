@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -468,19 +469,26 @@ public class RunPlanService {
             logger.debug("thread start:" + LocalTime.now().toString("hh:mm:ss"));
             try {
                 // 查询同名交路，用来补全时间空挡，只查询生成过计划的交路
-                List<UnitCross> unitCrossList = this.unitCrossDao.findUnitCrossByName(this.unitCross.getCrossName());
+                List<PlanCrossInfo> planCrossInfoList = planCrossDao.findByUnitCrossName(this.unitCross.getCrossName());
                 // 按启用时间排序
-                Collections.sort(unitCrossList, new Comparator<UnitCross>() {
+                Collections.sort(planCrossInfoList, new Comparator<PlanCrossInfo>() {
                     @Override
-                    public int compare(UnitCross o1, UnitCross o2) {
-                        LocalDate date1 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o1.getAlternateDate());
-                        LocalDate date2 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o2.getAlternateDate());
-                        return date1.compareTo(date2);
+                    public int compare(PlanCrossInfo o1, PlanCrossInfo o2) {
+                        LocalDate date1 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o1.getCrossEndDate());
+                        LocalDate date2 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o2.getCrossEndDate());
+                        if(date1.compareTo(date2) != 0) {
+                            return date1.compareTo(date2);
+                        } else {
+                            date1 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o1.getCrossStartDate());
+                            date2 = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(o2.getCrossStartDate());
+                            return date1.compareTo(date2);
+                        }
                     }
                 });
-                // 用最近启用的交路数据来补
-                if(unitCrossList.size() > 1) {
-                    UnitCross unitCross = unitCrossList.get(unitCrossList.size() - 1);
+                // 已存在的最新的交路不是当前要生成计划的交路，则先补齐已存在交路
+                if(planCrossInfoList.size() > 0 && !planCrossInfoList.get(planCrossInfoList.size() - 1).getUnitCrossId().equals(this.unitCross.getPlanCrossId())) {
+                    PlanCrossInfo planCrossInfo = planCrossInfoList.get(planCrossInfoList.size() - 1);
+                    UnitCross unitCross = this.unitCrossDao.findById(planCrossInfo.getUnitCrossId());
                     generateRunPlan(this.startDate, 0, unitCross);
                 }
                 // 生成这次请求的计划
@@ -783,6 +791,20 @@ public class RunPlanService {
             List<RunPlan> preGroup = runPlanDao.findPreRunPlanByPlanCrossName(unitCross.getCrossName());
             for(RunPlan runPlan: preGroup) {
                 lastRunPlans.put(runPlan.getGroupSerialNbr(), runPlan);
+            }
+            Collections.sort(preGroup, new Comparator<RunPlan>() {
+                @Override
+                public int compare(RunPlan o1, RunPlan o2) {
+                    LocalDate t1 = LocalDate.fromDateFields(new Date(o1.getEndDateTime().getTime()));
+                    LocalDate t2 = LocalDate.fromDateFields(new Date(o2.getEndDateTime().getTime()));
+                    return t1.compareTo(t2);
+                }
+            });
+            if(preGroup.size() > 0) {
+                RunPlan runPlan = preGroup.get(preGroup.size() - 1);
+                PlanCrossInfo planCrossInfo = planCrossDao.findById(runPlan.getPlanCrossId());
+                planCrossInfo.setCrossEndDate(LocalDate.fromDateFields(new Date(runPlan.getEndDateTime().getTime())).toString("yyyyMMdd"));
+                planCrossDao.update(planCrossInfo);
             }
             return lastRunPlans;
         }
