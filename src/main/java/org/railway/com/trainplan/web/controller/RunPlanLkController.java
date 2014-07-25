@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import mor.railway.cmd.adapter.model.CmdInfoModel;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -257,6 +259,7 @@ public class RunPlanLkController {
 					 for(CmdInfoModel infoModel : listModel){
 						 CmdTrain cmdTrainTempl = new CmdTrain();
 						 Integer cmdTxtMlId = infoModel.getCmdTxtMlId();
+						 System.err.println("cmdTxtMlId==" + cmdTxtMlId);
 						 //从本地数据库中查询
 						 CmdTrain cmdTrain = runPlanLkService.getCmdTrainInfoForCmdTxtmlId(String.valueOf(cmdTxtMlId));
 						 if(cmdTrain == null){
@@ -283,7 +286,7 @@ public class RunPlanLkController {
 						 cmdTrainTempl.setSelectedDate(infoModel.getSelectedDate());
 						 cmdTrainTempl.setStartStn(infoModel.getStartStn());
 						 cmdTrainTempl.setTrainNbr(infoModel.getTrainNbr());
-						 
+						 cmdTrainTempl.setCmdTxtMlId(cmdTxtMlId);
 						 //添加到list中
 						 returnList.add(cmdTrainTempl);
 					 }
@@ -340,12 +343,43 @@ public class RunPlanLkController {
 				JSONObject reqObj = JSONObject.fromObject(reqStr);
 				Map<String,Object> trainMap = (Map<String,Object>)reqObj.get("cmdTrainMap");
 				List<CmdTrainStn>  trainStnList = reqObj.getJSONArray("cmdTrainStnList");
-			    
-			
-				//保存数据
-				//int count = trainTimeService.editPlanLineTrainTimes(list);
-				//logger.info("editPlanLineTrainTimes~~count==" + count);
-				
+			    CmdTrain train = new CmdTrain();
+			    ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+				 //局简称
+				 String bureuaShortName = user.getBureauShortName();
+				 logger.debug("bureuaShortName=="+bureuaShortName);
+				 //表cmd_train主键
+				String cmdTrainId = UUID.randomUUID().toString();
+				train.setCmdTrainId(cmdTrainId);
+			    train.setCmdBureau(bureuaShortName);
+			    train.setCmdItem((Integer)trainMap.get("cmdItem"));
+			    train.setCmdNbrBureau(StringUtil.objToStr(trainMap.get("cmdNbrBureau")));
+			    train.setCmdNbrSuperior(StringUtil.objToStr(trainMap.get("cmdNbrSuperior")));
+			    train.setCmdTime(StringUtil.objToStr(trainMap.get("cmdTime")));
+			    train.setCmdTxtMlId((Integer)trainMap.get("cmdTxtMlId"));
+			    train.setCmdTxtMlItemId((Integer)trainMap.get("cmdTxtMlItemId"));
+			    train.setCmdType(StringUtil.objToStr(trainMap.get("cmdType")));
+			    train.setCreateState(StringUtil.objToStr(trainMap.get("createState")));
+			    train.setEndDate(StringUtil.objToStr(trainMap.get("endDate")));
+			    train.setEndStn(StringUtil.objToStr(trainMap.get("endStn")));
+			    train.setPassBureau(StringUtil.objToStr(trainMap.get("passBureau")));
+			    train.setRule(StringUtil.objToStr(trainMap.get("rule")));
+			    train.setSelectedDate(StringUtil.objToStr(trainMap.get("selectedDate")));
+			    train.setSelectState(StringUtil.objToStr(trainMap.get("selectState")));
+			    train.setStartDate(StringUtil.objToStr(trainMap.get("startDate")));
+			    train.setStartStn(StringUtil.objToStr(trainMap.get("startStn")));
+			    train.setTrainNbr(StringUtil.objToStr(trainMap.get("trainNbr")));
+			    train.setUpdateTime(StringUtil.objToStr(trainMap.get("updateTime")));
+				//保存数据到表cmd_train中
+			    runPlanLkService.insertCmdTrain(train);
+			    //循环设置子表cmd_train_stn中的数据对象
+			    for(CmdTrainStn trainStn : trainStnList){
+			    	
+			    	trainStn.setCmdTrainId(cmdTrainId);
+			    	trainStn.setCmdTrainStnId(UUID.randomUUID().toString());
+			    	//保存数据到表cmd_train_stn中
+			    	runPlanLkService.insertCmdTrainStn(trainStn);
+			    }
 			}catch(Exception e){
 				logger.error(e.getMessage(), e);
 				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());

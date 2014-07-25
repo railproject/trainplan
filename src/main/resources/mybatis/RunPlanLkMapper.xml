@@ -186,15 +186,15 @@
 		    #{trainNbr},
 		    #{startStn},
 		    #{endStn},
-		    TO_DATE(#{startDate},'yyyy-MM-dd hh24:mi:SS'),
-		    TO_DATE(#{endDate},'yyyy-MM-dd hh24:mi:SS'),
+		    TO_DATE(#{startDate},'yyyy-MM-dd'),
+		    TO_DATE(#{endDate},'yyyy-MM-dd'),
 		    #{rule},
 		    #{selectedDate},
 		    #{passBureau},
 		    #{selectState},
 		    #{createState},
-		    TO_DATE(#{updateTime},'yyyy-MM-dd hh24:mi:SS'),
-		    TO_DATE(#{cmdTime},'yyyy-MM-dd hh24:mi:SS')		    
+		    sysdate,
+		    TO_DATE(#{cmdTime},'yyyy-MM-dd')		    
 		)
 		
     
