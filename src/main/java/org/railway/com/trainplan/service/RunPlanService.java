@@ -413,7 +413,7 @@ public class RunPlanService {
         List<String> unitCrossIdList = Lists.newArrayList();
         try{
             for(UnitCross unitCross: unitCrossList) {
-                executorService.execute(new RunPlanGenerator(unitCross, runPlanDao, unitCrossDao, baseTrainDao, startDate, runPlanStnDao, days - 1, msgService, msgReceiveUrl));
+                executorService.execute(new RunPlanGenerator(unitCross, startDate, days - 1, msgReceiveUrl));
                 unitCrossIdList.add(unitCross.getUnitCrossId());
             }
         } finally {
@@ -427,38 +427,19 @@ public class RunPlanService {
         // 传入参数
         private UnitCross unitCross;
 
-        // 保存客运计划用
-        private RunPlanDao runPlanDao;
-
-        private RunPlanStnDao runPlanStnDao;
-
-        // 查询基本图数据用
-        private BaseTrainDao baseTrainDao;
-
         private String startDate;
 
         private int days;
 
-        private SendMsgService msgService;
-
         private String msgReceiveUrl;
-
-        private UnitCrossDao unitCrossDao;
 
         private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        RunPlanGenerator(UnitCross unitCross, RunPlanDao runPlanDao, UnitCrossDao unitCrossDao,
-                         BaseTrainDao baseTrainDao, String startDate,
-                         RunPlanStnDao runPlanStnDao, int days, SendMsgService msgService, String msgReceiveUrl) {
+        RunPlanGenerator(UnitCross unitCross, String startDate, int days, String msgReceiveUrl) {
 
             this.unitCross = unitCross;
-            this.runPlanDao = runPlanDao;
-            this.unitCrossDao = unitCrossDao;
-            this.baseTrainDao = baseTrainDao;
-            this.runPlanStnDao = runPlanStnDao;
             this.startDate = startDate;
             this.days = days;
-            this.msgService = msgService;
             this.msgReceiveUrl = msgReceiveUrl;
         }
 
@@ -488,7 +469,7 @@ public class RunPlanService {
                 // 已存在的最新的交路不是当前要生成计划的交路，则先补齐已存在交路
                 if(planCrossInfoList.size() > 0 && !planCrossInfoList.get(planCrossInfoList.size() - 1).getUnitCrossId().equals(this.unitCross.getPlanCrossId())) {
                     PlanCrossInfo planCrossInfo = planCrossInfoList.get(planCrossInfoList.size() - 1);
-                    UnitCross unitCross = this.unitCrossDao.findById(planCrossInfo.getUnitCrossId());
+                    UnitCross unitCross = unitCrossDao.findById(planCrossInfo.getUnitCrossId());
                     generateRunPlan(this.startDate, 0, unitCross);
                 }
                 // 生成这次请求的计划
@@ -856,7 +837,7 @@ public class RunPlanService {
             ObjectMapper jsonUtil = new ObjectMapper();
 
             try {
-                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
+                msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("发送消息失败", e);
@@ -874,12 +855,8 @@ public class RunPlanService {
 
             try {
  
-                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanStatus");
-            } catch (JsonProcessingException e) {
- 
-                this.msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanDayFlag");
+                msgService.sendMessage(jsonUtil.writeValueAsString(msg), this.msgReceiveUrl, "updateTrainRunPlanStatus");
             } catch (Exception e) {
- 
                 e.printStackTrace();
                 logger.error("发送消息失败", e);
             }
