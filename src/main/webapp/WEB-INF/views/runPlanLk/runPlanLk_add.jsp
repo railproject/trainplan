@@ -140,7 +140,7 @@ String basePath = request.getContextPath();
 					              </tr>
 					            </thead>
 					            <tbody data-bind="foreach: runPlanLkCMDRows">
-					              <tr data-bind="style:{color: $parent.currentCmdTxtMlId() == cmdTxtMlId ? 'blue':''}">
+					              <tr data-bind="style:{color: $parent.currentCmdTxtMl().id == cmdTxtMlId ? 'blue':''}">
 					              	<td><input name="cmd_list_checkbox" type="checkbox" data-bind="value : cmdTrainId"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: cmdType, attr:{title: cmdType}"></td>
@@ -190,7 +190,7 @@ String basePath = request.getContextPath();
 								        <textarea id="runPlanLk_cmd_input_tjj" class="example" style="width:340px;height:23px" rows="1"></textarea>
 									</div>
 									<div class="pull-left" style="margin-left:345px;">
-								        <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="" data-target="#saveHightLineCrewModal"><i class="fa fa-floppy-o"></i> 保存</button>
+								        <button type="button" class="btn btn-success btn-xs" data-bind="click: saveCmdTxtMl"><i class="fa fa-floppy-o"></i> 保存</button>
 					          		</div>
 						  		</div>
 						  	</div>
@@ -198,26 +198,28 @@ String basePath = request.getContextPath();
 					          <table id="runPlanLkCMD_trainStn_table" border="0" class="table table-bordered table-striped table-hover">
 					            <thead>
 					              <tr>
-					                <th style="width:40px;">序号</th>
+					                <th style="width:30px;">序号</th>
 					                <th style="width:200px">站名</th>
-					                <th style="width:70px">路局</th>
-					                <th style="width:200px">到达时间</th>
-					                <th style="width:200px">出发时间</th>
-					                <th style="width:80px">股道</th>  
-					                <th style="width:80px">站台</th>  
+					                <th style="width:80px">到达车次</th>
+					                <th style="width:80px">出发车次</th>
+					                <th style="width:40px">路局</th>
+					                <th style="width:80px">到达时间</th>
+					                <th style="width:80px">出发时间</th>
+					                <th style="width:120px">股道</th>  
+					                <th style="width:120px">站台</th>  
 					              </tr>
 					            </thead>
 								<tbody data-bind="foreach: runPlanLkCMDTrainStnRows">
 								  <tr>
-					                <td style="width:40px;" data-bind=" text: ($index() + 1)"></td>
-					                <td style="width:120px;" data-bind=" text: stnName, attr:{title: stnName}"></td>
-					                <td style="width:80px;" data-bind=" text: arrTrainNbr, attr:{title: arrTrainNbr}"></td>
-					                <td style="width:80px;" data-bind=" text: dptTrainNbr, attr:{title: dptTrainNbr}"></td>
-					                <td style="width:40px;" data-bind=" text: stnBureau"></td>
-					                <td style="width:80px;" data-bind=" text: arrTime, attr:{title: arrTime}"></td>
-					                <td style="width:80px;" data-bind=" text: dptTime, attr:{title: dptTime}"></td>
-					                <td style="width:120px;" data-bind=" text: trackNbr, attr:{title: trackNbr}"></td>
-					                <td style="width:120px;" data-bind=" text: platform, attr:{title: platform}"></td>
+					                <td data-bind=" text: ($index() + 1)"></td>
+					                <td data-bind=" text: stnName, attr:{title: stnName}"></td>
+					                <td data-bind=" text: arrTrainNbr, attr:{title: arrTrainNbr}"></td>
+					                <td data-bind=" text: dptTrainNbr, attr:{title: dptTrainNbr}"></td>
+					                <td data-bind=" text: stnBureau"></td>
+					                <td data-bind=" text: arrTime, attr:{title: arrTime}"></td>
+					                <td data-bind=" text: dptTime, attr:{title: dptTime}"></td>
+					                <td data-bind=" text: trackNbr, attr:{title: trackNbr}"></td>
+					                <td data-bind=" text: platform, attr:{title: platform}"></td>
 					              </tr>
 					            </tbody> 
 					          </table>
