@@ -483,7 +483,7 @@ var currentUserBureau = "";
 										动车台:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().accs, value: searchModle().acc, optionsText: 'name', optionsCaption: ''">
+								class="form-control" data-bind="options:searchModle().accs, value: searchModle().acc, optionsText: 'name', optionsValue:'code', optionsCaption: ''">
 							</select>
 						</div>   
 				 </div> 
@@ -492,7 +492,7 @@ var currentUserBureau = "";
 										动车所:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().tokenVehDepots, value: searchModle().tokenVehDepot, optionsText: 'name', optionsValue: 'name', optionsCaption: ''">
+								class="form-control" data-bind="options:searchModle().tokenVehDepots, value: searchModle().tokenVehDepot, optionsText: 'name', optionsValue: 'code', optionsCaption: ''">
 							</select>
 						</div>   
 				 </div>
@@ -501,7 +501,7 @@ var currentUserBureau = "";
 										铁路线:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().throughLines, value: searchModle().throughLine, optionsText: 'name', optionsCaption: ''">
+								class="form-control" data-bind="options:searchModle().throughLines, value: searchModle().throughLine, optionsText: 'name',optionsValue:'code', optionsCaption: ''">
 							</select>
 						</div>   
 				 </div>
@@ -510,14 +510,14 @@ var currentUserBureau = "";
 										客运担当局:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width: 60px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().tokenPsgBureaus, value: searchModle().tokenPsgBureau, optionsText: 'shortName', optionsCaption: ''">
+								class="form-control" data-bind="options:searchModle().tokenPsgBureaus, value: searchModle().tokenPsgBureau, optionsText: 'shortName',optionsValue:'code', optionsCaption: ''">
 							</select>
 						</div> 
 						<label for="exampleInputEmail3" style="margin-left:20px" class="control-label pull-left">
 										 动车组车型:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width: 100px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().crhTypes, value: searchModle().crhType, optionsText: 'name', optionsCaption: ''">
+								class="form-control" data-bind="options:searchModle().crhTypes, value: searchModle().crhType, optionsText: 'name',optionsValue:'code', optionsCaption: ''">
 							</select>
 						</div>   
 				 </div>  
@@ -532,7 +532,7 @@ var currentUserBureau = "";
 				 <div class="row" style="margin: 10px 0 5px 0;margin-left:20px">
 					<label for="exampleInputEmail2" class="control-label pull-left">来源:&nbsp;</label>
 			        <div class="pull-left">
-			           <input class="form-control"  style="width:283px;" placeholder="" data-bind="value: searchModle().note">
+			           <input class="form-control"  style="width:283px;" placeholder="" data-bind="value: searchModle().createReason">
 			        </div> 
 			   </div> 
 			   <div  class="row" style="width: 100%; margin-top: 10px;" align="center">

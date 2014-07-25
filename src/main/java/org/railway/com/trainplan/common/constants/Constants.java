@@ -280,5 +280,6 @@ public class Constants {
     public static final String RUNPLANLKDAO_INSERT_CMD_TRAIN_STN = "runPlanLkDao.insertCmdTrainStn";
     //保存表cmd_train的数据
     public static final String RUNPLANLKDAO_INSERT_CMD_TRAIN = "runPlanLkDao.insertCmdTrain";
+	public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID = "highlineCrossDao.updateHighLineCrossId";
 
 }

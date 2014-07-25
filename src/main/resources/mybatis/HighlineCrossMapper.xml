@@ -9,6 +9,7 @@
   <resultMap id="trainSubInfo" type="org.railway.com.trainplan.entity.HighlineTrainRunLine">
 	        <id column="planTrainId" property="planTrainId"/>
 	        <result column="trainNbr" property="trainNbr"/>
+	         <result column="highLineTrainId" property="highLineTrainId"/> 
             <collection property="highlineTrainTimeList" resultMap="trainSubInfoTime"/>
     </resultMap>
  
@@ -22,7 +23,8 @@
   
   <select id="getHighlineTrainTimeForHighlineCrossId"  parameterType="map" resultMap="trainSubInfo">
   SELECT
-		B.PLAN_TRAIN_ID AS planTrainId,
+		B.PLAN_TRAIN_ID AS planTrainId, 
+		B.HIGHLINE_TRAIN_ID AS highLineTrainId,
 		C.TRAIN_NBR AS trainNbr,
 		C.PASS_BUREAU AS passBureau,
 		D.PLAN_TRAIN_STN_ID AS planTrainStnId,
@@ -67,8 +69,9 @@
 		 t.CHECK_TIME AS checkTime,
 		 b.THROUGH_LINE AS throughLine,
 		 t.POST_ID AS postId,
-		 t.POST_Name AS postName
-      FROM HIGHLINE_CROSS t, dic_rela_cross_post b WHERE t.base_cross_id=b.base_cross_id and t.CROSS_START_DATE = #{crossStartDate}
+		 t.POST_Name AS postName,
+		 t.CREAT_REASON AS createReason
+      FROM HIGHLINE_CROSS t LEFT JOIN dic_rela_cross_post b ON  t.base_cross_id=b.base_cross_id WHERE t.CROSS_START_DATE = #{crossStartDate}
       <if test="tokenVehBureau != null">
 		  and t.TOKEN_VEH_BUREAU=#{tokenVehBureau}
 	  </if>
@@ -132,6 +135,11 @@
     WHERE HIGHLINE_CROSS_ID = #{highlineCrossId}
   </update>
    
+   <update id="updateHighLineCrossId" parameterType="map" >
+   UPDATE HIGHLINE_CROSS_TRAIN 
+     SET HIGHLINE_CROSS_ID=#{highLineCrossId} 
+     WHERE HIGHLINE_TRAIN_ID=#{highLineTrainId} 
+   </update>
    <update id="updateHiglineCheckInfo" parameterType="map" >
    UPDATE HIGHLINE_CROSS 
      SET

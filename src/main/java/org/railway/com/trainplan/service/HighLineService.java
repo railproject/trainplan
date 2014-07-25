@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.entity.BaseTrainInfo;
@@ -75,7 +76,7 @@ public class HighLineService{
 
 	@SuppressWarnings("unchecked")
 	public List<HighlineCrossInfo>  createHighLineCross(String startDate){
-		
+		ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 		Map<String, Object> pMap = new HashMap<String, Object>();
 		pMap.put("startDate", startDate);
 		List<PlanCrossInfo> planCrosses = this.baseDao.selectListBySql(Constants.GET_PLANCROSSINFO_BY_STARTDATE, pMap);
@@ -86,6 +87,9 @@ public class HighLineService{
 			tMap.put("startDate", startDate);  
 			for(PlanCrossInfo pc : planCrosses){ 
 				HighlineCrossInfo highlineCrossInfo = new HighlineCrossInfo(); 
+				highlineCrossInfo.setCreatPeople(user.getUsername());
+				highlineCrossInfo.setCrossBureau(user.getBureau());
+				highlineCrossInfo.setCreatPeopleOrg(user.getDeptName());
 				highlineCrossInfo.setHighLineCrossId(UUID.randomUUID().toString());
 				try {
 					BeanUtils.copyProperties(highlineCrossInfo, pc);  
@@ -255,6 +259,15 @@ public class HighLineService{
 		reqMap.put("checkPeopleOrg",checkPeopleOrg );
 		reqMap.put("highlineCrossIds",highlineCrossIds);
 		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_UPDATE_HIGHLINE_CHECKINFO, reqMap);
+	}
+
+	public void updateHighLineTrain(String highLineTrainId, String highLineCrossId) {
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("highLineTrainId", highLineTrainId );
+		reqMap.put("highLineCrossId", highLineCrossId); 
+	 
+		baseDao.updateBySql(Constants.HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID, reqMap);
+	
 	}
 	
 }
