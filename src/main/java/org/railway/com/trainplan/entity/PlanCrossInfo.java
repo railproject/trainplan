@@ -45,12 +45,40 @@ public class PlanCrossInfo {
     private int dejCollect;
     private int airCondition;
     private int checkType;
+    
+    private String postId;
+    private String postName;
+    private String throughLine;
 
     //highlinecross生成时需要
     private int groupSerialNbr;
 
 
-    public int getGroupSerialNbr() {
+    public String getPostId() {
+		return postId;
+	}
+
+	public void setPostId(String postId) {
+		this.postId = postId;
+	}
+
+	public String getPostName() {
+		return postName;
+	}
+
+	public void setPostName(String postName) {
+		this.postName = postName;
+	}
+
+	public String getThroughLine() {
+		return throughLine;
+	}
+
+	public void setThroughLine(String throughLine) {
+		this.throughLine = throughLine;
+	}
+
+	public int getGroupSerialNbr() {
         return groupSerialNbr;
     }
 

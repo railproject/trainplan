@@ -85,22 +85,28 @@ function HighLineCrossModle(){
 		return result; 
 	});
 	
-	self.tokenVehBureau = ko.observable("");
-	 
+	self.tokenVehBureau = ko.observable(); 
 	//担当车辆段/动车段
-	self.tokenVehDept = ko.observable("");
+	self.tokenVehDept = ko.observable();
 	//担当动车所（用于高铁）
-	self.tokenVehDepot = ko.observable("");
+	self.tokenVehDepot = ko.observable();
 	//客运担当局（局码）
-	self.tokenPsgBureau = ko.observable("");
+	self.tokenPsgBureau = ko.observable();
 	//担当客运段
-	self.tokenPsgDept = ko.observable("");
+	self.tokenPsgDept = ko.observable();
 	//动车组车型（用于高铁）
-	self.crhType = ko.observable("");
+	self.crhType = ko.observable();
+	
+	self.postName = ko.observable();
+	
+	self.postId = ko.observable();
+	
+	self.throughLine = ko.observable();
+
 	//动车组车组号1（用于高铁）
-	self.vehicle1 = "";
+	self.vehicle1 =  ko.observable();
 	//动车组车组号2（用于高铁）
-	self.vehicle2 = "";
+	self.vehicle2 =  ko.observable();
 	//crossName是由所有的列车编号 加上“-”组成的
 	self.crossName = ko.computed(function(){ 
 		var result = ""; 
@@ -110,6 +116,8 @@ function HighLineCrossModle(){
 		};
 		return result; 
 	});
+	
+	self.note =  ko.observable();
 }
 
 /**
@@ -205,6 +213,7 @@ function CrossModel() {
 		 var currentCorss = self.selectedHighLineCrossRows()[0]; 
 		 //做恢复使用
 		 self.oldHighLineCrosses.push(currentCorss);
+		 console.log(ko.toJSON(currentCorss));
 		 commonJsScreenLock();
 		 $.ajax({
 				url : "highLine/getHighlineTrainTimeForHighlineCrossId",
@@ -255,20 +264,45 @@ function CrossModel() {
 	//合并交路
 	self.hbHighLineCrossYes = function(){ 
 		var selectedActiveHighLineCrossRows = self.selectedActiveHighLineCrossRows();  
-		var cross = new HighLineCrossModle(); 
+		var cross = new HighLineCrossModle();  
+		if(self.searchModle().tokenVehDepot() == null){
+			showWarningDialog("请选择动车所");
+			return;
+		}else if(self.searchModle().acc() == null){
+			showWarningDialog("请选择动车台");
+			return;
+		}else if(self.searchModle().tokenPsgBureau() == null){
+			showWarningDialog("请选择担当所");
+			return;
+		}else if(self.searchModle().tokenPsgDept() == null){
+			showWarningDialog("请填写客运担当段");
+			return;
+		}else if(self.searchModle().crhType() == null){
+			showWarningDialog("请选择动车组型");
+			return;
+		}else if(self.searchModle().throughLine() == null){
+			showWarningDialog("请选择铁路线类型");
+			return;
+		}else if(self.searchModle().note() == null){
+			showWarningDialog("请填写来源");
+			return;
+		}
 		
-		$("#hb_highLine_cross").dialog("close");
-		
-		cross.tokenVehDept(self.searchModel().tokenVehDept());
 		//担当动车所（用于高铁）
-		cross.tokenVehDepot(self.searchModle().tokenVehDepot());
+		cross.tokenVehDepot(self.searchModle().tokenVehDepot()); 
+		cross.postName(self.searchModle().acc().name);
+		cross.postId(self.searchModle().acc().code); 
 		//客运担当局（局码）
-		cross.tokenPsgBureau(self.searchModle().tokenPsgBureau());
+		cross.tokenPsgBureau(self.searchModle().tokenPsgBureau().code);
 		//担当客运段
 		cross.tokenPsgDept(self.searchModle().tokenPsgDept());
 		//动车组车型（用于高铁）
-		cross.crhType(self.searchModle().crhType());
+		cross.crhType(self.searchModle().crhType().code);
+		cross.throughLine(self.searchModle().throughLine().code);
+		cross.note(self.searchModle().note());
 		
+		
+		$("#hb_highLine_cross").dialog("close");
 		for(var i = 0; i < selectedActiveHighLineCrossRows.length; i++){
 			var cr = selectedActiveHighLineCrossRows[i];
 			if(i > 0){
@@ -316,32 +350,32 @@ function CrossModel() {
 		for(var i = 0; i < oldCrosses.length; i++){ 
 			oldCrossIds += (oldCrossIds == "" ? "'"  : ",'")  + oldCrosses[i].highLineCrossId() + "'";
 		}
-		
-		$.ajax({
-				url : "highLine/saveHighlineCrossAndTrainInfo",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({"highLineCrossIds": oldCrossIds, "newCrosses" : crosses}),
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						self.loadCrosses();
-						self.acvtiveHighLineCrosses.remove(function(item){
-							return true;
-						});
-						showSuccessDialog("交路调整成功"); 
-					} else {
-						showErrorDialog("交路调整失败");
-					} 
-				},
-				error : function() {
-					showErrorDialog("交路调整失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-		    });  
+		console.log(crosses);
+//		$.ajax({
+//				url : "highLine/saveHighlineCrossAndTrainInfo",
+//				cache : false,
+//				type : "POST",
+//				dataType : "json",
+//				contentType : "application/json",
+//				data :JSON.stringify({"highLineCrossIds": oldCrossIds, "newCrosses" : crosses}),
+//				success : function(result) {    
+//					if (result != null && result != "undefind" && result.code == "0") {
+//						self.loadCrosses();
+//						self.acvtiveHighLineCrosses.remove(function(item){
+//							return true;
+//						});
+//						showSuccessDialog("交路调整成功"); 
+//					} else {
+//						showErrorDialog("交路调整失败");
+//					} 
+//				},
+//				error : function() {
+//					showErrorDialog("交路调整失败");
+//				},
+//				complete : function(){
+//					commonJsScreenUnLock();
+//				}
+//		    });  
 		
 	};
 	//当填报第一个列车车底的时候触发
@@ -444,9 +478,7 @@ function CrossModel() {
 	
 	self.dragRunPlan = function(n,event){
 		$(event.target).dialog("open"); 
-	};
-	
-
+	}; 
 	
 	self.loadStns = function(currentTrain){  
 		self.times.remove(function(item){
@@ -526,12 +558,7 @@ function CrossModel() {
 		self.currentTrain(train); 
 	};
 	
-	self.setCurrentCross = function(cross){
-//		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
-//			self.searchModle().activeFlag(1);  
-//		}else if(!hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 1){
-//			self.searchModle().activeFlag(0); 
-//		} 
+	self.setCurrentCross = function(cross){ 
 		self.currentCross(cross); 
 	};
 	
@@ -891,6 +918,98 @@ function CrossModel() {
 				commonJsScreenUnLock(); 
 			}
 	    });
+	    
+	    $.ajax({
+			url : "highLine/getThroughLines",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					if (result.data !=null) { 
+						self.searchModle().loadThroughLines(result.data); ;
+					} 
+				} else {
+					showErrorDialog("获取路局列表失败");
+				} 
+			},
+			error : function() {
+				showErrorDialog("获取路局列表失败");
+			},
+			complete : function(){ 
+				commonJsScreenUnLock(); 
+			}
+	    });
+	    
+	    $.ajax({
+			url : "highLine/getCrhTypes",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					if (result.data !=null) { 
+						self.searchModle().loadCrhTypes(result.data); ;
+					} 
+				} else {
+					showErrorDialog("获取路局列表失败");
+				} 
+			},
+			error : function() {
+				showErrorDialog("获取路局列表失败");
+			},
+			complete : function(){ 
+				commonJsScreenUnLock(); 
+			}
+	    });
+	    
+	    $.ajax({
+			url : "highLine/getDepots",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					if (result.data !=null) { 
+						self.searchModle().loadTokenVehDepots(result.data); ;
+					} 
+				} else {
+					showErrorDialog("获取路局列表失败");
+				} 
+			},
+			error : function() {
+				showErrorDialog("获取路局列表失败");
+			},
+			complete : function(){ 
+				commonJsScreenUnLock(); 
+			}
+	    });
+	    
+	    $.ajax({
+			url : "highLine/getAccs",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					if (result.data !=null) { 
+						self.searchModle().loadAccs(result.data); ;
+					} 
+				} else {
+					showErrorDialog("获取路局列表失败");
+				} 
+			},
+			error : function() {
+				showErrorDialog("获取路局列表失败");
+			},
+			complete : function(){ 
+				commonJsScreenUnLock(); 
+			}
+	    });
 		
 		
 	};  
@@ -933,33 +1052,14 @@ function CrossModel() {
 	 
 //		commonJsScreenLock();
 		 
-//		var bureauCode = self.searchModle().bureau(); 
-//		var highlingFlag = self.searchModle().highlingFlag();
-//		var trainNbr = self.searchModle().filterTrainNbr(); 
-//		var checkFlag = self.searchModle().checkFlag();
-//		var unitCreateFlag = self.searchModle().unitCreateFlag();
-//		var chart = self.searchModle().chart();
-//		var startBureauCode = self.searchModle().startBureau();  
-//		var planStartDate = self.searchModle().planStartDate(); 
-//		var planEndDate = self.searchModle().planEndDate(); 
+		var bureauCode = self.searchModle().bureau(); 
+		var trainNbr = self.searchModle().filterTrainNbr(); 
+		var searchThroughLine = self.searchModle().searchThroughLine();
+		var searchTokenVehDepot = self.searchModle().searchTokenVehDepot();
+ 
 		 var planStartDate = $("#runplan_input_startDate").val();
-			
-//		 var planEndDate =  $("#runplan_input_endDate").val();
-//		 var currentBureanFlag = self.searchModle().currentBureanFlag() ? '1' : '0';   
-//		 self.searchModle().checkActiveFlag(0); 
-//		 if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
-//			self.searchModle().activeFlag(1);  
-//		}else if(!hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 1){
-//			self.searchModle().activeFlag(0); 
-//		} 
-		 
 		
-//		if(chart == null){
-//			showErrorDialog("请选择方案!");
-//			commonJsScreenUnLock();
-//			return;
-//		}
-		self.highLineCrossRows.remove(function(item) {
+		 self.highLineCrossRows.remove(function(item) {
 			return true;
 		});  
 		$.ajax({
@@ -968,22 +1068,12 @@ function CrossModel() {
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
-				data :JSON.stringify({  
-		
-//					tokenVehBureau : bureauCode, 
-//					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
-//					checkFlag : checkFlag == null ? null : checkFlag.value,
-//					startBureau : startBureauCode,
-//					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
-//							chartId : chart == null ? null: chart.chartId,
-//					trainNbr : trainNbr,
-		
+				data :JSON.stringify({   
+					tokenVehBureau : bureauCode, 
+					trainNbr : trainNbr, 
 					crossStartDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
-
-//					endTime : (planEndDate != null ? planEndDate : self.get40Date()).replace(/-/g, ''),
-//					currentBureanFlag : currentBureanFlag
-					
-					  
+					throughLine:searchThroughLine,
+					tokenVehDepot: searchTokenVehDepot
 				}),
 				success : function(result) {    
  
@@ -1438,75 +1528,99 @@ function searchModle(){
 	self.checkActiveFlag = ko.observable(0);  
 	
 	self.activeCurrentCrossFlag = ko.observable(0);  
-	
-	self.drawFlags =ko.observableArray(['0']); 
-	
-	self.planStartDate = ko.observable();
-	
-	self.currentBureanFlag = ko.observable(0);
-	
-	self.planEndDate = ko.observable();
-	
+	  
+	self.planStartDate = ko.observable(); 
+	 
 	self.bureaus = ko.observableArray();
 	
-	self.startBureaus = ko.observableArray();
-	
-	self.charts = ko.observableArray();
-	 
-	self.highlingFlags = highlingFlags;
-	
-	self.unitCreateFlags = unitCreateFlags; 
-	
-	self.filterCheckFlag = ko.observable(0);
-	
-	self.filterUnitCreateFlag = ko.observable(0);
-		
-	self.checkFlags = checkFlags;
-	
-	self.highlingFlag = ko.observable();
-	
-	self.checkFlag = ko.observable(); 
-	 
-	self.unitCreateFlag = ko.observable(); 
+	self.startBureaus = ko.observableArray(); 
 	
 	self.bureau = ko.observable();
 	 
 	self.chart =  ko.observable();
 	
-	self.startDay = ko.observable();
+	self.note = ko.observable(); 
 	
-	self.startBureau = ko.observable();
-	
-	self.filterTrainNbr = ko.observable();
-	
-	self.showCrossMap = ko.observable(0);
+	self.filterTrainNbr = ko.observable(); 
 	
 	self.shortNameFlag = ko.observable(2); 
 	
-	self.tokenVehDepts = ko.observableArray();
+	self.searchThroughLine = ko.observable();
+	self.searchTokenVehDepot = ko.observable();
+	
+	//动车段
+	self.accs = ko.observableArray(); 
+	 
 	//担当动车所（用于高铁）
 	self.tokenVehDepots = ko.observableArray();
 	//客运担当局（局码）
 	self.tokenPsgBureaus = ko.observableArray();
 	//担当客运段
 	self.tokenPsgDepts =ko.observableArray();
+	
+	//铁路线类型
+	self.throughLines = ko.observableArray();
+	 
 	//动车组车型（用于高铁）
 	self.crhTypes = ko.observableArray();
 	
+	//合并的时候会使用到
 	self.tokenVehDept = ko.observable();
 	//担当动车所（用于高铁）
 	self.tokenVehDepot = ko.observable();
 	//客运担当局（局码）
 	self.tokenPsgBureau = ko.observable();
 	//担当客运段
-	self.tokenPsgDept = ko.observable();
+	self.tokenPsgDept = ko.observable(); 
+	//铁路线类型
+	self.throughLine = ko.observable();
+	//动车台
+	self.acc = ko.observable();
 	//动车组车型（用于高铁）
-	self.crhType = ko.observable();
+	self.crhType = ko.observable(); 
+
+	
+	
+	
+	
+	self.loadAccs = function(accs){   
+		for ( var i = 0; i < accs.length; i++) {  
+			self.accs.push(accs[i]);  
+		} 
+	}; 
+	
+	self.loadTokenVehDepots = function(options){   
+		for ( var i = 0; i < options.length; i++) {  
+			self.tokenVehDepots.push(options[i]);  
+		} 
+	};  
+	
+	self.loadThroughLines = function(options){   
+		for ( var i = 0; i < options.length; i++) {  
+			if(options[i] != null){
+				self.throughLines.push({"code": options[i].name, "name": options[i].name});  
+			}
+			
+		} 
+	}; 
+	
+	self.loadCrhTypes = function(options){   
+		for ( var i = 0; i < options.length; i++) {  
+			self.crhTypes.push({code: options[i].name, name: options[i].name});  
+		} 
+	};  
+	
+	self.loadTokenVehDepots = function(options){   
+		for ( var i = 0; i < options.length; i++) {  
+			self.tokenVehDepots.push(options[i]);  
+		} 
+	};   
 	
 	self.loadBureau = function(bureaus){   
 		for ( var i = 0; i < bureaus.length; i++) {  
 			self.bureaus.push(new BureausRow(bureaus[i])); 
 			self.startBureaus.push(new BureausRow(bureaus[i]));  
+			self.tokenPsgBureaus.push(new BureausRow(bureaus[i]));
 		} 
 	}; 
 	
@@ -1595,7 +1709,7 @@ function CrossRow(data) {
 	self.appointDay = ko.observable(data.appointDay);
 	self.appointPeriod = ko.observable(data.appointPeriod); 
 	self.crossSection = ko.observable(data.crossSection);
-	self.throughline = ko.observable(data.throughline);
+	self.throughline = ko.observable(data.throughLine);
 	self.startBureau = ko.observable(data.startBureau); 
 	//车辆担当局 
 	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
@@ -1661,8 +1775,11 @@ function CrossRow(data) {
 	});  
 	 
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
+	
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
+	
 	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
+	
 	self.tokenPsgBureauShowValue = ko.computed(function(){ 
 		var result = "";
 		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
@@ -1679,6 +1796,8 @@ function CrossRow(data) {
 		 }
 		 return result; 
 	});
+	self.postId = ko.observable(data.postId);
+	self.postName = ko.observable(data.postName);
 	self.tokenPsgDept = ko.observable(data.tokenPsgDept);
 	self.tokenPsgDepot = ko.observable(data.tokenPsgDepot);
 	self.locoType = ko.observable(data.locoType);

@@ -96,22 +96,22 @@ var currentUserBureau = "";
 													日期:&nbsp;</label> 
 				 <input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 			 </div>
-			 <div class="pull-left"> 
-				 <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">铁路线:&nbsp;</label> 
-				 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
-						 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+			 <div class="pull-left" style="margin-left:10px"> 
+				 <label for="exampleInputEmail5" style="vertical-align: bottom;">铁路线:&nbsp;</label> 
+				 <select class="form-control" style="width: 100px;display:inline-block;" id="input_cross_filter_showFlag"
+						 data-bind="options: searchModle().throughLines, value: searchModle().searchThroughLine, optionsText: 'name', optionsValue: 'code', optionsCaption: ''">
 				 </select>  
 			  </div>
-			   <div class="pull-left"> 
-				 <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">担当局:&nbsp;</label> 
+			   <div class="pull-left" style="margin-left:10px"> 
+				 <label for="exampleInputEmail5" style="vertical-align: bottom;">担当局:&nbsp;</label> 
 				 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
-						 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+						 data-bind="options: searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue: 'code', optionsCaption: ''">
 				 </select> 
 			  </div>
-			   <div class="pull-left"> 
-				 <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">动车所:&nbsp;</label> 
-				 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
-						 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+			   <div class="pull-left" style="margin-left:10px"> 
+				 <label for="exampleInputEmail5" style="vertical-align: bottom;">动车所:&nbsp;</label> 
+				 <select class="form-control" style="width: 130px;display:inline-block;" id="input_cross_filter_showFlag"
+						 data-bind="options: searchModle().tokenVehDepots, value: searchModle().searchTokenVehDepot, optionsText: 'name', optionsValue: 'name' , optionsCaption: ''">
 				 </select> 
 			  </div>
 			  <div class="pull-left"> 
@@ -150,40 +150,48 @@ var currentUserBureau = "";
 										<tr style="height: 25px"> 
 											<!-- <th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th> -->
 											<th style="width: 37px" align="center">序号</th> 
+											<th style="width: 8%" align="center">铁路线</th>
+											<th style="width: 8%" align="center">首车始发日期</th>  
 											<th align="center">  
 												    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路全车次</label> 
-													<select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+													<!-- <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
 														 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
-													</select>  
+													</select>   -->
 											</th> 
+											<th style="width: 8%" align="center">车型</th>
 											<th style="width: 8%" align="center">车底1</th>
 											<th style="width: 8%" align="center">车底2</th>
-											<th style="width: 8%" align="center">接续车次</th> 
-											<th style="width: 8%" align="center">出库所/始发站</th>
+											<th style="width: 8%" align="center">出库所/始发站</th>  
 											<th style="width: 8%" align="center">入库所/终到站</th>
-											<th style="width: 8%" align="center">车辆担当所</th>
-											<th style="width: 8%" align="center">是否热备交路</th>
-											<th style="width: 8%" align="center">命令号</th>
+											<th style="width: 5%" align="center">热备状态</th>
+											<th style="width: 5%" align="center">担当局</th>
+											<th style="width: 8%" align="center">动车所</th>
+											<th style="width: 8%" align="center">管辖动车台</th>
+											<th style="width: 8%" align="center">来源</th> 
 										</tr>
 									</thead>
 									<tbody style="padding:0">
 										 <tr style="padding:0">
-										   <td colspan="11" style="padding:0">
+										   <td colspan="14" style="padding:0">
 												 <div id="plan_train_panel_body" style="height: 250px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														<tbody data-bind="foreach: highLineCrossRows">
 															<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
 																<!-- <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td> -->
-														        <td style="width: 36px" data-bind="text: $index() + 1"></td> 
+														        <td style="width: 37px" data-bind="text: $index() + 1"></td> 
+														         <td style="width: 8%" data-bind="text: throughline"></td> 
+														         <td style="width: 8%" data-bind="text: crossStartDate"></td> 
 															     <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
+															     <td style="width: 8%" data-bind="text: crhType"></td>
 															     <td style="width: 8%" data-bind="text: vehicle1"></td>
-															     <td style="width: 8%" data-bind="text: vehicle2"></td>
-															     <td style="width: 8%" data-bind="text: ''"></td> 
+															     <td style="width: 8%" data-bind="text: vehicle2"></td>       
 															     <td style="width: 8%" data-bind="text: startStn"></td>
-															     <td style="width: 8%" data-bind="text: endStn"></td>
-															     <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
-															     <td style="width: 8%" data-bind="text: spareFlag() == 2 ? '是' : '否'"></td>
-															     <td style="width: 7%" data-bind="text: ''"></td>
+															     <td style="width: 8%" data-bind="text: endStn"></td> 
+															     <td style="width: 5%" data-bind="text: spareFlag() == 2 ? '是' : '否'"></td>
+															     <td style="width: 5%" data-bind="text: tokenVehBureauShowValue"></td>
+															     <td style="width: 8%" data-bind="text: tokenPsgDept"></td>
+															     <td style="width: 8%" data-bind="text: postName"></td>
+															     <td style="width: 8%" data-bind="text: note"></td>
 															</tr> 
 														</tbody> 
 													</table> 
@@ -470,68 +478,64 @@ var currentUserBureau = "";
 	    <div id="hb_highLine_cross" class="easyui-dialog" title="合并交路"
 			data-options="iconCls:'icon-save'"
 			style="width: 400px; height: 280px; padding: 10px"> 
-				 <div class="row" style="width: 100%; margin-top: 5px;">
-						<label for="exampleInputEmail3" class="control-label pull-left">
+				 <div class="row" style="width: 100%; margin-top: 5px;margin-left:20px">
+						<label for="exampleInputEmail3" class="control-label pull-left" >
 										动车台:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().tokenVehDepts, value: searchModle().tokenVehDept, optionsText: 'name', optionsCaption: ''">
+								class="form-control" data-bind="options:searchModle().accs, value: searchModle().acc, optionsText: 'name', optionsCaption: ''">
 							</select>
 						</div>   
 				 </div> 
-				 <div class="row" style="width: 100%; margin-top: 5px;">
+				 <div class="row" style="width: 100%; margin-top: 5px;margin-left:20px">
 						<label for="exampleInputEmail3" class="control-label pull-left">
 										动车所:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().tokenVehDepots, value: searchModle().tokenVehDepot, optionsText: 'name', optionsCaption: ''">
+								class="form-control" data-bind="options:searchModle().tokenVehDepots, value: searchModle().tokenVehDepot, optionsText: 'name', optionsValue: 'name', optionsCaption: ''">
 							</select>
 						</div>   
 				 </div>
-				 <div class="row" style="width: 100%; margin-top: 5px;">
-						<label for="exampleInputEmail3" class="control-label pull-left">
-										客运担当局:&nbsp;</label> 
-						<div class="pull-left">
-							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().tokenPsgBureaus, value: searchModle().tokenPsgBureau, optionsText: 'name', optionsCaption: ''">
-							</select>
-						</div>   
-				 </div> 
-				 <div class="row" style="width: 100%; margin-top: 5px;">
-						<label for="exampleInputEmail3" class="control-label pull-left">
-										担当客运段:&nbsp;</label> 
-						<div class="pull-left">
-							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().crhTypes, value: searchModle().crhType, optionsText: 'name', optionsCaption: ''">
-							</select>
-						</div>   
-				 </div>  
-				  <div class="row" style="width: 100%; margin-top: 5px;">
+				  <div class="row" style="width: 100%; margin-top: 5px;margin-left:20px">
 						<label for="exampleInputEmail3" class="control-label pull-left">
 										铁路线:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+								class="form-control" data-bind="options:searchModle().throughLines, value: searchModle().throughLine, optionsText: 'name', optionsCaption: ''">
 							</select>
 						</div>   
 				 </div>
-				   <div class="row" style="width: 100%; margin-top: 5px;">
+				 <div class="row" style="width: 100%; margin-top: 5px;margin-left:20px">
 						<label for="exampleInputEmail3" class="control-label pull-left">
-										 动车组车型 :&nbsp;</label> 
+										客运担当局:&nbsp;</label> 
 						<div class="pull-left">
-							<select style="width: 273px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption: ''">
+							<select style="width: 60px" id="input_cross_chart_id"
+								class="form-control" data-bind="options:searchModle().tokenPsgBureaus, value: searchModle().tokenPsgBureau, optionsText: 'shortName', optionsCaption: ''">
+							</select>
+						</div> 
+						<label for="exampleInputEmail3" style="margin-left:20px" class="control-label pull-left">
+										 动车组车型:&nbsp;</label> 
+						<div class="pull-left">
+							<select style="width: 100px" id="input_cross_chart_id"
+								class="form-control" data-bind="options:searchModle().crhTypes, value: searchModle().crhType, optionsText: 'name', optionsCaption: ''">
 							</select>
 						</div>   
-				 </div>
-				
-				 <div class="row" style="margin: 10px 0 5px 0;">
+				 </div>  
+				  
+				 <div class="row" style="width: 100%; margin-top: 5px;margin-left:20px">
+						<label for="exampleInputEmail3" class="control-label pull-left">
+										担当客运段:&nbsp;</label> 
+						<div class="pull-left">
+							<input class="form-control"  style="width:247px;" placeholder="" data-bind="value: searchModle().tokenPsgDept">
+						</div>   
+				 </div>   
+				 <div class="row" style="margin: 10px 0 5px 0;margin-left:20px">
 					<label for="exampleInputEmail2" class="control-label pull-left">来源:&nbsp;</label>
 			        <div class="pull-left">
-			           <input class="form-control"  style="width:150px;" placeholder="" data-bind="value: searchModle().startDay">
+			           <input class="form-control"  style="width:283px;" placeholder="" data-bind="value: searchModle().note">
 			        </div> 
 			   </div> 
-			   <div  class="row" style="width: 100%; margin-top: 10px;">
+			   <div  class="row" style="width: 100%; margin-top: 10px;" align="center">
 				     <a type="button" id="btn_fileToUpload"
 						class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: $root.hbHighLineCrossYes">确定</a>
 					 <a type="button" id="btn_fileToUpload"

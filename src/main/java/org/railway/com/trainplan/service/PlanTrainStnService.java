@@ -66,6 +66,7 @@ public class PlanTrainStnService {
    
     public Result updatePlanTrainDaylyPlanFlag(Map<String,Object> reqMap) throws Exception {
     	Result result = new Result();
+    	System.out.println("===========================================reqMap=======================================" + reqMap);
     	 baseDao.updateBySql(Constants.TRAINPLANDAO_UPDATE_PLANFLAG, reqMap);
     	return result;
     }

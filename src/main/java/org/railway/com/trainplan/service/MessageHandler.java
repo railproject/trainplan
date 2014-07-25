@@ -39,22 +39,24 @@ public class MessageHandler implements MessageListener{
 			 logger.debug("msg======" + msg);
 			 //System.err.println("msg======" + msg);
 			 if(msg != null ){ 
-				 JSONObject json = new JSONObject();
+				 
 				 JSONObject result1 = msg.getJSONObject("result");
 				 //System.err.println("result1==" + result1);
 				// Map<String,Object> result1 = mapper.readValue(resultString, Map.class);
 				 if(result1 != null){
 					 String code = StringUtil.objToStr(result1.get("code"));
 					 JSONObject paramObj = result1.getJSONObject("userparam");
+					 JSONObject result = result1.getJSONObject("result");
+					 
 					 //成功
 					 if("0".equals(code)){
 						 Map<String,Object> reqMap = new HashMap<String,Object>();
-						 String baseTrainId = StringUtil.objToStr(paramObj.get("sourceEntityId"));
-						 String daylyPlanId = StringUtil.objToStr(result1.get("id"));
-						 String planTrainId = StringUtil.objToStr(paramObj.get("planTrainId"));
+						 String daylyPlanId = StringUtil.objToStr(result.get("id"));
+						 String planTrainId = StringUtil.objToStr(result.get("planTrainId"));
 						 reqMap.put("planTrainId", planTrainId);
 						 reqMap.put("daylyPlanId",daylyPlanId );
 						 //更新表plan_train中字段DAILYPLAN_FLAG值为0
+						 System.out.println("==================" + reqMap);
 						 planTrainStnService.updatePlanTrainDaylyPlanFlag(reqMap);
 						 
 						 if(paramObj.containsKey("msgReceiveUrl")){

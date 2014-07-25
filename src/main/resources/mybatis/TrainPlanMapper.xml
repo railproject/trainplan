@@ -308,8 +308,8 @@
     	 END_STN as endStn,RUN_DATE as  runDate,START_TIME as startTime, TRAIN_SORT as trainSort,
 	     END_TIME as endTime,BASE_CHART_ID as baseChartId,BASE_TRAIN_ID as baseTrainId,
 	     START_BUREAU as startBureau,END_BUREAU as endBureau,END_BUREAU_FULL as endBureauFull, group_serial_nbr as groupSerialNbr,
-	     START_BUREAU_FULL as startBureauFull,rownum as rownum1 from plan_train where plan_cross_id=#{planCrossId}  and run_date >= #{startDate} AND group_serial_nbr=#{groupSerialNbr}  ORDER BY RUN_DATE
-       ) WHERE rownum1 &lt;= (SELECT MAX(TRAIN_SORT) FROM PLAN_TRAIN WHERE PLAN_CROSS_ID=#{planCrossId})
+	     START_BUREAU_FULL as startBureauFull from plan_train where plan_cross_id=#{planCrossId}  and run_date >= #{startDate} AND group_serial_nbr=#{groupSerialNbr}  ORDER BY RUN_DATE
+       ) WHERE rownum &lt;= (SELECT MAX(TRAIN_SORT) FROM PLAN_TRAIN WHERE PLAN_CROSS_ID=#{planCrossId})
     </select>
     
     <select id="findPlanTrainByStartBureauAndRundate" parameterType="map"  resultType="org.railway.com.trainplan.entity.PlanTrain">

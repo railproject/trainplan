@@ -99,7 +99,7 @@ function CrossModel() {
 				n.createFlag(runPlan.createFlag);
 				return false;
 			};
-		});
+		}); 
 	};
 	
 	self.trainRunPlanChange = function(row, event){ 
@@ -148,7 +148,7 @@ function CrossModel() {
 				} 
 			});  
 			$.each(self.trainPlans(), function(i, train){
-				if(train.planTrainId == row.planTrainId){
+				if(train.planCrossId == row.planCrossId){ 
 					$.each(train.runPlans(), function(z, n){
 						if(n.createFlag() == 0){
 							n.selected(1);
@@ -161,7 +161,7 @@ function CrossModel() {
 		}else{
 			self.crossAllcheckBox(0); 
 			$.each(self.trainPlans(), function(i, train){
-				if(train.planTrainId == row.planTrainId){
+				if(train.planCrossId == row.planCrossId){
 					$.each(train.runPlans(), function(z, n){
 						if(n.createFlag() == 0){
 							n.selected(0);
@@ -458,13 +458,21 @@ function CrossModel() {
    
 	
 	self.createTrainLines = function(){   
-		 var planTrains = []; 
-		 
+		 var planTrains = [];  
+		 var oldPlanTrains = [];
 		 for(var i = 0; i < self.selectedRunPlan().length; i++){
-			 planTrains.push({planTrainId: self.selectedRunPlan()[i].planTrainId(),
-				 baseTrainId: self.selectedRunPlan()[i].baseTrainId(),
-				 day: self.selectedRunPlan()[i].day});
+			 if(self.selectedRunPlan()[i].selected() == 1){
+				 planTrains.push({planTrainId: self.selectedRunPlan()[i].planTrainId(),
+					 baseTrainId: self.selectedRunPlan()[i].baseTrainId(),
+					 day: self.selectedRunPlan()[i].day});
+			 }else{
+				 oldPlanTrains.push(self.selectedRunPlan()[i]);
+			 }   
 		 }
+		 
+		 $.each(oldPlanTrains, function(i, n){
+			 self.selectedRunPlan.remove(n);
+		 });
 		 
 		 self.createRunPlanTotalCount(self.selectedRunPlan().length);
 		 

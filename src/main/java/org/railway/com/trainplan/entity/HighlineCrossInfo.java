@@ -17,6 +17,7 @@ public class HighlineCrossInfo {
 	private String highLineCrossId;
 	//交路计划ID（对应PLAN_CROSS表中的PLAN_CROSS_ID）
 	private String planCrossId;
+	private String baseCrossId;
 	//开始日期（该日历交路第一个车次的始发日期）
 	private String crossStartDate;
 	//结束日期（该日历交路最后一个车次的终到日期）
@@ -57,7 +58,9 @@ public class HighlineCrossInfo {
 	private int checkType ;
 	//审核人
 	private String checkPeople;
-	
+	private String postId;
+	private String postName;
+	private String throughLine;
 	//始发站
 	private String startStn;
 	
@@ -69,6 +72,31 @@ public class HighlineCrossInfo {
 	//审核时间（格式：yyyy-mm-dd hh24:mi:ss）
 	private String checkTime;
 	 
+	
+	public String getBaseCrossId() {
+		return baseCrossId;
+	}
+	public void setBaseCrossId(String baseCrossId) {
+		this.baseCrossId = baseCrossId;
+	}
+	public String getPostId() {
+		return postId;
+	}
+	public void setPostId(String postId) {
+		this.postId = postId;
+	}
+	public String getPostName() {
+		return postName;
+	}
+	public void setPostName(String postName) {
+		this.postName = postName;
+	}
+	public String getThroughLine() {
+		return throughLine;
+	}
+	public void setThroughLine(String throughLine) {
+		this.throughLine = throughLine;
+	}
 	public String getCrossStartStn() {
 		return crossStartStn;
 	}

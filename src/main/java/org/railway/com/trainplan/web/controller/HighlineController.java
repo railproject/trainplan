@@ -15,8 +15,10 @@ import org.railway.com.trainplan.entity.HighLineCrossTrainInfo;
 import org.railway.com.trainplan.entity.HighlineCrossInfo;
 import org.railway.com.trainplan.entity.HighlineCrossTrainBaseInfo;
 import org.railway.com.trainplan.entity.HighlineTrainRunLine;
+import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.HighLineService;
 import org.railway.com.trainplan.service.ShiroRealm;
+import org.railway.com.trainplan.service.dto.OptionDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,9 @@ public class HighlineController {
 	 
 	 @Autowired
 	 private HighLineService highLineService;
+	 
+	 @Autowired
+	 private CommonService commonService;
 	 
 	 
 	 @RequestMapping(method = RequestMethod.GET)
@@ -53,8 +58,76 @@ public class HighlineController {
      public String highLineVehicleSearch() {
 		 return "highLine/highLine_cross_vehicleSearch";
      }
-	 
+	  
+	@ResponseBody
+	@RequestMapping(value = "/getDepots", method = RequestMethod.GET)
+	public Result  getDepots() {
+		 Result result = new Result();
+		 try{  
+			 List<OptionDto> list = commonService.getDepots();
+			 result.setData(list);
+		 }catch(Exception e){
+			 e.printStackTrace();
+			 logger.error("getHighlineTrainTimeForHighlineCrossId error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		 }
+		
+		 return result;
+	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/getCrhTypes", method = RequestMethod.GET)
+	public Result  getCrhTypes() {
+		 Result result = new Result();
+		 try{  
+			 List<OptionDto> list = commonService.getCrhTypes();
+			 result.setData(list);
+		 }catch(Exception e){
+			 e.printStackTrace();
+			 logger.error("getHighlineTrainTimeForHighlineCrossId error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		 }
+		
+		 return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getThroughLines", method = RequestMethod.GET)
+	public Result  getThroughLines() {
+		 Result result = new Result();
+		 try{  
+			 List<OptionDto> list = commonService.getThroughLines();
+			 result.setData(list);
+		 }catch(Exception e){
+			 e.printStackTrace();
+			 logger.error("getHighlineTrainTimeForHighlineCrossId error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		 }
+		
+		 return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getAccs", method = RequestMethod.GET)
+	public Result  getAccs() {
+		 Result result = new Result();
+		 try{  
+			 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+			 System.out.println("============user.getBureau()==============" + user.getBureau()); 
+			 List<OptionDto> list = commonService.getAccs(user.getBureau());
+			 result.setData(list);
+		 }catch(Exception e){
+			 e.printStackTrace();
+			 logger.error("getHighlineTrainTimeForHighlineCrossId error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		 }
+		
+		 return result;
+	}
 
 	 /**
 		 * 审核交路信息
@@ -89,8 +162,7 @@ public class HighlineController {
 		public Result  getHighlineCrossList(@RequestBody Map<String,Object> reqMap) {
 			 Result result = new Result();
 			 try{
-				 String crossStartDate = StringUtil.objToStr(reqMap.get("crossStartDate"));
-				 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(crossStartDate);
+				 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(reqMap);
 				 result.setData(list);
 			 }catch(Exception e){
 				 logger.error("getHighlineCrossList error==" + e.getMessage());
@@ -231,8 +303,11 @@ public class HighlineController {
 						 String tokenPsgBureau= StringUtil.objToStr(crossMap.get("tokenPsgBureau"));
 						 String tokenPsgDept = StringUtil.objToStr(crossMap.get("tokenPsgDept"));
 						 String crhType = StringUtil.objToStr(crossMap.get("crhType"));
-						 String note = StringUtil.objToStr(crossMap.get("note"));
+						 String note = StringUtil.objToStr(crossMap.get("note")); 
 						 String createPeople = StringUtil.objToStr(crossMap.get("createPeople"));
+						 
+						 String postName = StringUtil.objToStr(crossMap.get("postName"));
+						 String postId = StringUtil.objToStr(crossMap.get("postId"));
 						 //set值
 						 highlineCrossInfo.setHighLineCrossId(highLineCrossId);
 						 highlineCrossInfo.setPlanCrossId(planCrossId == null?"":planCrossId);
@@ -243,6 +318,8 @@ public class HighlineController {
 						 highlineCrossInfo.setStartStn(startStn == null?"":startStn);
 						 highlineCrossInfo.setEndStn(endStn == null?"":endStn);
 						 highlineCrossInfo.setSpareFlag(spareFlag == null?"":spareFlag);
+						 highlineCrossInfo.setPostId(postId == null? "": postId);
+						 highlineCrossInfo.setPostName(postName == null? "": postName);
 						 highlineCrossInfo.setRelevantBureau(relevantBureau == null?"":relevantBureau);
 						 highlineCrossInfo.setTokenVehBureau(tokenVehBureau == null?"":tokenVehBureau);
 						 highlineCrossInfo.setTokenVehDept(tokenVehDept == null?"":tokenVehDept);
