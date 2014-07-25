@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import mor.railway.cmd.adapter.model.CmdInfoModel;
 import net.sf.json.JSONObject;
 
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 临客相关操作
@@ -64,6 +67,13 @@ public class RunPlanLkController {
      public String mainPage() {
 		 return "runPlanLk/runPlanLk_main";
      }
+	 
+
+	 @RequestMapping(value="/jbtTrainInfoPage", method = RequestMethod.GET)
+     public ModelAndView jbtTrainInfoPage(HttpServletRequest request) {
+		 return new ModelAndView("runPlanLk/jbt_traininfo").addObject("tabType", request.getParameter("tabType"));
+     }
+	 
 	 
 	 
 	 /**

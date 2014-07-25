@@ -542,7 +542,7 @@ FROM
     </select>
     
     <select id="getRunPlanByStartDate" parameterType="map" resultType="org.railway.com.trainplan.entity.PlanCrossInfo">
-      select t.plan_cross_id as planCrossId,
+         select t.plan_cross_id as planCrossId,
 		t.unit_cross_id as unitCrossId,
 		t.base_cross_id as baseCrossId,
 		t.base_chart_id as baseChartId,
@@ -580,9 +580,13 @@ FROM
 		t.CHECK_TYPE as checkType,
 		t.CHECK_PEOPLE as checkPeople,
 		t.CHECK_PEOPLE_ORG as checkPeopleOrg,
-		t.CHECK_TIME as checkTime  , a.group_serial_nbr as  groupSerialNbr 
-		from plan_cross t, plan_train a
-		where a.plan_cross_id=t.plan_cross_id and a.run_date=#{startDate} and a.train_sort='1' 
+		t.CHECK_TIME as checkTime  , 
+    a.group_serial_nbr as  groupSerialNbr,
+    b.post_id as postId,
+    b.post_name as postName,
+    b.THROUGH_LINE as throughLine
+		from plan_cross t, plan_train a,dic_rela_cross_post b
+		where a.plan_cross_id=t.plan_cross_id and t.base_cross_id=b.base_cross_id and a.run_date=#{startDate} and a.train_sort='1' 
     </select>
     
     <select id="getPlanTrainByPlanCrossId" parameterType="map" resultType="org.railway.com.trainplan.service.dto.PlanCrossDto">
