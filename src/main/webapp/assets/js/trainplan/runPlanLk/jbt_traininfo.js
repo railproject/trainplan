@@ -377,7 +377,6 @@ function ApplicationModel() {
 		}
 		
 
-		console.log("~~~~~~~~  "+_tabType);
 		if(_tabType == "bjdd") {//bjdd(本局担当)   wjdd（外局担当）
 			//清除
 			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.remove(function(item) {
@@ -411,10 +410,6 @@ function ApplicationModel() {
 		cmdLkData.platform = "";
 		cmdLkData.arrTrainNbr = "";
 		cmdLkData.dptTrainNbr = "";
-		console.log("=============   数据转换============");
-		console.dir(trainTimeRowData);
-		console.dir(cmdLkData);
-		console.log("=============   数据转换============");
 		
 		return cmdLkData;
 	};
