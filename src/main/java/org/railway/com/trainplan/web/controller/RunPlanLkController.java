@@ -63,6 +63,13 @@ public class RunPlanLkController {
 		 return "runPlanLk/runPlanLk_main";
      }
 	 
+
+	 @RequestMapping(value="/jbtTrainInfoPage", method = RequestMethod.GET)
+     public String jbtTrainInfoPage() {
+		 return "runPlanLk/jbt_traininfo";
+     }
+	 
+	 
 	 
 	 /**
 	  * 在表plan_train中查询临客列车信息

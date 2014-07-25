@@ -8,6 +8,15 @@ String basePath = request.getContextPath();
 <head>
 <title>既有临客上图</title>
 <jsp:include page="/assets/commonpage/global.jsp" flush="true" />
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath %>/assets/css/table.scroll.css">
+
+
+<!-- 自动补全插件 -->
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/plugins/textextjs/css/textext.core.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/plugins/textextjs/css/textext.plugin.tags.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/plugins/textextjs/css/textext.plugin.autocomplete.css"/>
+
 </head>
 <body class="Iframe_body">
 <ol class="breadcrumb">
@@ -15,278 +24,249 @@ String basePath = request.getContextPath();
   <li><a href="javascript:void(0);">既有临客上图</a></li>
 </ol>
 <!--以上为必须要的--> 
-
-
-<!--左右分开-->
-<div class="row">
-	  
-  
-  <!--乘务计划-->
-  <div style="margin-right:-590px; float:left; width:100%;">
-    <!--分栏框开始-->
-    <div class="panel panel-default" style="margin-right:590px;">
-      <!--panle-heading-->
-      
-      <div class="panel-body">
-        <div class="row" style="margin-bottom:10px;">
-          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onAddOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-plus"></i>添加</button>
-          <button type="button" class="btn btn-success" data-toggle="modal" data-bind="click : onEditOpen" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 修改</button>
-          <button type="button" class="btn btn-success" data-bind="click : deleteHightLineCrew"><i class="fa fa-minus-square"></i>删除</button>
-          <button type="button" class="btn btn-success" data-bind="" data-toggle="modal" data-target="#uploadCrewExcelModal"><i class="fa fa-sign-in"></i>导入EXCEL</button>
-          <button type="button" class="btn btn-success" data-bind="click : exportExcel"><i class="fa fa-sign-out"></i>导出EXCEL</button>
-        </div>
-        <div class="table-responsive table-hover">
-          <table class="table table-bordered table-striped table-hover">
-            <thead>
-              <tr>
-                <th rowspan="2" style="width:5%;"></th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px;">序号</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">乘务交路</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">乘务组编号</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle">经由铁路线</th>
-                <th colspan="3" class="text-center" style="vertical-align: middle">车长1</th>
-                <th colspan="3" class="text-center" style="vertical-align: middle">车长2</th>
-                <th rowspan="2" class="text-center" style="vertical-align: middle;width:40px">提交<br>状态</th>
-              </tr>
-              <tr>
-                <th class="text-center">姓名</th>
-                <th class="text-center">电话</th>
-                <th class="text-center">政治面貌</th>
-                <th class="text-center">姓名</th>
-                <th class="text-center">电话</th>
-                <th class="text-center">政治面貌</th>
-              </tr>
-            </thead>
-            <tbody data-bind="foreach: hightLineCrewRows.rows">
-              <tr data-bind="style:{color: $parent.currentRowCrewHighlineId() == crewHighlineId ? 'blue':''}">
-              	<td><input name="crew_checkbox" type="checkbox" data-bind="value : crewHighlineId"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: crewCross, attr:{title: crewCross}"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: crewGroup, attr:{title: crewGroup}"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: throughLine, attr:{title: throughLine}"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: name1, attr:{title: name1}"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: tel1, attr:{title: tel1}"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: identity1, attr:{title: identity1}"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: name2, attr:{title: name2}"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: tel2, attr:{title: tel2}"></td>
-                <td data-bind="click: $parent.setCurrentRec, text: identity2, attr:{title: identity2}"></td>
-                <td data-bind="click: $parent.setCurrentRec,html : submitTypeStr"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <!--panel-body--> 
-      
-    </div>
-    
-    <!--分栏框结束--> 
-  </div>
-  <!--乘务计划end--> 
-
-
-
-
-  <!--列车开行计划-->
-  <div class="pull-right" style="width:580px;"> 
-    <!--分栏框开始-->
-    <div class="panel panel-default">
-      <div class="panel-heading" >
-        <h3 class="panel-title" > <i class="fa fa-user-md"></i>列车开行计划</h3>
-      </div>
-      <!--panle-heading-->
-      <div class="panel-body" style="padding:5px 5px;">
-        <div class="table-responsive table-hover" style="height: 700px; overflow-y:auto;">
-          <table border="0" class="table table-bordered table-striped table-hover">
-            <thead>
-              <tr>
-                <th style="width:40px;">序号</th>
-                <th style="width:120px;">车次</th>
-                <th style="width:120px;">始发站</th>
-                <th style="width:120px;">始发时间</th>
-                <th style="width:120px;">终到站</th>
-                <th style="width:120px;">终到时间</th>
-              </tr>
-            </thead>
-			<tbody data-bind="foreach: planTrainRows.rows">
-			  <tr data-bind="click: $parent.setCurrentTrainPlan,style:{color: $parent.currentRowPlanTrainId() == planTrainId ? 'blue':''}, attr:{class : isMatch()==1? 'success':''}">
-                <td style="width:40px;" data-bind=" text: ($index() + 1)"></td>
-                <td style="width:120px;" data-bind=" text: trainNbr, attr:{title: trainNbr}"></td>
-                <td style="width:120px;" data-bind=" text: startStn, attr:{title: startStn}"></td>
-                <td style="width:120px;" data-bind=" text: startTimeStr, attr:{title: startTimeStr}"></td>
-                <td style="width:120px;" data-bind=" text: endStn, attr:{title: endStn}"></td>
-                <td style="width:120px;" data-bind=" text: endTimeStr, attr:{title: endTimeStr}"></td>
-              </tr>
-            </tbody> 
-          </table>
-        </div>
-      </div>
-      <!--panel-body--> 
-      
-    </div>
-    
-    <!--分栏框结束--> 
-  </div>
-  <!--列车开行计划 end--> 
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div class="bs-example bs-example-tabs">
+		      <ul id="myTab" class="nav nav-tabs">
+		        <li class="active"><a href="#pageDiv_ddj" data-toggle="tab">本局担当</a></li>
+		        <li class=""><a href="#pageDiv_bjxg" data-toggle="tab">外局担当</a></li>
+		      </ul>
+		    <div id="myTabContent" class="tab-content" >
+		  	<!--tab1 开始-->
+			  <div id="pageDiv_ddj" class="tab-pane fade active in" >
+			  		<!--  -->
+					  <div style="margin-right:-590px; float:left; width:100%;">
+					    <!--分栏框开始-->
+					    <div class="panel panel-default" style="margin-right:590px;">
+					     
+					     
+					     
+<div class="row" style="padding-top:10px;padding-bottom:10px;">
+  <form class="form-horizontal" role="form">
+  	<div class="row">
+  		<div class="pull-left">
+	  		<div class="row">
+	  			<div class="row" style="width: 100%; margin-top: 5px;">
+			  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
+			  			<label for="exampleInputEmail2" class="control-label pull-left">发令起始日期:&nbsp;</label>
+					    <div class="pull-left">
+					        <input id="runPlanLk_cmd_input_startDate" type="text" class="form-control" style="width:100px;" placeholder="">
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:12px;">&nbsp;&nbsp;局令号:&nbsp;</label>
+					    <div class="pull-left">
+					        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().cmdNbrBureau">
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:12px;">&nbsp;&nbsp;部令号:&nbsp;</label>
+					    <div class="pull-left">
+					        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().cmdNbrSuperior">
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:27px;">&nbsp;&nbsp;车次:&nbsp;</label>
+					    <div class="pull-left">
+					        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().trainNbr">
+					    </div>
+			  		</div>
+			  	</div>
+			  	<div class="row" style="width: 100%; margin-top: 5px;">
+			  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
+			  			<label for="exampleInputEmail2" class="control-label pull-left">发令终止日期:&nbsp;</label>
+					    <div class="pull-left">
+					        <input id="runPlanLk_cmd_input_endDate" type="text" class="form-control" style="width:100px;" placeholder="">
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;命令类型:&nbsp;</label>
+					    <div class="pull-left">
+					    	<select class="form-control" style="width: 100px;display:inline-block;"
+								 data-bind="options: [{'code': 'all', 'text': ''},{'code': '1', 'text': '既有线临客加开'},{'code': '2', 'text': '高铁临客加开'}], value: searchModle().cmdTypeOption, optionsText: 'text',optionsValue:'code'">
+							</select>
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;选线状态:&nbsp;</label>
+					    <div class="pull-left">
+					    	<select class="form-control" style="width: 100px;display:inline-block;"
+								 data-bind="options: [{'code': 'all', 'text': ''},{'code': '1', 'text': '已'},{'code': '2', 'text': '未'}], value: searchModle().selectStateOption, optionsText: 'text',optionsValue:'code'">
+							</select>
+						</div>
+						<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;生成状态:&nbsp;</label>
+					    <div class="pull-left">
+					    	<select class="form-control" style="width: 100px;display:inline-block;"
+								 data-bind="options: [{'code': 'all', 'text': ''},{'code': '1', 'text': '已'},{'code': '2', 'text': '未'}], value: searchModle().createStateOption, optionsText: 'text',optionsValue:'code'">
+							</select>
+						</div>
+			  			
+			  			
+			  			
+			  		</div>
+			  	</div>
+			  	
+			  	
+			  	
+	  		</div>
+  		</div>
+  		<div style="float:left;margin-left:20px;margin-top: 25px;margin-bottom:0;vertical-align: middle">
+  			<a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
+  			
+  		</div>
+  	</div>
+  	
+  </form>
 </div>
-<!--左右分开--> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--新增/修改弹出框-->
-<div class="modal fade" id="saveHightLineCrewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" data-bind="text : hightLineCrewModelTitle"></h4>
-      </div>
-      
-      <!--panel-heading-->
-      <div class="panel-body row">
-        <form id="hightLineCrewForm" class="bs-example form-horizontal" style="margin-top:10px;" data-bind="with : hightLineCrewModel">
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">乘务交路：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_crewCross" type="text" class="form-control" data-bind="value : crewCross">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">乘务组编号：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_crewGroup" type="text" class="form-control" data-bind="value : crewGroup">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">经由铁路线：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_throughLine" type="text" class="form-control" data-bind="value : throughLine">
-               </div>
-          </div>
-          
-          
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">车长1姓名：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_name1" type="text" class="form-control" data-bind="value : name1">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">电话：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_tel1" type="text" class="form-control" data-bind="value : tel1">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">政治面貌：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_identity1" type="text" class="form-control" data-bind="value : identity1">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">车长2姓名：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_name2" type="text" class="form-control" data-bind="value : name2">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">电话：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_tel2" type="text" class="form-control" data-bind="value : tel2">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">政治面貌：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <input id="add_identity2" type="text" class="form-control" data-bind="value : identity2">
-               </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3 col-sm-4 col-xs-4 control-label text-right">备注：</label>
-            <div class="col-md-7 col-sm-7 col-xs-6">
-              <textarea id="add_note" class="form-control" rows="4" data-bind="value : note"></textarea>
-            </div>
-          </div>
-        </form>
-        <!--        <p class="pull-right" style="margin:0;">说明：当您申请后需要等待管理员审批才能使用。</p>
---> </div>
-      <!--panel-body-->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bind="click : saveHightLineCrew" data-dismiss="modal">确定</button>
-        <button type="button" class="btn btn-warning" data-dismiss="modal">取消</button>
-      </div>
-    </div>
-    <!-- /.modal-content --> 
-  </div>
-  <!-- /.modal-dialog --> 
+					      
+					      
+					      
+					      <div class="panel-body">
+					        <div class="row" style="margin-bottom:10px;">
+					          <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="click: loadTrainInfoFromJbt"><i class="fa fa-plus"></i>选线</button>
+					          <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 生成开行计划</button>
+					        </div>
+					        <div class="table-responsive table-hover">
+					          <table id ="runPlanLkCMD_table" class="table table-bordered table-striped table-hover">
+					            <thead>
+					              <tr>
+					                <th class="text-center" style="vertical-align: middle;width:20px"><input id="checkbox_selectAll" type="checkbox" data-bind="checked: isSelectAll, event:{change: checkBoxSelectAllChange}"></th>
+					                <th class="text-center" style="vertical-align: middle;width:40px">序号</th>
+					                <th class="text-center" style="vertical-align: middle;width:110px">命令类型</th>
+					                <th class="text-center" style="vertical-align: middle;width:80px">发令日期</th>
+					                <th class="text-center" style="vertical-align: middle">局令号</th>
+					                <th class="text-center" style="vertical-align: middle">项号</th>
+					                <th class="text-center" style="vertical-align: middle">部令号</th>
+					                <th class="text-center" style="vertical-align: middle">车次</th>
+					                <th class="text-center" style="vertical-align: middle">始发站</th>
+					                <th class="text-center" style="vertical-align: middle">终到站</th>
+					                <th class="text-center" style="vertical-align: middle;width:80px">起始日期</th>
+					                <th class="text-center" style="vertical-align: middle;width:80px">终止日期</th>
+					                <th class="text-center" style="vertical-align: middle">规律</th>
+					                <th class="text-center" style="vertical-align: middle">择日</th>
+					                <th class="text-center" style="vertical-align: middle">途经局</th>
+					                <th class="text-center" style="vertical-align: middle;width:30px">选线<br>状态</th>
+					                <th class="text-center" style="vertical-align: middle;width:30px">生成<br>状态</th>
+					              </tr>
+					            </thead>
+					            <tbody data-bind="foreach: runPlanLkCMDRows">
+					              <tr data-bind="style:{color: $parent.currentCmdTxtMlId() == cmdTxtMlId ? 'blue':''}">
+					              	<td><input name="cmd_list_checkbox" type="checkbox" data-bind="value : cmdTrainId"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdType, attr:{title: cmdType}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdTime, attr:{title: cmdTime}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdNbrBureau, attr:{title: cmdNbrBureau}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdItem, attr:{title: cmdItem}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdNbrSuperior, attr:{title: cmdNbrSuperior}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: trainNbr, attr:{title: trainNbr}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: startStn, attr:{title: startStn}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: endStn, attr:{title: endStn}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: startDate, attr:{title: startDate}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: endDate, attr:{title: endDate}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: rule, attr:{title: rule}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: selectedDate, attr:{title: selectedDate}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: passBureau, attr:{title: passBureau}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: selectState, attr:{title: selectState}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: createState, attr:{title: createState}"></td>
+					              </tr>
+					            </tbody>
+					          </table>
+					        </div>
+					      </div>
+					      <!--panel-body--> 
+					      
+					    </div>
+					    
+					    <!--分栏框结束--> 
+					  </div>
+					  <!--乘务计划end--> 
+					
+					
+					
+					
+					  <!--列车开行计划-->
+					  <div class="pull-right" style="width:580px;"> 
+					    <!--分栏框开始-->
+					    <div class="panel panel-default">
+					      <div class="panel-heading" >
+					        <h3 class="panel-title" > <i class="fa fa-user-md"></i>列车时刻表</h3>
+					      </div>
+					      <!--panle-heading-->
+					      <div class="panel-body" style="padding:5px 5px;">
+							<div class="row" style="width: 100%; margin-top: 5px;margin-bottom: 5px;">
+						  		<div class="form-group" style="float:left;margin-left:3px;margin-bottom:0;">
+						  			<label for="exampleInputEmail2" class="control-label pull-left">途经局:&nbsp;</label>
+								    <div class="pull-left">
+								        <textarea id="runPlanLk_cmd_input_tjj" class="example" style="width:340px;height:23px" rows="1"></textarea>
+									</div>
+									<div class="pull-left" style="margin-left:345px;">
+								        <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="" data-target="#saveHightLineCrewModal"><i class="fa fa-floppy-o"></i> 保存</button>
+					          		</div>
+						  		</div>
+						  	</div>
+					        <div class="table-responsive table-hover" style="height: 700px; overflow-y:auto;">
+					          <table id="runPlanLkCMD_trainStn_table" border="0" class="table table-bordered table-striped table-hover">
+					            <thead>
+					              <tr>
+					                <th style="width:40px;">序号</th>
+					                <th style="width:200px">站名</th>
+					                <th style="width:70px">路局</th>
+					                <th style="width:200px">到达时间</th>
+					                <th style="width:200px">出发时间</th>
+					                <th style="width:80px">停留时间</th>
+					                <th style="width:80px">股道</th>  
+					                <th style="width:80px">站台</th>  
+					              </tr>
+					            </thead>
+								<tbody data-bind="foreach: runPlanLkCMDTrainStnRows">
+								  <tr>
+					                <td style="width:40px;" data-bind=" text: ($index() + 1)"></td>
+					                <td style="width:120px;" data-bind=" text: stnName, attr:{title: stnName}"></td>
+					                <td style="width:120px;" data-bind=" text: stnBureau"></td>
+					                <td style="width:120px;" data-bind=" text: arrTime, attr:{title: arrTime}"></td>
+					                <td style="width:120px;" data-bind=" text: dptTime, attr:{title: dptTime}"></td>
+					                <td style="width:120px;" data-bind=" text: trackNbr, attr:{title: trackNbr}"></td>
+					                <td style="width:120px;" data-bind=" text: platform, attr:{title: platform}"></td>
+					              </tr>
+					            </tbody> 
+					          </table>
+					        </div>
+					      </div>
+					      <!--panel-body--> 
+					      
+					    </div>
+					    
+					    <!--分栏框结束--> 
+					  </div>
+					  <!--列车开行计划 end--> 
+  
+  
+			  		
+			  		
+			  		
+			  		
+			  </div>
+		  	<!--tab1  结束--> 
+	        <!--tab2   开始-->
+	        <div id="pageDiv_bjxg" class="tab-pane fade">
+	        	eee
+	        </div>
+	        <!--tab2  结束-->
+	        
+	        </div>
+		</div>
+	</div>
 </div>
-<!--新增/修改弹出框 end-->
 
 
-
-
-
-
-<!--导入弹窗-->
-<div class="modal fade" id="uploadCrewExcelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">导入车长乘务计划EXCEL</h4>
-      </div>
-      
-      <!--panel-heading-->
-      <div class="panel-body row">
-      	<img id="loading" src="<%=basePath %>/assets/images/loading.gif" style="display:none;">
-        <form  id="file_upload_crew" name="file_upload_crew" action="crew/highline/importExcel" method="post" enctype="multipart/form-data" class="bs-example form-horizontal" style="margin-top:10px;">
-          <div class="form-group">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-              <input id="crewExcelFile" type="file" size="45" name="crewExcelFile"/>
-            </div>
-          </div>
-        </form>
-        <!--        <p class="pull-right" style="margin:0;">说明：当您申请后需要等待管理员审批才能使用。</p>
---> </div>
-      <!--panel-body-->
-      <div class="modal-footer">
-        <button id="btn_fileToUpload" type="button" class="btn btn-primary" data-bind="click : uploadExcel" data-dismiss="modal">导入</button>
-        <button id="btn_fileToUpload_cancel" type="button" class="btn btn-warning" data-dismiss="modal">取消</button>
-      </div>
-    </div>
-    <!-- /.modal-content --> 
-  </div>
-  <!-- /.modal-dialog --> 
+<!--选线按钮点击事件打开   基本图查询界面-->
+<div id="jbt_traininfo_dialog" class="easyui-dialog" title="调整时刻表"
+	data-options="iconCls:'icon-save'"
+	style="width: 1200px; height: 500px;overflow: hidden;">
+ 	<iframe style="width: 100%; height: 395px;border: 0;overflow: hidden;" src=""></iframe>
 </div>
-<!-- 导入excel弹窗 end -->
 
 
 
 
+<script type="text/javascript" src="<%=basePath %>/assets/easyui/jquery.easyui.min.js"></script>
+<!-- 自动补全插件 -->
+<script type="text/javascript" src="<%=basePath %>/assets/plugins/textextjs/js/textext.core.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/plugins/textextjs/js/textext.plugin.tags.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/plugins/textextjs/js/textext.plugin.autocomplete.js"></script>
 
+<script type="text/javascript" src="<%=basePath %>/assets/js/chromatable_1.js"></script>
 
-<script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
-<script type="text/javascript"  src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
-<script type="text/javascript"  src="<%=basePath %>/assets/js/trainplan/hightlineCrew/hightline.crew.cz.js"></script> 
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/runPlanLk/runPlanLk_cmd_add.js"></script>
 </body>
 </html>
