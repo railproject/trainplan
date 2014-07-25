@@ -140,7 +140,7 @@ String basePath = request.getContextPath();
 					              </tr>
 					            </thead>
 					            <tbody data-bind="foreach: runPlanLkCMDRows">
-					              <tr data-bind="style:{color: $parent.currentCmdTxtMl().id == cmdTxtMlId ? 'blue':''}">
+					              <tr data-bind="style:{color: $parent.currentCmdTxtMl().cmdTxtMlId == cmdTxtMlId ? 'blue':''}">
 					              	<td><input name="cmd_list_checkbox" type="checkbox" data-bind="value : cmdTrainId"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: cmdType, attr:{title: cmdType}"></td>
@@ -187,10 +187,19 @@ String basePath = request.getContextPath();
 						  		<div class="form-group" style="float:left;margin-left:3px;margin-bottom:0;">
 						  			<label for="exampleInputEmail2" class="control-label pull-left">途经局:&nbsp;</label>
 								    <div class="pull-left">
-								        <textarea id="runPlanLk_cmd_input_tjj" class="example" style="width:340px;height:23px" rows="1"></textarea>
+								        <textarea id="runPlanLk_cmd_input_tjj" class="example" style="width:500px;height:23px" rows="1"></textarea>
 									</div>
-									<div class="pull-left" style="margin-left:345px;">
+									<!-- <div class="pull-left" style="margin-left:345px;">
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: saveCmdTxtMl"><i class="fa fa-floppy-o"></i> 保存</button>
+					          		</div> -->
+						  		</div>
+						  	</div>
+						  	<div class="row" style="width: 100%; margin-top: 5px;margin-bottom: 5px;">
+						  		<div class="form-group" style="float:left;margin-left:3px;margin-bottom:0;">
+									<div class="pull-left" style="margin-left:3px;">
+								        <button type="button" class="btn btn-success btn-xs" data-bind="click: saveCmdTxtMl"><i class="fa fa-floppy-o"></i> 保存</button>
+								        <button type="button" class="btn btn-success btn-xs" data-bind="click: up"><i class="fa fa-arrow-up"></i> 上移</button>
+								        <button type="button" class="btn btn-success btn-xs" data-bind="click: down"><i class="fa fa-arrow-down"></i> 下移</button>
 					          		</div>
 						  		</div>
 						  	</div>
@@ -210,16 +219,16 @@ String basePath = request.getContextPath();
 					              </tr>
 					            </thead>
 								<tbody data-bind="foreach: runPlanLkCMDTrainStnRows">
-								  <tr>
-					                <td data-bind=" text: ($index() + 1)"></td>
-					                <td data-bind=" text: stnName, attr:{title: stnName}"></td>
-					                <td data-bind=" text: arrTrainNbr, attr:{title: arrTrainNbr}"></td>
-					                <td data-bind=" text: dptTrainNbr, attr:{title: dptTrainNbr}"></td>
-					                <td data-bind=" text: stnBureau"></td>
-					                <td data-bind=" text: arrTime, attr:{title: arrTime}"></td>
-					                <td data-bind=" text: dptTime, attr:{title: dptTime}"></td>
-					                <td data-bind=" text: trackNbr, attr:{title: trackNbr}"></td>
-					                <td data-bind=" text: platform, attr:{title: platform}"></td>
+					              <tr data-bind="style:{color: $root.currentCmdTrainStn().childIndex == childIndex ? 'blue':''}">
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: ($index() + 1)"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: stnName, attr:{title: stnName}"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: arrTrainNbr, attr:{title: arrTrainNbr}"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: dptTrainNbr, attr:{title: dptTrainNbr}"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: stnBureau"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: arrTime, attr:{title: arrTime}"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: dptTime, attr:{title: dptTime}"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: trackNbr, attr:{title: trackNbr}"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: platform, attr:{title: platform}"></td>
 					              </tr>
 					            </tbody> 
 					          </table>

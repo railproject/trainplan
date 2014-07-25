@@ -351,9 +351,11 @@ function ApplicationModel() {
 				return true;
 			});
 		}
+		var _LkCMDTrain_len = window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows().length;
 		
 		$.each(self.trainAllTimes(), function(i, n){
-			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.push(toCmdLkTrainTimeRow(n, "2"));
+			n.childIndex = _LkCMDTrain_len+i;	//增加childIndex属性
+			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.push(new window.parent.runPlanLkCmdPageModel.cmdTrainStnTimeRow(toCmdLkTrainTimeRow(n, "2")));
 		});
 		
 	};
@@ -382,9 +384,12 @@ function ApplicationModel() {
 				return true;
 			});
 		}
+
+		var _LkCMDTrain_len = window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows().length;
 		
 		$.each(self.trainAllTimes(), function(i, n){
-			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.push(toCmdLkTrainTimeRow(n, "1"));
+			n.childIndex = _LkCMDTrain_len+i;	//增加childIndex属性
+			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.push(new window.parent.runPlanLkCmdPageModel.cmdTrainStnTimeRow(toCmdLkTrainTimeRow(n, "1")));
 		});
 	};
 	
@@ -397,6 +402,7 @@ function ApplicationModel() {
 	 */
 	function toCmdLkTrainTimeRow(trainTimeRowData, useType) {
 		var cmdLkData = {};
+		cmdLkData.childIndex = trainTimeRowData.childIndex;
 		cmdLkData.stnName = trainTimeRowData.stnName;
 		cmdLkData.stnBureau = useType=="1"?trainTimeRowData.bureauShortName:"";
 		cmdLkData.arrTime = useType=="1"?trainTimeRowData.sourceTime:"";
@@ -409,6 +415,7 @@ function ApplicationModel() {
 		console.dir(trainTimeRowData);
 		console.dir(cmdLkData);
 		console.log("=============   数据转换============");
+		
 		return cmdLkData;
 	};
 	
