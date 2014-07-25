@@ -650,7 +650,7 @@ FROM
     </select>
 
     <delete id="deleteRunPlanByStartTime" parameterType="java.util.Map">
-        DELETE FROM PLAN_TRAIN WHERE START_TIME > #{startTime}
+        DELETE FROM PLAN_TRAIN WHERE START_TIME > #{startTime} AND PLAN_CROSS_ID = #{planCrossId}
     </delete>
 
     <update id="updateNextTrainId" parameterType="org.railway.com.trainplan.entity.RunPlan">
