@@ -203,7 +203,6 @@ String basePath = request.getContextPath();
 					                <th style="width:70px">路局</th>
 					                <th style="width:200px">到达时间</th>
 					                <th style="width:200px">出发时间</th>
-					                <th style="width:80px">停留时间</th>
 					                <th style="width:80px">股道</th>  
 					                <th style="width:80px">站台</th>  
 					              </tr>
@@ -212,9 +211,11 @@ String basePath = request.getContextPath();
 								  <tr>
 					                <td style="width:40px;" data-bind=" text: ($index() + 1)"></td>
 					                <td style="width:120px;" data-bind=" text: stnName, attr:{title: stnName}"></td>
-					                <td style="width:120px;" data-bind=" text: stnBureau"></td>
-					                <td style="width:120px;" data-bind=" text: arrTime, attr:{title: arrTime}"></td>
-					                <td style="width:120px;" data-bind=" text: dptTime, attr:{title: dptTime}"></td>
+					                <td style="width:80px;" data-bind=" text: arrTrainNbr, attr:{title: arrTrainNbr}"></td>
+					                <td style="width:80px;" data-bind=" text: dptTrainNbr, attr:{title: dptTrainNbr}"></td>
+					                <td style="width:40px;" data-bind=" text: stnBureau"></td>
+					                <td style="width:80px;" data-bind=" text: arrTime, attr:{title: arrTime}"></td>
+					                <td style="width:80px;" data-bind=" text: dptTime, attr:{title: dptTime}"></td>
 					                <td style="width:120px;" data-bind=" text: trackNbr, attr:{title: trackNbr}"></td>
 					                <td style="width:120px;" data-bind=" text: platform, attr:{title: platform}"></td>
 					              </tr>
