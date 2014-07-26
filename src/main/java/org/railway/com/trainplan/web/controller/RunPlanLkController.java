@@ -264,7 +264,7 @@ public class RunPlanLkController {
 				 model.setCmdNbrBureau(cmdNbrBureau);
 				 model.setCmdNbrSuperior(cmdNbrSuperior);
 				 if("all".equals(cmdType)){
-					 
+					 model.setCmdType(ConstantUtil.ALL_ADD_CMD_NAME);
 				 }else if("1".equals(cmdType)){
 					 //既有线加开
 					 model.setCmdType(ConstantUtil.JY_ADD_CMD_NAME);
