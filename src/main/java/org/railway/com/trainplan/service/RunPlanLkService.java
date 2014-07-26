@@ -102,13 +102,13 @@ public class RunPlanLkService {
 	  
 	  
 	  /**
-	   * 根据cmdTxtmlId查询cmdTrain信息
+	   * 根据cmdTxtmlItemId查询cmdTrain信息
 	   * @param cmdTxtmlId
 	   * @return
 	   */
-	  public CmdTrain  getCmdTrainInfoForCmdTxtmlId(String cmdTxtmlId){
+	  public CmdTrain  getCmdTrainInfoForCmdTxtmlItemId(String cmdTxtmlItemId){
 		  Map<String,String> reqMap = new HashMap<String,String>();
-		  reqMap.put("cmdTxtmlId", cmdTxtmlId);
+		  reqMap.put("cmdTxtmlItemId", cmdTxtmlItemId);
 		  return (CmdTrain) baseDao.selectOneBySql(Constants.RUNPLANLKDAO_GET_CMD_TRAININFO_FOR_CMDMLID, reqMap);
 	  }
 	  
@@ -119,16 +119,14 @@ public class RunPlanLkService {
 	   * @param bureuaCode 局码
 	   * @return
 	   */
-	  public List<CmdInfoModel>  getCmdTrainInfoFromRemote(String startDate,String endDate,String bureuaCode){
+	  public List<CmdInfoModel>  getCmdTrainInfoFromRemote(CmdInfoModel model){
 		 
-		  Date startDay = DateUtil.parse(startDate);
-		  Date endDay = DateUtil.parse(endDate);
 		  //构造接口服务实例
 		  ICmdAdapterService service = CmdAdapterServiceImpl.getInstance();
 		  //服务初始化
-		  service.initilize(bureuaCode);
+		  service.initilize(model.getCmdBureau());
 		  //根据开始结束时间，查询符合条件的临客命令对象集合
-		  List<CmdInfoModel> list = service.findCmdInfoModelListByDateAndBureau(startDay, endDay);
+		  List<CmdInfoModel> list = service.findCmdInfoModelListByDateAndBureau(model);
 		  //关闭服务资源
 		  service.closeResource();
 		  return list;
@@ -175,5 +173,14 @@ public class RunPlanLkService {
 	   */
 	  public int insertCmdTrain(CmdTrain cmdTrain){
 		  return baseDao.insertBySql(Constants.RUNPLANLKDAO_INSERT_CMD_TRAIN, cmdTrain);
+	  }
+	  
+	  /**
+	   * 通过cmdTrainId删除表cmd_train_stn中的数据
+	   * @param cmdTrainId
+	   * @return
+	   */
+	  public int deleteCmdTrainStnForCmdTrainId(String cmdTrainId){
+		  return baseDao.deleteBySql(Constants.RUNPLANLKDAO_DELETE_CMD_TRAINSTN_FOR_CMDTRAINID, cmdTrainId);
 	  }
 }

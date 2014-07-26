@@ -106,7 +106,9 @@ var RunPlanLkCmdPage = function () {
 							for ( var i = 0; i < result.data.length; i++) {
 								_self.bureauArray.push(result.data[i].ljjc);
 							}
-							renderInputTjj();//渲染途经局自动补全输入框
+							
+							//暂时不启用  自动补齐插件
+							//renderInputTjj();//渲染途经局自动补全输入框
 						}
 						
 					} else {
@@ -168,7 +170,7 @@ var RunPlanLkCmdPage = function () {
 		 */
 		_self.cmdTrainStnTimeRow = function(data) {
 			var _self = this;
-			_self.data = data;
+//			_self.data = data;
 			_self.childIndex = ko.observable(data.childIndex);
 			_self.stnName = ko.observable(data.stnName);
 			_self.arrTrainNbr = ko.observable(data.arrTrainNbr);
@@ -182,9 +184,10 @@ var RunPlanLkCmdPage = function () {
 		};
 		
 		
+		
 		_self.searchModle = ko.observable(new SearchModle());		//页面查询对象
-		_self.runPlanLkCMDRows = ko.observableArray();		//页面命令列表
-		_self.runPlanLkCMDTrainStnRows = ko.observableArray();		//页面命令stn列表
+		_self.runPlanLkCMDRows = ko.observableArray();				//页面命令列表
+		_self.runPlanLkCMDTrainStnRows = ko.observableArray();		//页面命令时刻列表
 
 		_self.isSelectAll = ko.observable(false);	//本局担当命令列表是否全选 	全选标识  默认false
 		_self.currentCmdTxtMl = ko.observable();//命令列表选中行记录
@@ -200,8 +203,18 @@ var RunPlanLkCmdPage = function () {
 			platform:"",
 		}));//列车时刻表选中行记录  用于上下移动
 		
-		
-		
+
+		//套用的基本图车次id
+		_self.useBaseTrainId = ko.observable();
+		_self.useBaseTrainIdFunc = ko.computed(function(){
+			//当页面命令时刻列表 无数据时 套用列车id置空
+			if(_self.runPlanLkCMDTrainStnRows.length == 0){
+				_self.useBaseTrainId("");
+				return "";
+			}
+			
+		});
+
 		
 		
 		
@@ -218,7 +231,7 @@ var RunPlanLkCmdPage = function () {
 		 */
 		_self.queryList = function(){
 			//清除历史值
-			_self.currentCmdTxtMl({"cmdTxtMlId":""});
+			_self.currentCmdTxtMl({"cmdTxtMlItemId":""});
 			_self.currentCmdTrainStn(new _self.cmdTrainStnTimeRow({
 					childIndex:-1,
 					stnName:"",
@@ -237,7 +250,6 @@ var RunPlanLkCmdPage = function () {
 				return true;
 			});
 			
-			commonJsScreenLock();
 
 			//2.查询命令信息
 			loadDataForPage();	//loadRows方法
@@ -249,6 +261,7 @@ var RunPlanLkCmdPage = function () {
 		 * 查询临客命令列表
 		 */
 		function loadDataForPage() {
+			commonJsScreenLock();
 			$.ajax({
 				url : basePath+"/runPlanLk/getCmdTrainInfo",
 				cache : false,
@@ -274,20 +287,20 @@ var RunPlanLkCmdPage = function () {
 								
 								//选线状态0：未选择 1：已选择
 								if (obj.selectState == "1") {
-									obj.selectState = "已";
+									obj.selectStateStr = "已";
 								} else if (obj.selectState == "0") {
-									obj.selectState = "未";
+									obj.selectStateStr = "未";
 								} else {
-									obj.selectState = "";
+									obj.selectStateStr = "";
 								}
 
 								//生成状态0：未生成 1：已生成
 								if (obj.createState == "1") {
-									obj.createState = "已";
+									obj.createStateStr = "已";
 								} else if (obj.createState == "0") {
-									obj.createState = "未";
+									obj.createStateStr = "未";
 								} else {
-									obj.createState = "";
+									obj.createStateStr = "";
 								}
 								
 								//增加isSelect属性  便于全选复选框事件	默认0=false
@@ -338,7 +351,24 @@ var RunPlanLkCmdPage = function () {
 		 * 命令列表行点击事件
 		 */
 		_self.setCurrentRec = function(row) {
-			_self.currentCmdTxtMl(row);//.cmdTxtMlId);
+			row.isSelect = 1;
+			_self.currentCmdTxtMl(row);
+			
+			//清除时刻表列表行选中值及时刻表列表数据
+			_self.currentCmdTrainStn(new _self.cmdTrainStnTimeRow({
+					childIndex:-1,
+					stnName:"",
+					arrTrainNbr:"",
+					dptTrainNbr:"",
+					stnBureau:"",
+					arrTime:"",
+					dptTime:"",
+					trackNbr:"",
+					platform:"",
+			}));
+			_self.runPlanLkCMDTrainStnRows.remove(function(item) {
+				return true;
+			});
 			
 			//查询cmdTrainStn信息
 			loadCmdTrainStnInfo(row.cmdTrainId);
@@ -410,10 +440,11 @@ var RunPlanLkCmdPage = function () {
 		 * @param 
 		 */
 		_self.loadTrainInfoFromJbt = function(currentTrain){
-			if(_self.currentCmdTxtMl()==null || _self.currentCmdTxtMl().cmdTxtMlId=="") {
+			if(_self.currentCmdTxtMl()==null || _self.currentCmdTxtMl().cmdTxtMlItemId=="") {
 				showWarningDialog("请选择临客命令记录");
 				return;
 			}
+			
 			
 //			if($('#run_plan_train_times_edit_dialog').is(":hidden")){
 				$("#jbt_traininfo_dialog").find("iframe").attr("src", basePath+"/runPlanLk/jbtTrainInfoPage?tabType=bjdd");
@@ -444,7 +475,7 @@ var RunPlanLkCmdPage = function () {
 		 * 保存按钮点击事件
 		 */
 		_self.saveCmdTxtMl = function() {
-			if(_self.currentCmdTxtMl()==null || _self.currentCmdTxtMl().cmdTxtMlId=="") {
+			if(_self.currentCmdTxtMl()==null || _self.currentCmdTxtMl().cmdTxtMlItemId=="") {
 				showWarningDialog("请选择临客命令记录");
 				return;
 			}
@@ -454,9 +485,11 @@ var RunPlanLkCmdPage = function () {
 			}
 			commonJsScreenLock();
 			
+
+			_self.currentCmdTxtMl().passBureau = $("#runPlanLk_cmd_input_tjj").val();//设置途经局
 			var _saveTrainStnArray = [];
 			$.each(_self.runPlanLkCMDTrainStnRows(),function(n, obj){
-				_saveTrainStnArray.push(obj.data);
+				_saveTrainStnArray.push(ko.toJSON(obj));
 			});
 			
 			
@@ -470,12 +503,20 @@ var RunPlanLkCmdPage = function () {
 				contentType : "application/json",
 				data :JSON.stringify({
 					cmdTrainMap : _self.currentCmdTxtMl(),
-					cmdTrainStnList : _saveTrainStnArray
+					cmdTrainStnList : _saveTrainStnArray,
+					baseTrainId : _self.useBaseTrainId()	//套用的基本图车次id
+					
 				}),
 				success : function(result) {
 					
 					if (result != null && typeof result == "object" && result.code == "0") {
 						showSuccessDialog("保存成功");
+						//清除
+						_self.runPlanLkCMDRows.remove(function(item) {
+							return true;
+						});
+						
+						loadDataForPage();
 					} else {
 						showErrorDialog("保存失败");
 					};
@@ -547,6 +588,78 @@ var RunPlanLkCmdPage = function () {
 				}
 			}
 		};
+		
+		
+		
+
+		
+		/**
+		 * 生成运行线按钮点击事件
+		 */
+		_self.batchCreateRunPlanLine = function() {
+			var _saveCmdTrainArray = [];
+			$.each(_self.runPlanLkCMDRows(),function(n, obj){
+				if (obj.isSelect == 1) {
+					_saveCmdTrainArray.push(obj.cmdTrainId);
+				}
+				
+				if (obj.isExsitStn == "0") {
+					showWarningDialog(" 发令日期【"+cmdTime+"】 局令号【"+cmdNbrBureau+"】 项号【"+cmdItem+"】的临客命令尚未设置时刻表数据，不能生成开行计划");
+					return;
+				}
+			});
+			
+			
+			if(_saveCmdTrainArray.length==0) {
+				showWarningDialog("请选择临客命令记录");
+				return;
+			}
+			commonJsScreenLock();
+			
+
+			_self.currentCmdTxtMl().passBureau = $("#runPlanLk_cmd_input_tjj").val();//设置途经局
+			var _saveTrainStnArray = [];
+			$.each(_self.runPlanLkCMDTrainStnRows(),function(n, obj){
+				_saveTrainStnArray.push(ko.toJSON(obj));
+			});
+			
+			
+			
+			
+			$.ajax({
+				url : basePath+"/runPlanLk/batchCreateRunPlanLine",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({
+					cmdTrainIds : _saveCmdTrainArray,
+					
+				}),
+				success : function(result) {
+					
+					if (result != null && typeof result == "object" && result.code == "0") {
+						showSuccessDialog("生成运行线成功");
+						//清除
+						_self.runPlanLkCMDRows.remove(function(item) {
+							return true;
+						});
+						
+						loadDataForPage();
+					} else {
+						showErrorDialog("生成运行线失败");
+					};
+				},
+				error : function() {
+					showErrorDialog("生成运行线失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock(1);
+				}
+			});
+		};
+		
+		
 		
 	};
 	

@@ -276,11 +276,14 @@ public class Constants {
     //查询cmdTrainStn信息 
     public static final String RUNPLANLKDAO_GET_CMD_TRAINSTN_INFO = "runPlanLkDao.getCmdTrainStnInfo";
     //查询表cmdTrain
-    public static final String RUNPLANLKDAO_GET_CMD_TRAININFO_FOR_CMDMLID="runPlanLkDao.getCmdTrainInfoForCmdTxtmlId";
+    public static final String RUNPLANLKDAO_GET_CMD_TRAININFO_FOR_CMDMLID="runPlanLkDao.getCmdTrainInfoForCmdTxtmlItemId";
     // 保存表cmd_train_stn的数据
     public static final String RUNPLANLKDAO_INSERT_CMD_TRAIN_STN = "runPlanLkDao.insertCmdTrainStn";
     //保存表cmd_train的数据
     public static final String RUNPLANLKDAO_INSERT_CMD_TRAIN = "runPlanLkDao.insertCmdTrain";
+    //通过cmd_train_id删除表cmd_train_stn中的数据 
+    public static final String RUNPLANLKDAO_DELETE_CMD_TRAINSTN_FOR_CMDTRAINID = "runPlanLkDao.deleteCmdTrainStnForCmdTrainId";
+
 	public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID = "highlineCrossDao.updateHighLineCrossId";
 	
 	public static final String RUN_PLAN_DAO_GET_TRAINRUNPLAN_FOR_LK = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlanForLk";

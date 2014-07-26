@@ -10,6 +10,8 @@ import java.util.Date;
 public class CmdTrain {
 	//临客命令列车ID
 	private String cmdTrainId;
+	//基本图中列车ID（选线时使用的基本图列车ID）
+	private String baseTrainId;
 	//发令局 (发令局、担当局局码)
 	private String cmdBureau;
 	//命令类型 (加开；停运)
@@ -45,6 +47,14 @@ public class CmdTrain {
 	private String updateTime;
 	//发布时间
 	private String cmdTime;
+	
+	
+	public String getBaseTrainId() {
+		return baseTrainId;
+	}
+	public void setBaseTrainId(String baseTrainId) {
+		this.baseTrainId = baseTrainId;
+	}
 	public String getCmdTrainId() {
 		return cmdTrainId;
 	}

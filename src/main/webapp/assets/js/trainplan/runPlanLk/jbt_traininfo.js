@@ -345,6 +345,7 @@ function ApplicationModel() {
 			showWarningDialog("请先选择列车记录");
 			return;
 		}
+		
 		if(_tabType == "bjdd") {//bjdd(本局担当)   wjdd（外局担当）
 			//清除
 			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.remove(function(item) {
@@ -357,6 +358,10 @@ function ApplicationModel() {
 			n.childIndex = _LkCMDTrain_len+i;	//增加childIndex属性
 			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.push(new window.parent.runPlanLkCmdPageModel.cmdTrainStnTimeRow(toCmdLkTrainTimeRow(n, "2")));
 		});
+		
+
+		//设置套用的基本图车次id
+		window.parent.runPlanLkCmdPageModel.useBaseTrainId(self.currentTrain().id);
 		
 	};
 	
@@ -390,6 +395,10 @@ function ApplicationModel() {
 			n.childIndex = _LkCMDTrain_len+i;	//增加childIndex属性
 			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.push(new window.parent.runPlanLkCmdPageModel.cmdTrainStnTimeRow(toCmdLkTrainTimeRow(n, "1")));
 		});
+		
+
+		//设置套用的基本图车次id
+		window.parent.runPlanLkCmdPageModel.useBaseTrainId(self.currentTrain().id);
 	};
 	
 	

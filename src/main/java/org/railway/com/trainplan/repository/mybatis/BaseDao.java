@@ -1,6 +1,7 @@
 package org.railway.com.trainplan.repository.mybatis;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -205,7 +206,31 @@ public class BaseDao {
     }
     
     
-    
+   /* public int executeUpdate(String sql) throws SQLException{
+    	Connection con = null;
+    	Statement stmt = null;
+    	PreparedStatement pstmt= null;
+    	try {
+    		con = this.getConnection();//sqlSession.getConnection();
+    		con.setAutoCommit(false);
+    		pstmt = con.prepareStatement(sql);
+    		pstmt.
+    		
+    	
+    		con.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new SQLException("sql执行失败");
+		}finally {
+			if (stmt != null) {
+				stmt.close();
+			}
+			// 此处不关闭，连接关闭由org.springframework.jdbc.datasource.DataSourceTransactionManager自动完成
+			if (con != null) {
+				con.close();
+			}
+		}
+    }*/
     
     /**
      * 执行sql
@@ -226,7 +251,7 @@ public class BaseDao {
     		stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
     		ResultSet rSet = stmt.executeQuery(sql);
     		
-    		
+    	
     		ResultSetMetaData md = rSet.getMetaData();
     		int num = md.getColumnCount();
     		while (rSet.next()) {
