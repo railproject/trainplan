@@ -542,51 +542,22 @@ FROM
     </select>
     
     <select id="getRunPlanByStartDate" parameterType="map" resultType="org.railway.com.trainplan.entity.PlanCrossInfo">
-         select t.plan_cross_id as planCrossId,
-		t.unit_cross_id as unitCrossId,
-		t.base_cross_id as baseCrossId,
-		t.base_chart_id as baseChartId,
-		t.RELEVANT_BUREAU as relevantBureau,
-		t.base_chart_name as baseChartName,
-		t.cross_start_date as crossStartDate,
-		t.cross_end_date as crossEndDate,
-		t.cross_name as crossName,
-		t.cross_spare_name as crossSpareName,
-		t.SPARE_FLAG as spareFlag,
-		t.GROUP_TOTAL_NBR as groupTotalNbr,
-		t.PAIR_NBR as pairNbr,
-		t.HIGHLINE_FLAG as highlineFlag,
-		t.HIGHLINE_RULE as highlineRule,
-		t.COMMONLINE_RULE as commonlineRule,
-		t.APPOINT_WEEK as appointWeek,
-		t.APPOINT_DAY as appointDay,
-		t.CROSS_SECTION as crossSection,
-		t.THROUGH_LINE as throughline,
-		t.START_BUREAU as startBureau,
-		t.TOKEN_VEH_BUREAU as tokenVehBureau,
-		t.TOKEN_VEH_DEPT as tokenVehDept,
-		t.TOKEN_VEH_DEPOT as tokenVehDepot,
-		t.TOKEN_PSG_BUREAU as tokenPsgBureau,
-		t.TOKEN_PSG_DEPT as tokenPsgDept,
-		t.LOCO_TYPE as locoType,
-		t.CRH_TYPE as crhType,
-		t.ELEC_SUPPLY as elecSupply,
-		t.DEJ_COLLECT as dejCollect,
-		t.AIR_CONDITION as airCondition,
-		t.NOTE as note,
-		t.CREAT_PEOPLE as createPeople,
-		t.CREAT_PEOPLE_ORG as createPeopleOrg,
-		t.CREAT_TIME as createTime,
-		t.CHECK_TYPE as checkType,
-		t.CHECK_PEOPLE as checkPeople,
-		t.CHECK_PEOPLE_ORG as checkPeopleOrg,
-		t.CHECK_TIME as checkTime  , 
-    a.group_serial_nbr as  groupSerialNbr,
-    b.post_id as postId,
-    b.post_name as postName,
-    b.THROUGH_LINE as throughLine
-		from plan_cross t, plan_train a,dic_rela_cross_post b
-		where a.plan_cross_id=t.plan_cross_id and t.base_cross_id=b.base_cross_id and a.run_date=#{startDate} and a.train_sort='1' 
+          select t1.*,  b.post_id as postId, b.post_name as postName, b.THROUGH_LINE as throughLine  
+      from (select t.plan_cross_id as planCrossId, t.unit_cross_id as unitCrossId, t.base_cross_id as baseCrossId, 
+      t.base_chart_id as baseChartId, t.RELEVANT_BUREAU as relevantBureau, t.base_chart_name as baseChartName,
+      t.cross_start_date as crossStartDate, t.cross_end_date as crossEndDate, t.cross_name as crossName,
+      t.cross_spare_name as crossSpareName, t.SPARE_FLAG as spareFlag, t.GROUP_TOTAL_NBR as groupTotalNbr, 
+      t.PAIR_NBR as pairNbr, t.HIGHLINE_FLAG as highlineFlag, t.HIGHLINE_RULE as highlineRule, t.COMMONLINE_RULE as commonlineRule, 
+      t.APPOINT_WEEK as appointWeek, t.APPOINT_DAY as appointDay, t.CROSS_SECTION as crossSection, t.THROUGH_LINE as throughline,
+      t.START_BUREAU as startBureau, t.TOKEN_VEH_BUREAU as tokenVehBureau, t.TOKEN_VEH_DEPT as tokenVehDept,
+      t.TOKEN_VEH_DEPOT as tokenVehDepot, t.TOKEN_PSG_BUREAU as tokenPsgBureau, t.TOKEN_PSG_DEPT as tokenPsgDept, 
+      t.LOCO_TYPE as locoType, t.CRH_TYPE as crhType, t.ELEC_SUPPLY as elecSupply, t.DEJ_COLLECT as dejCollect,
+      t.AIR_CONDITION as airCondition, t.NOTE as note, t.CREAT_PEOPLE as createPeople,
+      t.CREAT_PEOPLE_ORG as createPeopleOrg, t.CREAT_TIME as createTime, t.CHECK_TYPE as checkType,
+      t.CHECK_PEOPLE as checkPeople, t.CHECK_PEOPLE_ORG as checkPeopleOrg, t.CHECK_TIME as checkTime ,
+      a.group_serial_nbr as groupSerialNbr from plan_cross t, plan_train a 
+      where a.plan_cross_id=t.plan_cross_id and a.run_date=#{startDate} and a.train_sort='1') t1 
+      left join dic_rela_cross_post b on b.base_cross_id=t1.baseCrossId  
     </select>
     
     <select id="getPlanTrainByPlanCrossId" parameterType="map" resultType="org.railway.com.trainplan.service.dto.PlanCrossDto">

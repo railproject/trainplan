@@ -283,4 +283,6 @@ public class Constants {
     //通过cmd_train_id删除表cmd_train_stn中的数据 
     public static final String RUNPLANLKDAO_DELETE_CMD_TRAINSTN_FOR_CMDTRAINID = "runPlanLkDao.deleteCmdTrainStnForCmdTrainId";
 
+	public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID = "highlineCrossDao.updateHighLineCrossId";
+
 }

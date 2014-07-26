@@ -284,8 +284,8 @@ public class HighlineController {
 				 String highLineCrossIds = StringUtil.objToStr(reqMap.get("highLineCrossIds"));
 				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses"); 
 				 if(newCrosses != null && newCrosses.size() > 0){
+					 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 					 List<HighlineCrossInfo> hList = new ArrayList<HighlineCrossInfo>();
-					 List<HighLineCrossTrainInfo> tList = new ArrayList<HighLineCrossTrainInfo>();
 					 for(Map crossMap : newCrosses){
 						 HighlineCrossInfo highlineCrossInfo = new HighlineCrossInfo();
 						 String highLineCrossId = UUID.randomUUID().toString();
@@ -293,8 +293,8 @@ public class HighlineController {
 						 String crossName = StringUtil.objToStr(crossMap.get("crossName"));
 						 String crossStartDate = StringUtil.objToStr(crossMap.get("crossStartDate"));
 						 String crossEndDate = StringUtil.objToStr(crossMap.get("crossEndDate"));
-						 String startStn = StringUtil.objToStr(crossMap.get("startStn"));
-						 String endStn = StringUtil.objToStr(crossMap.get("endStn"));
+						 String startStn = StringUtil.objToStr(crossMap.get("crossStartStn"));
+						 String endStn = StringUtil.objToStr(crossMap.get("crossEndStn"));
 						 String spareFlag = StringUtil.objToStr(crossMap.get("spareFlag"));
 						 String relevantBureau = StringUtil.objToStr(crossMap.get("relevantBureau"));
 						 String tokenVehBureau = StringUtil.objToStr(crossMap.get("tokenVehBureau"));
@@ -305,7 +305,7 @@ public class HighlineController {
 						 String crhType = StringUtil.objToStr(crossMap.get("crhType"));
 						 String note = StringUtil.objToStr(crossMap.get("note")); 
 						 String createPeople = StringUtil.objToStr(crossMap.get("createPeople"));
-						 
+						 String createReason =  StringUtil.objToStr(crossMap.get("createReason")); 
 						 String postName = StringUtil.objToStr(crossMap.get("postName"));
 						 String postId = StringUtil.objToStr(crossMap.get("postId"));
 						 //set值
@@ -316,6 +316,8 @@ public class HighlineController {
 						 highlineCrossInfo.setCrossStartDate(crossStartDate == null?"":DateUtil.getFormateDayTime(crossStartDate, formateType));
 						 highlineCrossInfo.setCrossEndDate(crossEndDate == null?"":DateUtil.getFormateDayTime(crossEndDate, formateType));
 						 highlineCrossInfo.setStartStn(startStn == null?"":startStn);
+						 highlineCrossInfo.setCrossStartStn(startStn == null?"":startStn);
+						 highlineCrossInfo.setCrossEndStn(endStn == null?"":endStn);
 						 highlineCrossInfo.setEndStn(endStn == null?"":endStn);
 						 highlineCrossInfo.setSpareFlag(spareFlag == null?"":spareFlag);
 						 highlineCrossInfo.setPostId(postId == null? "": postId);
@@ -327,42 +329,44 @@ public class HighlineController {
 						 highlineCrossInfo.setTokenPsgBureau(tokenPsgBureau == null?"":tokenPsgBureau);
 						 highlineCrossInfo.setTokenPsgDept(tokenPsgDept == null?"":tokenPsgDept);
 						 highlineCrossInfo.setCrhType(crhType == null?"":crhType);
+						 highlineCrossInfo.setCreateReason(createReason == null?"":createReason);
 						 highlineCrossInfo.setNote(note == null?"":note);
-						 highlineCrossInfo.setCreatPeople(createPeople == null?"":createPeople);
+						 
+						 highlineCrossInfo.setCreatPeople(user.getUsername());
+						 highlineCrossInfo.setCrossBureau(user.getBureau());
+						 highlineCrossInfo.setCreatPeopleOrg(user.getDeptName());
 						 
 						 hList.add(highlineCrossInfo);
 						 //保存到表highline_cross  
-						 List<Map> trainsList = (List<Map>)crossMap.get("trains");
+						 List<Map> trainsList = (List<Map>)crossMap.get("trains"); 
+						
 						 if(trainsList != null && trainsList.size() > 0 ){ 
 							 for(Map trainMap : trainsList){
-								 HighLineCrossTrainInfo crossTrain = new HighLineCrossTrainInfo();
-								 String  highLineTrainId = UUID.randomUUID().toString();
-								 String  planTrainId = StringUtil.objToStr(trainMap.get("planTrainId"));
-								 String  highLineCrossIdForTrain = StringUtil.objToStr(trainMap.get("highLineCrossId"));
-								 int   trainSort = Integer.valueOf(StringUtil.objToStr(trainMap.get("trainSort")));
-								 String  trainNbr = StringUtil.objToStr(trainMap.get("trainNbr"));
-								 String  runDate = StringUtil.objToStr(trainMap.get("runDate"));
-								 crossTrain.setHighLineCrossId(highLineCrossIdForTrain == null?"":highLineCrossIdForTrain);
-								 crossTrain.setPlanTrainId(planTrainId == null?"":planTrainId);
-								 crossTrain.setRunDate(runDate == null?"":runDate);
-								 crossTrain.setHighLineTrainId(highLineTrainId);
-								 crossTrain.setTrainNbr(trainNbr == null?"":trainNbr);
-								 crossTrain.setTrainSort(trainSort);
-								 crossTrain.setHighLineCrossId(highlineCrossInfo.getHighLineCrossId());
-								 tList.add(crossTrain);
+								 highLineService.updateHighLineTrain(StringUtil.objToStr(trainMap.get("highLineTrainId")), highlineCrossInfo.getHighLineCrossId());
+//								 HighLineCrossTrainInfo crossTrain = new HighLineCrossTrainInfo();
+//								 String  highLineTrainId = UUID.randomUUID().toString();
+//								 String  planTrainId = StringUtil.objToStr(trainMap.get("planTrainId"));
+//								 int   trainSort = Integer.valueOf(StringUtil.objToStr(trainMap.get("trainSort")));
+//								 String  trainNbr = StringUtil.objToStr(trainMap.get("trainNbr"));
+//								 String  runDate = StringUtil.objToStr(trainMap.get("runDate"));
+//								 
+//								 crossTrain.setPlanTrainId(planTrainId == null?"":planTrainId);
+//								 crossTrain.setRunDate(runDate == null?"":runDate);
+//								 crossTrain.setHighLineTrainId(highLineTrainId);
+//								 crossTrain.setTrainNbr(trainNbr == null?"":trainNbr);
+//								 crossTrain.setTrainSort(trainSort);
+//								 crossTrain.setHighLineCrossId(highlineCrossInfo.getHighLineCrossId());
+//								 tList.add(crossTrain);
 							 }
 							 //保存数据到highline_cross_train中 
 						 }
 						 
 					 }
-					 highLineService.batchAddHighlineCross(hList);
-					 highLineService.batchAddHighlineCrossTrain(tList);
-				 }
-				
+					 highLineService.batchAddHighlineCross(hList); 
+				 } 
 				 //删除表highline_cross表中数据
-				 highLineService.deleteHighlienCrossForHighlineCrossId(highLineCrossIds);
-				 //删除表highline_cross_train表中数据
-				 highLineService.deleteHighlienCrossTrainForHighlineCrossId(highLineCrossIds);
+				 highLineService.deleteHighlienCrossForHighlineCrossId(highLineCrossIds); 
+				 
 			 }catch(Exception e){
 				 logger.error("saveHighlineCrossAndTrainInfo error==" + e.getMessage());
 				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());

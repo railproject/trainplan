@@ -273,6 +273,7 @@
 		NOTE,
 		CREAT_PEOPLE, 
 		CREAT_TIME,
+		CREAT_REASON,
 		POST_ID,
 		POST_NAME 
         )
@@ -300,6 +301,7 @@
 	       #{item.note,jdbcType=VARCHAR}, 
 	       #{item.createPeople,jdbcType=VARCHAR},  
 	        sysdate,
+	        #{item.createReason,jdbcType=VARCHAR}, 
 	        #{item.postId,jdbcType=VARCHAR}, 
 	        #{item.postName,jdbcType=VARCHAR} 
 	       from dual

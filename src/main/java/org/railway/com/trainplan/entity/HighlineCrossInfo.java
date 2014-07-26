@@ -64,6 +64,10 @@ public class HighlineCrossInfo {
 	//始发站
 	private String startStn;
 	
+	private String createReason;
+	
+	private String crossBureau;
+	
 	//始发站
 	private String endStn;
 		
@@ -73,6 +77,18 @@ public class HighlineCrossInfo {
 	private String checkTime;
 	 
 	
+	public String getCrossBureau() {
+		return crossBureau;
+	}
+	public void setCrossBureau(String crossBureau) {
+		this.crossBureau = crossBureau;
+	}
+	public String getCreateReason() {
+		return createReason;
+	}
+	public void setCreateReason(String createReason) {
+		this.createReason = createReason;
+	}
 	public String getBaseCrossId() {
 		return baseCrossId;
 	}

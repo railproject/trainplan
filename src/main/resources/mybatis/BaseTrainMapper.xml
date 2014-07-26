@@ -26,6 +26,7 @@
         <result column="PASSBUREAU" property="passBureau"/>
         <result column="TRAINSCOPE" property="trainScope"/>
         <result column="TRAINTYPEID" property="trainTypeId"/>
+        <result column="BASECHARTID" property="baseChartId"/>
         <collection property="runPlanStnList" resultMap="baseTrainStn"/>
     </resultMap>
 

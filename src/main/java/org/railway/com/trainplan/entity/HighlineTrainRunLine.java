@@ -8,6 +8,7 @@ public class HighlineTrainRunLine {
 	private List<HighlineTrainRunLineTime> highlineTrainTimeList = new ArrayList<HighlineTrainRunLineTime>();
 	private String planTrainId;
 	private String trainNbr;
+	private String highLineTrainId;
 	private String passBureau;
 	public List<HighlineTrainRunLineTime> getHighlineTrainTimeList() {
 		return highlineTrainTimeList;
@@ -18,6 +19,12 @@ public class HighlineTrainRunLine {
 	}
 	
 	
+	public String getHighLineTrainId() {
+		return highLineTrainId;
+	}
+	public void setHighLineTrainId(String highLineTrainId) {
+		this.highLineTrainId = highLineTrainId;
+	}
 	public String getPassBureau() {
 		return passBureau;
 	}
