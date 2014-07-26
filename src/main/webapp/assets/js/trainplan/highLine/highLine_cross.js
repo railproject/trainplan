@@ -256,7 +256,33 @@ function CrossModel() {
 			self.acvtiveHighLineCrosses.remove(n);
 		});
 	};
-	
+	//全选按钮
+	self.selectCrosses = function(){
+//		self.crossAllcheckBox(); 
+		$.each(self.highLineCrossRows(), function(i, crossRow){ 
+			if(self.crossAllcheckBox() == 1){
+				crossRow.selected(0); 
+			}else{ 
+				crossRow.selected(1);   
+			}  
+		});  
+	};
+	//数据行前面的checkbox点击事件
+	self.selectCross = function(row){ 
+//		self.crossAllcheckBox();  
+		if(row.selected() == 0){  
+			self.crossAllcheckBox(1);   
+			$.each(self.highLineCrossRows(), function(i, crossRow){  
+				//如果可操作并且该记录被选中，表示没有全部选中
+				if(crossRow.selected() != 1 && crossRow != row){
+					self.crossAllcheckBox(0);
+					return false;
+				}  
+			}); 
+		}else{ 
+			self.crossAllcheckBox(0); 
+		} 
+	}; 
 	self.hbHighLineCrossConfirm = function(){ 
 		var firstHighLineCross = self.selectedActiveHighLineCrossRows()[0]; 
 		 
@@ -581,73 +607,33 @@ function CrossModel() {
 	
 	
 	
+	//全选按钮
 	self.selectCrosses = function(){
 //		self.crossAllcheckBox(); 
 		$.each(self.highLineCrossRows(), function(i, crossRow){ 
 			if(self.crossAllcheckBox() == 1){
-				crossRow.selected(0);
-				self.searchModle().activeFlag(0);
-				self.searchModle().checkActiveFlag(0); 
-			}else{
-				if(hasActiveRole(crossRow.tokenVehBureau())){ 
-					crossRow.selected(1); 
-					self.searchModle().activeFlag(1);  
-				}
-				//可以审核的
-				if(crossRow.checkActiveFlag() == 1){
-					crossRow.selected(1); 
-					self.searchModle().checkActiveFlag(1); 
-				}
+				crossRow.selected(0); 
+			}else{ 
+				crossRow.selected(1);   
 			}  
 		});  
 	};
-	
+	//数据行前面的checkbox点击事件
 	self.selectCross = function(row){ 
 //		self.crossAllcheckBox();  
 		if(row.selected() == 0){  
 			self.crossAllcheckBox(1);   
-			if(row.activeFlag() == 1){ 
-				self.searchModle().activeFlag(1);
-				$.each(self.highLineCrossRows(), function(i, crossRow){   
-					if(crossRow.selected() != 1 && crossRow != row && crossRow.activeFlag() == 1){
-						self.crossAllcheckBox(0);
-						return false;
-					}  
-				}); 
-			} 
-			if(row.checkActiveFlag() == 1){
-				self.searchModle().checkActiveFlag(1);
-				$.each(self.highLineCrossRows(), function(i, crossRow){   
-					if(crossRow.selected() != 1 && crossRow != row && crossRow.checkActiveFlag() == 1){
-						self.crossAllcheckBox(0);
-						return false;
-					}  
-				}); 
-				 
-			};  
-		}else{
-			self.crossAllcheckBox(0);
-			if(row.activeFlag() == 1){
-				self.searchModle().activeFlag(0); 
-				$.each(self.highLineCrossRows(), function(i, crossRow){   
-					if(crossRow.selected() == 1 && crossRow != row && crossRow.activeFlag() == 1){
-						self.searchModle().activeFlag(1);  
-						 return false;
-						//可以审核的  
-					}  
-				}); 
-			}
-			if(row.checkActiveFlag() == 1){
-				self.searchModle().checkActiveFlag(0);
-				$.each(self.highLineCrossRows(), function(i, crossRow){   
-					if(crossRow.selected() == 1 && crossRow != row && crossRow.checkActiveFlag() == 1){
-						self.searchModle().checkActiveFlag(1);   
-						return false;
-					};  
-				}); 
-			}; 
-		}; 
-	};
+			$.each(self.highLineCrossRows(), function(i, crossRow){  
+				//如果可操作并且该记录被选中，表示没有全部选中
+				if(crossRow.selected() != 1 && crossRow != row){
+					self.crossAllcheckBox(0);
+					return false;
+				}  
+			}); 
+		}else{ 
+			self.crossAllcheckBox(0); 
+		} 
+	}; 
 	
 	
 	// cross基础信息中的下拉列表  
@@ -659,24 +645,7 @@ function CrossModel() {
 				break;
 			}
 		} 
-	};
-	self.filterCrosses = function(){  
-		 var filterTrainNbr = self.searchModle().filterTrainNbr();
-		 filterTrainNbr = filterTrainNbr || filterTrainNbr != "" ? filterTrainNbr.toUpperCase() : "all";
-		 if(filterTrainNbr == "all"){
-			 $.each(self.crossRows.rows(),function(n, crossRow){
-				  crossRow.visiableRow(true);
-			  });
-		 }else{
-			 $.each(self.crossRows.rows(),function(n, crossRow){
-				 if(crossRow.crossName().indexOf(filterTrainNbr) > -1){
-					 crossRow.visiableRow(true);
-				 }else{
-					 crossRow.visiableRow(false);
-				 } 
-			  }); 
-		 };
-	};  
+	}; 
 	 
 	self.defualtCross = {"crossId":"",
 		"crossName":"", 
@@ -774,9 +743,8 @@ function CrossModel() {
 		
 		$("#runplan_input_endDate").datepicker();
 		
-		$("#current_highLineCrosses").on("dblclick", self.selectedCrosse);
-		
-		
+		//注册双击多选列表中事件
+		$("#current_highLineCrosses").on("dblclick", self.selectedCrosse);  
 		
 		$("#active_highLine_cross_dialog").dialog("close"); 
 		
@@ -883,32 +851,8 @@ function CrossModel() {
 		self.runPlanCanvasPage.initPage();   
 		self.searchModle().planStartDate(self.getDateByInt(1)); 
 		
-		commonJsScreenLock(2); 
-		//获取当期系统日期 
-		 $.ajax({
-				url : "jbtcx/querySchemes",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({}),
-				success : function(result) {    
-					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null) { 
-							self.searchModle().loadChats(result.data); 
-						} 
-					} else {
-						showErrorDialog("接口调用返回错误，code="+result.code+"   message:"+result.message);
-					} 
-				},
-				error : function() {
-					showErrorDialog("接口调用失败");
-				},
-				complete : function(){ 
-					commonJsScreenUnLock();  
-				}
-		    }); 
-		 
+		commonJsScreenLock(4); 
+		//获取当期系统日期  
 	    $.ajax({
 			url : "plan/getFullStationInfo",
 			cache : false,
@@ -1636,14 +1580,7 @@ function searchModle(){
 			self.startBureaus.push(new BureausRow(bureaus[i]));  
 			self.tokenPsgBureaus.push(new BureausRow(bureaus[i]));
 		} 
-	}; 
-	
-	self.loadChats = function(charts){   
-		for ( var i = 0; i < charts.length; i++) {   
-			self.charts.push({"chartId": charts[i].schemeId, "name": charts[i].schemeName});  
-		} 
-	}; 
-	
+	};  
 }
 
 function BureausRow(data) {

@@ -986,4 +986,9 @@ public class RunPlanService {
 		List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.GET_TRAIN_RUN_PLANS_FOR_CREATElINE, params);
 		return crossRunPlans;
 	}
+
+	public List getTrainRunPlanForLk(Map<String, Object> params) {
+		List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.RUN_PLAN_DAO_GET_TRAINRUNPLAN_FOR_LK, params);
+		return crossRunPlans;
+	}
 }

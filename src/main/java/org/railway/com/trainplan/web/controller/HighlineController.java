@@ -60,6 +60,23 @@ public class HighlineController {
      }
 	  
 	@ResponseBody
+	@RequestMapping(value = "/getVehicles", method = RequestMethod.GET)
+	public Result  getVehicles() {
+		 Result result = new Result();
+		 try{  
+			 List<OptionDto> list = highLineService.getVehicles();
+			 result.setData(list);
+		 }catch(Exception e){
+			 e.printStackTrace();
+			 logger.error("getHighlineTrainTimeForHighlineCrossId error==" + e.getMessage());
+			 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+			 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+		 }
+		
+		 return result;
+	}
+	
+	@ResponseBody
 	@RequestMapping(value = "/getDepots", method = RequestMethod.GET)
 	public Result  getDepots() {
 		 Result result = new Result();
@@ -341,7 +358,7 @@ public class HighlineController {
 						 List<Map> trainsList = (List<Map>)crossMap.get("trains"); 
 						
 						 if(trainsList != null && trainsList.size() > 0 ){ 
-							 for(Map trainMap : trainsList){
+							 for(Map trainMap : trainsList){//修改列车映射到新建的交路上
 								 highLineService.updateHighLineTrain(StringUtil.objToStr(trainMap.get("highLineTrainId")), highlineCrossInfo.getHighLineCrossId());
 //								 HighLineCrossTrainInfo crossTrain = new HighLineCrossTrainInfo();
 //								 String  highLineTrainId = UUID.randomUUID().toString();

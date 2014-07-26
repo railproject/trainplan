@@ -258,7 +258,8 @@ public class Constants {
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID = "highlineCrossDao.deleteHighlienCrossForHighlineCrossId";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_VEHICLE="highlineCrossDao.updateHighLineVehicle";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_CHECKINFO="highlineCrossDao.updateHiglineCheckInfo";
-	public static String GET_TRAIN_RUN_PLANS_FOR_CREATElINE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlansForCreateLine";
+	public static final String GET_TRAIN_RUN_PLANS_FOR_CREATElINE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlansForCreateLine";
+	public static final String HIGHLINECROSSDAO_GET_VEHICLES = "highlineCrossDao.getVehicles";
     
     /***与临客相关的mapper配置******/
     public static final String RUNPLANLKDAO_GET_PLANTRAIN_LK_INFO = "runPlanLkDao.getPlanTrainLkInfo";
@@ -281,5 +282,6 @@ public class Constants {
     //保存表cmd_train的数据
     public static final String RUNPLANLKDAO_INSERT_CMD_TRAIN = "runPlanLkDao.insertCmdTrain";
 	public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID = "highlineCrossDao.updateHighLineCrossId";
-
+	
+	public static final String RUN_PLAN_DAO_GET_TRAINRUNPLAN_FOR_LK = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlanForLk";
 }

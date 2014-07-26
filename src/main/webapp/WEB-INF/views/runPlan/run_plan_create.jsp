@@ -93,14 +93,24 @@ var currentUserBureau = "<%=currentUserBureau %>";
 			<!--分栏框开始--> 
 			      <div class="row" style="margin: 5px 10px 10px 10px;"> 
 				        	<div class="panel-body">   
-								<label for="exampleInputEmail3" class="control-label pull-left">
+				        	     <label for="exampleInputEmail3" class="control-label pull-left" >
+									开始日期:</label>
+								<div class="pull-left" style="margin-left: 5px;">
+									<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
+								</div>
+								<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 13px;">
+									截至日期:</label>
+								<div class="pull-left" style="margin-left: 5px; ">
+									<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
+								</div>
+								<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 5px; ">
 															方案:&nbsp;</label> 
 								<div class="pull-left">
 									<select style="width: 320px" id="input_cross_chart_id"
 										class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name'">
 									</select>
 								</div>   	 
-								<label for="exampleInputEmail3" class="control-label pull-left" >
+								<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 5px; ">
 									车辆担当局:</label>
 								<div class="pull-left" style="margin-left: 5px;">
 									<select style="width:55px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
@@ -119,7 +129,9 @@ var currentUserBureau = "<%=currentUserBureau %>";
 									<div class="pull-left" style="margin-left: 10px;">
 											<a type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
-										</div>   
+									        <a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
+												data-target="#" id="btn_cross_createTrainLines" data-bind="click: createTrainLines">生成开行计划</a>	
+									</div>   
 										
 						</div>
 					</div> 
@@ -132,21 +144,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
               <div class="panel-body"> 
 				<!-- Tab panes --> 
 	  		    <div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
-					      <!--panle-heading--> 
-				  <div class="row" style="margin: 5px 10px 10px 10px;"> 
-				    <label for="exampleInputEmail3" class="control-label pull-left" >
-								开始日期:</label>
-					<div class="pull-left" style="margin-left: 5px;">
-						<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
-					</div>
-					<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 13px;">
-						截至日期:</label>
-					<div class="pull-left" style="margin-left: 5px; ">
-						<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
-					</div>
-					<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
-										data-target="#" id="btn_cross_createTrainLines" data-bind="click: createTrainLines">生成开行计划</a>
-				</div>
+					      <!--panle-heading-->  
 				  <div class="row" style="margin: 5px 10px 10px 10px;" data-bind="html: completedMessage()">       
 				  </div>
 			      <div class="panel-body" style="bapadding:10px;overflow: auto">
