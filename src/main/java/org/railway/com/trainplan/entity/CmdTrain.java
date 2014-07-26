@@ -47,8 +47,16 @@ public class CmdTrain {
 	private String updateTime;
 	//发布时间
 	private String cmdTime;
+	//标识cmd_train_stn表中是否有对应的数据 0：没有，1：有
+	private String isExsitStn;
 	
 	
+	public String getIsExsitStn() {
+		return isExsitStn;
+	}
+	public void setIsExsitStn(String isExsitStn) {
+		this.isExsitStn = isExsitStn;
+	}
 	public String getBaseTrainId() {
 		return baseTrainId;
 	}

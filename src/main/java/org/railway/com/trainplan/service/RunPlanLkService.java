@@ -183,4 +183,17 @@ public class RunPlanLkService {
 	  public int deleteCmdTrainStnForCmdTrainId(String cmdTrainId){
 		  return baseDao.deleteBySql(Constants.RUNPLANLKDAO_DELETE_CMD_TRAINSTN_FOR_CMDTRAINID, cmdTrainId);
 	  }
+	  
+	  /**
+	   * 根据cmdTrainId更新途径局passBureau
+	   * @param passBureau 途径局
+	   * @param cmdTrainId
+	   * @return
+	   */
+	  public int updatePassBureauForCmdTraindId(String passBureau,String cmdTrainId){
+		  Map<String,String> reqMap = new HashMap<String,String>();
+		  reqMap.put("passBureau",passBureau);
+		  reqMap.put("cmdTrainId",cmdTrainId);
+		  return baseDao.updateBySql(Constants.RUNPLANLKDAO_UPDATE_PASS_BUREAU_FOR_CMD_TRAINID, reqMap);
+	  }
 }

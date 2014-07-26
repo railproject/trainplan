@@ -284,12 +284,14 @@ public class RunPlanLkController {
 						 if(cmdTrain == null){
 							 cmdTrainTempl.setCreateState("0");
 							 cmdTrainTempl.setSelectState("0");
+							 cmdTrainTempl.setIsExsitStn("0");
 						 }else{
 							 cmdTrainTempl.setCreateState(cmdTrain.getCreateState());
 							 cmdTrainTempl.setSelectState(cmdTrain.getSelectState());
 							 cmdTrainTempl.setCmdTrainId(cmdTrain.getCmdTrainId());
 							 cmdTrainTempl.setPassBureau(cmdTrain.getPassBureau());
 							 cmdTrainTempl.setUpdateTime(cmdTrain.getUpdateTime());
+							 cmdTrainTempl.setIsExsitStn("1");
 						 }
 						 cmdTrainTempl.setCmdBureau(infoModel.getCmdBureau());
 						 cmdTrainTempl.setCmdItem(infoModel.getCmdItem());
@@ -419,6 +421,12 @@ public class RunPlanLkController {
 				    runPlanLkService.insertCmdTrain(train);
 				 }else{
 					 cmdTrainId =  cmdTrain.getCmdTrainId();
+					 //更新途径局
+					 String passBureau = StringUtil.objToStr(trainMap.get("passBureau"));
+					 if(passBureau != null && !"".equals(passBureau)){
+						 runPlanLkService.updatePassBureauForCmdTraindId(passBureau,cmdTrainId);
+					 }
+					 
 				 }
 				 
 				 //先删除表cmd_train_stn中对应的数据
@@ -430,9 +438,12 @@ public class RunPlanLkController {
 			    	
 			    	stn.setCmdTrainId(cmdTrainId);
 			    	stn.setCmdTrainStnId(UUID.randomUUID().toString());
-			    
-			    	stn.setArrTrainNbr(StringUtil.objToStr(trainStn.get("arrTrainNbr")));
-			    	stn.setDptTrainNbr(StringUtil.objToStr(trainStn.get("dptTrainNbr")));
+			    	String arrTrainNbr = StringUtil.objToStr(trainStn.get("arrTrainNbr"));
+			    	String dptTrainNbr = StringUtil.objToStr(trainStn.get("arrTrainNbr"));
+			    	System.err.println("arrTrainNbr==" + arrTrainNbr);
+			    	System.err.println("dptTrainNbr==" + dptTrainNbr);
+			    	stn.setArrTrainNbr(arrTrainNbr == null? "":arrTrainNbr);
+			    	stn.setDptTrainNbr(dptTrainNbr == null? "":dptTrainNbr);
 			    	String arrTime = StringUtil.objToStr(trainStn.get("arrTime"));
 			    	String endTime = StringUtil.objToStr(trainStn.get("dptTime"));
 			    	String baseArrTime = StringUtil.objToStr(trainStn.get("baseArrTime"));
@@ -451,8 +462,8 @@ public class RunPlanLkController {
 			    		stn.setBaseDptTime(baseDptTime);
 			    	}
 			    	
-			    	
-			    	stn.setPlatform(StringUtil.objToStr(trainStn.get("platform")));
+			    	String plantForm = StringUtil.objToStr(trainStn.get("platform"));
+			    	stn.setPlatform(plantForm == null?"":plantForm);
 			    	stn.setStnBureau(StringUtil.objToStr(trainStn.get("stnBureau")));
 			    	stn.setStnName(StringUtil.objToStr(trainStn.get("stnName")));
 			    	

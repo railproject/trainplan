@@ -282,7 +282,9 @@ public class Constants {
     public static final String RUNPLANLKDAO_INSERT_CMD_TRAIN = "runPlanLkDao.insertCmdTrain";
     //通过cmd_train_id删除表cmd_train_stn中的数据 
     public static final String RUNPLANLKDAO_DELETE_CMD_TRAINSTN_FOR_CMDTRAINID = "runPlanLkDao.deleteCmdTrainStnForCmdTrainId";
-
+    //根据cmdPlanId更新途径局passBureau   
+    public static final String RUNPLANLKDAO_UPDATE_PASS_BUREAU_FOR_CMD_TRAINID = "runPlanLkDao.updatePassBureauForCmdTraindId";
+    
 	public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID = "highlineCrossDao.updateHighLineCrossId";
 
 }

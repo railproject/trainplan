@@ -132,10 +132,10 @@
 		STN_BUREAU AS stnBureau ,
 		ARR_TRAIN_NBR AS  arrTrainNbr,
 		DPT_TRAIN_NBR AS  dptTrainNbr,
-		TO_CHAR(ARR_TIME,'yyyy-MM-dd hh24:mi:SS') AS arrTime ,
-		TO_CHAR(DPT_TIME,'yyyy-MM-dd hh24:mi:SS') AS  dptTime,
-		TO_CHAR(BASE_ARR_TIME,'yyyy-MM-dd hh24:mi:SS') AS  baseArrTime,
-		TO_CHAR(BASE_DPT_TIME,'yyyy-MM-dd hh24:mi:SS') AS  baseDptTime,
+		ARR_TIME AS arrTime ,
+		DPT_TIME AS  dptTime,
+		BASE_ARR_TIME AS  baseArrTime,
+		BASE_DPT_TIME AS  baseDptTime,
 		RUN_DAYS AS  runDays,
 		TRACK_NBR AS trackNbr ,
 		PLATFORM AS  platform,
@@ -229,10 +229,10 @@
             #{stnBureau},
             #{arrTrainNbr},
             #{dptTrainNbr},
-            TO_DATE(#{arrTime},'hh24:mi:SS'),
-            TO_DATE(#{dptTime},'hh24:mi:SS'),
-            TO_DATE(#{baseArrTime},'hh24:mi:SS'),
-            TO_DATE(#{baseDptTime},'hh24:mi:SS'),
+            #{arrTime},
+            #{dptTime},
+            #{baseArrTime},
+            #{baseDptTime},
             #{runDays},
             #{trackNbr},
             #{platform},
@@ -250,5 +250,8 @@
   
   </delete>
   
+  <update id="updatePassBureauForCmdTraindId"  parameterType="map">
+    UPDATE CMD_TRAIN SET PASS_BUREAU = #{passBureau} WHERE CMD_TRAIN_ID = #{cmdTrainId}
+  </update>
     
 </mapper>
