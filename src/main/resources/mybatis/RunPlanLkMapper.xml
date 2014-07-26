@@ -97,7 +97,7 @@
     </select>
  
 
-	 <select id="getCmdTrainInfoForCmdTxtmlId" parameterType="map"  resultType="org.railway.com.trainplan.entity.CmdTrain">
+	 <select id="getCmdTrainInfoForCmdTxtmlItemId" parameterType="map"  resultType="org.railway.com.trainplan.entity.CmdTrain">
 		SELECT 
 		    CMD_TRAIN_ID  AS cmdTrainId,
 			CMD_BUREAU  AS cmdBureau,
@@ -119,9 +119,7 @@
 			CREATE_STATE  AS createState,
 			TO_CHAR(UPDATE_TIME,'yyyy-MM-dd hh24:mi:SS')  AS updateTime,
 			TO_CHAR(CMD_TIME,'yyyy-MM-dd hh24:mi:SS')  AS cmdTime
-		
-		
-		FROM CMD_TRAIN WHERE CMD_TXTMLID=${cmdTxtmlId}
+		FROM CMD_TRAIN WHERE CMD_TXTMLITEMID=${cmdTxtmlItemId}
      </select>
 
     
@@ -155,6 +153,7 @@
     <insert id="insertCmdTrain" parameterType="org.railway.com.trainplan.entity.CmdTrain">
      insert into CMD_TRAIN(
             CMD_TRAIN_ID ,
+            BASE_TRAIN_ID,
 			CMD_BUREAU  ,
 			CMD_TYPE ,
 			CMD_TXTMLID ,
@@ -176,6 +175,7 @@
 			CMD_TIME
 		)values(
 		    #{cmdTrainId},
+		    #{baseTrainId},
 		    #{cmdBureau},
 		    #{cmdType},
 		    #{cmdTxtMlId},
@@ -244,6 +244,11 @@
   
   </insert>
   
+  <delete id="deleteCmdTrainStnForCmdTrainId"  parameterType="string">
+  
+    DELETE FROM CMD_TRAIN_STN WHERE CMD_TRAIN_ID = #{cmdTrainId}
+  
+  </delete>
   
     
 </mapper>
