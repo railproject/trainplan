@@ -23,6 +23,7 @@ import org.railway.com.trainplan.entity.HighlineTrainRunLine;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.PlanTrain;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
+import org.railway.com.trainplan.service.dto.OptionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
  
@@ -268,6 +269,13 @@ public class HighLineService{
 	 
 		baseDao.updateBySql(Constants.HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID, reqMap);
 	
+	}
+
+	public List<OptionDto> getVehicles() {
+		
+		Map<String,Object> reqMap = new HashMap<String,Object>(); 
+		 
+		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_VEHICLES, reqMap);
 	}
 	
 }

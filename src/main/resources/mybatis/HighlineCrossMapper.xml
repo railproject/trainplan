@@ -161,6 +161,11 @@
        select distinct CRH_TYPE as name from dic_crh_group
     </select>
     
+    <select id="getVehicles" resultType="org.railway.com.trainplan.service.dto.OptionDto">
+       select VEHICLE_ID AS code,VEHICLE_NBR as name from DIC_CRH_VEHICLE
+    </select>
+    
+    
     <select id="getDepot" resultType="org.railway.com.trainplan.service.dto.OptionDto">
         select DEPOT_ID as code, depot_name as name from dic_crh_depot order by depot_id
     </select>

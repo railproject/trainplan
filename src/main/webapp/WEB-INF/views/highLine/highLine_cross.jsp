@@ -132,7 +132,7 @@ var currentUserBureau = "";
 				     
 				        <div class="pull-left">   
 						  <a type="button"  style="margin-left:15px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
-						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >清空</a>
+						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: deleteHighLineCrosses">清空</a>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载</a>
 						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整</a>
 						  <a type="button"  style="margin-left:20px" class="btn btn-success" data-toggle="modal" data-target="#" >提交</a>
@@ -148,7 +148,7 @@ var currentUserBureau = "";
 															id="cross_table_crossInfo">
 									<thead>
 										<tr style="height: 25px"> 
-											<!-- <th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th> -->
+											<th align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
 											<th style="width: 37px" align="center">序号</th> 
 											<th style="width: 8%" align="center">铁路线</th>
 											<th style="width: 8%" align="center">首车始发日期</th>  
@@ -172,12 +172,12 @@ var currentUserBureau = "";
 									</thead>
 									<tbody style="padding:0">
 										 <tr style="padding:0">
-										   <td colspan="14" style="padding:0">
+										   <td colspan="15" style="padding:0">
 												 <div id="plan_train_panel_body" style="height: 250px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														<tbody data-bind="foreach: highLineCrossRows">
 															<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
-																<!-- <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td> -->
+																<td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
 														        <td style="width: 37px" data-bind="text: $index() + 1"></td> 
 														         <td style="width: 8%" data-bind="text: throughline"></td> 
 														         <td style="width: 8%" data-bind="text: crossStartDate"></td> 

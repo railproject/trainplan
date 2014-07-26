@@ -299,6 +299,24 @@ public class RunPlanController {
    
    /**
    *
+   * @return 为生成运行线界面查询临客数据
+   */
+  @ResponseBody
+  @RequestMapping(value = "/getTrainRunPlanForLk", method = RequestMethod.POST)
+   public Result getTrainRunPlanForLk(@RequestBody Map<String, Object> params) {
+	   Result result = new Result();
+	   try{
+	       List trainPlans = runPlanService.getTrainRunPlansForCreateLine(params); 
+	       result.setData(trainPlans);
+	   }catch(Exception e){
+		   e.printStackTrace();
+	   }
+      
+      return result;
+  }
+   
+   /**
+   *
    * @return 为生成运行线界面查询数据
    */
   @ResponseBody
@@ -327,11 +345,7 @@ public class RunPlanController {
 	   }
       
       return result;
-  }
-  
-   
-   
-   
+  } 
     
     
 }

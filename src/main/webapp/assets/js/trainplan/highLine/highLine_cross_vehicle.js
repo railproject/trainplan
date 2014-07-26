@@ -29,20 +29,50 @@ function CrossModel() {
 	
 	self.gloabBureaus = [];   
 	
+	self.crossAllcheckBox = ko.observable(0);  
+	
 	self.searchModle = ko.observable(new searchModle());
 	 
 	//当前日期可调整的交路
-	self.highLineCrossRows =  ko.observableArray();     
+	self.highLineCrossRows =  ko.observableArray();   
+	
+	//全选按钮
+	self.selectCrosses = function(){
+//		self.crossAllcheckBox(); 
+		$.each(self.highLineCrossRows(), function(i, crossRow){ 
+			if(self.crossAllcheckBox() == 1){
+				crossRow.selected(0); 
+			}else{ 
+				crossRow.selected(1);   
+			}  
+		});  
+	};
+	//数据行前面的checkbox点击事件
+	self.selectCross = function(row){ 
+//		self.crossAllcheckBox();  
+		if(row.selected() == 0){  
+			self.crossAllcheckBox(1);   
+			$.each(self.highLineCrossRows(), function(i, crossRow){  
+				//如果可操作并且该记录被选中，表示没有全部选中
+				if(crossRow.selected() != 1 && crossRow != row){
+					self.crossAllcheckBox(0);
+					return false;
+				}  
+			}); 
+		}else{ 
+			self.crossAllcheckBox(0); 
+		} 
+	}; 
 	
 	self.vehicles = [  
-	             "Google","NetEase", "Sohu", "Sina", "Sogou", "我爱北京", "我爱北京天安门我爱北京天安门","Tencent",   
-	             "Taobao", "Tom", "Yahoo", "JavaEye", "Csdn", "Alipay" ,"abc" 
-	         ];  
-	       
+		             "Google","NetEase", "Sohu", "Sina", "Sogou", "我爱北京", "我爱北京天安门我爱北京天安门","Tencent",   
+		             "Taobao", "Tom", "Yahoo", "JavaEye", "Csdn", "Alipay" ,"abc" 
+		         ];  
+	
 	self.vehicleOnfocus = function(n, event){
 		$(event.target).autocomplete(self.vehicles,{  
              max: 12,    //列表里的条目数
-   		   width: 400,     //提示的宽度，溢出隐藏
+   		   width: 200,     //提示的宽度，溢出隐藏
    		   scrollHeight: 120,   //提示的高度，溢出显示滚动条
    		   matchContains: false,    //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
    		   autoFill: false    //是否自动填充
@@ -140,7 +170,52 @@ function CrossModel() {
 		    });  
 	};
 	 
-	 
+	self.checkHighLineCrosses = function(){  
+		var crossIds = "";
+		var updateCrosses = [];
+		var crosses = self.highLineCrossRows();
+		for(var i = 0; i < crosses.length; i++){
+			if(crosses[i].checkFlag() == 1 && crosses[i].selected() == 1){  
+				showErrorDialog("不能重复审核"); 
+				return;
+			}else if(crosses[i].checkFlag() == 0 && crosses[i].selected() == 1){
+				crossIds += (crossIds == "" ? "'" : ",'") + crosses[i].highLineCrossId() + "'"; 
+				updateCrosses.push(crosses[i]); 
+			}; 
+		}  
+		if(crossIds == ""){
+			showErrorDialog("没有可审核的");
+			return;
+		}
+		commonJsScreenLock();
+		 $.ajax({
+				url : "../highLine/updateHiglineCheckInfo",
+				cache : false,
+				type : "POST",
+				dataType : "json",
+				contentType : "application/json",
+				data :JSON.stringify({  
+					highlineCrossIds : crossIds
+				}),
+				success : function(result) {     
+					if(result.code == 0){
+						$.each(updateCrosses, function(i, n){ 
+							n.checkFlag("1");
+						});
+						showSuccessDialog("审核成功");
+					}else{
+						showErrorDialog("审核失败");
+					}
+				},
+				error : function() {
+					showErrorDialog("审核失败");
+				},
+				complete : function(){
+					commonJsScreenUnLock();
+				}
+			}); 
+		
+	};
 	
 	self.setCurrentCross = function(cross){
 //		if(hasActiveRole(cross.tokenVehBureau()) && self.searchModle().activeFlag() == 0){
@@ -271,8 +346,8 @@ function CrossModel() {
 	 
 		self.searchModle().planStartDate(self.getDateByInt(1)); 
 		
-		commonJsScreenLock();  
-		 //加载路局列表
+		commonJsScreenLock(4);  
+		 
 	    $.ajax({
 			url : "../plan/getFullStationInfo",
 			cache : false,
@@ -299,10 +374,9 @@ function CrossModel() {
 				commonJsScreenUnLock(); 
 			}
 	    });
-	    
 	    //加载当前局可选车底列表
 	    $.ajax({
-			url : "../highLine/getVehicle",
+			url : "../highLine/getVehicles",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -311,7 +385,7 @@ function CrossModel() {
 				if (result != null && result != "undefind" && result.code == "0") { 
 					if (result.data !=null) { 
 						$.each(result.data,function(n, v){  
-							self.vehicles.push(v);
+							self.vehicles.push(v.name);
 						});
 					} 
 				} else {
@@ -320,6 +394,52 @@ function CrossModel() {
 			},
 			error : function() {
 				showErrorDialog("获取本局可用车底失败");
+			},
+			complete : function(){ 
+				commonJsScreenUnLock(); 
+			}
+	    }); 
+	    
+	    $.ajax({
+			url : "../highLine/getThroughLines",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					if (result.data !=null) { 
+						self.searchModle().loadThroughLines(result.data); ;
+					} 
+				} else {
+					showErrorDialog("获取路局列表失败");
+				} 
+			},
+			error : function() {
+				showErrorDialog("获取路局列表失败");
+			},
+			complete : function(){ 
+				commonJsScreenUnLock(); 
+			}
+	    }); 
+	    
+	    $.ajax({
+			url : "../highLine/getDepots",
+			cache : false,
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json", 
+			success : function(result) {    
+				if (result != null && result != "undefind" && result.code == "0") { 
+					if (result.data !=null) { 
+						self.searchModle().loadTokenVehDepots(result.data); ;
+					} 
+				} else {
+					showErrorDialog("获取路局列表失败");
+				} 
+			},
+			error : function() {
+				showErrorDialog("获取路局列表失败");
 			},
 			complete : function(){ 
 				commonJsScreenUnLock(); 
@@ -335,34 +455,14 @@ function CrossModel() {
 	self.loadCrosseForPage = function(startIndex, endIndex) {  
 	 
 //		commonJsScreenLock();
-		 
-//		var bureauCode = self.searchModle().bureau(); 
-//		var highlingFlag = self.searchModle().highlingFlag();
-//		var trainNbr = self.searchModle().filterTrainNbr(); 
-//		var checkFlag = self.searchModle().checkFlag();
-//		var unitCreateFlag = self.searchModle().unitCreateFlag();
-//		var chart = self.searchModle().chart();
-//		var startBureauCode = self.searchModle().startBureau();  
-//		var planStartDate = self.searchModle().planStartDate(); 
-//		var planEndDate = self.searchModle().planEndDate(); 
+		var bureauCode = self.searchModle().bureau(); 
+		var trainNbr = self.searchModle().filterTrainNbr(); 
+		var searchThroughLine = self.searchModle().searchThroughLine();
+		var searchTokenVehDepot = self.searchModle().searchTokenVehDepot();
+ 
 		 var planStartDate = $("#runplan_input_startDate").val();
-			
-//		 var planEndDate =  $("#runplan_input_endDate").val();
-//		 var currentBureanFlag = self.searchModle().currentBureanFlag() ? '1' : '0';   
-//		 self.searchModle().checkActiveFlag(0); 
-//		 if(hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 0){
-//			self.searchModle().activeFlag(1);  
-//		}else if(!hasActiveRole(bureauCode) && self.searchModle().activeFlag() == 1){
-//			self.searchModle().activeFlag(0); 
-//		} 
-		 
 		
-//		if(chart == null){
-//			showErrorDialog("请选择方案!");
-//			commonJsScreenUnLock();
-//			return;
-//		}
-		self.highLineCrossRows.remove(function(item) {
+		 self.highLineCrossRows.remove(function(item) {
 			return true;
 		});  
 		$.ajax({
@@ -371,40 +471,21 @@ function CrossModel() {
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
-				data :JSON.stringify({  
-		
-//					tokenVehBureau : bureauCode, 
-//					highlineFlag : highlingFlag == null ? null : highlingFlag.value,  
-//					checkFlag : checkFlag == null ? null : checkFlag.value,
-//					startBureau : startBureauCode,
-//					unitCreateFlag :  unitCreateFlag == null ? null : unitCreateFlag.value,
-//							chartId : chart == null ? null: chart.chartId,
-//					trainNbr : trainNbr,
-		
+				data :JSON.stringify({   
+					tokenVehBureau : bureauCode, 
+					trainNbr : trainNbr, 
 					crossStartDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
-
-//					endTime : (planEndDate != null ? planEndDate : self.get40Date()).replace(/-/g, ''),
-//					currentBureanFlag : currentBureanFlag
-					
-					  
+					throughLine:searchThroughLine,
+					tokenVehDepot: searchTokenVehDepot
 				}),
 				success : function(result) {    
  
 					if (result != null && result != "undefind" && result.code == "0") {
 						//var rows = [];
 						if(result.data != null){  
-							$.each(result.data,function(n, crossInfo){ 
+							$.each(result.data,function(n, crossInfo){  
 								self.highLineCrossRows.push(new CrossRow(crossInfo));  
-							});
-							
-							  
-							 $("#highline_train_vehicle_panel_body input").autocomplete(self.vehicles,{  
-				                   max: 12,    //列表里的条目数
-				         		   width: 400,     //提示的宽度，溢出隐藏
-				         		   scrollHeight: 120,   //提示的高度，溢出显示滚动条
-				         		   matchContains: false,    //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
-				         		   autoFill: false    //是否自动填充
-				             });   
+							}); 
 							//self.crossRows.loadPageRows(result.data.totalRecord, rows);
 						}   
 						 
@@ -420,8 +501,6 @@ function CrossModel() {
 				}
 			}); 
 	};
-	
-	
 	//必须定义在load函数之后
 	self.crossRows = new PageModle(50, self.loadCrosseForPage); 
 	 
@@ -483,55 +562,96 @@ function searchModle(){
 	self.checkActiveFlag = ko.observable(0);  
 	
 	self.activeCurrentCrossFlag = ko.observable(0);  
-	
-	self.drawFlags =ko.observableArray(['0']); 
-	
-	self.planStartDate = ko.observable();
-	
-	self.currentBureanFlag = ko.observable(0);
-	
-	self.planEndDate = ko.observable();
-	
+	  
+	self.planStartDate = ko.observable(); 
+	 
 	self.bureaus = ko.observableArray();
 	
-	self.startBureaus = ko.observableArray();
-	
-	self.charts = ko.observableArray();
-	 
-	self.highlingFlags = highlingFlags;
-	
-	self.unitCreateFlags = unitCreateFlags; 
-	
-	self.filterCheckFlag = ko.observable(0);
-	
-	self.filterUnitCreateFlag = ko.observable(0);
-		
-	self.checkFlags = checkFlags;
-	
-	self.highlingFlag = ko.observable();
-	
-	self.checkFlag = ko.observable(); 
-	 
-	self.unitCreateFlag = ko.observable(); 
+	self.startBureaus = ko.observableArray(); 
 	
 	self.bureau = ko.observable();
 	 
 	self.chart =  ko.observable();
 	
-	self.startDay = ko.observable();
+	self.createReason = ko.observable(); 
 	
-	self.startBureau = ko.observable();
+	self.filterTrainNbr = ko.observable(); 
 	
-	self.filterTrainNbr = ko.observable();
+	self.shortNameFlag = ko.observable(2); 
 	
-	self.showCrossMap = ko.observable(0);
+	self.searchThroughLine = ko.observable();
+	self.searchTokenVehDepot = ko.observable();
 	
-	self.shortNameFlag = ko.observable(2);
+	//动车段
+	self.accs = ko.observableArray(); 
+	 
+	//担当动车所（用于高铁）
+	self.tokenVehDepots = ko.observableArray();
+	//客运担当局（局码）
+	self.tokenPsgBureaus = ko.observableArray();
+	//担当客运段
+	self.tokenPsgDepts =ko.observableArray();
+	
+	//铁路线类型
+	self.throughLines = ko.observableArray();
+	 
+	//动车组车型（用于高铁）
+	self.crhTypes = ko.observableArray();
+	
+	//合并的时候会使用到
+	self.tokenVehDept = ko.observable();
+	//担当动车所（用于高铁）
+	self.tokenVehDepot = ko.observable();
+	//客运担当局（局码）
+	self.tokenPsgBureau = ko.observable();
+	//担当客运段
+	self.tokenPsgDept = ko.observable(); 
+	//铁路线类型
+	self.throughLine = ko.observable();
+	//动车台
+	self.acc = ko.observable();
+	//动车组车型（用于高铁）
+	self.crhType = ko.observable();  
+	
+	
+	self.loadAccs = function(accs){   
+		for ( var i = 0; i < accs.length; i++) {  
+			self.accs.push(accs[i]);  
+		} 
+	}; 
+	
+	self.loadTokenVehDepots = function(options){   
+		for ( var i = 0; i < options.length; i++) {  
+			self.tokenVehDepots.push(options[i]);  
+		} 
+	};  
+	
+	self.loadThroughLines = function(options){   
+		for ( var i = 0; i < options.length; i++) {  
+			if(options[i] != null){
+				self.throughLines.push({"code": options[i].name, "name": options[i].name});  
+			}
+			
+		} 
+	}; 
+	
+	self.loadCrhTypes = function(options){   
+		for ( var i = 0; i < options.length; i++) {  
+			self.crhTypes.push({code: options[i].name, name: options[i].name});  
+		} 
+	};  
+	
+	self.loadTokenVehDepots = function(options){   
+		for ( var i = 0; i < options.length; i++) {  
+			self.tokenVehDepots.push(options[i]);  
+		} 
+	};   
 	
 	self.loadBureau = function(bureaus){   
 		for ( var i = 0; i < bureaus.length; i++) {  
 			self.bureaus.push(new BureausRow(bureaus[i])); 
 			self.startBureaus.push(new BureausRow(bureaus[i]));  
+			self.tokenPsgBureaus.push(new BureausRow(bureaus[i]));
 		} 
 	}; 
 	
@@ -620,7 +740,7 @@ function CrossRow(data) {
 	self.appointDay = ko.observable(data.appointDay);
 	self.appointPeriod = ko.observable(data.appointPeriod); 
 	self.crossSection = ko.observable(data.crossSection);
-	self.throughline = ko.observable(data.throughline);
+	self.throughline = ko.observable(data.throughLine);
 	self.startBureau = ko.observable(data.startBureau); 
 	//车辆担当局 
 	self.tokenVehBureau = ko.observable(data.tokenVehBureau); 
@@ -686,8 +806,11 @@ function CrossRow(data) {
 	});  
 	 
 	self.tokenVehDept = ko.observable(data.tokenVehDept);
+	
 	self.tokenVehDepot = ko.observable(data.tokenVehDepot);
+	
 	self.tokenPsgBureau = ko.observable(data.tokenPsgBureau);
+	
 	self.tokenPsgBureauShowValue = ko.computed(function(){ 
 		var result = "";
 		 if(data.tokenPsgBureau != null && data.tokenPsgBureau != "null"){
@@ -704,6 +827,8 @@ function CrossRow(data) {
 		 }
 		 return result; 
 	});
+	self.postId = ko.observable(data.postId);
+	self.postName = ko.observable(data.postName);
 	self.tokenPsgDept = ko.observable(data.tokenPsgDept);
 	self.tokenPsgDepot = ko.observable(data.tokenPsgDepot);
 	self.locoType = ko.observable(data.locoType);
@@ -712,6 +837,7 @@ function CrossRow(data) {
 	self.dejCollect = ko.observable(data.dejCollect);
 	self.airCondition = ko.observable(data.airCondition);
 	self.note = ko.observable(data.note);  
+	self.createReason = ko.observable(data.createReason);
 };
 
 function TrainModel() {

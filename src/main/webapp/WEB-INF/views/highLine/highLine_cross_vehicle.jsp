@@ -88,22 +88,52 @@ var currentUserBureau = "";
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">高铁车底计划报告</a></li>
-	</ol>  
+	</ol>
+	<div class="row" style="margin:15px 0 10px 0;"> 
+	    <form class="form-horizontal" role="form">
+	   
+	      <div class="pull-left"> 
+	        <div class="pull-left"> 
+				 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
+													日期:&nbsp;</label> 
+				 <input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
+			 </div>
+			 <div class="pull-left" style="margin-left:10px"> 
+				 <label for="exampleInputEmail5" style="vertical-align: bottom;">铁路线:&nbsp;</label> 
+				 <select class="form-control" style="width: 100px;display:inline-block;" id="input_cross_filter_showFlag"
+						 data-bind="options: searchModle().throughLines, value: searchModle().searchThroughLine, optionsText: 'name', optionsValue: 'code', optionsCaption: ''">
+				 </select>  
+			  </div>
+			   <div class="pull-left" style="margin-left:10px"> 
+				 <label for="exampleInputEmail5" style="vertical-align: bottom;">担当局:&nbsp;</label> 
+				 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+						 data-bind="options: searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue: 'code', optionsCaption: ''">
+				 </select> 
+			  </div>
+			   <div class="pull-left" style="margin-left:10px"> 
+				 <label for="exampleInputEmail5" style="vertical-align: bottom;">动车所:&nbsp;</label> 
+				 <select class="form-control" style="width: 130px;display:inline-block;" id="input_cross_filter_showFlag"
+						 data-bind="options: searchModle().tokenVehDepots, value: searchModle().searchTokenVehDepot, optionsText: 'name', optionsValue: 'name' , optionsCaption: ''">
+				 </select> 
+			  </div>
+			  <div class="pull-left"> 
+				 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
+													车次:&nbsp;</label> 
+				 <input type="text" class="form-control" style="width:75px;" placeholder="" />
+			 </div>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
+		 </div>
+	      <!--col-md-3 col-sm-4 col-xs-4-->
+	    </form> 
+	  </div>    
 	    <div class="row" style="margin: 10px 10px 10px 10px;">   
 		    <!--分栏框开始-->
 		    <div id="plan_view_div_palnDayDetail" class="panel panel-default">
 		       <div class="row" style="margin:15px 0 10px 0;"> 
-				      <form class="form-horizontal" role="form">
-				     
-				        <div class="pull-left">  
-						 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
-															日期:&nbsp;</label>
-							<div class="pull-left" style="margin-left: 5px;">
-								<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
-							</div>
-						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
-						  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">提交</a>
-						  
+				      <form class="form-horizontal" role="form"> 
+				        <div class="pull-left" >   
+						  <a type="button"  style="margin-left:15px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: updateHighLineCrosses">保存</a>
+						  <a type="button"  style="margin-left:20px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: checkHighLineCrosses">提交</a>
 						 </div>
 				        <!--col-md-3 col-sm-4 col-xs-4-->
 				      </form> 
@@ -114,42 +144,50 @@ var currentUserBureau = "";
 															id="cross_table_crossInfo">
 									<thead>
 										<tr style="height: 25px"> 
-											<!-- <th style="width: 10%" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th> -->
+											<th align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
 											<th style="width: 37px" align="center">序号</th> 
+											<th style="width: 8%" align="center">铁路线</th>
+											<th style="width: 8%" align="center">首车始发日期</th>  
 											<th align="center">  
 												    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路全车次</label> 
-													<select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+													<!-- <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
 														 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
-													</select>  
+													</select>   -->
 											</th> 
+											<th style="width: 8%" align="center">车型</th>
 											<th style="width: 8%" align="center">车底1</th>
 											<th style="width: 8%" align="center">车底2</th>
-											<th style="width: 8%" align="center">接续车次</th> 
-											<th style="width: 8%" align="center">出库所/始发站</th>
+											<th style="width: 8%" align="center">出库所/始发站</th>  
 											<th style="width: 8%" align="center">入库所/终到站</th>
-											<th style="width: 8%" align="center">车辆担当所</th>
-											<th style="width: 8%" align="center">是否热备交路</th>
-											<th style="width: 8%" align="center">命令号</th>
+											<th style="width: 5%" align="center">热备状态</th>
+											<th style="width: 5%" align="center">担当局</th>
+											<th style="width: 8%" align="center">动车所</th>
+											<th style="width: 8%" align="center">管辖动车台</th>
+											<th style="width: 8%" align="center">来源</th> 
 										</tr>
 									</thead>
 									<tbody style="padding:0">
 										 <tr style="padding:0">
-										   <td colspan="11" style="padding:0">
-												 <div id="highline_train_vehicle_panel_body" style="height: 650px; overflow-y:auto;"> 
+										   <td colspan="15" style="padding:0">
+												 <div id="plan_train_panel_body" style="height: 250px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														<tbody data-bind="foreach: highLineCrossRows">
-															<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
-																<!-- <td align="center" style="width: 10%"><input type="checkbox" value="1" data-bind="attr:{class: activeFlag() == 1  || checkActiveFlag() == 1?  '' : 'ckbox disabled'},event:{change: $parent.selectCross}, checked: selected"></td> -->
-														        <td style="width: 36px" data-bind="text: $index() + 1"></td> 
+															<tr data-bind="style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
+																<td ><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
+														        <td style="width: 37px" data-bind="text: $index() + 1"></td> 
+														         <td style="width: 8%" data-bind="text: throughline"></td> 
+														         <td style="width: 8%" data-bind="text: crossStartDate"></td> 
 															     <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
+															     <td style="width: 8%" data-bind="text: crhType"></td>
 															     <td style="width: 8%"><input type="text" data-bind="value: vehicle1, event:{change: $parent.vehicle1Change, focus: $parent.vehicleOnfocus}"></td>
-															     <td style="width: 8%"><input type="text" data-bind="value: vehicle2, event:{change: $parent.vehicle2Change, focus: $parent.vehicleOnfocus}"></td>
-															     <td style="width: 8%" data-bind="text: ''"></td> 
+															     <td style="width: 8%"><input type="text" data-bind="value: vehicle2, event:{change: $parent.vehicle2Change, focus: $parent.vehicleOnfocus}"></td>  
 															     <td style="width: 8%" data-bind="text: startStn"></td>
-															     <td style="width: 8%" data-bind="text: endStn"></td>
-															     <td style="width: 8%" data-bind="text: tokenVehBureauShowValue"></td>
-															     <td style="width: 8%" data-bind="text: spareFlag() == 2 ? '是' : '否'"></td>
-															     <td style="width: 8%" data-bind="text: ''"></td>
+															     <td style="width: 8%" data-bind="text: endStn"></td> 
+															     <td style="width: 5%" data-bind="text: spareFlag() == 2 ? '是' : '否'"></td>
+															     <td style="width: 5%" data-bind="text: tokenVehBureauShowValue"></td>
+															     <td style="width: 8%" data-bind="text: tokenPsgDept"></td>
+															     <td style="width: 8%" data-bind="text: postName"></td>
+															     <td style="width: 8%" data-bind="text: note"></td>
 															</tr> 
 														</tbody> 
 													</table> 
@@ -157,7 +195,7 @@ var currentUserBureau = "";
 											</td>
 										</tr>
 									</tbody>				 
-								</table>
+								</table> 
 					        </div> 
 				       </div>
 				  </div>  
