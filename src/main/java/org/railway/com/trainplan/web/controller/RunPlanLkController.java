@@ -28,6 +28,8 @@ import org.railway.com.trainplan.entity.CmdTrain;
 import org.railway.com.trainplan.entity.CmdTrainStn;
 import org.railway.com.trainplan.entity.RunPlan;
 import org.railway.com.trainplan.entity.TrainTimeInfo;
+import org.railway.com.trainplan.repository.mybatis.RunPlanDao;
+import org.railway.com.trainplan.repository.mybatis.RunPlanStnDao;
 import org.railway.com.trainplan.service.RunPlanLkService;
 import org.railway.com.trainplan.service.ShiroRealm;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
@@ -58,7 +60,12 @@ public class RunPlanLkController {
 		
 	 @Autowired
 	 private RunPlanLkService runPlanLkService;
+    
+     @Autowired
+     private RunPlanDao runPlanDao;
 
+     @Autowired
+     private RunPlanStnDao runPlanStnDao;
 
 	 @RequestMapping(value="/addPage", method = RequestMethod.GET)
      public String addPage() {
@@ -278,18 +285,20 @@ public class RunPlanLkController {
 					 for(CmdInfoModel infoModel : listModel){
 						 CmdTrain cmdTrainTempl = new CmdTrain();
 						 Integer cmdTxtMlItemId = infoModel.getCmdTxtMlItemId();
-						 System.err.println("cmdTxtMlItemId==" + cmdTxtMlItemId);
+				
 						 //从本地数据库中查询
 						 CmdTrain cmdTrain = runPlanLkService.getCmdTrainInfoForCmdTxtmlItemId(String.valueOf(cmdTxtMlItemId));
 						 if(cmdTrain == null){
 							 cmdTrainTempl.setCreateState("0");
 							 cmdTrainTempl.setSelectState("0");
+							 cmdTrainTempl.setIsExsitStn("0");
 						 }else{
 							 cmdTrainTempl.setCreateState(cmdTrain.getCreateState());
 							 cmdTrainTempl.setSelectState(cmdTrain.getSelectState());
 							 cmdTrainTempl.setCmdTrainId(cmdTrain.getCmdTrainId());
 							 cmdTrainTempl.setPassBureau(cmdTrain.getPassBureau());
 							 cmdTrainTempl.setUpdateTime(cmdTrain.getUpdateTime());
+							 cmdTrainTempl.setIsExsitStn("1");
 						 }
 						 cmdTrainTempl.setCmdBureau(infoModel.getCmdBureau());
 						 cmdTrainTempl.setCmdItem(infoModel.getCmdItem());
@@ -364,7 +373,49 @@ public class RunPlanLkController {
 			return result;
 		}
 		
-	
+		/**
+		 * 批量生成运行线
+		 * @param reqStr
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/batchCreateRunPlanLine", method = RequestMethod.POST)
+		public Result batchCreateRunPlanLine(@RequestBody String reqStr){
+			Result result = new Result();
+			logger.info("batchCreateRunPlanLine~~reqStr==" + reqStr);
+			try{
+				JSONObject reqObj = JSONObject.fromObject(reqStr);
+				List<String> cmdTraindIdList = (List<String>)reqObj.get("cmdTrainIds");
+			    if(cmdTraindIdList != null && cmdTraindIdList.size() > 0 ){
+			    	for(String cmdTrainId : cmdTraindIdList){
+			    		List<CmdTrain> cmdTrainList = runPlanLkService.getCmdTrandAndStnInfo(cmdTrainId);
+			    		//只有一条数据
+			    		CmdTrain  cmdTrain = cmdTrainList.get(0);
+			    		String startDate = cmdTrain.getStartDate();
+			    		String endDate = cmdTrain.getEndDate();
+			    		//创建临客命令对象
+						CmdInfoModel model = new CmdInfoModel();
+						model.setStartDate(DateUtil.parse(startDate));
+						model.setEndDate(DateUtil.parse(endDate));
+				        // 命令类型
+						model.setCmdType(cmdTrain.getCmdType());
+				        // 开行规律
+						model.setRule(cmdTrain.getRule());
+				        // 或者择日
+				        model.setSelectedDate(cmdTrain.getSelectedDate());
+						
+			    		//表plan_train对应实体类
+			    		RunPlan runPlan = new RunPlan();
+			    	}
+			    }
+			}catch(Exception e){
+				logger.error(e.getMessage(), e);
+				result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());		
+			}
+		
+			return result;
+		}
 		/**
 		 * 保存临客列车运行时刻表
 		 * @param reqMap
@@ -419,6 +470,12 @@ public class RunPlanLkController {
 				    runPlanLkService.insertCmdTrain(train);
 				 }else{
 					 cmdTrainId =  cmdTrain.getCmdTrainId();
+					 //更新途径局
+					 String passBureau = StringUtil.objToStr(trainMap.get("passBureau"));
+					 if(passBureau != null && !"".equals(passBureau)){
+						 runPlanLkService.updatePassBureauForCmdTraindId(passBureau,cmdTrainId);
+					 }
+					 
 				 }
 				 
 				 //先删除表cmd_train_stn中对应的数据
@@ -430,9 +487,10 @@ public class RunPlanLkController {
 			    	
 			    	stn.setCmdTrainId(cmdTrainId);
 			    	stn.setCmdTrainStnId(UUID.randomUUID().toString());
-			    
-			    	stn.setArrTrainNbr(StringUtil.objToStr(trainStn.get("arrTrainNbr")));
-			    	stn.setDptTrainNbr(StringUtil.objToStr(trainStn.get("dptTrainNbr")));
+			    	String arrTrainNbr = StringUtil.objToStr(trainStn.get("arrTrainNbr"));
+			    	String dptTrainNbr = StringUtil.objToStr(trainStn.get("arrTrainNbr"));
+			    	stn.setArrTrainNbr(arrTrainNbr == null? "":arrTrainNbr);
+			    	stn.setDptTrainNbr(dptTrainNbr == null? "":dptTrainNbr);
 			    	String arrTime = StringUtil.objToStr(trainStn.get("arrTime"));
 			    	String endTime = StringUtil.objToStr(trainStn.get("dptTime"));
 			    	String baseArrTime = StringUtil.objToStr(trainStn.get("baseArrTime"));
@@ -451,8 +509,8 @@ public class RunPlanLkController {
 			    		stn.setBaseDptTime(baseDptTime);
 			    	}
 			    	
-			    	
-			    	stn.setPlatform(StringUtil.objToStr(trainStn.get("platform")));
+			    	String plantForm = StringUtil.objToStr(trainStn.get("platform"));
+			    	stn.setPlatform(plantForm == null?"":plantForm);
 			    	stn.setStnBureau(StringUtil.objToStr(trainStn.get("stnBureau")));
 			    	stn.setStnName(StringUtil.objToStr(trainStn.get("stnName")));
 			    	

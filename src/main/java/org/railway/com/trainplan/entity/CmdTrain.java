@@ -1,6 +1,7 @@
 package org.railway.com.trainplan.entity;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 表cmd_train对应的实体类
@@ -47,8 +48,23 @@ public class CmdTrain {
 	private String updateTime;
 	//发布时间
 	private String cmdTime;
+	//标识cmd_train_stn表中是否有对应的数据 0：没有，1：有
+	private String isExsitStn;
 	
+	private List<CmdTrainStn> cmdTrainStnList = new ArrayList<CmdTrainStn>();
 	
+	public List<CmdTrainStn> getCmdTrainStnList() {
+		return cmdTrainStnList;
+	}
+	public void setCmdTrainStnList(List<CmdTrainStn> cmdTrainStnList) {
+		this.cmdTrainStnList = cmdTrainStnList;
+	}
+	public String getIsExsitStn() {
+		return isExsitStn;
+	}
+	public void setIsExsitStn(String isExsitStn) {
+		this.isExsitStn = isExsitStn;
+	}
 	public String getBaseTrainId() {
 		return baseTrainId;
 	}

@@ -535,7 +535,7 @@ var RunPlanLkCmdPage = function () {
 		 * 上移
 		 */
 		_self.up = function() {
-			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind") {
+			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind" || _self.currentCmdTrainStn().childIndex()<0) {
 				showWarningDialog("请选择时刻表中需要调整顺序的记录");
 				return;
 			}
@@ -565,7 +565,7 @@ var RunPlanLkCmdPage = function () {
 		 * 下移
 		 */
 		_self.down = function() {
-			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind") {
+			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind" || _self.currentCmdTrainStn().childIndex()<0) {
 				showWarningDialog("请选择时刻表中需要调整顺序的记录");
 				return;
 			}
@@ -658,6 +658,153 @@ var RunPlanLkCmdPage = function () {
 				}
 			});
 		};
+		
+		
+		
+
+		/**
+		 * 插入行
+		 * 追加到当前选中行之前
+		 */
+		_self.insertTrainStnRow = function() {
+			var _maxRowLen = _self.runPlanLkCMDTrainStnRows().length;//追加记录前集合大小
+
+			//1.当_maxRowLen==0时，直接push
+			if (_maxRowLen == 0) {
+				_self.runPlanLkCMDTrainStnRows.push(new _self.cmdTrainStnTimeRow({
+					childIndex:0,
+					stnName:"",
+					arrTrainNbr:"",
+					dptTrainNbr:"",
+					stnBureau:"",
+					arrTime:"",
+					dptTime:"",
+					trackNbr:"",
+					platform:"",
+				}));
+				return;
+			}
+			
+			
+			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind" 
+				|| _self.currentCmdTrainStn().childIndex()<0) {
+				showWarningDialog("请选择时刻表中需要插入记录的位置");
+				return;
+			}
+
+			//2.1.增加行	splice(start,deleteCount,val1,val2,...)：从start位置开始删除deleteCount项，并从该位置起插入val1,val2,... 
+			_self.runPlanLkCMDTrainStnRows.splice(_self.currentCmdTrainStn().childIndex(), 0, new _self.cmdTrainStnTimeRow({
+				childIndex:_self.currentCmdTrainStn().childIndex(),
+				stnName:"",
+				arrTrainNbr:"",
+				dptTrainNbr:"",
+				stnBureau:"",
+				arrTime:"",
+				dptTime:"",
+				trackNbr:"",
+				platform:"",
+			}));
+
+			//2.2.设置序号
+			for(var i=0;i<_self.runPlanLkCMDTrainStnRows().length;i++) {
+				if(i > (_self.currentCmdTrainStn().childIndex())) {//从新插入记录位置开始childIndex  + 1
+					_self.runPlanLkCMDTrainStnRows()[i].childIndex(_self.runPlanLkCMDTrainStnRows()[i].childIndex()+1);//当前行位置后的所有记录childIndex加1
+				}
+			}
+		};
+		
+		
+
+		/**
+		 * 追加行
+		 * 追加到当前选中行之后
+		 */
+		_self.addTrainStnRow = function() {
+			var _maxRowLen = _self.runPlanLkCMDTrainStnRows().length;//追加记录前集合大小
+
+			//1.当_maxRowLen==0时，直接push
+			if (_maxRowLen == 0) {
+				_self.runPlanLkCMDTrainStnRows.push(new _self.cmdTrainStnTimeRow({
+					childIndex:0,
+					stnName:"",
+					arrTrainNbr:"",
+					dptTrainNbr:"",
+					stnBureau:"",
+					arrTime:"",
+					dptTime:"",
+					trackNbr:"",
+					platform:"",
+				}));
+				return;
+			}
+			
+			
+			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind" 
+				|| _self.currentCmdTrainStn().childIndex()<0) {
+				showWarningDialog("请选择时刻表中需要追加记录的位置");
+				return;
+			}
+
+			//2.1.增加行	splice(start,deleteCount,val1,val2,...)：从start位置开始删除deleteCount项，并从该位置起插入val1,val2,... 
+			_self.runPlanLkCMDTrainStnRows.splice(_self.currentCmdTrainStn().childIndex()+1, 0, new _self.cmdTrainStnTimeRow({
+				childIndex:_self.currentCmdTrainStn().childIndex()+1,
+				stnName:"",
+				arrTrainNbr:"",
+				dptTrainNbr:"",
+				stnBureau:"",
+				arrTime:"",
+				dptTime:"",
+				trackNbr:"",
+				platform:"",
+			}));
+
+			//2.2.设置序号
+			if(_self.currentCmdTrainStn().childIndex() != _maxRowLen-1) {//当前选中行不为增加前集合中最后一行   则移除后集合需要重新排序
+				for(var i=0;i<_self.runPlanLkCMDTrainStnRows().length;i++) {
+					if(i > (_self.currentCmdTrainStn().childIndex()+1)) {//从新插入记录位置开始childIndex  + 1
+						_self.runPlanLkCMDTrainStnRows()[i].childIndex(_self.runPlanLkCMDTrainStnRows()[i].childIndex()+1);//当前行位置后的所有记录childIndex加1
+					}
+				}
+			}
+		};
+		
+		
+
+		/**
+		 * 删除行
+		 */
+		_self.deleteTrainStnRow = function() {
+			if(_self.currentCmdTrainStn()==null || _self.currentCmdTrainStn()=="undefind" || _self.currentCmdTrainStn().childIndex()<0) {
+				showWarningDialog("请选择时刻表中需要移除的记录");
+				return;
+			}
+			var _maxRowLen = _self.runPlanLkCMDTrainStnRows().length;
+			
+			//从集合中移除
+			_self.runPlanLkCMDTrainStnRows.remove(_self.currentCmdTrainStn());
+			
+			if(_self.currentCmdTrainStn().childIndex() != _maxRowLen-1) {//移除行不为移除前集合中最后一行   则移除后集合需要重新排序
+				//重新设置childIndex
+				$.each(_self.runPlanLkCMDTrainStnRows(),function(n, obj){
+					obj.childIndex(n);
+				});
+			}
+			
+			//清除当前选中项值
+			_self.currentCmdTrainStn(new _self.cmdTrainStnTimeRow({
+				childIndex:-1,
+				stnName:"",
+				arrTrainNbr:"",
+				dptTrainNbr:"",
+				stnBureau:"",
+				arrTime:"",
+				dptTime:"",
+				trackNbr:"",
+				platform:"",
+			}));
+		};
+		
+		
 		
 		
 		
