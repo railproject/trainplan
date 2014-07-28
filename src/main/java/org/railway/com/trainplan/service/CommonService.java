@@ -44,9 +44,7 @@ public class CommonService {
 	
 	private static List<OptionDto> throughLines = new ArrayList<OptionDto>();
 	private static List<OptionDto> depots = new ArrayList<OptionDto>();
-	private static List<OptionDto> crhTypes = new ArrayList<OptionDto>();
-	private static Map<String, List<OptionDto>> accs = new HashMap<String, List<OptionDto>>(); 
-	
+	private static List<OptionDto> crhTypes = new ArrayList<OptionDto>();  
 	
 	@Autowired
 	private LjzdMybatisDao ljzdDao;
@@ -79,34 +77,13 @@ public class CommonService {
 		return crhTypes;
 	}
 	
-	public List<OptionDto> getAccs(String b){
-		if(b == null){ 
-			List<OptionDto> all = new ArrayList<OptionDto>();
-			if(accs.size() < 18){
-				List<OptionDto> result =  baseDao.selectListBySql(Constants.BASEDAO_GET_ACC, null); 
-				for(OptionDto o : result){
-					System.out.println("--------------acc+++--------------");
-					if(accs.get(o.getBureauCode()) == null){ 
-						List<OptionDto> list = new ArrayList<OptionDto>();
-						accs.put(o.getBureauCode(), list);
-					}
-					accs.get(o.getBureauCode()).add(o);
-				}
-			} 
-			for(List<OptionDto> l: accs.values()){
-				System.out.println("----------------------" + l.size());
-				all.addAll(l);
-			}
-			return all;
-		}else{
-			if(accs.get(b) == null){ 
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("bureauCode", b);
-				List<OptionDto> result =  baseDao.selectListBySql(Constants.BASEDAO_GET_ACC, params);
-				accs.put(b, result);
-			}
-		}
-		return accs.get(b);
+	public List<OptionDto> getAccs(String b){ 
+		Map<String, String> params = new HashMap<String, String>();  
+		if(b != null){   
+			params.put("bureauCode", b); 
+		} 
+		List<OptionDto> result =  baseDao.selectListBySql(Constants.BASEDAO_GET_ACC, params);
+		return result;
 	}
 	/**
 	 * 通过路局全称查询路基基本信息

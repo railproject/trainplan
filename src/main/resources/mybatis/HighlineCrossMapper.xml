@@ -162,20 +162,19 @@
     </select>
     
     <select id="getVehicles" resultType="org.railway.com.trainplan.service.dto.OptionDto">
-       select VEHICLE_ID AS code,VEHICLE_NBR as name from DIC_CRH_VEHICLE
+       select GROUP_ID AS code,GROUP_NBR as name from dic_crh_group
     </select>
     
     
     <select id="getDepot" resultType="org.railway.com.trainplan.service.dto.OptionDto">
-        select DEPOT_ID as code, depot_name as name from dic_crh_depot order by depot_id
+        select distinct DEPOT_ID as code, depot_name as name from dic_crh_depot order by depot_id
     </select>
      <select id="getAcc" parameterType="map" resultType="org.railway.com.trainplan.service.dto.OptionDto">
 	    select t3.ljpym as bureauCode, t2.acc_id as code,T2.ACC_NAME as name from tds1adm.ACCOUNT t2,tds1adm.department t3 where t2.acc_id in (select t1.acc_id from tds1adm.ACC_ROL_RELA t1 where t1.rol_id in (select t.rol_id from tds1adm.ROLE t where t.rol_name like '局动车调度'))
 		and t2.fenlei01 = t3.dep_id 
 		<if test="bureauCode != null">
 		  and t3.ljpym=#{bureauCode}
-		</if>
-		
+		</if> 
 		order by  t2.acc_id
 	 </select>
 </mapper>

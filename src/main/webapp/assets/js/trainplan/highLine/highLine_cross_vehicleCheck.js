@@ -65,10 +65,7 @@ function CrossModel() {
 		} 
 	}; 
 	
-	self.vehicles = [  
-		             "Google","NetEase", "Sohu", "Sina", "Sogou", "我爱北京", "我爱北京天安门我爱北京天安门","Tencent",   
-		             "Taobao", "Tom", "Yahoo", "JavaEye", "Csdn", "Alipay" ,"abc" 
-		         ];  
+	self.vehicles = [];  
 	
 	self.vehicleOnfocus = function(n, event){
 		$(event.target).autocomplete(self.vehicles,{  
