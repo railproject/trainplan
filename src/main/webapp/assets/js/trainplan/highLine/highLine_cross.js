@@ -974,6 +974,10 @@ function CrossModel() {
 		
 		
 	};  
+	//删除选中的记录
+	self.deleteHighLineCrosses = function(){
+		
+	};
 	self.createHighLineCrosses = function(){
 		 var planStartDate = $("#runplan_input_startDate").val();
 		 $.ajax({
