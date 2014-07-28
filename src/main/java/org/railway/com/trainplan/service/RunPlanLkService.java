@@ -142,18 +142,8 @@ public class RunPlanLkService {
 	   * @param selectedDate
 	   * @return
 	   */
-	  public List<Date> getSelectedDateListFromRemote(String startDate,String endDate,String cmdType,String rule,String selectedDate){
-		    //创建临客命令对象
-			CmdInfoModel model = new CmdInfoModel();
-			model.setStartDate(DateUtil.parse(startDate));
-			model.setEndDate(DateUtil.parse(endDate));
-	        // 命令类型
-			model.setCmdType(cmdType);
-	        // 开行规律
-			model.setRule(rule);
-	        // 或者择日
-	        model.setSelectedDate(selectedDate);
-			
+	  public List<Date> getSelectedDateListFromRemote(CmdInfoModel model){
+		    
 			return ConstantUtil.getSelectedDateList(model);
 	  }
 	  
@@ -195,5 +185,15 @@ public class RunPlanLkService {
 		  reqMap.put("passBureau",passBureau);
 		  reqMap.put("cmdTrainId",cmdTrainId);
 		  return baseDao.updateBySql(Constants.RUNPLANLKDAO_UPDATE_PASS_BUREAU_FOR_CMD_TRAINID, reqMap);
+	  }
+	  
+	  
+	  /**
+	   * 根据cmdTrainId查询表cmd_train和表cmd_train_stn的关联数据
+	   * @param cmdTrainId
+	   * @return
+	   */
+	  public List<CmdTrain> getCmdTrandAndStnInfo(String cmdTrainId){
+		  return baseDao.selectListBySql(Constants.RUNPLANLKDAO_GET_CMDTRAIN_AND_STNINFO, cmdTrainId);
 	  }
 }

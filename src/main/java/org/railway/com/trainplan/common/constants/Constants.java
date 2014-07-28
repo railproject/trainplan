@@ -285,6 +285,8 @@ public class Constants {
     public static final String RUNPLANLKDAO_DELETE_CMD_TRAINSTN_FOR_CMDTRAINID = "runPlanLkDao.deleteCmdTrainStnForCmdTrainId";
     //根据cmdPlanId更新途径局passBureau   
     public static final String RUNPLANLKDAO_UPDATE_PASS_BUREAU_FOR_CMD_TRAINID = "runPlanLkDao.updatePassBureauForCmdTraindId";
+    //根据cmd_train_id获取cmdtrain和cmdtrainStn信息 
+    public static final String RUNPLANLKDAO_GET_CMDTRAIN_AND_STNINFO = "runPlanLkDao.getCmdTrandAndStnInfo";
     
 	public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID = "highlineCrossDao.updateHighLineCrossId";
 	
