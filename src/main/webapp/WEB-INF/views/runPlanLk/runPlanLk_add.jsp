@@ -28,8 +28,8 @@ String basePath = request.getContextPath();
 	<div class="panel-body">
 		<div class="bs-example bs-example-tabs">
 		      <ul id="myTab" class="nav nav-tabs">
-		        <li class="active"><a href="#pageDiv_ddj" data-toggle="tab">本局担当</a></li>
-		        <li class=""><a href="#pageDiv_bjxg" data-toggle="tab">外局担当</a></li>
+		        <li class="active"><a href="#pageDiv_ddj" data-toggle="tab" data-bind="click:cleanPageData">本局担当</a></li>
+		        <li class=""><a href="#pageDiv_bjxg" data-toggle="tab" data-bind="click:cleanPageData">外局担当</a></li>
 		      </ul>
 		    <div id="myTabContent" class="tab-content" >
 		  	<!--tab1 开始-->
@@ -94,7 +94,7 @@ String basePath = request.getContextPath();
 								  		</div>
 							  		</div>
 							  		<div style="float:left;margin-left:20px;margin-top: 25px;margin-bottom:0;vertical-align: middle">
-							  			<a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
+							  			<a type="button" href="#" class="btn btn-success" data-bind="click : queryListBjdd" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
 							  		</div>
 							  	</div>
 							  </form>
@@ -255,6 +255,10 @@ String basePath = request.getContextPath();
 								  		<div class="row">
 								  			<div class="row" style="width: 100%; margin-top: 5px;">
 										  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
+													<label for="exampleInputEmail2" class="control-label pull-left">发令起始日期:&nbsp;</label>
+												    <div class="pull-left">
+												        <input id="runPlanLk_cmd_input_startDate_wjdd" type="text" class="form-control" style="width:100px;" placeholder="">
+													</div>
 													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:12px;">&nbsp;&nbsp;部令号:&nbsp;</label>
 												    <div class="pull-left">
 												        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().cmdNbrSuperior">
@@ -265,14 +269,16 @@ String basePath = request.getContextPath();
 												    </div>
 													<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;担当局:&nbsp;</label>
 												    <div class="pull-left">
-												    	<select class="form-control" style="width: 100px;display:inline-block;"
-															 data-bind="options: [{'code': 'all', 'text': ''},{'code': '1', 'text': '已'},{'code': '0', 'text': '未'}], value: searchModle().createStateOption, optionsText: 'text',optionsValue:'code'">
-														</select>
+												    	<select style="width: 80px" class="form-control" data-bind="options:searchModle().bureauArray, value: searchModle().bureauOption, optionsText: 'text'"></select>
 													</div>
 										  		</div>
 										  	</div>
 										  	<div class="row" style="width: 100%; margin-top: 5px;">
 										  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
+													<label for="exampleInputEmail2" class="control-label pull-left">发令终止日期:&nbsp;</label>
+												    <div class="pull-left">
+												        <input id="runPlanLk_cmd_input_endDate_wjdd" type="text" class="form-control" style="width:100px;" placeholder="">
+													</div>
 													<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;命令类型:&nbsp;</label>
 												    <div class="pull-left">
 												    	<select class="form-control" style="width: 100px;display:inline-block;"
@@ -292,7 +298,7 @@ String basePath = request.getContextPath();
 								  		</div>
 							  		</div>
 							  		<div style="float:left;margin-left:20px;margin-top: 25px;margin-bottom:0;vertical-align: middle">
-							  			<a type="button" href="#" class="btn btn-success" data-bind="click : queryList" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
+							  			<a type="button" href="#" class="btn btn-success" data-bind="click : queryListWjdd" style="float:left;margin-left:20px;margin-bottom:0;"><i class="fa fa-search"></i>查询</a>
 							  		</div>
 							  	</div>
 							  </form>
@@ -300,15 +306,10 @@ String basePath = request.getContextPath();
 					      
 					      <div class="panel-body">
 					        <div class="table-responsive table-hover">
-					          <table id ="runPlanLkCMD_table" class="table table-bordered table-striped table-hover">
+					          <table id ="runPlanLkCMD_table_wjdd" class="table table-bordered table-striped table-hover">
 					            <thead>
 					              <tr>
-					                <th class="text-center" style="vertical-align: middle;width:20px"><input id="checkbox_selectAll" type="checkbox" data-bind="checked: isSelectAll, event:{change: checkBoxSelectAllChange}"></th>
 					                <th class="text-center" style="vertical-align: middle;width:35px">序号</th>
-					                <th class="text-center" style="vertical-align: middle;width:90px">命令类型</th>
-					                <th class="text-center" style="vertical-align: middle;width:90px">发令日期</th>
-					                <th class="text-center" style="vertical-align: middle">局令号</th>
-					                <th class="text-center" style="vertical-align: middle;width:30px"">项号</th>
 					                <th class="text-center" style="vertical-align: middle">部令号</th>
 					                <th class="text-center" style="vertical-align: middle">车次</th>
 					                <th class="text-center" style="vertical-align: middle">始发站</th>
@@ -318,17 +319,15 @@ String basePath = request.getContextPath();
 					                <th class="text-center" style="vertical-align: middle">规律</th>
 					                <th class="text-center" style="vertical-align: middle">择日</th>
 					                <th class="text-center" style="vertical-align: middle">途经局</th>
+					                <th class="text-center" style="vertical-align: middle">担当局</th>
+					                <th class="text-center" style="vertical-align: middle">局令号</th>
+					                <th class="text-center" style="vertical-align: middle;width:90px">发令日期</th>
 					                <th class="text-center" style="vertical-align: middle;width:30px">生成<br>状态</th>
 					              </tr>
 					            </thead>
 					            <tbody data-bind="foreach: runPlanLkCMDRows">
 					              <tr data-bind="style:{color: $parent.currentCmdTxtMl().cmdTxtMlItemId == cmdTxtMlItemId ? 'blue':''}">
-					              	<td><input name="cmd_list_checkbox" type="checkbox" data-bind="value : cmdTxtMlItemId"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
-					                <td data-bind="click: $parent.setCurrentRec, text: cmdType, attr:{title: cmdType}"></td>
-					                <td data-bind="click: $parent.setCurrentRec, text: cmdTime, attr:{title: cmdTime}"></td>
-					                <td data-bind="click: $parent.setCurrentRec, text: cmdNbrBureau, attr:{title: cmdNbrBureau}"></td>
-					                <td data-bind="click: $parent.setCurrentRec, text: cmdItem, attr:{title: cmdItem}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: cmdNbrSuperior, attr:{title: cmdNbrSuperior}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: trainNbr, attr:{title: trainNbr}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: startStn, attr:{title: startStn}"></td>
@@ -338,6 +337,9 @@ String basePath = request.getContextPath();
 					                <td data-bind="click: $parent.setCurrentRec, text: rule, attr:{title: rule}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: selectedDate, attr:{title: selectedDate}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: passBureau, attr:{title: passBureau}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdBureau, attr:{title: cmdBureau}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdNbrBureau, attr:{title: cmdNbrBureau}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdTime, attr:{title: cmdTime}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: createStateStr, attr:{title: createStateStr}"></td>
 					              </tr>
 					            </tbody>
@@ -368,7 +370,7 @@ String basePath = request.getContextPath();
 						  		<div class="form-group" style="float:left;margin-left:3px;margin-bottom:0;">
 						  			<label for="exampleInputEmail2" class="control-label pull-left">途经局:&nbsp;</label>
 								    <div class="pull-left">
-								        <label id="runPlanLk_cmd_input_tjj_wjdd" class="control-label pull-left" style="width:500px;height:23px"></label>
+								        <label id="runPlanLk_cmd_input_tjj_wjdd" class="control-label pull-left" data-bind="html:currentCmdTxtMl().passBureau" style="width:500px;height:23px"></label>
 									</div>
 									<!-- <div class="pull-left" style="margin-left:345px;">
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: saveCmdTxtMl"><i class="fa fa-floppy-o"></i> 保存</button>
@@ -378,7 +380,7 @@ String basePath = request.getContextPath();
 						  	<div class="row" style="width: 100%; margin-top: 5px;margin-bottom: 5px;">
 						  		<div class="form-group" style="float:left;margin-left:3px;margin-bottom:0;">
 									<div class="pull-left" style="margin-left:3px;">
-								        <button type="button" class="btn btn-success btn-xs" data-bind="click: saveCmdTxtMl"><i class="fa fa-floppy-o"></i> 保存</button>
+								        <button type="button" class="btn btn-success btn-xs" data-bind="click: saveOtherCmdTxtMl"><i class="fa fa-floppy-o"></i> 保存</button>
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: up"><i class="fa fa-arrow-up"></i> 上移</button>
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: down"><i class="fa fa-arrow-down"></i> 下移</button>
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: insertTrainStnRow"><i class="fa fa-plus"></i> 插入行</button>
