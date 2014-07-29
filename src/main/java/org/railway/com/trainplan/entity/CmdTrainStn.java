@@ -24,8 +24,10 @@ public class CmdTrainStn {
 	private String baseArrTime;
 	//图定出发时间 (yyyy-mm-dd h24:mi:ss)
 	private String baseDptTime;
-	//天数 (每过一次0点，天数加1,默认为0) 
-	private Integer runDays;
+	//天数 (每过一次0点，天数加1,默认为0) ，到站时刻的rundays
+	private Integer arrRunDays; 
+	//离站时刻的rundays
+	private Integer dptRunDays;
 	//股道号
 	private String trackNbr;
 	//站台
@@ -39,6 +41,19 @@ public class CmdTrainStn {
 	//车站类型 (1:始发站；2:终到站；4:分界口)
 	private String stnType;
 	
+	
+	public Integer getArrRunDays() {
+		return arrRunDays;
+	}
+	public void setArrRunDays(Integer arrRunDays) {
+		this.arrRunDays = arrRunDays;
+	}
+	public Integer getDptRunDays() {
+		return dptRunDays;
+	}
+	public void setDptRunDays(Integer dptRunDays) {
+		this.dptRunDays = dptRunDays;
+	}
 	public String getCmdTrainStnId() {
 		return cmdTrainStnId;
 	}
@@ -105,12 +120,7 @@ public class CmdTrainStn {
 	public void setBaseDptTime(String baseDptTime) {
 		this.baseDptTime = baseDptTime;
 	}
-	public Integer getRunDays() {
-		return runDays;
-	}
-	public void setRunDays(Integer runDays) {
-		this.runDays = runDays;
-	}
+	
 	public String getTrackNbr() {
 		return trackNbr;
 	}

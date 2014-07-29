@@ -29,7 +29,7 @@ end stationFlag ,
 
 T4.*
 FROM (
-select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t2.DPTTIME,t2.stnType,t2.sourceDay,t2.targetDay,t2.TRACKNAME
+select t2.childIndex,t2.STNNAME,t2.bureauShortName,t2.STNBUREAUFULL,t2.ARRTIME,t2.DPTTIME,t2.stnType,t2.sourceDay,t2.targetDay,t2.TRACKNAME,t2.targetDay as runDays
   from (SELECT t.parent_id as BASE_TRAIN_ID,
                t.parent_name as TRAINNBR,
                T.CHILD_INDEX AS childIndex,

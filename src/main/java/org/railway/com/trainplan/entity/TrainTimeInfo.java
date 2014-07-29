@@ -12,8 +12,23 @@ public class TrainTimeInfo {
 	 private String stnBureauFull;
 	 private String stationFlag;
 	 private String nodeId;
+	 private int sourceDay;
+	 private int targetDay;
 	 
 	 
+	
+	public int getSourceDay() {
+		return sourceDay;
+	}
+	public void setSourceDay(int sourceDay) {
+		this.sourceDay = sourceDay;
+	}
+	public int getTargetDay() {
+		return targetDay;
+	}
+	public void setTargetDay(int targetDay) {
+		this.targetDay = targetDay;
+	}
 	public String getPlanTrainStnId() {
 		return planTrainStnId;
 	}

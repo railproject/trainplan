@@ -173,6 +173,7 @@
 			TO_CHAR(UPDATE_TIME,'yyyy-MM-dd hh24:mi:SS')  AS updateTime,
 			TO_CHAR(CMD_TIME,'yyyy-MM-dd hh24:mi:SS')  AS cmdTime
 		FROM CMD_TRAIN WHERE CMD_TXTMLITEMID=${cmdTxtmlItemId}
+		
      </select>
 
     
@@ -189,7 +190,8 @@
 		DPT_TIME AS  dptTime,
 		BASE_ARR_TIME AS  baseArrTime,
 		BASE_DPT_TIME AS  baseDptTime,
-		RUN_DAYS AS  runDays,
+		ARR_RUN_DAYS AS  arrRunDays,
+		DPT_RUN_DAYS AS dptRunDays,
 		TRACK_NBR AS trackNbr ,
 		PLATFORM AS  platform,
 		PSG_FLG AS  psgFlg,
@@ -267,7 +269,8 @@
 			DPT_TIME,
 			BASE_ARR_TIME  ,
 			BASE_DPT_TIME  ,
-			RUN_DAYS,
+		    ARR_RUN_DAYS ,
+		    DPT_RUN_DAYS ,
 			TRACK_NBR  ,
 			PLATFORM ,
 			PSG_FLG,
@@ -286,6 +289,8 @@
             #{dptTime},
             #{baseArrTime},
             #{baseDptTime},
+            #{arrRunDays},
+            #{dptRunDays},
             #{runDays},
             #{trackNbr},
             #{platform},
