@@ -71,7 +71,7 @@ public class RunPlanService {
      */
     public List<Map<String, Object>> findRunPlan(String date, String bureau, String name, int type, int trainType) {
         logger.debug("findRunPlan::::");
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = Maps.newHashMap();
         map.put("date", date);
         map.put("bureau", bureau);
         map.put("name", name);
@@ -129,11 +129,11 @@ public class RunPlanService {
      * @return 审核结果
      */
     public List<Map<String, Object>> checkLev1(List<Map<String, Object>> list, ShiroRealm.ShiroUser user, int checkType) {
-        List<Map<String, Object>> checkLev1Result = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> checkLev1Result = Lists.newArrayList();
         try {
             // 准备参数
             java.sql.Date now = new java.sql.Date(new Date().getTime());
-            List<LevelCheck> params = new ArrayList<LevelCheck>();
+            List<LevelCheck> params = Lists.newArrayList();
             List<String> planIdList = Lists.newArrayList();
             for(Map<String, Object> item: list) {
                 LevelCheck record = new LevelCheck(UUID.randomUUID().toString(), user.getName(), now, user.getDeptName(), user.getBureau(), checkType, MapUtils.getString(item, "planId"), MapUtils.getString(item, "lineId"));
@@ -150,13 +150,13 @@ public class RunPlanService {
 
                     try {
                         // 组织返回结果对象
-                        Map<String, Object> levResult = new HashMap<String, Object>();
+                        Map<String, Object> levResult = Maps.newHashMap();
                         levResult.put("id", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
 
                         int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
                         String lev1Bureau = MapUtils.getString(plan, "CHECK_LEV1_BUREAU", "");
-                        int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
-                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU", "");
+//                        int lev2Type = MapUtils.getIntValue(plan, "CHECK_LEV2_TYPE");
+//                        String lev2Bureau = MapUtils.getString(plan, "CHECK_LEV2_BUREAU", "");
                         String passBureau = MapUtils.getString(plan, "PASS_BUREAU", "");
                         // 计算一级已审核局
                         String checkedLev1Bureau = addBureauCode(lev1Bureau, user.getBureauShortName());
@@ -166,7 +166,7 @@ public class RunPlanService {
                         int newLev2Type = 0;
                         // 二级已审核局也应该是空
                         String checkedLev2Bureau = "";
-                        Map<String, Object> updateParam = new HashMap<String, Object>();
+                        Map<String, Object> updateParam = Maps.newHashMap();
                         updateParam.put("lev1Type", newLev1Type);
                         updateParam.put("lev1Bureau", checkedLev1Bureau);
                         updateParam.put("lev2Type", newLev2Type);
@@ -202,11 +202,11 @@ public class RunPlanService {
      * @return 审核结果
      */
     public List<Map<String, Object>> checkLev2(List<Map<String, Object>> plans, ShiroRealm.ShiroUser user, int checkType) {
-        List<Map<String, Object>> checkLev1Result = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> checkLev1Result = Lists.newArrayList();
         try {
             // 准备参数
             java.sql.Date now = new java.sql.Date(new Date().getTime());
-            List<LevelCheck> params = new ArrayList<LevelCheck>();
+            List<LevelCheck> params = Lists.newArrayList();
             List<String> planIdList = Lists.newArrayList();
             for(Map<String, Object> item: plans) {
                 LevelCheck record = new LevelCheck(UUID.randomUUID().toString(), user.getName(), now, user.getDeptName(), user.getBureau(), checkType, MapUtils.getString(item, "planId"), MapUtils.getString(item, "lineId"));
@@ -223,7 +223,7 @@ public class RunPlanService {
 
                     try {
                         // 组织返回结果对象
-                        Map<String, Object> levResult = new HashMap<String, Object>();
+                        Map<String, Object> levResult = Maps.newHashMap();
                         levResult.put("id", MapUtils.getString(plan, "PLAN_TRAIN_ID"));
 
                         int lev1Type = MapUtils.getIntValue(plan, "CHECK_LEV1_TYPE");
@@ -239,7 +239,7 @@ public class RunPlanService {
 //                        int newLev2Type = 0;
 //                        // 二级已审核局也应该是空
 //                        String checkedLev2Bureau = "";
-                        Map<String, Object> updateParam = new HashMap<String, Object>();
+                        Map<String, Object> updateParam = Maps.newHashMap();
                         updateParam.put("lev1Type", lev1Type);
                         updateParam.put("lev1Bureau", lev1Bureau);
                         updateParam.put("lev2Type", newLev2Type);
@@ -357,8 +357,8 @@ public class RunPlanService {
     }
 
 	public List<RunPlanTrainDto> getTrainRunPlans(Map<String , Object> map) throws Exception {
-			List<RunPlanTrainDto> runPlans = new ArrayList<RunPlanTrainDto>();
-			Map<String, RunPlanTrainDto> runPlanTrainMap = new HashMap<String, RunPlanTrainDto>();
+			List<RunPlanTrainDto> runPlans = Lists.newArrayList();
+			Map<String, RunPlanTrainDto> runPlanTrainMap = Maps.newHashMap();
 			List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.GET_TRAIN_RUN_PLAN, map);
 			String startDay = map.get("startDay").toString();
 			String endDay = map.get("endDay").toString();
@@ -375,7 +375,8 @@ public class RunPlanService {
 			return runPlans;
 	}
 	        
-	public List<PlanCrossDto> getPlanCross(Map<String, Object> reqMap) {
+	@SuppressWarnings("unchecked")
+    public List<PlanCrossDto> getPlanCross(Map<String, Object> reqMap) {
 		
 		return baseDao.selectListBySql(Constants.GET_PLAN_CROSS, reqMap);
 	}
@@ -643,8 +644,8 @@ public class RunPlanService {
 	
 	/**
 	 * 通过planCrossId查询planCheckInfo对象
-	 * @param planCrossId
-	 * @return
+	 * @param planCrossId planCrossId
+	 * @return List<PlanCheckInfo>
 	 */
 	public List<PlanCheckInfo> getPlanCheckInfoForPlanCrossId(String planCrossId){
 		return baseDao.selectListBySql(Constants.CROSSDAO_GET_PLANCHECKINFO_FOR_PLANCROSSID, planCrossId);
@@ -652,9 +653,9 @@ public class RunPlanService {
 	
 	/**
 	 * 更新表plan_cross中checkType的值
-	 * @param planCrossId
+	 * @param planCrossId planCrossId
 	 * @param checkType 审核状态（0:未审核1:部分局审核2:途经局全部审核）
-	 * @return
+	 * @return 删除数量
 	 */
 	public int updateCheckTypeForPlanCrossId(String planCrossId,int checkType){
 		Map<String,Object> reqMap = new HashMap<String,Object>();
