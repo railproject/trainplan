@@ -229,11 +229,16 @@ var basePath = "<%=basePath %>";
  <!-- ko if: trainSort == 1 --> 
  <tr data-bind="foreach: runPlans">
     <!-- ko if: $index() == 0 --> 
-    <td data-bind="attr:{rowspan: $parent.rowspan} " colspan="3">
-       <!-- ko if: $root.searchModle().searchType() == 'lk' --> 
-         <input type="checkbox" value="1" data-bind="event:{change: $root.selectCross.bind($data, $parent)},checked: $parent.selected">
-       <!-- /ko -->   
-    </td> 
+		<!-- ko if: $root.searchModle().searchType() != '3' -->
+			<td data-bind="attr:{rowspan: $parent.rowspan} " colspan="3"></td>
+		<!-- /ko -->
+		<!-- ko if: $root.searchModle().searchType() == '3' -->
+			<td style="width:30px" data-bind="text:($parent.chirldrenIndex +1)"></td>
+			<td colspan="2">
+         		<input type="checkbox" value="1" data-bind="event:{change: $root.selectCross.bind($data, $parent)},checked: $parent.selected">
+    		</td>
+		<!-- /ko -->
+    
     <td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->   
  	<td  align='center' data-bind="style:{'color': color}">

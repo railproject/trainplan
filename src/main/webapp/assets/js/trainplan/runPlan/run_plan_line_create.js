@@ -453,7 +453,6 @@ function CrossModel() {
 												chirldrenIndex : _chirldrenIndex//用于界面显示序号
 										};
 									 _chirldrenIndex ++ ;
-									 console.log("~~~~~~ "+_chirldrenIndex);
 										//默认吧交路作为第一条记录
 									    var planCross = new TrainRunPlanRow(trainPlanData);
 										self.trainPlans.push(planCross);
@@ -508,6 +507,7 @@ function CrossModel() {
 												trainSort: 1,
 												chirldrenIndex : _chirldrenIndex//用于界面显示序号
 										};
+									 console.log("~~~~~~qqq "+_chirldrenIndex);
 									 	_chirldrenIndex ++;
 										//默认吧交路作为第一条记录
 									    var planCross = new TrainRunPlanRow(trainPlanData);
