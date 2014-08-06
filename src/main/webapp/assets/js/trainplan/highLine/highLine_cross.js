@@ -34,6 +34,8 @@ function HighLineCrossModle(data){
 	//加载列车到列车数组中
 	self.loadTrains = function(trains){
 		$.each(trains, function(i, n){
+			console.log("&&&&&&&&& ");
+			console.dir(n);
 			var train = new TrainRow(n);
 			train.loadTimes(n.highlineTrainTimeList);
 			self.trains.push(train);
@@ -1115,7 +1117,7 @@ function CrossModel() {
 	
 	self.showTrainTimes = function(row) {
 		self.currentTrain(row);
-		self.runPlanCanvasPage.reDrawByTrainNbr(row.trainNbr);
+//		self.runPlanCanvasPage.reDrawByTrainNbr(row.trainNbr);//图形化展示
 //		self.stns.remove(function(item){
 //			return true;
 //		});
@@ -1773,16 +1775,20 @@ function TrainModel() {
 
 function HighLineTrain(data){
 	var self = this; 
+//	console.log("------------ HighLineTrain------------- ");
+//	console.dir(data);
 
 	self.trainNbr = data.trainNbr;
 	self.startStn = data.startStn;
-	self.startTime = data.startTime;
-	self.endTime = data.endTime;
-	self.endStn = data.endStn; 
+	self.startTime = data.startTime==""?"":moment(data.startTime).format('MMDD HH:mm');
+	self.endTime = data.endTime==""?"":moment(data.endTime).format('MMDD HH:mm');
+	self.endStn = data.endStn;
+	self.startStnBureau = data.startStnBureau;//始发站所属路局
+	self.endStnBureau = data.endStnBureau;//终到站所属路局
 }
 
 function TrainRow(data) {
-	var self = this; 
+	var self = this;
 	self.planTainId  = data.planTainId;//BASE_CROSS_TRAIN_ID
 	self.highLineTrainId = data.highLineTrainId;//BASE_CROSS_ID
 	self.trainSort = ko.observable(data.trainSort);//TRAIN_SORT
@@ -1790,10 +1796,10 @@ function TrainRow(data) {
 	self.trainNbr = data.trainNbr;//TRAIN_NBR
 	self.startStn = data.startStn;//START_STN
 	self.times = ko.observableArray(); 
-	self.simpleTimes = ko.observableArray(); 
+	self.simpleTimes = ko.observableArray();
 	
 	 
-	self.sourceTime = 
+	self.sourceTime = data.sourceTime;
 	self.passBureau = data.passBureau;
 	
 	self.startTime = ko.computed(function(){  
@@ -1805,7 +1811,7 @@ function TrainRow(data) {
 	});
 	
 	self.trainNbr = data.trainNbr;
-	self.startStn = ko.computed(function(){  
+	self.startStn = ko.computed(function(){
 		return self.times().length > 0 ? self.times()[0].stnName : ""; 
 	});;
 	self.endStn = ko.computed(function(){  

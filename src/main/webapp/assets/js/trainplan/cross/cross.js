@@ -869,12 +869,12 @@ function BureausRow(data) {
 	//方案ID 
 }
 
-function CrossRow(data) {
-	var self = this; 
-	self.id = data.chartId;
-	self.chartName = data.crossName; 
-	//方案ID 
-}
+//function CrossRow(data) {
+//	var self = this; 
+//	self.id = data.chartId;
+//	self.chartName = data.crossName; 
+//	//方案ID 
+//}
 
  
 
@@ -993,7 +993,38 @@ function CrossRow(data) {
 	self.elecSupply = ko.observable(data.elecSupply);
 	self.dejCollect = ko.observable(data.dejCollect);
 	self.airCondition = ko.observable(data.airCondition);
-	self.note = ko.observable(data.note);  
+	self.note = ko.observable(data.note);
+	
+	
+	//列表界面显示生成、审核状态
+	self.checkFlagStr = ko.computed(function(){
+		switch (self.checkFlag()) {
+			case "1": 
+				return "<span class='label label-success'>已</span>";//"已";
+				break;
+			case 1: 
+				return "<span class='label label-success'>已</span>";//"已";
+				break;
+			default: 
+				return "<span class='label label-danger'>未</span>";//"未";
+				break;
+		}
+	});
+	self.unitCreateFlagStr = ko.computed(function(){
+		switch (self.unitCreateFlag()) {
+			case "1": 
+				return "<span class='label label-success'>已</span>";//"已";
+				break;
+			case 1: 
+				return "<span class='label label-success'>已</span>";//"已";
+				break;
+			default: 
+				return "<span class='label label-danger'>未</span>";//"未";
+				break;
+		}
+	});
+	
+	
 };
 
 function TrainModel() {
@@ -1050,7 +1081,7 @@ function TrainRow(data) {
 	//self.spareFlag = data.spareFlag;//SPARE_FLAG
 	self.spareFlag = ko.computed(function(){ 
 		switch (data.spareFlag) {
-			case 0:
+			case 9:
 				return "停运";
 				break;
 			case 1:

@@ -96,6 +96,7 @@ var basePath = "<%=basePath %>";
 <body class="Iframe_body">
 <input id="basePath_hidden" type="hidden" value="<%=basePath %>">
 <input id="tabType_hidden" type="hidden" value="${tabType}">
+<input id="trainNbr_hidden" type="hidden" value="${trainNbr}">
 
 <!--以上为必须要的-->
 
@@ -114,7 +115,7 @@ var basePath = "<%=basePath %>";
 						  			<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left:5px">方案:&nbsp;</label> 
 									<div class="pull-left">
 										<select style="width:230px" id="input_cross_chart_id"
-											class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption:''">
+											class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name'">
 										</select>
 									</div>
 						  			<label for="exampleInputEmail5" class="control-label pull-left" style="margin-left:10px">模糊</label>
@@ -221,8 +222,8 @@ var basePath = "<%=basePath %>";
     <div id="plan_view_div_palnDayDetail" class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title" style="float: left;"> 
-        	<i class="fa fa fa-folder-open"></i>详情时刻表  
-        	<span><input type="checkbox" id="input_checkbox_stationType_jt" name="input_checkbox_stationType" checked="checked" style="margin-left:10px">简图</span>
+        	<i class="fa fa fa-folder-open"></i>时刻表  
+        	<span><input type="checkbox" id="input_checkbox_stationType_jt" name="input_checkbox_stationType" checked="checked" style="margin-left:10px">简点</span>
         	<span style="margin-left:5px" data-bind="text:currentTrain() == null ? '' : '车次:' + currentTrain().name"></span>
         	<label id="plan_view_div_palnDayDetail_title"></label>
         </h3>
@@ -238,7 +239,7 @@ var basePath = "<%=basePath %>";
                   <th style="width:5%">路局</th>
                   <th style="width:15%">到达时间</th>
                   <th style="width:15%">出发时间</th>
-                  <th style="width:15%">停留时间</th>
+                  <th style="width:15%">停时</th>
                    <th style="width:10%">天数</th> 
                   <th style="width:15%">股道</th> 
                  </tr>

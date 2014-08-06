@@ -13,6 +13,23 @@ public class HighlineCrossTrainBaseInfo {
 	private String startTime ;
 	private String endStn;
 	private String endTime ;
+	
+	private String startStnBureau;//始发站所属路局
+	private String endStnBureau;//终到站所属路局
+
+	
+	public String getStartStnBureau() {
+		return startStnBureau;
+	}
+	public void setStartStnBureau(String startStnBureau) {
+		this.startStnBureau = startStnBureau;
+	}
+	public String getEndStnBureau() {
+		return endStnBureau;
+	}
+	public void setEndStnBureau(String endStnBureau) {
+		this.endStnBureau = endStnBureau;
+	}
 	public String getTrainNbr() {
 		return trainNbr;
 	}

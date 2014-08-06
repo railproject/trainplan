@@ -23,6 +23,13 @@ public class PlanLineInfoDto {
 
     private String endTime;
 
+    private String  dailyPlanId;
+    private String planTrainId;
+    private String passBureau;
+    private String endBureauFull;
+    private String startBureauFull;
+   
+    
     public PlanLineInfoDto(Map<String, Object> map) {
         this.trainName = MapUtils.getString(map, "TRAIN_NAME");
         this.startBureau = MapUtils.getString(map, "START_BUREAU");
@@ -31,9 +38,61 @@ public class PlanLineInfoDto {
         this.endStn = MapUtils.getString(map, "END_STN");
         this.startTime = MapUtils.getString(map, "START_TIME");
         this.endTime = MapUtils.getString(map, "END_TIME");
+        this.dailyPlanId = MapUtils.getString(map, "DAILYPLAN_ID");
+        this.planTrainId = MapUtils.getString(map, "PLAN_TRAIN_ID");
+        this.passBureau = MapUtils.getString(map, "PASS_BUREAU");
+        this.endBureauFull = MapUtils.getString(map, "END_BUREAU_FULL");
+        this.startBureauFull = MapUtils.getString(map, "START_BUREAU_FULL");
     }
 
-    public String getTrainName() {
+    
+    public String getPassBureau() {
+		return passBureau;
+	}
+
+
+	public void setPassBureau(String passBureau) {
+		this.passBureau = passBureau;
+	}
+
+
+	public String getEndBureauFull() {
+		return endBureauFull;
+	}
+
+
+	public void setEndBureauFull(String endBureauFull) {
+		this.endBureauFull = endBureauFull;
+	}
+
+
+	public String getStartBureauFull() {
+		return startBureauFull;
+	}
+
+
+	public void setStartBureauFull(String startBureauFull) {
+		this.startBureauFull = startBureauFull;
+	}
+
+
+	public String getDailyPlanId() {
+		return dailyPlanId;
+	}
+
+	public void setDailyPlanId(String dailyPlanId) {
+		this.dailyPlanId = dailyPlanId;
+	}
+
+	public String getPlanTrainId() {
+		return planTrainId;
+	}
+
+	public void setPlanTrainId(String planTrainId) {
+		this.planTrainId = planTrainId;
+	}
+
+	public String getTrainName() {
         return trainName;
     }
 

@@ -175,6 +175,7 @@ function ApplicationModel() {
 		var fuzzyFlag = self.searchModle().fuzzyFlag();
 		
 		if(chart == null){
+			commonJsScreenUnLock();
 			showErrorDialog("请选择方案");
 			return;
 		} 
@@ -353,8 +354,14 @@ function ApplicationModel() {
 			});
 		}
 		var _LkCMDTrain_len = window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows().length;
-		
+		var _parentRcBureauShortName = "";//临时保存上一条记录中局码
+		window.parent.runPlanLkCmdPageModel.currentCmdTxtMl().passBureau("");
 		$.each(self.trainAllTimes(), function(i, n){
+			if(_parentRcBureauShortName != n.bureauShortName) {//局码与上一条记录中局码不相等
+				_parentRcBureauShortName = n.bureauShortName;
+				window.parent.runPlanLkCmdPageModel.currentCmdTxtMl().passBureau(window.parent.runPlanLkCmdPageModel.currentCmdTxtMl().passBureau() + _parentRcBureauShortName);
+			}
+			
 			n.childIndex = _LkCMDTrain_len+i;	//增加childIndex属性
 			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.push(new window.parent.runPlanLkCmdPageModel.cmdTrainStnTimeRow(toCmdLkTrainTimeRow(n, "2")));
 		});
@@ -390,12 +397,18 @@ function ApplicationModel() {
 		}
 
 		var _LkCMDTrain_len = window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows().length;
-		
+		var _parentRcBureauShortName = "";//临时保存上一条记录中局码
+		window.parent.runPlanLkCmdPageModel.currentCmdTxtMl().passBureau("");
 		$.each(self.trainAllTimes(), function(i, n){
+			if(_parentRcBureauShortName != n.bureauShortName) {//局码与上一条记录中局码不相等
+				_parentRcBureauShortName = n.bureauShortName;
+				window.parent.runPlanLkCmdPageModel.currentCmdTxtMl().passBureau(window.parent.runPlanLkCmdPageModel.currentCmdTxtMl().passBureau() + _parentRcBureauShortName);
+			}
+			
 			n.childIndex = _LkCMDTrain_len+i;	//增加childIndex属性
 			window.parent.runPlanLkCmdPageModel.runPlanLkCMDTrainStnRows.push(new window.parent.runPlanLkCmdPageModel.cmdTrainStnTimeRow(toCmdLkTrainTimeRow(n, "1")));
 		});
-		
+
 
 		//设置套用的基本图车次id
 		window.parent.runPlanLkCmdPageModel.useBaseTrainId(self.currentTrain().id);
@@ -411,14 +424,17 @@ function ApplicationModel() {
 	function toCmdLkTrainTimeRow(trainTimeRowData, useType) {
 		var cmdLkData = {};
 		cmdLkData.childIndex = trainTimeRowData.childIndex;
-		cmdLkData.stnName = trainTimeRowData.stnName;
-		cmdLkData.stnBureau = useType=="1"?trainTimeRowData.bureauShortName:"";
+		cmdLkData.stnName = trainTimeRowData.stnName;//车站名
+		cmdLkData.stnBureau = trainTimeRowData.bureauShortName;//车站所属路局
 		cmdLkData.arrTime = useType=="1"?trainTimeRowData.sourceTime:"";
 		cmdLkData.dptTime = useType=="1"?trainTimeRowData.targetTime:"";
 		cmdLkData.trackNbr = useType=="1"?trainTimeRowData.trackName:"";
 		cmdLkData.platform = "";
 		cmdLkData.arrTrainNbr = "";
 		cmdLkData.dptTrainNbr = "";
+		cmdLkData.arrRunDays = useType=="1"?trainTimeRowData.sourceDay:0;//到达运行天数
+		cmdLkData.dptRunDays = useType=="1"?trainTimeRowData.targetDay:0;//出发运行天数
+		cmdLkData.isSelectLine = useType=="1"?1:0;	//选线标识 用于parent时刻列表计算运行天数
 		
 		return cmdLkData;
 	};
@@ -439,7 +455,8 @@ function searchModle(){
 	
 	self.endBureau = ko.observable();
 	
-	self.trainNbr = ko.observable(); 
+	
+	self.trainNbr = ko.observable($("#trainNbr_hidden").val()); 
 	
 	self.chart = ko.observable(); 
 	
@@ -480,6 +497,8 @@ function TrainTimeRow(data) {
 	self.trackName = filterValue(data.trackName);  
 	self.runDays = data.runDays;
 	self.stationFlag = data.stationFlag;
+	self.sourceDay = data.sourceDay;
+	self.targetDay = data.targetDay;
 	 
 }; 
 function GetDateDiff(data)
@@ -530,7 +549,7 @@ function TrainRow(data) {
 	self.endStn = data.endStn; 
 	self.endBureau = data.endBureau; 
 	self.routingBureau = data.routingBureauShortName; 
-	self.runDays = data.relativeTargetTimeDay;  
+	self.runDays = data.relativeTargetTimeDay;
 	 
 	self.targetTime =  filterValue(data.endTimeStr); 
 	

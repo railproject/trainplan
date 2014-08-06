@@ -289,4 +289,9 @@
         WHERE UC.UNIT_CROSS_ID = #{unitCrossId}
         ORDER BY UC.UNIT_CROSS_ID, UCT.GROUP_SERIAL_NBR, UCT.TRAIN_SORT
     </select>
+    
+    <select id="getCountForUnitPlanCross"  parameterType="string" resultType="map">
+    select count(unit_cross_id) as count from  plan_cross where unit_cross_id=#{unitPlanCrossId}
+    
+    </select>
 </mapper> 

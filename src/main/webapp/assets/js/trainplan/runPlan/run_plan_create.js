@@ -24,13 +24,14 @@ function hasActiveRole(bureau){
 //{unitCrossId:"1",status: "1"}
 function updateTrainRunPlanStatus(message){  
 	var runPlan = $.parseJSON(message);
-	console.log(runPlan)
+	console.log("---------  更新交路的当前状态 ----------"+message);
 	cross.updateTrainRunPlanStatus(runPlan);
 	
 }
 //{unitCrossId:"1",trainNbr: "G1", day:"20140723", runFlag: "1"}; 
 function updateTrainRunPlanDayFlag(data){ 
 	var runPlan = $.parseJSON(data);
+//	console.log("---------  更新车次每天当前状态 ----------"+data);
 	cross.updateTrainRunPlanDayFlag(runPlan);
 }
 
@@ -89,9 +90,9 @@ function CrossModel() {
 		}else if(runPlan.status == -1){
 			self.createRunPlanErrorCount(self.createRunPlanErrorCount() + 1);
 		}
-		$.each(self.trainPlans(), function(x, n){ 
+		$.each(self.trainPlans(), function(x, n){
 			if(n.unitCrossId == runPlan.unitCrossId && n.trainSort == 0){ 
-				n.createStatus(runPlan.status); 
+				n.createStatus(runPlan.status);
 				return false;
 			};
 		});
@@ -268,7 +269,8 @@ function CrossModel() {
 	self.initDataHeader = function(){
 		var startDate = $("#runplan_input_startDate").val(); 
 		var endDate =  $("#runplan_input_endDate").val();   
-		
+
+		self.crossAllcheckBox(0);
 		var currentTime = new Date(startDate);
 		var endTime = new Date(endDate);
 		endTime.setDate(endTime.getDate() + 10); 
@@ -366,31 +368,32 @@ function CrossModel() {
 	self.createTrainLines = function(){  
 		 var crossIds = [];
 		 var createCrosses = [];
-		 var crosses = self.trainPlans();
-		 for(var i = 0; i < crosses.length; i++){   
-			if(crosses[i].selected() == 1){  
-				crossIds.push(crosses[i].unitCrossId);
-				crosses[i].createStatus(1);
-				createCrosses.push(crosses[i]); 
-			 }   
-		 }   
 		 var startDate = $("#runplan_input_startDate").val(); 
 		 var endDate =  $("#runplan_input_endDate").val();  
 		 var days = GetDays(startDate, endDate); 
 		 var chart = self.searchModle().chart();
-		    
 	     if(chart == null){
 	    	showErrorDialog("请选择一个方案"); 
 	    	return;
 	     }  
 		 
+		 //重置生成总数和已生成数
+		 self.createRunPlanTotalCount(createCrosses.length); 
+		 self.createRunPlanCompletedCount(0);
+
+		 var crosses = self.trainPlans();
+		 for(var i = 0; i < crosses.length; i++){   
+			if(crosses[i].selected() == 1){  
+				crossIds.push(crosses[i].unitCrossId);
+				crosses[i].createStatus(3);//1:正在生成    2：已生成   3：等待生成
+				createCrosses.push(crosses[i]); 
+			 }
+		 }
 		 if(crossIds.length == 0){
 			 showWarningDialog("未选中数据");
 			 return;
 		 }
-		 //重置生成总数和已生成数
-		 self.createRunPlanTotalCount(createCrosses.length); 
-		 self.createRunPlanCompletedCount(0);
+		 
 		 
 		 commonJsScreenLock();
 		 $.ajax({
@@ -552,23 +555,26 @@ function TrainRunPlanRow(data){
 			 return result; 
 	});
 	
-	self.createStatusShowValue = ko.computed(function(){  
+	self.createStatusShowValue = ko.computed(function(){
 		switch (self.createStatus()) {
-		case 0: 
-			return "";
-			break;
-		case 1: 
-			return "(正在生成......)";
-			break;
-		case 2: 
-			return "(已生成开行计划)";
-			break;	
-		case -1: 
-			return "(发生异常)";
-			break;
-		default: 
-			return '';
-			break;
+			case 0: 
+				return self.crossName;//"";
+				break;
+			case 3: 
+				return self.crossName+"&nbsp;&nbsp;(等待生成)";//"";
+				break;
+			case 1: 
+				return self.crossName+"&nbsp;&nbsp;<span class='label label-info'>(正在生成。。。。。。)</span>";//"(正在生成。。。。。。)";
+				break;
+			case 2: 
+				return self.crossName+"&nbsp;&nbsp;<span class='label label-success'>(已生成开行计划)</span>";//"(已生成开行计划)";
+				break;	
+			case -1: 
+				return self.crossName+"&nbsp;&nbsp;<span class='label label-danger'>(发生异常)</span>";//"(发生异常)";
+				break;
+			default: 
+				return self.crossName;//'';
+				break;
 		} 
 	});
 	 
@@ -622,17 +628,17 @@ function RunPlanRow(data){
 	
 	self.runFlagShowValue = ko.computed(function(){ 
 		switch (self.runFlag()) {
-		case 0:
+		case 9:
 			self.color("gray");
-			return "停";
+			return "<span class='label label-danger'>停</span>";//"停";
 			break;
 		case 1:
 			self.color("green");
-			return "开";
+			return "<span class='label label-success'>开</span>";//"开";
 			break;
 		case 2:
 			self.color("blue");
-			return "备";
+			return "<span class='label label-info'>备</span>";//"备";
 			break;
 		default: 
 			return '';

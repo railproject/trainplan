@@ -58,17 +58,45 @@ public class RunPlan {
     //文电名
     private String telNum;
     private String cmdBureau;
-    private String cmdTxtmlId;
-    private String cmdTxtmlitemId;
+    private Integer cmdTxtmlId;
+    private Integer cmdTxtmlitemId;
     private String cmdShortInfo;
     private String note;
     private String dailyPlanId;
     //车辆担当局TOKEN_VEH_BUREAU
     private String tokenVehBureau;
+    private String createPeople;
+    private String createPeopleOrg;
+    private String cmdTrainId;
+    
     private List<RunPlanStn> runPlanStnList;
 
     
-    public String getTokenVehBureau() {
+    public String getCmdTrainId() {
+		return cmdTrainId;
+	}
+
+	public void setCmdTrainId(String cmdTrainId) {
+		this.cmdTrainId = cmdTrainId;
+	}
+
+	public String getCreatePeople() {
+		return createPeople;
+	}
+
+	public void setCreatePeople(String createPeople) {
+		this.createPeople = createPeople;
+	}
+
+	public String getCreatePeopleOrg() {
+		return createPeopleOrg;
+	}
+
+	public void setCreatePeopleOrg(String createPeopleOrg) {
+		this.createPeopleOrg = createPeopleOrg;
+	}
+
+	public String getTokenVehBureau() {
 		return tokenVehBureau;
 	}
 
@@ -436,19 +464,21 @@ public class RunPlan {
 		this.cmdBureau = cmdBureau;
 	}
 
-	public String getCmdTxtmlId() {
+	
+
+	public Integer getCmdTxtmlId() {
 		return cmdTxtmlId;
 	}
 
-	public void setCmdTxtmlId(String cmdTxtmlId) {
+	public void setCmdTxtmlId(Integer cmdTxtmlId) {
 		this.cmdTxtmlId = cmdTxtmlId;
 	}
 
-	public String getCmdTxtmlitemId() {
+	public Integer getCmdTxtmlitemId() {
 		return cmdTxtmlitemId;
 	}
 
-	public void setCmdTxtmlitemId(String cmdTxtmlitemId) {
+	public void setCmdTxtmlitemId(Integer cmdTxtmlitemId) {
 		this.cmdTxtmlitemId = cmdTxtmlitemId;
 	}
 

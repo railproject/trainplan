@@ -99,7 +99,7 @@ var basePath = "<%=basePath %>";
 
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
-  <li><a href="#">基本图查询</a></li>
+  <li><a href="javascript:void(0);">管理基本图 -> 基本图查询</a></li>
 </ol> 
 <div class="pull-left" style="width:63%;"> 
     <!--分栏框开始-->
@@ -112,7 +112,7 @@ var basePath = "<%=basePath %>";
 										方案:&nbsp;</label> 
 						<div class="pull-left">
 							<select style="width:230px" id="input_cross_chart_id"
-								class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name', optionsCaption:''">
+								class="form-control" data-bind="options:searchModle().charts, value: searchModle().chart, optionsText: 'name'">
 							</select>
 						</div>  
 				  <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left:15px"> 
@@ -197,8 +197,8 @@ var basePath = "<%=basePath %>";
     <div id="plan_view_div_palnDayDetail" class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title" style="float: left;"> 
-        	<i class="fa fa fa-folder-open"></i>详情时刻表  
-        	<span><input type="checkbox" id="input_checkbox_stationType_jt" name="input_checkbox_stationType" checked="checked" style="margin-left:10px">简图</span>
+        	<i class="fa fa fa-folder-open"></i>时刻表  
+        	<span><input type="checkbox" id="input_checkbox_stationType_jt" name="input_checkbox_stationType" checked="checked" style="margin-left:10px">简点</span>
         	<span style="margin-left:5px" data-bind="text:currentTrain() == null ? '' : '车次:' + currentTrain().name"></span>
         	<label id="plan_view_div_palnDayDetail_title"></label>
         </h3>
@@ -214,7 +214,7 @@ var basePath = "<%=basePath %>";
                   <th style="width:5%">路局</th>
                   <th style="width:15%">到达时间</th>
                   <th style="width:15%">出发时间</th>
-                  <th style="width:15%">停留时间</th>
+                  <th style="width:15%">停时</th>
                    <th style="width:10%">天数</th> 
                   <th style="width:15%">股道</th> 
                  </tr>

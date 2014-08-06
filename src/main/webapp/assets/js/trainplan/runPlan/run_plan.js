@@ -9,7 +9,7 @@ $(function() {
 });
 
 var highlingFlags = [{"value": "0", "text": "普线"},{"value": "1", "text": "高线"},{"value": "2", "text": "混合"}];
-var checkFlags = [{"value": "1", "text": "已"},{"value": "0", "text": "未"}];
+var checkFlags = [{"value": "1", "text": "部分审核"},{"value": "2", "text": "全部审核"},{"value": "0", "text": "未审核"}];
 var unitCreateFlags = [{"value": "0", "text": "未"}, {"value": "1", "text": "已"},{"value": "2", "text": "全"}];
 var highlingrules = [{"value": "1", "text": "平日"},{"value": "2", "text": "周末"},{"value": "3", "text": "高峰"}];
 var commonlinerules = [{"value": "1", "text": "每日"},{"value": "2", "text": "隔日"}];
@@ -44,6 +44,7 @@ function CrossModel() {
 	self.runPlanCanvasPage = new RunPlanCanvasPage(self);
 	self.currentTrainInfoMessage = ko.observable("");
 	self.currentTrain = ko.observable();
+	self.currentPlanCrossId = ko.observable("");//当前选择交路planid 用于车底交路图tab
 	
 	//车辆担当局
 	self.searchModle = ko.observable(new searchModle());
@@ -219,7 +220,6 @@ function CrossModel() {
 	 * @param currentTrain
 	 */
 	self.loadTrainPersonnel = function(currentTrain){
-		console.dir(currentTrain);
 //		if($('#run_plan_train_crew_dialog').is(":hidden")){
 			var _param = "trainNbr="+currentTrain.trainName+"&runDate=" + currentTrain.startDate+"&startStn="+currentTrain.startStn+"&endStn="+currentTrain.endStn;
 			var _title = "车次："+currentTrain.trainName
@@ -422,7 +422,7 @@ function CrossModel() {
 	
 	self.get40Date = function(){
 		var d = new Date();
-		d.setDate(d.getDate() + 40);
+		d.setDate(d.getDate() + 30);
 		
 		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
 		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
@@ -610,7 +610,8 @@ function CrossModel() {
 	self.loadCrosseForPage = function(startIndex, endIndex) {  
 	 
 		commonJsScreenLock();
-		 
+
+		self.currentPlanCrossId("");//清除当前选中交路中id
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag();
 		var trainNbr = self.searchModle().filterTrainNbr(); 
@@ -701,15 +702,15 @@ function CrossModel() {
 	self.showRunPlans = function(){  
 		if($('#learn-more-content').is(":visible")){
 			$('#learn-more-content').hide();
-			$('#plan_cross_default_panel').css({height: '620px'});
-			$('#plan_cross_panel_body').css({height: '490px'});
-			$('#plan_train_panel_body').css({height: '490px'});
-			$('#canvas_parent_div').css({height: '630px'});
+			$('#plan_cross_default_panel').css({height: '700px'});
+			$('#plan_cross_panel_body').css({height: '585px'});
+			$('#plan_train_panel_body').css({height: '585px'});
+			$('#canvas_parent_div').css({height: '700px'});
 		}else{
 			 $('#learn-more-content').show(); 
-			 $('#plan_cross_default_panel').css({height: '520px'});
-			 $('#plan_cross_panel_body').css({height: '390px'});
-			 $('#plan_train_panel_body').css({height: '390px'});
+			 $('#plan_cross_default_panel').css({height: '530px'});
+			 $('#plan_cross_panel_body').css({height: '415px'});
+			 $('#plan_train_panel_body').css({height: '415px'});
 			 $('#canvas_parent_div').css({height:'530px'});
 		}
 	    
@@ -995,11 +996,15 @@ function CrossModel() {
 		
 	};
 	
-	self.createCrossMap = function(row){ 
-		
+	self.createCrossMap = function(){
+		if (self.currentPlanCrossId() == "" || self.currentPlanCrossId()=="undefined") {
+			showWarningDialog("请先选择一条交路信息");
+			return;
+		}
 //		 var planStartDate = self.searchModle().planStartDate();
 //		
 //		 var planEndDate = self.searchModle().planEndDate();
+
 		self.runPlanCanvasPage.clearChart();	//清除画布
 		 var planStartDate = $("#runplan_input_startDate").val();
 			
@@ -1012,7 +1017,7 @@ function CrossModel() {
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({  
-					planCrossId : row.planCrossId(),  
+					planCrossId : self.currentPlanCrossId(),  
 					startTime : planStartDate != null ? planStartDate : self.currdate(),
 					endTime : planEndDate != null ? planEndDate : self.get40Date()
 				}),
@@ -1038,10 +1043,43 @@ function CrossModel() {
 				}
 			}); 
 	};
+	
+	
+
+	//标签页序号
+	self.tabIndex = ko.observable(0);
+	/**
+	 * 交路基本信息tab页切换事件
+	 */
+	self.toCrossTab = function() {
+		self.tabIndex(0);
+	};
+	
+
+	/**
+	 * 车底交路图tab页切换事件
+	 */
+	self.toRunMapTab = function() {
+		self.tabIndex(1);
+		if (self.currentPlanCrossId() != "" && self.currentPlanCrossId()!="undefined") {
+			commonJsScreenLock();//锁屏
+			self.createCrossMap();//加载车底交路图
+		}
+	};
+	
+	
 	self.showTrains = function(row) {   
 		self.setCurrentCross(row); 
-		commonJsScreenLock(3);
-		self.createCrossMap(row);
+		self.currentPlanCrossId(row.planCrossId());//用于车底交路图tab
+		
+		if(self.tabIndex() == 1) {//当前显示车底交路图tab
+			commonJsScreenLock(3);
+			self.createCrossMap();//加载车底交路图
+		} else {
+			commonJsScreenLock(2);
+		}
+
+//		self.createCrossMap(row);//加载车底交路图
 //		self.stns.remove(function(item) {
 //			return true;
 //		});
@@ -1067,15 +1105,13 @@ function CrossModel() {
 				data :JSON.stringify({  
 					planCrossId : row.planCrossId()
 				}),
-				success : function(result) {    
+				success : function(result) {
 					if (result != null && result != "undefind" && result.code == "0") {
-						if (result.data !=null && result.data.length > 0) {   
-							if(result.data[0].crossInfo != null){
-								self.setCurrentCross(new CrossRow(result.data[0].crossInfo)); 
-							}else{ 
-								self.setCurrentCross(new CrossRow(self.defualtCross));
-								showWarningDialog("没有找打对应的交路被找到");
-							}  
+						if (typeof result.data =="object") {
+							self.setCurrentCross(new CrossRow(result.data)); 
+						}else{
+							self.setCurrentCross(new CrossRow(self.defualtCross));
+							showWarningDialog("没有找打对应的交路被找到");
 						}
 						 
 					} else {
@@ -1390,6 +1426,8 @@ function CrossRow(data) {
 	self.airCondition = ko.observable(data.airCondition);
 	self.note = ko.observable(data.note);  
 };
+//end 交路row定义
+
 
 function TrainModel() {
 	var self = this;
@@ -1437,19 +1475,19 @@ function TrainRunPlanRow(data){
 function RunPlanRow(data){
 	var self = this; 
 	self.color = ko.observable("gray");
-	self.runFlag = ko.computed(function(){ 
+	self.runFlagStr = ko.computed(function(){ 
 		switch (data.runFlag) {
-		case '0':
+		case '9':
 			self.color("gray");
-			return "停";
+			return "<span class='label label-danger'>停</span>";//"停";
 			break;
 		case '1':
 			self.color("green");
-			return "开";
+			return "<span class='label label-success'>开</span>";//"开";
 			break;
 		case '2':
 			self.color("blue");
-			return "备";
+			return "<span class='label label-info'>备</span>";//"备";
 			break;
 		default: 
 			return '';

@@ -50,7 +50,16 @@ public class CmdTrain {
 	private String cmdTime;
 	//标识cmd_train_stn表中是否有对应的数据 0：没有，1：有
 	private String isExsitStn;
+	//登录用户所在的局简称
+	private String userBureau;
 	
+	
+	public String getUserBureau() {
+		return userBureau;
+	}
+	public void setUserBureau(String userBureau) {
+		this.userBureau = userBureau;
+	}
 	private List<CmdTrainStn> cmdTrainStnList = new ArrayList<CmdTrainStn>();
 	
 	public List<CmdTrainStn> getCmdTrainStnList() {
@@ -192,7 +201,7 @@ public class CmdTrain {
 	public void setCmdTime(String cmdTime) {
 		this.cmdTime = cmdTime;
 	}
-
+	
 	
 	
 }

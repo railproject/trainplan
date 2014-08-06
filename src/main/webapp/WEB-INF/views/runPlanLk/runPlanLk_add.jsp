@@ -21,7 +21,7 @@ String basePath = request.getContextPath();
 <body class="Iframe_body">
 <ol class="breadcrumb">
   <span><i class="fa fa-anchor"></i>当前位置：</span>
-  <li><a href="javascript:void(0);">既有临客上图</a></li>
+  <li><a href="javascript:void(0);">编制计划 -> 生成开行计划 -> 临客生成开行计划</a></li>
 </ol>
 <!--以上为必须要的--> 
 <div class="panel panel-default">
@@ -45,7 +45,7 @@ String basePath = request.getContextPath();
 								  		<div class="row">
 								  			<div class="row" style="width: 100%; margin-top: 5px;">
 										  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
-										  			<label for="exampleInputEmail2" class="control-label pull-left">发令起始日期:&nbsp;</label>
+										  			<label for="exampleInputEmail2" class="control-label pull-left">发令日期(起始):&nbsp;</label>
 												    <div class="pull-left">
 												        <input id="runPlanLk_cmd_input_startDate" type="text" class="form-control" style="width:100px;" placeholder="">
 													</div>
@@ -53,11 +53,11 @@ String basePath = request.getContextPath();
 												    <div class="pull-left">
 												        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().cmdNbrBureau">
 													</div>
-													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:12px;">&nbsp;&nbsp;部令号:&nbsp;</label>
+													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:10px;">铁总令号:&nbsp;</label>
 												    <div class="pull-left">
 												        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().cmdNbrSuperior">
 													</div>
-													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:27px;">&nbsp;&nbsp;车次:&nbsp;</label>
+													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:25px;">&nbsp;&nbsp;车次:&nbsp;</label>
 												    <div class="pull-left">
 												        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().trainNbr">
 												    </div>
@@ -65,14 +65,14 @@ String basePath = request.getContextPath();
 										  	</div>
 										  	<div class="row" style="width: 100%; margin-top: 5px;">
 										  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
-										  			<label for="exampleInputEmail2" class="control-label pull-left">发令终止日期:&nbsp;</label>
+										  			<label for="exampleInputEmail2" class="control-label pull-left">发令日期(终止):&nbsp;</label>
 												    <div class="pull-left">
 												        <input id="runPlanLk_cmd_input_endDate" type="text" class="form-control" style="width:100px;" placeholder="">
 													</div>
 													<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;命令类型:&nbsp;</label>
 												    <div class="pull-left">
 												    	<select class="form-control" style="width: 100px;display:inline-block;"
-															 data-bind="options: [{'code': 'all', 'text': ''},{'code': '1', 'text': '既有线临客加开'},{'code': '2', 'text': '高铁临客加开'}], value: searchModle().cmdTypeOption, optionsText: 'text',optionsValue:'code'">
+															 data-bind="options: searchModle().cmdTypeArray, value: searchModle().cmdTypeOption, optionsText: 'text', event:{change :cmdTypeChangeEvent}">
 														</select>
 													</div>
 													<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;选线状态:&nbsp;</label>
@@ -105,7 +105,9 @@ String basePath = request.getContextPath();
 					          <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="click: loadTrainInfoFromJbt"><i class="fa fa-plus"></i>选线</button>
 					          <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="click: batchCreateRunPlanLine" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 生成开行计划</button>
 					        </div>
-					        <div class="table-responsive table-hover">
+					        
+					        <!-- 加开table div -->
+					        <div id="div_bjdd_cmdTrainTable_jk" class="table-responsive table-hover">
 					          <table id ="runPlanLkCMD_table" class="table table-bordered table-striped table-hover">
 					            <thead>
 					              <tr>
@@ -115,7 +117,7 @@ String basePath = request.getContextPath();
 					                <th class="text-center" style="vertical-align: middle;width:90px">发令日期</th>
 					                <th class="text-center" style="vertical-align: middle">局令号</th>
 					                <th class="text-center" style="vertical-align: middle;width:30px"">项号</th>
-					                <th class="text-center" style="vertical-align: middle">部令号</th>
+					                <th class="text-center" style="vertical-align: middle;width:60px">铁总<br>令号</th>
 					                <th class="text-center" style="vertical-align: middle">车次</th>
 					                <th class="text-center" style="vertical-align: middle">始发站</th>
 					                <th class="text-center" style="vertical-align: middle">终到站</th>
@@ -130,7 +132,7 @@ String basePath = request.getContextPath();
 					            </thead>
 					            <tbody data-bind="foreach: runPlanLkCMDRows">
 					              <tr data-bind="style:{color: $parent.currentCmdTxtMl().cmdTxtMlItemId == cmdTxtMlItemId ? 'blue':''}">
-					              	<td><input name="cmd_list_checkbox" type="checkbox" data-bind="value : cmdTxtMlItemId"></td>
+					              	<td><input name="cmd_list_checkbox" value="1" type="checkbox" data-bind="checked: isSelect"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: cmdType, attr:{title: cmdType}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: cmdTime, attr:{title: cmdTime}"></td>
@@ -145,12 +147,52 @@ String basePath = request.getContextPath();
 					                <td data-bind="click: $parent.setCurrentRec, text: rule, attr:{title: rule}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: selectedDate, attr:{title: selectedDate}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: passBureau, attr:{title: passBureau}"></td>
-					                <td data-bind="click: $parent.setCurrentRec, text: selectStateStr, attr:{title: selectStateStr}"></td>
-					                <td data-bind="click: $parent.setCurrentRec, text: createStateStr, attr:{title: createStateStr}"></td>
+					                <td align="center" style="vertical-align: middle;" data-bind="click: $parent.setCurrentRec, text: selectStateStr, attr:{title: selectStateStr}"></td>
+					                <td style="vertical-align: middle;" data-bind="click: $parent.setCurrentRec, html: createStateStr"></td>
 					              </tr>
 					            </tbody>
 					          </table>
 					        </div>
+					        <!-- 加开table div end -->
+					        
+					        <!-- 停运table div -->
+					        <div id="div_bjdd_cmdTrainTable_ty" class="table-responsive table-hover">
+					          <table id ="runPlanLkCMD_table" class="table table-bordered table-striped table-hover">
+					            <thead>
+					              <tr>
+					                <th class="text-center" style="vertical-align: middle;width:20px"><input id="checkbox_selectAll" type="checkbox" data-bind="checked: isSelectAll, event:{change: checkBoxSelectAllChange}"></th>
+					                <th class="text-center" style="vertical-align: middle;width:25px">序号</th>
+					                <th class="text-center" style="vertical-align: middle;width:80px">命令类型</th>
+					                <th class="text-center" style="vertical-align: middle;width:90px">发令日期</th>
+					                <th class="text-center" style="vertical-align: middle;width:60px">局令号</th>
+					                <th class="text-center" style="vertical-align: middle;width:30px"">项号</th>
+					                <th class="text-center" style="vertical-align: middle;width:60px">铁总<br>令号</th>
+					                <th class="text-center" style="vertical-align: middle;width:90px">车次</th>
+					                <th class="text-center" style="vertical-align: middle;width:90px">停运站</th>
+					                <th class="text-center" style="vertical-align: middle;width:450px">停运日期</th>
+					                <th class="text-center" style="vertical-align: middle;width:30px">生成<br>状态</th>
+					              </tr>
+					            </thead>
+					            <tbody data-bind="foreach: runPlanLkCMDRows">
+					              <tr data-bind="style:{color: $parent.currentCmdTxtMl().cmdTxtMlItemId == cmdTxtMlItemId ? 'blue':''}">
+					              	<td><input name="cmd_list_checkbox" type="checkbox" value="1" data-bind="checked: isSelect"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: ($index() + 1)"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdType, attr:{title: cmdType}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdTime, attr:{title: cmdTime}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdNbrBureau, attr:{title: cmdNbrBureau}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdItem, attr:{title: cmdItem}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: cmdNbrSuperior, attr:{title: cmdNbrSuperior}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: trainNbr, attr:{title: trainNbr}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: endStn, attr:{title: endStn}"></td>
+					                <td data-bind="click: $parent.setCurrentRec, text: selectedDate, attr:{title: selectedDate}"></td>
+					                <td style="vertical-align: middle;" data-bind="click: $parent.setCurrentRec, html: createStateStr"></td>
+					              </tr>
+					            </tbody>
+					          </table>
+					        </div>
+					        <!-- 停运table div end -->
+					        
+					        
 					      </div>
 					      <!--panel-body--> 
 					      
@@ -176,7 +218,7 @@ String basePath = request.getContextPath();
 						  		<div class="form-group" style="float:left;margin-left:3px;margin-bottom:0;">
 						  			<label for="exampleInputEmail2" class="control-label pull-left">途经局:&nbsp;</label>
 								    <div class="pull-left">
-								        <textarea id="runPlanLk_cmd_input_tjj" class="example" style="width:500px;height:23px" rows="1"></textarea>
+								        <input id="runPlanLk_cmd_input_tjj" class="form-control" style="width:500px;height:23px" data-bind="value:currentCmdTxtMl().passBureau"></textarea>
 									</div>
 									<!-- <div class="pull-left" style="margin-left:345px;">
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: saveCmdTxtMl"><i class="fa fa-floppy-o"></i> 保存</button>
@@ -195,32 +237,39 @@ String basePath = request.getContextPath();
 					          		</div>
 						  		</div>
 						  	</div>
-					        <div class="table-responsive table-hover" style="height: 700px; overflow-y:auto;">
-					          <table id="runPlanLkCMD_trainStn_table" border="0" class="table table-bordered table-striped table-hover">
+					        <div class="table-responsive table-hover" style="height: 620px; overflow:auto;">
+					          <table id="runPlanLkCMD_trainStn_table" border="0" style="width:1000px" class="table table-bordered table-striped table-hover">
 					            <thead>
 					              <tr>
-					                <th style="width:30px;">序号</th>
-					                <th style="width:200px">站名</th>
-					                <th style="width:80px">到达车次</th>
-					                <th style="width:80px">出发车次</th>
-					                <th style="width:40px">路局</th>
-					                <th style="width:80px">到达时间</th>
-					                <th style="width:80px">出发时间</th>
-					                <th style="width:120px">股道</th>  
-					                <th style="width:120px">站台</th>  
+					                <th style="vertical-align: middle;width:30px;" rowspan="2" class="text-center">序号</th>
+					                <th style="vertical-align: middle;width:100px" rowspan="2" class="text-center">站名</th>
+					                <th style="vertical-align: middle;width:40px" rowspan="2" class="text-center">路局</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">到达时间</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">出发时间</th>
+					                <th style="vertical-align: middle;width:100px" colspan="2" class="text-center">运行天数</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">股道</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">站台</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">到达车次</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">出发车次</th>
+					              </tr>
+					              <tr>
+					                <th style="vertical-align: middle;width:50px" class="text-center">到达</th>
+					                <th style="vertical-align: middle;width:50px" class="text-center">出发</th>
 					              </tr>
 					            </thead>
 								<tbody data-bind="foreach: runPlanLkCMDTrainStnRows">
 					              <tr data-bind="style:{color: $root.currentCmdTrainStn().childIndex == childIndex ? 'blue':''}">
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: ($index() + 1)"></td>
-					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: stnName}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: stnName"/></td>
-					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: arrTrainNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: arrTrainNbr"/></td>
-					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: dptTrainNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: dptTrainNbr"/></td>
-					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: stnBureau"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: stnNameTemp}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: stnNameTemp"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec"><select style="width: 70px" class="form-control" data-bind="options:$parent.searchModle().bureauArray, value: bureauOptionWjdd, optionsText: 'text'"></select></td>
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: arrTime}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: arrTime"/></td>
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: dptTime}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: dptTime"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: arrRunDays}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: arrRunDays"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: dptRunDays}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: dptRunDays"/></td>
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: trackNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: trackNbr"/></td>
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: platform}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: platform"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: arrTrainNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: arrTrainNbr"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: dptTrainNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: dptTrainNbr"/></td>
 					              </tr>
 					            </tbody>
 					          </table>
@@ -255,15 +304,15 @@ String basePath = request.getContextPath();
 								  		<div class="row">
 								  			<div class="row" style="width: 100%; margin-top: 5px;">
 										  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
-													<label for="exampleInputEmail2" class="control-label pull-left">发令起始日期:&nbsp;</label>
+													<label for="exampleInputEmail2" class="control-label pull-left">发令日期(起始):&nbsp;</label>
 												    <div class="pull-left">
 												        <input id="runPlanLk_cmd_input_startDate_wjdd" type="text" class="form-control" style="width:100px;" placeholder="">
 													</div>
-													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:12px;">&nbsp;&nbsp;部令号:&nbsp;</label>
+													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:10px;">铁总令号:&nbsp;</label>
 												    <div class="pull-left">
 												        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().cmdNbrSuperior">
 													</div>
-													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:27px;">&nbsp;&nbsp;车次:&nbsp;</label>
+													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:25px;">&nbsp;&nbsp;车次:&nbsp;</label>
 												    <div class="pull-left">
 												        <input type="text" class="form-control" style="width:100px;" data-bind="value: searchModle().trainNbr">
 												    </div>
@@ -275,14 +324,14 @@ String basePath = request.getContextPath();
 										  	</div>
 										  	<div class="row" style="width: 100%; margin-top: 5px;">
 										  		<div class="form-group" style="float:left;margin-left:20px;margin-bottom:0;">
-													<label for="exampleInputEmail2" class="control-label pull-left">发令终止日期:&nbsp;</label>
+													<label for="exampleInputEmail2" class="control-label pull-left">发令日期(终止):&nbsp;</label>
 												    <div class="pull-left">
 												        <input id="runPlanLk_cmd_input_endDate_wjdd" type="text" class="form-control" style="width:100px;" placeholder="">
 													</div>
-													<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;命令类型:&nbsp;</label>
+													<label for="exampleInputEmail2" class="control-label pull-left" style="margin-left:10px;">命令类型:&nbsp;</label>
 												    <div class="pull-left">
 												    	<select class="form-control" style="width: 100px;display:inline-block;"
-															 data-bind="options: [{'code': 'all', 'text': ''},{'code': '1', 'text': '既有线临客加开'},{'code': '2', 'text': '高铁临客加开'}], value: searchModle().cmdTypeOption, optionsText: 'text',optionsValue:'code'">
+															 data-bind="options: [{'code': '1', 'text': '既有加开'},{'code': '2', 'text': '高铁加开'}], value: searchModle().cmdTypeOption, optionsText: 'text',optionsValue:'code'">
 														</select>
 													</div>
 													<label for="exampleInputEmail2" class="control-label pull-left">&nbsp;&nbsp;生成状态:&nbsp;</label>
@@ -310,17 +359,17 @@ String basePath = request.getContextPath();
 					            <thead>
 					              <tr>
 					                <th class="text-center" style="vertical-align: middle;width:35px">序号</th>
-					                <th class="text-center" style="vertical-align: middle">部令号</th>
-					                <th class="text-center" style="vertical-align: middle">车次</th>
-					                <th class="text-center" style="vertical-align: middle">始发站</th>
-					                <th class="text-center" style="vertical-align: middle">终到站</th>
+					                <th class="text-center" style="vertical-align: middle;width:60px">铁总<br>令号</th>
+					                <th class="text-center" style="vertical-align: middle;width:90px">车次</th>
+					                <th class="text-center" style="vertical-align: middle;width:90px">始发站</th>
+					                <th class="text-center" style="vertical-align: middle;width:90px">终到站</th>
 					                <th class="text-center" style="vertical-align: middle;width:90px">起始日期</th>
 					                <th class="text-center" style="vertical-align: middle;width:90px">终止日期</th>
 					                <th class="text-center" style="vertical-align: middle">规律</th>
-					                <th class="text-center" style="vertical-align: middle">择日</th>
-					                <th class="text-center" style="vertical-align: middle">途经局</th>
-					                <th class="text-center" style="vertical-align: middle">担当局</th>
-					                <th class="text-center" style="vertical-align: middle">局令号</th>
+					                <th class="text-center" style="vertical-align: middle;width:250px">择日</th>
+					                <th class="text-center" style="vertical-align: middle;width:150px">途经局</th>
+					                <th class="text-center" style="vertical-align: middle;width:40px">担当<br>局</th>
+					                <th class="text-center" style="vertical-align: middle;width:60px">发令局<br>令号</th>
 					                <th class="text-center" style="vertical-align: middle;width:90px">发令日期</th>
 					                <th class="text-center" style="vertical-align: middle;width:30px">生成<br>状态</th>
 					              </tr>
@@ -340,7 +389,7 @@ String basePath = request.getContextPath();
 					                <td data-bind="click: $parent.setCurrentRec, text: cmdBureau, attr:{title: cmdBureau}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: cmdNbrBureau, attr:{title: cmdNbrBureau}"></td>
 					                <td data-bind="click: $parent.setCurrentRec, text: cmdTime, attr:{title: cmdTime}"></td>
-					                <td data-bind="click: $parent.setCurrentRec, text: createStateStr, attr:{title: createStateStr}"></td>
+					                <td style="vertical-align: middle;" data-bind="click: $parent.setCurrentRec, html: createStateStr"></td>
 					              </tr>
 					            </tbody>
 					          </table>
@@ -389,32 +438,39 @@ String basePath = request.getContextPath();
 					          		</div>
 						  		</div>
 						  	</div>
-					        <div class="table-responsive table-hover" style="height: 700px; overflow-y:auto;">
-					          <table id="runPlanLkCMD_trainStn_table" border="0" class="table table-bordered table-striped table-hover">
+					        <div class="table-responsive table-hover" style="height: 620px; overflow:auto;">
+					          <table id="runPlanLkCMD_trainStn_table" border="0" style="width:1000px" class="table table-bordered table-striped table-hover">
 					            <thead>
 					              <tr>
-					                <th style="width:30px;">序号</th>
-					                <th style="width:200px">站名</th>
-					                <th style="width:80px">到达车次</th>
-					                <th style="width:80px">出发车次</th>
-					                <th style="width:40px">路局</th>
-					                <th style="width:80px">到达时间</th>
-					                <th style="width:80px">出发时间</th>
-					                <th style="width:120px">股道</th>  
-					                <th style="width:120px">站台</th>  
+					                <th style="vertical-align: middle;width:30px;" rowspan="2" class="text-center">序号</th>
+					                <th style="vertical-align: middle;width:100px" rowspan="2" class="text-center">站名</th>
+					                <th style="vertical-align: middle;width:40px" rowspan="2" class="text-center">路局</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">到达时间</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">出发时间</th>
+					                <th style="vertical-align: middle;width:100px" colspan="2" class="text-center">运行天数</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">股道</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">站台</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">到达车次</th>
+					                <th style="vertical-align: middle;width:80px" rowspan="2" class="text-center">出发车次</th>
+					              </tr>
+					              <tr>
+					                <th style="vertical-align: middle;width:50px" class="text-center">到达</th>
+					                <th style="vertical-align: middle;width:50px" class="text-center">出发</th>
 					              </tr>
 					            </thead>
 								<tbody data-bind="foreach: runPlanLkCMDTrainStnRows">
 					              <tr data-bind="style:{color: $root.currentCmdTrainStn().childIndex == childIndex ? 'blue':''}">
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: ($index() + 1)"></td>
-					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: stnName}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: stnName"/></td>
-					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: arrTrainNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: arrTrainNbr"/></td>
-					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: dptTrainNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: dptTrainNbr"/></td>
-					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, text: stnBureau"></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: stnNameTemp}"><input name="input_cmdTrainTimes_stnName" class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: stnNameTemp"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec"><select style="width: 70px" class="form-control" data-bind="options:$parent.searchModle().bureauArray, value: bureauOptionWjdd, optionsText: 'text'"></select></td>
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: arrTime}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: arrTime"/></td>
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: dptTime}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: dptTime"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: arrRunDays}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: arrRunDays"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: dptRunDays}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: dptRunDays"/></td>
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: trackNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: trackNbr"/></td>
 					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: platform}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: platform"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: arrTrainNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: arrTrainNbr"/></td>
+					                <td data-bind="click: $parent.setCMDTrainStnCurrentRec, attr:{title: dptTrainNbr}"><input class="form-control" data-bind="click: $parent.setCMDTrainStnCurrentRec, value: dptTrainNbr"/></td>
 					              </tr>
 					            </tbody>
 					          </table>

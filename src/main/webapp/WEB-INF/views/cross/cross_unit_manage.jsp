@@ -71,7 +71,6 @@
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 var all_role = "<%=userRolesString %>";
-console.log(all_role);
 </script>
  
 
@@ -80,7 +79,7 @@ console.log(all_role);
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">交路单元管理</a></li>
+		<li><a href="javascript:void(0);">管理基本图 -> 交路单元管理</a></li>
 	</ol>  
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 30%;">
@@ -141,13 +140,13 @@ console.log(all_role);
 												<input type="text" class="form-control" style="width: 95px;"
 											 		 id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
 											</div> 
-											 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;" >
+											<!--  <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;" >
 												生成状态:</label>
 											<div class="pull-left" style="margin-left: 5px;">
 												<select style="width:50px" id="input_cross_sure_flag"
 													class="form-control" data-bind="options: searchModle().unitCreateFlags, value: searchModle().unitCreateFlag, optionsText: 'text' , optionsCaption: '' ">
 												</select>
-											</div>
+											</div> -->
 												<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 30px;"
 														data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a>   
 											
@@ -163,9 +162,9 @@ console.log(all_role);
 												data-target="#" id="btn_cross_sure">审核</a>
 											<a  type="button" class="btn btn-success" data-toggle="modal"
 												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
-											<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
+											<!-- <a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
 												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成车底</a>
-											
+											 -->
 										</div> 
 										<span style="margin-bottom:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue"></span> 
 										<table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:98%"
@@ -182,13 +181,13 @@ console.log(all_role);
 																</select>  
 														</th>
 														<th style="width: 8%" align="center">审核</th>
-														<th style="width: 15%" align="center" colspan="2">生成</th> 
+														<!-- <th style="width: 15%" align="center" colspan="2">生成</th>  -->
 													</tr>
 												</thead>
 												<tbody style="padding:0">
 													 <tr style="padding:0">
 													   <td colspan="6" style="padding:0">
-															 <div id="crossInfo_Data" style="height: 450px; overflow-y:auto;"> 
+															 <div id="crossInfo_Data" style="height: 600px; overflow-y:auto;"> 
 																<table class="table table-bordered table-striped table-hover" >
 																	<tbody data-bind="foreach: crossRows.rows">
 																		<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().unitCrossId == unitCrossId ? 'blue':''}" >
@@ -196,8 +195,8 @@ console.log(all_role);
 																			<td style="width: 10.5%" data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
 																			<td align="center" style="width: 8.5%" data-bind=" text: tokenVehBureauShowValue"></td>
 																			<td style="width: 48.5%" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
-																			<td style="width: 10.5%" align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
-																			<td style="width: 10%" align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
+																			<td style="width: 10.5%;vertical-align: middle;" align="center" data-bind="html: checkFlagStr"></td>
+																			<!-- <td style="width: 10%" align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td> -->
 																		</tr> 
 																	</tbody> 
 																</table> 
@@ -332,7 +331,7 @@ console.log(all_role);
 											备用</label>
 										<div class="pull-left">
 											<input type="radio" class="pull-left" class="form-control"
-												value="0" data-bind="checked: spareFlag"
+												value="9" data-bind="checked: spareFlag"
 												style="width: 20px; margin-left: 5px; margin-top: 5px"
 												class="form-control" disabled>
 										</div>
@@ -650,8 +649,8 @@ console.log(all_role);
 							          <th style="width:5%">序号</th>
 					                  <th style="width:20%">站名</th>
 					                  <th style="width:5%">路局</th>
-					                  <th style="width:15%">到达</th>
-					                  <th style="width:15%">出发</th>
+					                  <th style="width:15%">到达时间</th>
+					                  <th style="width:15%">出发时间</th>
 					                  <th style="width:15%">停时</th>
 					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
@@ -692,7 +691,7 @@ console.log(all_role);
 					                  <th style="width:5%">路局</th>
 					                  <th style="width:15%">到达时间</th>
 					                  <th style="width:15%">出发时间</th>
-					                  <th style="width:15%">停留时间</th>
+					                  <th style="width:15%">停时</th>
 					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
 					                 </tr>

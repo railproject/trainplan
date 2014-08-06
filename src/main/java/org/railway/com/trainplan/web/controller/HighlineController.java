@@ -147,7 +147,7 @@ public class HighlineController {
 	}
 
 	 /**
-		 * 审核交路信息
+		 * 加载交路信息
 		 * @return
 		 */
 		@ResponseBody

@@ -15,6 +15,7 @@ public class RunPlanTrainDto {
 	
 	private List<TrainRunDto> runPlans = new LinkedList<TrainRunDto>(); 
 	
+	public RunPlanTrainDto(){}
 	public RunPlanTrainDto(String sd, String ed) { 
 		try { 
 			Date startDay = dateFormat.parse(sd);
@@ -32,6 +33,24 @@ public class RunPlanTrainDto {
 			e.printStackTrace();
 		} 
 	} 
+	
+	public void setRunDay(String sd, String ed){
+		try { 
+			Date startDay = dateFormat.parse(sd);
+			Date endDay = dateFormat.parse(ed);
+			int r = Integer.parseInt(String.valueOf((endDay.getTime() - startDay.getTime())/(1000*3600*24)));
+			Calendar caleandar = GregorianCalendar.getInstance();
+			caleandar.setTime(startDay);
+			for(int i = 0; i <= r; i++){ 
+				caleandar.add(Calendar.DATE, i == 0 ? 0 : 1);  
+				String currDay = dateFormat.format(caleandar.getTime()); 
+				this.runPlans.add(new TrainRunDto(currDay, null));
+			} 
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
 	public String getTrainNbr() {
 		return trainNbr;
 	}

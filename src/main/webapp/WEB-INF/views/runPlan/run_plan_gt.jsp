@@ -85,14 +85,14 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">既有图定开行计划</a></li>
+		<li><a href="#">编制计划 -> 开行计划管理 -> 高铁图定开行计划</a></li>
 	</ol>  
 	   <div class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
 		    <div class="pull-left" style="width: 30%;height:100%">
 			<!--分栏框开始--> 
-			      <div class="row" style="margin: 5px 10px 10px 10px;"> 
-				        	<div class="panel-body"> 
+			      <div class="row" style="margin: 5px 0px 10px 10px;"> 
+				        	<div> 
 										<div class="row"  style="width: 100%;">
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													开始日期:</label>
@@ -141,13 +141,13 @@ var currentUserBureau = "<%=currentUserBureau %>";
 													<input type="text" class="form-control" style="width: 95px;"
 												 		 id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
 												</div> 
-												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;" >
+												 <!-- <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;" >
 													生成状态:</label>
 												<div class="pull-left" style="margin-left: 5px;">
 													<select style="width:50px" id="input_cross_sure_flag"
 														class="form-control" data-bind="options: searchModle().unitCreateFlags, value: searchModle().unitCreateFlag, optionsText: 'text' , optionsCaption: '' ">
 													</select>
-												</div>
+												</div> -->
 												<div class="pull-left" style="margin-left: 10px;">
 														<a type="button" class="btn btn-success" data-toggle="modal"
 															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
@@ -158,7 +158,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												<span style="margin-left: 20px;"><span style="">途经局:</span><span data-bind="text: '京郑武广'"></span><span style="margin-left:3px" data-bind="text: '已审核: 郑  ; 未审核 : 京武广'"></span></span>   
 											</div>  -->
 										 
-										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:620px;margin-top:10px"> 
+										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:700px;margin-top:10px"> 
 											<div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 20px;">
@@ -166,12 +166,12 @@ var currentUserBureau = "<%=currentUserBureau %>";
 														data-target="#" id="btn_cross_sure">审核</a>
 													<a  type="button" class="btn btn-success" data-toggle="modal"
 														data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
-													<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
-														data-target="#" id="btn_cross_createTrainLines" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createTrainLines">生成运行线</a>
+													<!-- <a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
+														data-target="#" id="btn_cross_createTrainLines" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createTrainLines">生成运行线</a> -->
 												</div> 
 										   </div> 
-										  <div style="margin-left:5px;">相关局: <span style="margin-top:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue()"></span></div> 
-										  <div style="margin-left:5px;">已审局: <span style="margin-top:5px;margin-left:5px;" data-bind="html:currentCross().checkedBureauShowValue()"></span></div> 
+										  <div style="margin-left:10px;">相关局: <span style="margin-top:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue()"></span></div> 
+										  <div style="margin-left:10px;">已审局: <span style="margin-top:5px;margin-left:5px;" data-bind="html:currentCross().checkedBureauShowValue()"></span></div> 
 									      <div class="row" style="margin-left:5px; margin-right:5px">
 										     <div class="pull-left" style="width: 75%;"> 
 														<table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:98%"
@@ -192,7 +192,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 															<tbody style="padding:0">
 																 <tr style="padding:0">
 																   <td colspan="6" style="padding:0">
-																		 <div id="plan_train_panel_body" style="height: 500px; overflow-y:auto;"> 
+																		 <div id="plan_train_panel_body" style="height: 585px; overflow-y:auto;"> 
 																			<table class="table table-bordered table-striped table-hover" >
 																				<tbody data-bind="foreach: planCrossRows">
 																					<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().planCrossId == planCrossId ? 'blue':''}" >
@@ -220,7 +220,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 															<tbody style="padding:0">
 																 <tr style="padding:0">
 																   <td colspan="6" style="padding:0">
-																		 <div id="plan_cross_panel_body" style="height: 500px; overflow-y:auto;"> 
+																		 <div id="plan_cross_panel_body" style="height: 585px; overflow-y:auto;"> 
 																			<table class="table table-bordered table-striped table-hover"
 																				id="cross_trainInfo" > 
 																				<tbody data-bind="foreach: trains" >
@@ -243,9 +243,9 @@ var currentUserBureau = "<%=currentUserBureau %>";
 		 <div class="pull-right" style="width: 69%;">  
 				<!-- Nav tabs -->
 				<div class="panel panel-default" >  
-					<ul class="nav nav-tabs" style="margin-top:10px;margin-left:5px;margin-right:5px;"  >
-					  <li class="active"><a style="padding:3px 10px;" href="#home" data-toggle="tab">车底交路</a></li>
-					  <li><a style="padding:3px 10px;" href="#profile" data-toggle="tab">交路基本信息</a></li> 
+					<ul class="nav nav-tabs" style="margin-top:10px;margin-left:5px;margin-right:5px;">
+					  <li class="active"><a style="padding:3px 10px;" href="#profile" data-toggle="tab" data-bind="click: toCrossTab">交路基本信息</a></li>
+					  <li><a style="padding:3px 10px;" href="#home" data-toggle="tab" data-bind="click: toRunMapTab">车底交路图</a></li> 
 					  <li style="float:right">  					 
 						<input type="checkbox" class="pull-left" class="form-control" data-bind="event:{change: showRunPlans}"
 							class="form-control"> 
@@ -255,39 +255,32 @@ var currentUserBureau = "<%=currentUserBureau %>";
 					</ul> 
 					<!-- Tab panes -->
 					<div class="tab-content" >
-					  <div class="tab-pane active" id="home"> 
+					  <div class="tab-pane" id="home"> 
 					       <div class="panel panel-default"> 
 							 <div class="panel-body" >
 							      	<div class="row" style="margin:5px 0 10px 0;">
 								      <form class="form-inline" role="form">
-							              <!-- <div class="input-group">
-							                  <label class="margin-right-10">开始日期:</label>
-							                  <input type="text" class="form-control" style="width:120px;" placeholder="" id="canvas_runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
-							                  <label class="margin-right-10">&nbsp;&nbsp;截至日期:</label>
-							                  <input type="text" class="form-control" style="width:120px;" placeholder="" id="canvas_runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
-								              <button class="btn btn-primary" type="button" id="canvas_event_btnQuery"><i class="fa fa-search"></i>查询</button>
-							              </div> -->
 							              <div class="row" style="margin:5px 0 10px 50px;">
-								         		<button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_refresh"><i class="fa fa-refresh"></i>刷新</button>
-											  <span><input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图</span>
-								         	  <input type="checkbox" id="canvas_checkbox_trainTime" style="margin-left:10px;margin-top:2px"  value=""/>时刻
-								         	   &nbsp;&nbsp;车底：<select id="canvas_select_groupSerialNbr"></select>
-								              <button style="margin-left:10px" type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
+								         	  <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_refresh"><i class="fa fa-refresh"></i>刷新</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
 								                                                 比例：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
+											  <span><input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图</span>
+								         	  <input type="checkbox" id="canvas_checkbox_trainTime" style="margin-left:10px;margin-top:2px"  value=""/>时刻
+								         	   &nbsp;&nbsp;车底：<select id="canvas_select_groupSerialNbr"></select>
 								                       
 								         </div>
 							          </form>
 								    </div> 
-							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:630px;overflow-x:auto; overflow-y:auto;">
+							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:700px;overflow-x:auto; overflow-y:auto;">
 							        	<canvas id="canvas_event_getvalue"></canvas>
 							        </div> 
 							      </div> 
 						</div> 
 				  </div>
-				  <div class="tab-pane" id="profile">
+				  <div class="tab-pane active" id="profile">
 				      <div class="row" style="margin: 10px 10px 10px 10px;">  
 									<div class="row" >
 										<form class="form-horizontal" role="form" data-bind="with: currentCross"> 
@@ -397,7 +390,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 											备用</label>
 										<div class="pull-left">
 											<input type="radio" class="pull-left" class="form-control"
-												value="0" data-bind="checked: spareFlag"
+												value="9" data-bind="checked: spareFlag"
 												style="width: 20px; margin-left: 5px; margin-top: 5px"
 												class="form-control" disabled>
 										</div>
@@ -850,7 +843,7 @@ var basePath = "<%=basePath %>";
     <!-- ko if: $index() == 0 --> 
  	<td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->  
- 	<td  align='center' data-bind="text: runFlag, style:{'color': color}"></td>
+ 	<td style="vertical-align: middle;" align='center' data-bind="html: runFlagStr"></td>
  </tr> 
 </script>
 </html>

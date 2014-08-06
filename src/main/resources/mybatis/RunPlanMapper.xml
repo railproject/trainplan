@@ -29,9 +29,15 @@
 
     <!-- 根据计划id查询计划时刻表 -->
     <select id="findPlanTimeTableByPlanId" parameterType="string" resultType="map">
-        SELECT PTS.STN_SORT AS STN_INDEX, PTS.STN_NAME AS STN_NAME, PTS.STN_BUREAU_FULL AS BUREAU,
-        PTS.TRACK_NAME AS TRACK_NAME, TO_CHAR(PTS.ARR_TIME, 'yyyy-mm-dd hh24:mi') AS ARR_TIME,
-        TO_CHAR(PTS.DPT_TIME, 'yyyy-mm-dd hh24:mi') AS DPT_TIME
+        SELECT 
+	        PTS.STN_SORT AS STN_INDEX, 
+	        PTS.STN_NAME AS STN_NAME, 
+	        PTS.STN_BUREAU_FULL AS BUREAU,
+	        PTS.STN_BUREAU AS STNBUREAU,
+	        PTS.TRACK_NAME AS TRACK_NAME, 
+	        TO_CHAR(PTS.ARR_TIME, 'yyyy-mm-dd hh24:mi') AS ARR_TIME,
+	        TO_CHAR(PTS.DPT_TIME, 'yyyy-mm-dd hh24:mi') AS DPT_TIME
+        
         FROM PLAN_TRAIN_STN PTS
         WHERE PTS.PLAN_TRAIN_ID = #{planId}
         ORDER BY PTS.STN_SORT
@@ -39,9 +45,25 @@
 
     <!-- 根据计划id查询计划主体信息 -->
     <select id="findPlanInfoByPlanId" parameterType="string" resultType="map">
-        SELECT PT.PLAN_TRAIN_ID, PT.TRAIN_NBR AS TRAIN_NAME, PT.START_BUREAU_FULL AS START_BUREAU, PT.END_BUREAU_FULL AS END_BUREAU, PT.START_STN AS START_STN,
-        PT.END_STN AS END_STN, TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME, PT.PASS_BUREAU AS PASS_BUREAU,
-        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, PT.CHECK_LEV1_BUREAU AS CHECK_LEV1_BUREAU, PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE, PT.CHECK_LEV2_BUREAU AS CHECK_LEV2_BUREAU
+        SELECT 
+	        PT.PLAN_TRAIN_ID AS PLAN_TRAIN_ID, 
+	        PT.TRAIN_NBR AS TRAIN_NAME, 
+	        PT.START_BUREAU_FULL AS START_BUREAU_FULL, 
+	        PT.END_BUREAU_FULL AS END_BUREAU_FULL, 
+	        PT.END_BUREAU AS END_BUREAU,
+	        PT.START_BUREAU AS START_BUREAU,
+	        PT.START_STN AS START_STN,
+	        PT.END_STN AS END_STN, 
+	        TO_CHAR(PT.START_TIME, 'yyyy-mm-dd hh24:mi') AS START_TIME, 
+	        TO_CHAR(PT.END_TIME, 'yyyy-mm-dd hh24:mi') AS END_TIME, 
+	        PT.PASS_BUREAU AS PASS_BUREAU,
+	        PT.CHECK_LEV1_TYPE AS CHECK_LEV1_TYPE, 
+	        PT.CHECK_LEV1_BUREAU AS CHECK_LEV1_BUREAU, 
+	        PT.CHECK_LEV2_TYPE AS CHECK_LEV2_TYPE, 
+	        PT.CHECK_LEV2_BUREAU AS CHECK_LEV2_BUREAU,
+	        PT.DAILYPLAN_ID AS DAILYPLAN_ID,
+	        PT.PASS_BUREAU AS PASS_BUREAU
+	    
         FROM PLAN_TRAIN PT WHERE PT.PLAN_TRAIN_ID = #{planId}
     </select>
 
@@ -63,7 +85,19 @@
         </foreach>
     </select>
     
-    <select id="getTrainRunPlans" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossRunPlanInfo">
+     <resultMap id="planTrainInfos" type="org.railway.com.trainplan.service.dto.RunPlanTrainDto">
+        <id column="trainNbr" property="trainNbr"/>
+       <collection property="runPlans" resultMap="runPlansList"/>
+        
+    </resultMap>
+ 
+    <resultMap id="runPlansList" type="org.railway.com.trainplan.service.dto.TrainRunDto">
+	        <id column="runday" property="day"/>
+	        <result column="runflag" property="runFlag"/>
+    </resultMap>
+    
+    
+    <select id="getTrainRunPlans" parameterType="map" resultMap="planTrainInfos">
        select t.run_date runDay,
 			  t.train_nbr trainNbr,
               t.start_stn startStn,
@@ -74,16 +108,16 @@
     </select>
     
      <select id="getTrainRunPlanForLk" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossRunPlanInfo">
-       select t.run_date runDay,
-			       t.train_nbr trainNbr,  
+       select  t.run_date runDay,
+			   t.train_nbr trainNbr,  
 	           t.start_stn startStn, 
 	           t.end_stn endStn,
 	           t.spare_flag runFlag, 
 	           case when t.DAILYPLAN_ID is not null  then '1' else '0' end as createFlag, 
-			       t.plan_train_id planTrainId,
-             t.base_train_id baseTrainId
+			   t.plan_train_id planTrainId,
+               t.base_train_id baseTrainId
        from plan_train t 
-       where t.run_date>=#{startDay} and t.run_date &lt;=#{endDay}  
+       where t.run_date>=#{startDay} and t.run_date &lt;=#{endDay}  AND t.CREAT_TYPE=3
        <if test="tokenVehBureau != null">
             AND t.TOKEN_VEH_BUREAU= #{tokenVehBureau}
         </if> 
@@ -93,7 +127,7 @@
         <if test="trainNbr != null">
             AND t.train_nbr like '%' || #{trainNbr} || '%'
         </if> 
-         order by t.trainNbr, t.run_date
+         order by t.train_nbr, t.run_date
     </select>
     <select id="getTrainRunPlansForCreateLine" parameterType="map" resultType="org.railway.com.trainplan.entity.CrossRunPlanInfo">
         select t.run_date runDay,
@@ -109,6 +143,7 @@
                t.base_train_id baseTrainId
        from  plan_cross t1, plan_train t
        where t.plan_cross_id=t1.PLAN_CROSS_ID and  t.run_date>=#{startDay} and t.run_date &lt;=#{endDay} 
+       and t.CREAT_TYPE=0
        <if test="tokenVehBureau != null">
             AND t1.TOKEN_VEH_BUREAU= #{tokenVehBureau}
         </if>
@@ -157,17 +192,15 @@ FROM
             	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
             </if>
         </if>
-        <if test="checkFlag == 0 ">
-            AND t.check_time is null
+        <if test="checkFlag != null and checkFlag !='' ">
+            AND t.CHECK_TYPE =#{checkFlag}
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">
             	AND t.RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
             </if>
         </if>
-        <if test="checkFlag == 1 ">
-            AND t.check_time is not null
-        </if> 
+      
  
        	<if test="startTime != null">  
        	      AND 
@@ -233,16 +266,43 @@ FROM
         HIGHLINE_FLAG,BASE_CHART_ID,BASE_TRAIN_ID,HIGHLINE_RULE,COMMONLINE_RULE,APPOINT_WEEK,APPOINT_DAY,DAY_GAP,SPARE_FLAG,SPARE_APPLY_FLAG,CREAT_TYPE,
         CREAT_TIME,CHECK_LEV1_TYPE,CHECK_LEV2_TYPE,DAILYPLAN_TIMES,DAILYPLAN_FLAG)
         VALUES(
-        #{planTrainId, jdbcType=VARCHAR}, #{planTrainSign, jdbcType=VARCHAR}, #{planCrossId, jdbcType=VARCHAR}, #{marshallingName, jdbcType=VARCHAR},
-        #{groupSerialNbr, jdbcType=NUMERIC}, #{trainSort, jdbcType=NUMERIC}, #{preTrainId, jdbcType=VARCHAR},
-        #{nextTrainId, jdbcType=VARCHAR}, #{runDate, jdbcType=VARCHAR}, #{trainNbr, jdbcType=VARCHAR}, #{startDateTime, jdbcType=DATE},
-        #{endDateTime, jdbcType=DATE},#{startBureauShortName, jdbcType=VARCHAR}, #{startBureauFullName, jdbcType=VARCHAR}, #{startStn, jdbcType=VARCHAR},
-        #{endBureauShortName, jdbcType=VARCHAR},#{endBureauFullName, jdbcType=VARCHAR}, #{endStn, jdbcType=VARCHAR}, #{passBureau, jdbcType=VARCHAR},
-        #{trainScope, jdbcType=NUMERIC},#{trainTypeId, jdbcType=VARCHAR}, #{highLineFlag, jdbcType=NUMERIC}, #{baseChartId, jdbcType=VARCHAR},
-        #{baseTrainId, jdbcType=VARCHAR},#{hightLineRule, jdbcType=NUMERIC}, #{commonLineRule, jdbcType=NUMERIC}, #{appointWeek, jdbcType=VARCHAR},
-        #{appointDay, jdbcType=VARCHAR},#{dayGap, jdbcType=NUMERIC},#{spareFlag, jdbcType=NUMERIC}, #{spareApplyFlag, jdbcType=NUMERIC},
-        #{createType, jdbcType=NUMERIC}, #{createDateTime, jdbcType=DATE}, #{checkLev1Type, jdbcType=NUMERIC}, #{checkLev2Type, jdbcType=NUMERIC},
-        #{dailyPlanTimes, jdbcType=NUMERIC}, #{dailyPlanFlag, jdbcType=NUMERIC}
+        #{planTrainId, jdbcType=VARCHAR}, 
+        #{planTrainSign, jdbcType=VARCHAR}, 
+        #{planCrossId, jdbcType=VARCHAR}, 
+        #{marshallingName, jdbcType=VARCHAR},
+        #{groupSerialNbr, jdbcType=NUMERIC}, 
+        #{trainSort, jdbcType=NUMERIC}, 
+        #{preTrainId, jdbcType=VARCHAR},
+        #{nextTrainId, jdbcType=VARCHAR}, 
+        #{runDate, jdbcType=VARCHAR}, 
+        #{trainNbr, jdbcType=VARCHAR}, 
+        #{startDateTime, jdbcType=DATE},
+        #{endDateTime, jdbcType=DATE},
+        #{startBureauShortName, jdbcType=VARCHAR}, 
+        #{startBureauFullName, jdbcType=VARCHAR}, 
+        #{startStn, jdbcType=VARCHAR},
+        #{endBureauShortName, jdbcType=VARCHAR},
+        #{endBureauFullName, jdbcType=VARCHAR}, 
+        #{endStn, jdbcType=VARCHAR}, 
+        #{passBureau, jdbcType=VARCHAR},
+        #{trainScope, jdbcType=NUMERIC},
+        #{trainTypeId, jdbcType=VARCHAR}, 
+        #{highLineFlag, jdbcType=NUMERIC}, 
+        #{baseChartId, jdbcType=VARCHAR},
+        #{baseTrainId, jdbcType=VARCHAR},
+        #{hightLineRule, jdbcType=NUMERIC}, 
+        #{commonLineRule, jdbcType=NUMERIC}, 
+        #{appointWeek, jdbcType=VARCHAR},
+        #{appointDay, jdbcType=VARCHAR},
+        #{dayGap, jdbcType=NUMERIC},
+        #{spareFlag, jdbcType=NUMERIC}, 
+        #{spareApplyFlag, jdbcType=NUMERIC},
+        #{createType, jdbcType=NUMERIC}, 
+        #{createDateTime, jdbcType=DATE}, 
+        #{checkLev1Type, jdbcType=NUMERIC}, 
+        #{checkLev2Type, jdbcType=NUMERIC},
+        #{dailyPlanTimes, jdbcType=NUMERIC}, 
+        #{dailyPlanFlag, jdbcType=NUMERIC}
         )
     </insert>
 
@@ -565,21 +625,23 @@ FROM
     </select>
     
     <select id="getRunPlanByStartDate" parameterType="map" resultType="org.railway.com.trainplan.entity.PlanCrossInfo">
-          select t1.*,  b.post_id as postId, b.post_name as postName, b.THROUGH_LINE as throughLine  
-      from (select t.plan_cross_id as planCrossId, t.unit_cross_id as unitCrossId, t.base_cross_id as baseCrossId, 
-      t.base_chart_id as baseChartId, t.RELEVANT_BUREAU as relevantBureau, t.base_chart_name as baseChartName,
-      t.cross_start_date as crossStartDate, t.cross_end_date as crossEndDate, t.cross_name as crossName,
-      t.cross_spare_name as crossSpareName, t.SPARE_FLAG as spareFlag, t.GROUP_TOTAL_NBR as groupTotalNbr, 
-      t.PAIR_NBR as pairNbr, t.HIGHLINE_FLAG as highlineFlag, t.HIGHLINE_RULE as highlineRule, t.COMMONLINE_RULE as commonlineRule, 
-      t.APPOINT_WEEK as appointWeek, t.APPOINT_DAY as appointDay, t.CROSS_SECTION as crossSection, t.THROUGH_LINE as throughline,
-      t.START_BUREAU as startBureau, t.TOKEN_VEH_BUREAU as tokenVehBureau, t.TOKEN_VEH_DEPT as tokenVehDept,
-      t.TOKEN_VEH_DEPOT as tokenVehDepot, t.TOKEN_PSG_BUREAU as tokenPsgBureau, t.TOKEN_PSG_DEPT as tokenPsgDept, 
-      t.LOCO_TYPE as locoType, t.CRH_TYPE as crhType, t.ELEC_SUPPLY as elecSupply, t.DEJ_COLLECT as dejCollect,
-      t.AIR_CONDITION as airCondition, t.NOTE as note, t.CREAT_PEOPLE as createPeople,
-      t.CREAT_PEOPLE_ORG as createPeopleOrg, t.CREAT_TIME as createTime, t.CHECK_TYPE as checkType,
-      t.CHECK_PEOPLE as checkPeople, t.CHECK_PEOPLE_ORG as checkPeopleOrg, t.CHECK_TIME as checkTime ,
-      a.group_serial_nbr as groupSerialNbr from plan_cross t, plan_train a 
-      where a.plan_cross_id=t.plan_cross_id and a.run_date=#{startDate} and a.train_sort='1') t1 
+     select t1.*,  b.post_id as postId, b.post_name as postName, b.THROUGH_LINE as throughLine  
+      from 
+        (select t.plan_cross_id as planCrossId, t.unit_cross_id as unitCrossId, t.base_cross_id as baseCrossId, 
+	      t.base_chart_id as baseChartId, t.RELEVANT_BUREAU as relevantBureau, t.base_chart_name as baseChartName,
+	      t.cross_start_date as crossStartDate, t.cross_end_date as crossEndDate, t.cross_name as crossName,
+	      t.cross_spare_name as crossSpareName, t.SPARE_FLAG as spareFlag, t.GROUP_TOTAL_NBR as groupTotalNbr, 
+	      t.PAIR_NBR as pairNbr, t.HIGHLINE_FLAG as highlineFlag, t.HIGHLINE_RULE as highlineRule, t.COMMONLINE_RULE as commonlineRule, 
+	      t.APPOINT_WEEK as appointWeek, t.APPOINT_DAY as appointDay, t.CROSS_SECTION as crossSection, t.THROUGH_LINE as throughline,
+	      t.START_BUREAU as startBureau, t.TOKEN_VEH_BUREAU as tokenVehBureau, t.TOKEN_VEH_DEPT as tokenVehDept,
+	      t.TOKEN_VEH_DEPOT as tokenVehDepot, t.TOKEN_PSG_BUREAU as tokenPsgBureau, t.TOKEN_PSG_DEPT as tokenPsgDept, 
+	      t.LOCO_TYPE as locoType, t.CRH_TYPE as crhType, t.ELEC_SUPPLY as elecSupply, t.DEJ_COLLECT as dejCollect,
+	      t.AIR_CONDITION as airCondition, t.NOTE as note, t.CREAT_PEOPLE as createPeople,
+	      t.CREAT_PEOPLE_ORG as createPeopleOrg, t.CREAT_TIME as createTime, t.CHECK_TYPE as checkType,
+	      t.CHECK_PEOPLE as checkPeople, t.CHECK_PEOPLE_ORG as checkPeopleOrg, t.CHECK_TIME as checkTime ,
+	      a.group_serial_nbr as groupSerialNbr 
+      from plan_cross t, plan_train a 
+      where a.plan_cross_id=t.plan_cross_id and a.run_date=#{startDate} and a.train_sort='1' and a.HIGHLINE_FLAG = 1 ) t1 
       left join dic_rela_cross_post b on b.base_cross_id=t1.baseCrossId  
     </select>
     

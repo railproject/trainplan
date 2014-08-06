@@ -47,7 +47,7 @@
 		 t.CROSS_START_DATE AS crossStartDate,
 		 t.CROSS_END_DATE AS crossEndDate,
 		 t.CROSS_START_STN AS crossStartStn,
-        t.CROSS_END_STN AS crossEndStn,
+         t.CROSS_END_STN AS crossEndStn,
 		 t.CROSS_NAME AS crossName,
 		 t.SPARE_FLAG AS spareFlag,
 		 t.RELEVANT_BUREAU AS relevantBureau,
@@ -70,6 +70,7 @@
 		 b.THROUGH_LINE AS throughLine,
 		 t.POST_ID AS postId,
 		 t.POST_Name AS postName,
+		 t.CROSS_BUREAU AS crossBureau,
 		 t.CREAT_REASON AS createReason
       FROM HIGHLINE_CROSS t LEFT JOIN dic_rela_cross_post b ON  t.base_cross_id=b.base_cross_id WHERE t.CROSS_START_DATE = #{crossStartDate}
       <if test="tokenVehBureau != null">
@@ -104,6 +105,8 @@
 		C.START_STN As startStn,
 		TO_CHAR(C.START_TIME,'yyyy-MM-dd hh24:mi:SS') AS startTime,
 		C.END_STN As endStn,
+		C.START_BUREAU AS startStnBureau,
+        C.END_BUREAU AS endStnBureau,
 		TO_CHAR(C.END_TIME,'yyyy-MM-dd hh24:mi:SS') AS endTime
 		FROM HIGHLINE_CROSS A,HIGHLINE_CROSS_TRAIN B,PLAN_TRAIN C
 	WHERE A.HIGHLINE_CROSS_ID=B.HIGHLINE_CROSS_ID AND B.PLAN_TRAIN_ID=C.PLAN_TRAIN_ID AND A.HIGHLINE_CROSS_ID=#{highlineCrossId}

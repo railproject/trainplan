@@ -36,10 +36,10 @@
 <ol class="breadcrumb">
     <span><i class="fa fa-anchor"></i>当前位置:</span>
     <c:if test="${train_type==0}">
-        <li><a href="#">既有开行计划审核</a></li>
+        <li><a href="#">发布计划 -> 开行计划 -> 既有开行计划审核</a></li>
     </c:if>
     <c:if test="${train_type==1}">
-        <li><a href="#">高铁开行计划审核</a></li>
+        <li><a href="#">发布计划 -> 开行计划 -> 高铁开行计划审核</a></li>
     </c:if>
 </ol>
 <section class="mainContent">

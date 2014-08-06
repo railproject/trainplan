@@ -12,6 +12,8 @@ public class CmdTrainStn {
 	private String stnName;
 	//路局 (车站所属局简称)
 	private String stnBureau;
+	//站所属局全称
+	private String stnBureauFull;	
 	//到达车次
 	private String arrTrainNbr;
 	//出发车次
@@ -31,7 +33,7 @@ public class CmdTrainStn {
 	//股道号
 	private String trackNbr;
 	//站台
-	private String platform;
+	private Integer platform;
 	//客运作业标记 (0:无；1:有)
 	private Integer psgFlg;
 	//	机务作业标记 (0:无；1:司机换班；2:机车换挂；3:机车换挂和司机换班)
@@ -40,8 +42,15 @@ public class CmdTrainStn {
 	private String tecType;
 	//车站类型 (1:始发站；2:终到站；4:分界口)
 	private String stnType;
+
+		
 	
-	
+	public String getStnBureauFull() {
+		return stnBureauFull;
+	}
+	public void setStnBureauFull(String stnBureauFull) {
+		this.stnBureauFull = stnBureauFull;
+	}
 	public Integer getArrRunDays() {
 		return arrRunDays;
 	}
@@ -127,10 +136,11 @@ public class CmdTrainStn {
 	public void setTrackNbr(String trackNbr) {
 		this.trackNbr = trackNbr;
 	}
-	public String getPlatform() {
+	
+	public Integer getPlatform() {
 		return platform;
 	}
-	public void setPlatform(String platform) {
+	public void setPlatform(Integer platform) {
 		this.platform = platform;
 	}
 	public Integer getPsgFlg() {

@@ -1,14 +1,24 @@
 package org.railway.com.trainplan.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.record.formula.functions.Int;
 import org.javasimon.aop.Monitored;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -17,26 +27,39 @@ import org.joda.time.format.DateTimeFormat;
 import org.railway.com.trainplan.common.constants.Constants;
 import org.railway.com.trainplan.common.utils.DateUtil;
 import org.railway.com.trainplan.common.utils.StringUtil;
-import org.railway.com.trainplan.entity.*;
-import org.railway.com.trainplan.exceptions.*;
-import org.railway.com.trainplan.repository.mybatis.*;
+import org.railway.com.trainplan.entity.CrossRunPlanInfo;
+import org.railway.com.trainplan.entity.LevelCheck;
+import org.railway.com.trainplan.entity.PlanCheckInfo;
+import org.railway.com.trainplan.entity.PlanCrossInfo;
+import org.railway.com.trainplan.entity.RunPlan;
+import org.railway.com.trainplan.entity.RunPlanStn;
+import org.railway.com.trainplan.entity.UnitCross;
+import org.railway.com.trainplan.entity.UnitCrossTrain;
+import org.railway.com.trainplan.exceptions.DailyPlanCheckException;
+import org.railway.com.trainplan.exceptions.UnknownCheckTypeException;
+import org.railway.com.trainplan.exceptions.WrongBureauCheckException;
+import org.railway.com.trainplan.exceptions.WrongCheckTypeException;
+import org.railway.com.trainplan.exceptions.WrongDataException;
+import org.railway.com.trainplan.repository.mybatis.BaseDao;
+import org.railway.com.trainplan.repository.mybatis.BaseTrainDao;
+import org.railway.com.trainplan.repository.mybatis.PlanCrossDao;
+import org.railway.com.trainplan.repository.mybatis.RunPlanDao;
+import org.railway.com.trainplan.repository.mybatis.RunPlanStnDao;
+import org.railway.com.trainplan.repository.mybatis.UnitCrossDao;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
+import org.railway.com.trainplan.service.dto.TrainRunDto;
 import org.railway.com.trainplan.service.message.SendMsgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * 客运计划服务类
@@ -375,7 +398,7 @@ public class RunPlanService {
 	public List<RunPlanTrainDto> getTrainRunPlans(Map<String , Object> map) throws Exception {
 			List<RunPlanTrainDto> runPlans = Lists.newArrayList();
 			Map<String, RunPlanTrainDto> runPlanTrainMap = Maps.newHashMap();
-			List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.GET_TRAIN_RUN_PLAN, map);
+			/*List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.GET_TRAIN_RUN_PLAN, map);
 			String startDay = map.get("startDay").toString();
 			String endDay = map.get("endDay").toString();
 			for(CrossRunPlanInfo runPlan: crossRunPlans){
@@ -387,7 +410,29 @@ public class RunPlanService {
 					} 
 					currTrain.setRunFlag(runPlan.getRunDay(), runPlan.getRunFlag());
 			} 
-			runPlans.addAll(runPlanTrainMap.values());   
+			runPlans.addAll(runPlanTrainMap.values());  */ 
+			List<RunPlanTrainDto> crossRunPlans = baseDao.selectListBySql(Constants.GET_TRAIN_RUN_PLAN, map);
+			String startDay = map.get("startDay").toString();
+			String endDay = map.get("endDay").toString();
+			
+			for(RunPlanTrainDto runPlan : crossRunPlans){
+				List<TrainRunDto> list = runPlan.getRunPlans();
+				RunPlanTrainDto currTrain = new RunPlanTrainDto(startDay, endDay);
+				currTrain.setTrainNbr(runPlan.getTrainNbr());
+				currTrain.setRunDay(startDay, endDay);
+				List<TrainRunDto> tempSubList = currTrain.getRunPlans();
+				for(TrainRunDto dto :list){
+					String day = dto.getDay();
+					String runFlag = dto.getRunFlag();
+					for(TrainRunDto tempDto : tempSubList){
+						if(day.equals(tempDto.getDay())){
+							tempDto.setRunFlag(runFlag);
+							break;
+						}
+					}
+				}
+				runPlans.add(currTrain);
+			}
 			return runPlans;
 	}
 	        
@@ -409,6 +454,27 @@ public class RunPlanService {
         Map<String, Object> params = Maps.newHashMap();
         params.put("baseChartId", baseChartId);
         params.put("unitCrossIds", unitCrossIds);
+        /**added by liuhang 解决页面需要点击两次才能生成的情况****/
+        List<UnitCross> unitCrossListTempl = unitCrossDao.findUnitCrossBySchemaId(params);
+        for(UnitCross unitCross: unitCrossListTempl){
+        	String unitPlanCrossId = unitCross.getUnitCrossId();
+        	
+        	Map<String,Object> countMap = unitCrossDao.getCountForUnitPlanCross(unitPlanCrossId);
+        	int count = Integer.valueOf(StringUtil.objToStr(countMap.get("COUNT")));
+        	if(count == 0){
+        		 PlanCrossInfo planCrossInfo = new PlanCrossInfo();
+                 try {
+					BeanUtils.copyProperties(planCrossInfo, unitCross);
+				}catch (Exception e) {
+					
+					e.printStackTrace();
+				}
+                 planCrossInfo.setPlanCrossId(UUID.randomUUID().toString());
+                 planCrossInfo.setCrossStartDate(startDate);
+                 planCrossDao.save(planCrossInfo);
+        	}
+        }  
+        /**********************/
         List<UnitCross> unitCrossList = unitCrossDao.findUnitCrossBySchemaId(params);
         List<String> unitCrossIdList = Lists.newArrayList();
         try{
@@ -450,7 +516,11 @@ public class RunPlanService {
             logger.debug("thread start:" + LocalTime.now().toString("hh:mm:ss"));
             try {
                 // 查询同名交路，用来补全时间空挡，只查询生成过计划的交路
-                List<PlanCrossInfo> planCrossInfoList = planCrossDao.findByUnitCrossName(this.unitCross.getCrossName());
+            	Map<String,Object> reqMap = new HashMap<String,Object>();
+            	reqMap.put("unitCrossName", this.unitCross.getCrossName());
+            	System.err.println("this.unitCross.getCrossName()==" + this.unitCross.getCrossName());
+                List<PlanCrossInfo> planCrossInfoList = planCrossDao.findByUnitCrossName(reqMap);
+                System.err.println("planCrossInfoList.size==" + planCrossInfoList.size());
                 // 按启用时间排序
                 Collections.sort(planCrossInfoList, new Comparator<PlanCrossInfo>() {
                     @Override
@@ -494,6 +564,7 @@ public class RunPlanService {
             LocalDate startDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(startDateStr);
             //生成plan_cross逻辑
             String planCrossId = unitCross.getPlanCrossId();
+           
             boolean isNewPlanCrossInfo = false;
             PlanCrossInfo planCrossInfo;
             // 按组别保存最后一个计划
@@ -644,7 +715,12 @@ public class RunPlanService {
             } else {
                 planCrossDao.update(planCrossInfo);
             }
-            sendUnitCrossMsg(unitCross.getUnitCrossId(), 2);
+            if(this.days ==0){
+            	sendUnitCrossMsg(unitCross.getUnitCrossId(), 1);
+            }else {
+            	sendUnitCrossMsg(unitCross.getUnitCrossId(), 2);
+            }
+            
         }
 
         private List<RunPlan> findBaseTrainByUnitCrossId(String unitCrossId) {
@@ -843,7 +919,13 @@ public class RunPlanService {
                 logger.error("发送消息失败", e);
             }
         }
-
+        
+        /**
+         * 推送某个交路的开始生成计划或结束结束生成计划
+         * @param unitCrossId
+         * @param status 1：未完成 2：完成
+         * @throws JsonProcessingException
+         */
         private void sendUnitCrossMsg(String unitCrossId, int status) throws JsonProcessingException {
             if(this.msgReceiveUrl == null) {
                 return;

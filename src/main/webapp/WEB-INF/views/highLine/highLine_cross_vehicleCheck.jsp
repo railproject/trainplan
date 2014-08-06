@@ -86,7 +86,7 @@ var currentUserBureau = "";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">高铁车底计划审核</a></li>
+		<li><a href="#">发布计划 -> 车底计划 -> 高铁车底计划审核</a></li>
 	</ol> 
 	<div class="row" style="margin:15px 0 10px 0;"> 
 			    <form class="form-horizontal" role="form">

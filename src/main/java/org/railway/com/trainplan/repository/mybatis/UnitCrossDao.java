@@ -17,4 +17,6 @@ public interface UnitCrossDao {
     List<UnitCross> findUnitCrossByName(String unitCrossName);
 
     UnitCross findById(String unitCrossId);
+    
+    Map<String,Object> getCountForUnitPlanCross(String unitCrossId);
 }

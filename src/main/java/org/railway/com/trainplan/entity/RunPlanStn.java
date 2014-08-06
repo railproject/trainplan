@@ -22,6 +22,8 @@ public class RunPlanStn {
     private String dptTimeStr;
     private Timestamp baseArrTime;
     private Timestamp baseDptTime;
+    private String baseArrTimeStr;
+    private String baseDptTimeStr;
     private String upDown;
     private String trackNbr;
     private String trackName;
@@ -33,8 +35,27 @@ public class RunPlanStn {
     private int boundaryInOut;
     private int sRunDays;
     private int tRunDays;
+    
+    
+    
 
-    public String getPlanTrainStnId() {
+    public String getBaseArrTimeStr() {
+		return baseArrTimeStr;
+	}
+
+	public void setBaseArrTimeStr(String baseArrTimeStr) {
+		this.baseArrTimeStr = baseArrTimeStr;
+	}
+
+	public String getBaseDptTimeStr() {
+		return baseDptTimeStr;
+	}
+
+	public void setBaseDptTimeStr(String baseDptTimeStr) {
+		this.baseDptTimeStr = baseDptTimeStr;
+	}
+
+	public String getPlanTrainStnId() {
         return planTrainStnId;
     }
 

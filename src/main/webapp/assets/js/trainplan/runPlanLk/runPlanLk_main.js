@@ -56,7 +56,7 @@ function CrossModel() {
 	 * @param crossId
 	 */
 	self.loadRunPlans = function(_trainNbr){
-		console.log("----------------    加载开行情况       ------------------");
+//		console.log("----------------    加载开行情况       ------------------");
 		var startDate = $("#runplan_input_startDate").val(); 
 		var endDate =  $("#runplan_input_endDate").val();
 		
@@ -82,9 +82,6 @@ function CrossModel() {
 					trainNbr: _trainNbr
 				}),
 				success : function(result) {
-
-					console.dir(result);
-					console.log("----------------    加载开行情况       ------------------");
 					if (result != null && result != "undefind" && result.code == "0") {
 						self.trainPlans.remove(function(item) {
 							return true;
@@ -109,8 +106,7 @@ function CrossModel() {
 	
 	
 	self.loadStns = function(currentTrain){
-		console.log("-----------------     查看时刻表      条件     ----------------------");
-		console.dir(currentTrain);
+//		console.log("-----------------     查看时刻表      条件     ----------------------");
 		self.times.remove(function(item){
 			return true;
 		});
@@ -128,8 +124,6 @@ function CrossModel() {
 					trainId: currentTrain.obj.planTrainId
 				}),
 				success : function(result) {
-					console.dir(result);
-					console.log("-----------------     查看时刻表           ----------------------");
 					if (result != null && result != "undefind" && result.code == "0") { 
 							var message = "车次：" + currentTrain.obj.trainName + "&nbsp;&nbsp;&nbsp;";
 							
@@ -226,7 +220,6 @@ function CrossModel() {
 	 * @param currentTrain
 	 */
 	self.loadTrainPersonnel = function(currentTrain){
-		console.dir(currentTrain);
 //		if($('#run_plan_train_crew_dialog').is(":hidden")){
 			var _param = "trainNbr="+currentTrain.trainName+"&runDate=" + currentTrain.startDate+"&startStn="+currentTrain.startStn+"&endStn="+currentTrain.endStn;
 			var _title = "车次："+currentTrain.trainName
@@ -333,7 +326,7 @@ function CrossModel() {
 	
 	self.get40Date = function(){
 		var d = new Date();
-		d.setDate(d.getDate() + 40);
+		d.setDate(d.getDate() + 30);
 		
 		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
 		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
@@ -429,8 +422,6 @@ function CrossModel() {
 					isRelationBureau : currentBureanFlag//本局相关
 				}),
 				success : function(result) {
-					console.log("===============");
-					console.dir(result);
 					if (result != null && result != "undefind" && result.code == "0") {
 						if(result.data != null){
 							$.each(result.data,function(n, crossInfo){
@@ -461,25 +452,27 @@ function CrossModel() {
 		$("#file_upload_dlg").dialog("open"); 
 	};
 	
-	self.showRunPlans = function(){  
+	self.showRunPlans = function(){
 		if($('#learn-more-content').is(":visible")){
 			$('#learn-more-content').hide();
-			$('#plan_cross_default_panel').css({height: '620px'});
+			$('#plan_cross_default_panel').css({height: '733px'});
+			$('#row_table').css({height: '620px'});
+			$('#canvas_parent_div').css({height: '720px'});
 			$('#plan_cross_panel_body').css({height: '490px'});
 			$('#plan_train_panel_body').css({height: '490px'});
-			$('#canvas_parent_div').css({height: '630px'});
 		}else{
-			 $('#learn-more-content').show(); 
-			 $('#plan_cross_default_panel').css({height: '520px'});
+			 $('#learn-more-content').show();
+			 $('#plan_cross_default_panel').css({height: '575px'});
+			 $('#row_table').css({height: '530px'});
 			 $('#plan_cross_panel_body').css({height: '390px'});
 			 $('#plan_train_panel_body').css({height: '390px'});
-			 $('#canvas_parent_div').css({height:'530px'});
+			 $('#canvas_parent_div').css({height:'560px'});
 		}
 	    
 	};
 	
 	self.showDialog = function(id, title){
-		$('#' + id).dialog({ title:  title, autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true })
+		$('#' + id).dialog({ title:  title, autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true });
 	};
 	
 	self.showCrossTrainDlg = function(){
@@ -529,12 +522,9 @@ function CrossModel() {
 	
 	
 	self.createCrossMap = function(row){
-		console.log("----------------    画图------------------  row.planTrainId="+row.planTrainId()+"     row.trainNbr="+row.trainNbr());
-		
 		
 		self.runPlanCanvasPage.clearChart();	//清除画布
 		var planStartDate = $("#runplan_input_startDate").val();
-		
 		var planEndDate =  $("#runplan_input_endDate").val();
 		 
 		 $.ajax({
@@ -545,11 +535,11 @@ function CrossModel() {
 				contentType : "application/json",
 				data :JSON.stringify({
 					planTrainId : row.planTrainId(),
-					trainNbr : row.trainNbr()
+					trainNbr : row.trainNbr(),
+					startDate : (planStartDate != null ? planStartDate : self.currdate()),//开始日期
+					endDate : (planEndDate != null ? planEndDate : self.get40Date())//截至日期
 				}),
 				success : function(result) {
-					console.dir(result);
-					console.log("----------------    画图------------------");
 					if (result != null && result != "undefind" && result.code == "0") {
 						if (result.data !=null) {
 							canvasData = {
@@ -796,19 +786,19 @@ function TrainRunPlanRow(data){
 function RunPlanRow(data){
 	var self = this; 
 	self.color = ko.observable("gray");
-	self.runFlag = ko.computed(function(){ 
+	self.runFlagStr = ko.computed(function(){ 
 		switch (data.runFlag) {
-		case '0':
+		case '9':
 			self.color("gray");
-			return "停";
+			return "<span class='label label-danger'>停</span>";//"停";
 			break;
 		case '1':
 			self.color("green");
-			return "开";
+			return "<span class='label label-success'>开</span>";//"开";
 			break;
 		case '2':
 			self.color("blue");
-			return "备";
+			return "<span class='label label-info'>备</span>";//"备";
 			break;
 		default: 
 			return '';

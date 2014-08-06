@@ -3,6 +3,7 @@ package org.railway.com.trainplan.repository.mybatis;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * PlanCross操作类
@@ -38,7 +39,7 @@ public interface PlanCrossDao {
      * 根据unitcrossid查询一条记录，unitcross和plancross是一一对应的
      * @param unitCrossName 交路名
      */
-    List<PlanCrossInfo> findByUnitCrossName(String unitCrossName);
+    List<PlanCrossInfo> findByUnitCrossName(Map<String,Object> map);
 
     /**
      * 根据主键查询一条记录

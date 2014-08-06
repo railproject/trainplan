@@ -56,6 +56,7 @@ public class Constants {
 	public static final String LJZDDAO_GET_TRAIN_TYPE = "ljzdDao.getTrainType";
 	//获取18个路局信息getFullStationInfo
 	public static final String LJZDDAO_GET_FULL_STATION_INFO = "ljzdDao.getFullStationInfo";
+
 	//更新表train_plan字段check_state  trainPlanDao   updateCheckState
 	public static final String TRAINPLANDAO_UPDATE_CHECKSTATE = "trainPlanDao.updateCheckState";
 	//更新表train_plan字段 plan_flag updatePlanTrainDaylyPlanFlag
@@ -133,8 +134,7 @@ public class Constants {
     public static final String CROSSDAO_GET_UNIT_CROSS_INFO_COUNT = "crossDao.getUnitCrossInfoCount";
     //通过unit_cross_id查询train_nbr  getTrainNbrFromUnitCross
     public static final String CROSSDAO_GET_TRAINNBR_FROM_UNIT_CROSS = "crossDao.getTrainNbrFromUnitCross";
-    public static final String CROSSDAO_GET_CROSSNAME_WITH_BASE_CROSSID = "crossDao.getCrossNameWithBaseCrossId";
-    public static final String CROSSDAO_GET_TRAINNBR_WITH_BASE_CROSSID = "crossDao.getTrainNbrWithBaseCrossId";
+    
     //通过corssid在表unit_cross中查询unitcrossInfo信息
     public static final String CROSSDAO_GET_UNIT_CROSS_INFO_FOR_CROSSID = "crossDao.getUnitCrossInfoForCrossId";
     //通过cross查询交路基本信息和经由始发和终到信息 
@@ -267,7 +267,7 @@ public class Constants {
     public static final String RUNPLANLKDAO_GET_TRAINLK_RUNPLAN = "runPlanLkDao.getTrainLkRunPlans";
     //查询临客的图形数据 
     public static final String RUNPLANLKDAO_GET_TRAINLK_FOR_PLAN_TRAIN_ID = "runPlanLkDao.getTrainLkInfoForPlanTrainId";
-    
+    public static final String RUNPLANLKDAO_GET_TRAINLINE_SUBINFO_TIME = "runPlanLkDao.getTrainLineSubinfoTime";
     public static final String BASEDAO_GET_THROUGHLINE = "highlineCrossDao.getThroughLine";
     public static final String BASEDAO_GET_CRHTYPE = "highlineCrossDao.getCrhType";
     public static final String BASEDAO_GET_DEPOT = "highlineCrossDao.getDepot";
@@ -287,8 +287,32 @@ public class Constants {
     public static final String RUNPLANLKDAO_UPDATE_PASS_BUREAU_FOR_CMD_TRAINID = "runPlanLkDao.updatePassBureauForCmdTraindId";
     //根据cmd_train_id获取cmdtrain和cmdtrainStn信息 
     public static final String RUNPLANLKDAO_GET_CMDTRAIN_AND_STNINFO = "runPlanLkDao.getCmdTrandAndStnInfo";
-    
+    //生成临客客运计划，对表plan_train插入数据 
+    public static final String RUNPLANLKDAO_ADD_RUN_PLAN_LK = "runPlanLkDao.addRunPlanLk";
+    //生成临客客运计划，对表plan_train_stn插入数据 
+    public static final String RUNPLANLKDAO_ADD_RUN_PLAN_STN_LK = "runPlanLkDao.addRunPlanLkTrainStn";
+	//获取站的信息
+	public static final String RUNPLANLKDAO_GET_BASE_STATION_INFO = "runPlanLkDao.getBaseStationInfo";
+	
+	//根据多条件查询表cmd_train  
+	public static final String RUNPLANLKDAO_GET_CMDTRAIN_FOR_MULTIPLE_PARAME = "runPlanLkDao.getCmdTraindForMultipleParame";
+    //
+	public static final String RUNPLANLKDAO_GET_PLANTRAINID_FOR_CMDTRAINID = "runPlanLkDao.getPlanTrainIdForCmdTrainId";
+	//deleteTrainForCmdTrainId
+	public static final String RUNPLANLKDAO_DELETE_TRAIN_FOR_CMDTRAINID = "runPlanLkDao.deleteTrainForCmdTrainId";
+	//
+	public static final String RUNPLANLKDAO_DELETE_TRAINSTN_FOR_PLANTRAINID = "runPlanLkDao.deleteTrainStnForPlanTrainId";
+	
+	public static final String RUNPLANLKDAO_UPDATE_CREATESTATE="runPlanLkDao.updateCreateStateForCmdTrainId";
+	
+	public static final String RUNPLANLKDAO_INSERT_MTRAINLINE = "runPlanLkDao.insertMTrainLine";
+	public static final String RUNPLANLKDAO_INSERT_MTRAINLINE_SOURCE = "runPlanLkDao.insertMTrainLineStnSource";
+	public static final String RUNPLANLKDAO_INSERT_MTRAINLINE_ROUTE = "runPlanLkDao.insertMTrainLineStnRoute";
+	public static final String RUNPLANLKDAO_INSERT_MTRAINLINE_TARGET = "runPlanLkDao.insertMTrainLineStnTarget";
+	
 	public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINECROSSID = "highlineCrossDao.updateHighLineCrossId";
 	
 	public static final String RUN_PLAN_DAO_GET_TRAINRUNPLAN_FOR_LK = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlanForLk";
+
+   
 }

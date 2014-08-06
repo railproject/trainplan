@@ -21,7 +21,6 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.BaseCrossTrainInfoTime;
 import org.railway.com.trainplan.entity.SchemeInfo;
 import org.railway.com.trainplan.entity.TrainTimeInfo;
-import org.railway.com.trainplan.service.JBTCXService;
 import org.railway.com.trainplan.service.SchemeService;
 import org.railway.com.trainplan.service.TrainInfoService;
 import org.railway.com.trainplan.service.TrainTimeService;
@@ -49,9 +48,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JBTCXController {
 	private static Log logger = LogFactory.getLog(JBTCXController.class.getName());
 	
-	
-	@Autowired
-	private JBTCXService jbtcxService;
 	
 	@Autowired
 	private SchemeService schemeService;

@@ -722,7 +722,7 @@ ORDER BY A.BASE_CROSS_ID,B.TRAIN_SORT,C.STN_SORT
 	        <collection property="trainSubInfoList" resultMap="trainSubInfo"/>
 	    </resultMap>
 	
-	    <resultMap id="trainSubInfo" type="org.railway.com.trainplan.entity.TrainLineSubInfo">
+	 <resultMap id="trainSubInfo" type="org.railway.com.trainplan.entity.TrainLineSubInfo">
 	        <id column="planTrainId" property="planTrainId"/>
 	        <result column="trainNbr" property="trainNbr"/>
 	        <result column="trainSort" property="trainSort"/>
@@ -1301,15 +1301,6 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.BASETRAINID1, N.STNSORT
         where A.BASE_CROSS_ID = B.BASE_CROSS_ID AND A.UNIT_CROSS_ID=#{unitCrossId}
     </select>
 
-
-    <select id="getCrossNameWithBaseCrossId" parameterType="String" resultType="map">
-        select cross_name,cross_start_date,cross_end_date from base_cross where base_cross_id=#{baseCrossId}
-    </select>
-
-    <select id="getTrainNbrWithBaseCrossId" parameterType="String" resultType="map">
-        select  BASE_TRAIN_ID ,train_nbr,train_sort,day_gap  from base_cross_train where base_cross_id=#{baseCrossId} order by train_sort
-
-    </select>
 
 	<select id="getUnitCrossInfoForBaseCrossId" parameterType="String" resultType="org.railway.com.trainplan.entity.CrossInfo">
 	  select

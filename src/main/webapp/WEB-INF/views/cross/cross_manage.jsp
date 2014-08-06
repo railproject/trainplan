@@ -88,7 +88,7 @@ var all_role = "<%=userRolesString %>";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">对数表管理</a></li>
+		<li><a href="javascript:void(0);">管理基本图 -> 对数表管理</a></li>
 	</ol>  
 	<!--分栏框开始-->
 	<div class="pull-left" style="width: 30%;">
@@ -197,7 +197,7 @@ var all_role = "<%=userRolesString %>";
 												<tbody style="padding:0">
 													 <tr style="padding:0">
 													   <td colspan="6" style="padding:0">
-															 <div id="crossInfo_Data" style="height: 450px; overflow-y:auto;"> 
+															 <div id="crossInfo_Data" style="height: 600px; overflow-y:auto;"> 
 																<table class="table table-bordered table-striped table-hover" >
 																	<tbody data-bind="foreach: crossRows.rows">
 																		<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().crossId == crossId ? 'blue':''}" >
@@ -205,8 +205,8 @@ var all_role = "<%=userRolesString %>";
 																			<td style="width: 10.5%" data-bind=" text: $parent.crossRows.currentIndex()+$index()+1 , click: $parent.showTrains"></td>
 																			<td align="center" style="width: 8.5%" data-bind=" text: tokenVehBureauShowValue"></td>
 																			<td style="width: 48.5%" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, click: $parent.showTrains , attr:{title: crossName()}"></td>
-																			<td style="width: 10.5%" align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
-																			<td style="width: 10%" align="center" data-bind="style:{color:unitCreateFlag() == 1 ? 'green' : ''}, text: unitCreateFlag() == 1 ? '已' : '未' "></td>
+																			<td style="width: 10.5%;vertical-align: middle;" align="center" data-bind="html: checkFlagStr"></td>
+																			<td style="width: 10%;vertical-align: middle;" align="center" data-bind="html: unitCreateFlagStr"></td>
 																		</tr> 
 																	</tbody> 
 																</table> 
@@ -339,7 +339,7 @@ var all_role = "<%=userRolesString %>";
 											备用</label>
 										<div class="pull-left">
 											<input type="radio" class="pull-left" class="form-control"
-												value="0" data-bind="checked: spareFlag"
+												value="9" data-bind="checked: spareFlag"
 												style="width: 20px; margin-left: 5px; margin-top: 5px"
 												class="form-control" disabled>
 										</div>
@@ -732,8 +732,8 @@ var all_role = "<%=userRolesString %>";
 							          <th style="width:5%">序号</th>
 					                  <th style="width:20%">站名</th>
 					                  <th style="width:5%">路局</th>
-					                  <th style="width:15%">到达</th>
-					                  <th style="width:15%">出发</th>
+					                  <th style="width:15%">到达时间</th>
+					                  <th style="width:15%">出发时间</th>
 					                  <th style="width:15%">停时</th>
 					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
@@ -774,7 +774,7 @@ var all_role = "<%=userRolesString %>";
 					                  <th style="width:5%">路局</th>
 					                  <th style="width:15%">到达时间</th>
 					                  <th style="width:15%">出发时间</th>
-					                  <th style="width:15%">停留时间</th>
+					                  <th style="width:15%">停时</th>
 					                  <th style="width:10%">天数</th> 
 					                  <th style="width:15%" colspan="2">股道</th>  
 					                 </tr>

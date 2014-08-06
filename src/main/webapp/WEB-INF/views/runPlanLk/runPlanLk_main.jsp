@@ -63,14 +63,14 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">既有临客开行计划</a></li>
+		<li><a href="#">编制计划 -> 开行计划管理 -> 临客开行计划</a></li>
 	</ol>  
 	   <div class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
 		    <div class="pull-left" style="width: 30%;height:100%">
 			<!--分栏框开始--> 
-			      <div class="row" style="margin: 5px 10px 10px 10px;"> 
-				        	<div class="panel-body"> 
+			      <div class="row" style="margin: 0px 0px 5px 5px;"> 
+				        	<div> 
 										<div class="row"  style="width: 100%;">
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													开始日期:</label>
@@ -116,7 +116,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												
 											</div>  
 										 
-										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:620px;margin-top:10px"> 
+										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:735px;margin-top:10px"> 
 											<!-- <div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 20px;">
@@ -127,27 +127,27 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												</div> 
 										   </div>  -->
 										  <div style="margin-left:10px;margin-top:5px;margin-bottom:10px;">相关局: <span style="margin-top:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue()"></span></div> 
-									      <div class="row" style="margin-left:5px; margin-right:5px">
+									      <div id="row_table" class="row" style="margin-left:5px; margin-right:5px;overflow: auto;">
 										     <div class="table-responsive" > 
-												<table class="table table-bordered table-striped table-hover" id="yourTableID2" width="100%" border="0" cellspacing="0" cellpadding="0">
+												<table class="table table-bordered table-striped table-hover" id="yourTableID2" width="100%" border="0" cellspacing="0" cellpadding="0"  >
 													<thead>
 														<tr style="height: 25px"> 
-															<th align="center">序号</th>
-															<th align="center">担当局</th>
-															<th align="center">车次</th>
-															<th align="center">来源</th>
-															<th align="center">始发站</th>
-															<th align="center">终到站</th>
+															<th align="center" style="width: 25px">序号</th>
+															<th align="center" style="width: 40px">担当</th>
+															<th align="center" style="width: 100px">车次</th>
+															<th align="center" style="width: 100px">始发站</th>
+															<th align="center" style="width: 100px">终到站</th>
+															<th align="center" style="width: 300px">来源</th>
 														</tr>
 													</thead>
 													<tbody data-bind="foreach: planTrainLkRows">
 														<tr data-bind="click: $parent.showTrains, style:{color: $parent.currentCross().planTrainId == planTrainId ? 'blue':''}" >
 													        <td data-bind="text: $index() + 1"></td>
 													        <td data-bind="text: tokenVehBureauShowValue"></td>
-													        <td data-bind="text: trainNbr"></td>
-													        <td data-bind="text: cmdShortInfo"></td>
-													        <td data-bind="text: startStn"></td>
-													        <td data-bind="text: endStn"></td>
+													        <td data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
+													        <td data-bind="text: startStn, attr:{title: startStn}"></td>
+													        <td data-bind="text: endStn, attr:{title: endStn}"></td>
+													        <td data-bind="text: cmdShortInfo, attr:{title: cmdShortInfo}"></td>
 														</tr> 
 													</tbody> 
 												</table>
@@ -172,24 +172,24 @@ var currentUserBureau = "<%=currentUserBureau %>";
 					<!-- Tab panes -->
 					<div class="tab-content" >
 					  <div class="tab-pane active" id="home"> 
-					       <div class="panel panel-default"> 
-							 <div class="panel-body" >
+					       <div> 
+							 <div>
 							      	<div class="row" style="margin:5px 0 10px 0;">
 								      <form class="form-inline" role="form">
 							              <div class="row" style="margin:5px 0 10px 50px;">
 								         		<button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_refresh"><i class="fa fa-refresh"></i>刷新</button>
-											  <span><input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图</span>
-								         	  <input type="checkbox" id="canvas_checkbox_trainTime" style="margin-left:10px;margin-top:2px"  value=""/>时刻
-								              <button style="margin-left:10px" type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
+								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_magnification"><i class="fa fa-search-plus"></i>X+</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_x_shrink"><i class="fa fa-search-minus"></i>X-</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_magnification"><i class="fa fa-search-plus"></i>Y+</button>
 								              <button type="button" class="btn btn-success btn-xs" id="canvas_event_btn_y_shrink"><i class="fa fa-search-minus"></i>Y-</button>
 								                                                 比例：｛X:<label id="canvas_event_label_xscale">1</label>倍；Y:<label id="canvas_event_label_yscale">1</label>倍｝
+											  <span><input type="checkbox" id="canvas_checkbox_stationType_jt" name="canvas_checkbox_stationType" checked="checked" style="margin-left:10px">简图</span>
+								         	  <input type="checkbox" id="canvas_checkbox_trainTime" style="margin-left:10px;margin-top:2px"  value=""/>时刻
 								                       
 								         </div>
 							          </form>
 								    </div> 
-							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:630px;overflow-x:auto; overflow-y:auto;">
+							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:720px;overflow-x:auto; overflow-y:auto;">
 							        	<canvas id="canvas_event_getvalue"></canvas>
 							        </div> 
 							      </div> 
@@ -199,7 +199,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 				 </div> 
 			</div>
 		</div> 
-   	 	<div class="row" class="panel-collapse" style="margin: 10px 10px 10px 25px;" >  
+   	 	<div class="row" class="panel-collapse" style="margin: 0px 5px 5px 16px;" >  
    	 	  <div class="panel panel-default">   
 	 	    <div id="learn-more-content"  class="panel-collapse collapse">
               <div class="panel-body">
@@ -418,7 +418,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
     <!-- ko if: $index() == 0 --> 
  	<td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->  
- 	<td  align='center' data-bind="text: runFlag, style:{'color': color}"></td>
+ 	<td style="vertical-align: middle;" align='center' data-bind="html: runFlagStr"></td>
  </tr> 
 </script>
 </html>

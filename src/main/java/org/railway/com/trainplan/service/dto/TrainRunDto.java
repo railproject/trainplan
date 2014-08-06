@@ -4,7 +4,7 @@ public class TrainRunDto {
 	private String day;
 	private String runFlag; 
 	private String createFlag;
-	
+	public TrainRunDto(){}
 	public TrainRunDto(String day, String runFlag) {
 		super();
 		this.day = day;

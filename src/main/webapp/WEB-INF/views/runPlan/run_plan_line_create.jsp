@@ -82,7 +82,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">生成运行线</a></li>
+		<li><a href="#">编制计划 -> 生成运行线</a></li>
 	</ol>  
 	   <div class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
@@ -195,11 +195,11 @@ var currentUserBureau = "<%=currentUserBureau %>";
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
 <%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%> 
 
-<script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
+<%-- <script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_rightmenu.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script> --%>
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 </script>
@@ -220,7 +220,7 @@ var basePath = "<%=basePath %>";
     <!-- ko if: $index() == 0 --> 
     <td style="width:40px"><input type="checkbox" value="1" data-bind="event:{change: $root.selectCross.bind($data, $parent)},checked: $parent.selected"></td>
     <td data-bind="text: $parent.tokenVehBureauShowValue" style="width:40px"></td>
-    <td data-bind="text: $parent.crossName + $parent.createStatusShowValue(), attr:{colspan: $parent.colspan} "></td> 
+    <td data-bind="attr:{colspan: $parent.colspan} "><span style="vertical-align: middle;" data-bind="html: $parent.createStatusShowValue"></span></td> 
  	<!-- /ko -->   
  </tr> 
  <!-- /ko -->
@@ -235,10 +235,20 @@ var basePath = "<%=basePath %>";
     <td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->   
  	<td  align='center' data-bind="style:{'color': color}">
-          <!-- ko if: runFlagShowValue() != '' -->  
-             <input type='checkbox' value='1' data-bind="event:{change: $root.selectRunPlan}, checked: selected, attr:{class: createFlag() == 1 ? 'ckbox disabled' : ''}" ><span data-bind="html: runFlagShowValue"></span>
-          <!-- /ko -->  
+          <!-- ko if: createFlag() != 1 && runFlagShowValue() !='' -->  
+             <input type='checkbox' value='1' data-bind="event:{change: $root.selectRunPlan}, checked: selected, attr:{class: createFlag() == 1 ? 'ckbox disabled' : ''}" ><span style="vertical-align: middle;" data-bind="html: runFlagShowValue"></span>
+          <!-- /ko -->
+		  <!-- ko if: createFlag() == 1 -->  
+             <span style="vertical-align: middle;" data-bind="html: runFlagShowValue"></span>
+          <!-- /ko -->
     </td>
+	
+
+	
+
+
+
+
  </tr> 
  <!-- /ko -->
  <!-- ko if: trainSort > 1 --> 
@@ -247,9 +257,12 @@ var basePath = "<%=basePath %>";
     <td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->   
  	<td  align='center' data-bind="style:{'color': color}">
-          <!-- ko if: runFlagShowValue() != '' -->  
-             <input type='checkbox' value='1' data-bind="event:{change: $root.selectRunPlan}, checked: selected, attr:{class: createFlag() == 1 ? 'ckbox disabled' : ''}" ><span data-bind="html: runFlagShowValue"></span>
-          <!-- /ko -->  
+          <!-- ko if: createFlag() != 1 && runFlagShowValue() !='' -->
+             <input type='checkbox' value='1' data-bind="event:{change: $root.selectRunPlan}, checked: selected, attr:{class: createFlag() == 1 ? 'ckbox disabled' : ''}" ><span style="vertical-align: middle;" data-bind="html: runFlagShowValue"></span>
+          <!-- /ko -->
+		  <!-- ko if: createFlag() == 1 -->  
+             <span style="vertical-align: middle;" data-bind="html: runFlagShowValue"></span>
+          <!-- /ko -->
     </td>
  </tr> 
  <!-- /ko -->

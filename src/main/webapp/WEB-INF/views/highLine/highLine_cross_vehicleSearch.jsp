@@ -85,7 +85,7 @@ var currentUserBureau = "";
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
-		<li><a href="#">高铁车底计划报告</a></li>
+		<li><a href="#">发布计划 -> 交路计划 -> 高铁交路/车底计划查询</a></li>
 	</ol>  
 	    <div class="row" style="margin: 10px 10px 10px 10px;">   
 		    <!--分栏框开始-->
@@ -99,7 +99,7 @@ var currentUserBureau = "";
 							<div class="pull-left" style="margin-left: 5px;">
 								<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 							</div>
-						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a>
+						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
 						 </div>
 				        <!--col-md-3 col-sm-4 col-xs-4-->
 				      </form> 
@@ -128,12 +128,13 @@ var currentUserBureau = "";
 											<th style="width: 8%" align="center">是否热备交路</th>
 											<th style="width: 8%" align="center">命令号</th>
 											<th style="width: 6%" align="center">审核</th>
+											<th style="width: 2%" align="center">计划局</th> 
 										</tr>
 									</thead>
 									<tbody style="padding:0">
 										 <tr style="padding:0">
-										   <td colspan="11" style="padding:0">
-												 <div id="plan_train_panel_body" style="height: 500px; overflow-y:auto;"> 
+										   <td colspan="12" style="padding:0">
+												 <div id="plan_train_panel_body" style="height: 700px; overflow-y:auto;"> 
 													<table class="table table-bordered table-striped table-hover" >
 														<tbody data-bind="foreach: highLineCrossRows">
 															<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
@@ -150,6 +151,7 @@ var currentUserBureau = "";
 															     <td style="width: 8%" data-bind="text: spareFlag() == 2 ? '是' : '否'"></td>
 															     <td style="width: 8%" data-bind="text: ''"></td>
 															     <td style="width: 5%" align="center" data-bind="style:{color:checkFlag() == 1 ? 'green' : ''},  text: checkFlag() == 1 ? '已' : '未' "></td>
+															     <td style="width: 2%" data-bind="text: ''"></td>
 															</tr> 
 														</tbody> 
 													</table> 
