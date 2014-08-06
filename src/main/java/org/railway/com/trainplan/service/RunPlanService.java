@@ -537,11 +537,11 @@ public class RunPlanService {
                     }
                 });
                 // 已存在的最新的交路不是当前要生成计划的交路，则先补齐已存在交路
-                if(planCrossInfoList.size() > 0 && !planCrossInfoList.get(planCrossInfoList.size() - 1).getUnitCrossId().equals(this.unitCross.getPlanCrossId())) {
+            /*    if(planCrossInfoList.size() > 0 && !planCrossInfoList.get(planCrossInfoList.size() - 1).getUnitCrossId().equals(this.unitCross.getPlanCrossId())) {
                     PlanCrossInfo planCrossInfo = planCrossInfoList.get(planCrossInfoList.size() - 1);
                     UnitCross unitCross = unitCrossDao.findById(planCrossInfo.getUnitCrossId());
                     generateRunPlan(this.startDate, 0, unitCross);
-                }
+                }*/
                 // 生成这次请求的计划
                 generateRunPlan(this.startDate, this.days, this.unitCross);
             } catch (WrongDataException e) {
@@ -564,7 +564,8 @@ public class RunPlanService {
             LocalDate startDate = DateTimeFormat.forPattern("yyyyMMdd").parseLocalDate(startDateStr);
             //生成plan_cross逻辑
             String planCrossId = unitCross.getPlanCrossId();
-           
+            //给界面推送一个交路开始的信息
+            sendUnitCrossMsg(unitCross.getUnitCrossId(), 1);
             boolean isNewPlanCrossInfo = false;
             PlanCrossInfo planCrossInfo;
             // 按组别保存最后一个计划
@@ -715,12 +716,8 @@ public class RunPlanService {
             } else {
                 planCrossDao.update(planCrossInfo);
             }
-            if(this.days ==0){
-            	sendUnitCrossMsg(unitCross.getUnitCrossId(), 1);
-            }else {
-            	sendUnitCrossMsg(unitCross.getUnitCrossId(), 2);
-            }
-            
+          
+            sendUnitCrossMsg(unitCross.getUnitCrossId(), 2);
         }
 
         private List<RunPlan> findBaseTrainByUnitCrossId(String unitCrossId) {
