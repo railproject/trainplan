@@ -182,7 +182,16 @@ var RunPlanLkCmdPage = function () {
 		_self.cmdTrainStnTimeRow = function(data) {
 			var self = this;
 			self.childIndex = ko.observable(data.childIndex);
-			self.stnName = ko.observable(data.stnName);
+			self.stnName = ko.observable(data.stnName).extend({
+	            required: { params: true, message: "请输入价格" },
+	            email: {
+
+	                params: true,
+
+	                message: "Email格局不正确"
+
+	            }
+	        });
 			self.stnNameTemp = ko.observable(data.stnName);
 			self.arrTrainNbr = ko.observable(data.arrTrainNbr);
 			self.dptTrainNbr = ko.observable(data.dptTrainNbr);

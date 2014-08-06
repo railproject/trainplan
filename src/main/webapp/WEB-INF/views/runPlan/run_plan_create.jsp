@@ -207,18 +207,20 @@ var basePath = "<%=basePath %>";
 
 <script  type="text/html" id="runPlanTableDateHeader"> 
     <!-- ko if: $index() == 0 -->
- 	<td colspan="3" rowspan="2" style="width:80px" ><input type="checkbox" value="1" data-bind="event:{change: $root.selectCrosses}, checked: $root.crossAllcheckBox"> </td>
+	<td style="vertical-align: middle;width:30px;" rowspan="2">序<br>号</td>
+ 	<td colspan="3" rowspan="2" style="vertical-align: middle;width:80px" ><input type="checkbox" value="1" data-bind="event:{change: $root.selectCrosses}, checked: $root.crossAllcheckBox"> </td>
  	<!-- /ko --> 
  	<td align='center' data-bind="text: day" style="width:40px"></td> 
 </script> 
-<script  type="text/html" id="runPlanTableWeekHeader">  
+<script  type="text/html" id="runPlanTableWeekHeader">
  	<td align='center' data-bind="text: week"></td>
 </script> 
 
 <script  type="text/html" id="runPlanTableVlaues"> 
  <!-- ko if: trainSort == 0 --> 
  <tr data-bind="foreach: runPlans" >
-    <!-- ko if: $index() == 0 --> 
+    <!-- ko if: $index() == 0 -->
+	<td style="width:30px" data-bind="text:($parent.chirldrenIndex +1)"></td>
     <td style="width:40px"><input type="checkbox" value="1" data-bind="event:{change: $root.selectCross.bind($data, $parent)},checked: $parent.selected"></td>
     <td data-bind="text: $parent.tokenVehBureauShowValue" style="width:40px"></td>
     <td data-bind="attr:{colspan: $parent.colspan} "><span style="vertical-align: middle;" data-bind="html: $parent.createStatusShowValue"></span></td> 
@@ -228,7 +230,7 @@ var basePath = "<%=basePath %>";
  <!-- ko if: trainSort == 1 --> 
  <tr data-bind="foreach: runPlans">
     <!-- ko if: $index() == 0 --> 
-    <td data-bind="text: '', attr:{rowspan: $parent.rowspan} " colspan="2"></td> 
+    <td data-bind="text: '', attr:{rowspan: $parent.rowspan} " colspan="3"></td> 
     <td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->   
  	<td style="vertical-align: middle;" data-bind="html: runFlagShowValue"></td>
@@ -236,7 +238,7 @@ var basePath = "<%=basePath %>";
  <!-- /ko -->
  <!-- ko if: trainSort > 1 --> 
  <tr data-bind="foreach: runPlans">
-    <!-- ko if: $index() == 0 -->  
+    <!-- ko if: $index() == 0 -->
     <td data-bind="text: $parent.trainNbr"></td>
  	<!-- /ko -->   
  	<td style="vertical-align: middle;" data-bind="html: runFlagShowValue"></td>
