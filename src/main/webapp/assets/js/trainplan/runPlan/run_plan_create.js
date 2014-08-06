@@ -320,7 +320,7 @@ function CrossModel() {
 				success : function(result) {    
  
 					if (result != null && result != "undefind" && result.code == "0") { 
-						if(result.data.data != null){  
+						if(result.data.data != null){
 							$.each(result.data.data,function(n, crossInfo){
 								var trainPlanData = {
 										crossName: crossInfo.crossName, 
@@ -328,7 +328,8 @@ function CrossModel() {
 										tokenVehBureau: crossInfo.tokenVehBureau,
 										startDate: startDate,
 										endDate: endDate, 
-										trainSort: 0 
+										trainSort: 0,
+										chirldrenIndex : n//用于界面显示序号
 								};
 								//默认吧交路作为第一条记录
 								self.trainPlans.push(new TrainRunPlanRow(trainPlanData));
@@ -342,7 +343,7 @@ function CrossModel() {
 											unitCrossId: crossInfo.unitCrossId,
 											trainNbr: crossNames[i],
 											trainSort: i + 1,
-											tokenVehBureau: crossInfo.tokenVehBureau
+											tokenVehBureau: crossInfo.tokenVehBureau,
 									};
 									self.trainPlans.push(new TrainRunPlanRow(trainPlanData));
 								} ; 
@@ -528,6 +529,7 @@ function filterValue(value){
 function TrainRunPlanRow(data){
 	var self = this; 
 	
+	self.chirldrenIndex = data.chirldrenIndex;//用于界面序号显示
 	self.unitCrossId = data.unitCrossId;
 	self.trainNbr = data.trainNbr;
 	self.crossName = data.crossName;

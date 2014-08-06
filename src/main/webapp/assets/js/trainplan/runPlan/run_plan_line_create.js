@@ -434,9 +434,9 @@ function CrossModel() {
 					rownumend : endIndex,
 				}),
 				success : function(result) {    
-                   
+                   var _chirldrenIndex = 0;
 					if (result != null && result != "undefind" && result.code == "0") { 
-						if(self.searchModle().searchType() != '3'){//临客
+						if(self.searchModle().searchType() != '3'){//图定
 							 var trainPlans = {};
 							 $.each(result.data, function(z, n){ 
 								 var planCross = trainPlans[n.planCrossId];
@@ -449,8 +449,11 @@ function CrossModel() {
 												endDate: endDate, 
 												baseTrainId: n.baseTrainId,
 												createFlag: 0,
-												trainSort: 0 
+												trainSort: 0,
+												chirldrenIndex : _chirldrenIndex//用于界面显示序号
 										};
+									 _chirldrenIndex ++ ;
+									 console.log("~~~~~~ "+_chirldrenIndex);
 										//默认吧交路作为第一条记录
 									    var planCross = new TrainRunPlanRow(trainPlanData);
 										self.trainPlans.push(planCross);
@@ -487,7 +490,7 @@ function CrossModel() {
 								});
 								  
 							 });
-						}else{
+						}else{//临客
 							 var trainPlans = {};
 							 $.each(result.data, function(z, n){ 
 								 var planCross = trainPlans[n.baseTrainId];
@@ -502,8 +505,10 @@ function CrossModel() {
 												endDate: endDate, 
 												baseTrainId: n.baseTrainId,
 												createFlag: 0,
-												trainSort: 1 
+												trainSort: 1,
+												chirldrenIndex : _chirldrenIndex//用于界面显示序号
 										};
+									 	_chirldrenIndex ++;
 										//默认吧交路作为第一条记录
 									    var planCross = new TrainRunPlanRow(trainPlanData);
 										self.trainPlans.push(planCross); 
@@ -965,7 +970,9 @@ function filterValue(value){
 
 function TrainRunPlanRow(data){
 	var self = this; 
-	
+
+//	console.log("===="+data.chirldrenIndex);
+	self.chirldrenIndex = data.chirldrenIndex;//用于界面序号显示
 	self.planCrossId = data.planCrossId;
 	self.trainNbr = data.trainNbr;
 	self.baseTrainId = data.baseTrainId;
