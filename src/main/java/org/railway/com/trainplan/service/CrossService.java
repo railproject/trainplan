@@ -816,7 +816,7 @@ public class CrossService{
 				} 
 				allNum += list.size();
 			} 
-			//基于ExecutorCompletionService 县城管理模式，必须把结果集县城中的所有结果都显示的处理一次才认为当前线程完成了，当所有线程都被处理才表示当前线程组完成了
+			//基于ExecutorCompletionService 线程管理模式，必须把结果集线程中的所有结果都显示的处理一次才认为当前线程完成了，当所有线程都被处理才表示当前线程组完成了
 			for(int i = 0; i < allNum; i++){
 				try {
 					completion.take().get();
@@ -990,20 +990,22 @@ public class CrossService{
 				
 				String trainNbr = train.getTrainNbr();
 				String stn = null; 
-				
-				String regex = "^(.+?)[\\(（](.+?)[\\)）]";
+				System.err.println("trainNbr==" + trainNbr);
+				//String regex = "^(.+?)[\\[（](.+?)[\\）]";
+				String regex = "^(.+?)[\\[【\\[](.+?)[\\】\\]]";
 			    Pattern pattern = Pattern.compile(regex);
 			    Matcher matcher = pattern.matcher(trainNbr); 
 		       
 		        if(matcher.find()) { 
 		        	trainNbr = matcher.group(1);
-		        	stn =  matcher.group(2); 
+		        	stn =  matcher.group(2);
+		        	System.err.println("trainNbr11==" + trainNbr);
+		        	System.err.println("stn==" + stn);
 		        } 
 		        Map<String, String> map = new HashMap<String, String>();
 		        map.put("trainNbr", trainNbr);
 		        map.put("chartId", charId);
-		        
-		        System.out.println(map);
+		       
 		        if(stn != null){
 		        	String[] stns = stn.split("[:：]");
 		        	if(stns.length == 1){
@@ -1248,7 +1250,7 @@ public class CrossService{
 				
 				crossTrains.add(train);
 			} 
-			//获取列车时刻表和其实和终到站
+			//获取列车时刻表的起始和终到站
 		   String routeBureauShortNames = "";
 		   for(int i=0; i < crossTrains.size(); i++){
 			   CrossTrainInfo crossTrain = crossTrains.get(i);

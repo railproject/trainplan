@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -190,7 +192,7 @@ public class ExcelUtilTest {
 	    }
 
 	    public static void main(String[] args) {
-	        try {
+	       /* try {
 	            // 对读取Excel表格标题测试
 	            InputStream is = new FileInputStream("C:\\Users\\join\\Desktop\\test2.xls");
 	            ExcelUtilTest excelReader = new ExcelUtilTest();
@@ -211,6 +213,18 @@ public class ExcelUtilTest {
 	        } catch (FileNotFoundException e) {
 	            System.out.println("未找到指定路径的文件!");
 	            e.printStackTrace();
-	        }
+	        }*/
+	    	
+	    	String trainNbr = "T97[九龙]";
+	    	String regex = "^(.+?)[\\[【\\[](.+?)[\\】\\]]";
+		    Pattern pattern = Pattern.compile(regex);
+		    Matcher matcher = pattern.matcher(trainNbr); 
+	        String stn = "";
+	        if(matcher.find()) { 
+	        	trainNbr = matcher.group(1);
+	        	stn =  matcher.group(2);
+	        	System.err.println("trainNbr11==" + trainNbr);
+	        	System.err.println("stn==" + stn);
+	        } 
 	    }
 }
