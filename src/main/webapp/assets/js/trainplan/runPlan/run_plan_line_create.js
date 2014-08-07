@@ -131,19 +131,19 @@ function CrossModel() {
 	};  
 	
 	self.selectCrosses = function(){
-		$.each(self.trainPlans(), function(i, crossRow){ 
+		$.each(self.trainPlans(), function(i, crossRow){
 			if(self.crossAllcheckBox() == 1){//全不选
-				crossRow.selected(0); 
+				crossRow.selected(0);
 				$.each(crossRow.runPlans(), function(z, n){
-					if(n.createFlag() == 0||n.createFlag() == "0"){
+					if((n.createFlag() == 0||n.createFlag() == "0")&& n.runFlagShowValue() !=""){
 						n.selected(0);
 						self.selectedRunPlan.remove(n);
-					} 
-				}); 
+					}
+				});
 			}else{//全选
 				crossRow.selected(1);
 				$.each(crossRow.runPlans(), function(z, n){
-					if(n.createFlag() == "0" || n.createFlag() == 0){
+					if((n.createFlag() == "0" || n.createFlag() == 0)&& n.runFlagShowValue() !=""){
 						n.selected(1);
 						self.selectedRunPlan.push(n);
 					} 
@@ -296,7 +296,7 @@ function CrossModel() {
 		
 		self.searchModle().startDay(moment().format('YYYY-MM-DD')); 
 		self.searchModle().planStartDate(moment().format('YYYY-MM-DD'));
-		self.searchModle().planEndDate(moment().add("day", 30).format('YYYY-MM-DD'));
+		self.searchModle().planEndDate(moment().add("day", 40).format('YYYY-MM-DD'));
 		
 		commonJsScreenLock(2);
 		//获取当期系统日期 
@@ -364,7 +364,7 @@ function CrossModel() {
 		self.crossAllcheckBox(0);
 		var currentTime = new Date(startDate);
 		var endTime = new Date(endDate);
-		endTime.setDate(endTime.getDate() + 10); 
+		endTime.setDate(endTime.getDate()); 
 		var endTimeStr = self.dayHeader(endTime);  
 		self.planDays.remove(function(item) {
 			return true;
@@ -406,7 +406,7 @@ function CrossModel() {
 		
 		
 		var endTime = new Date(endDate);
-		endTime.setDate(endTime.getDate() + 10); 
+		endTime.setDate(endTime.getDate()); 
 		var endTimeStr = self.yyyyMMdd(endTime);  
 		
 		self.createRunPlanTotalCount(0);
@@ -507,7 +507,6 @@ function CrossModel() {
 												trainSort: 1,
 												chirldrenIndex : _chirldrenIndex//用于界面显示序号
 										};
-									 console.log("~~~~~~qqq "+_chirldrenIndex);
 									 	_chirldrenIndex ++;
 										//默认吧交路作为第一条记录
 									    var planCross = new TrainRunPlanRow(trainPlanData);
@@ -707,7 +706,7 @@ function CrossModel() {
 				contentType : "application/json",
 				data :JSON.stringify({   
 					startTime : (planStartDate != null ? planStartDate : moment().format('YYYY-MM-DD')).replace(/-/g, ''),
-					endTime : (planEndDate != null ? planEndDate : moment().add("day", 30).format('YYYY-MM-DD')).replace(/-/g, ''),
+					endTime : (planEndDate != null ? planEndDate : moment().add("day", 40).format('YYYY-MM-DD')).replace(/-/g, ''),
 					planCrossIds : crossIds
 				}),
 				success : function(result) {     
@@ -749,7 +748,7 @@ function CrossModel() {
 				data :JSON.stringify({  
 					planCrossId : row.planCrossId(),  
 					startTime : planStartDate != null ? planStartDate : moment().format('YYYY-MM-DD'),
-					endTime : planEndDate != null ? planEndDate : moment().add("day", 30).format('YYYY-MM-DD')
+					endTime : planEndDate != null ? planEndDate : moment().add("day", 40).format('YYYY-MM-DD')
 				}),
 				success : function(result) {    
 					if (result != null && result != "undefind" && result.code == "0") {
@@ -971,7 +970,6 @@ function filterValue(value){
 function TrainRunPlanRow(data){
 	var self = this; 
 
-//	console.log("===="+data.chirldrenIndex);
 	self.chirldrenIndex = data.chirldrenIndex;//用于界面序号显示
 	self.planCrossId = data.planCrossId;
 	self.trainNbr = data.trainNbr;
@@ -1044,7 +1042,7 @@ function TrainRunPlanRow(data){
 	if(data.runPlans == null){
 		var currentTime = new Date(data.startDate); 
 		var endTime = new Date(data.endDate);
-		endTime.setDate(endTime.getDate() + 10); 
+		endTime.setDate(endTime.getDate()); // + 10
 		var endTimeStr = self.yyyyMMdd(endTime);    
 	 
 		self.runPlans.remove(function(item) {

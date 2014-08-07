@@ -24,7 +24,7 @@ function hasActiveRole(bureau){
 //{unitCrossId:"1",status: "1"}
 function updateTrainRunPlanStatus(message){  
 	var runPlan = $.parseJSON(message);
-	console.log("---------  更新交路的当前状态 ----------"+message);
+//	console.log("---------  更新交路的当前状态 ----------"+message);
 	cross.updateTrainRunPlanStatus(runPlan);
 	
 }
@@ -105,11 +105,11 @@ function CrossModel() {
 	//全选按钮
 	self.selectCrosses = function(){
 		$.each(self.trainPlans(), function(i, crossRow){ 
-			if(self.crossAllcheckBox() == 1){
+			if(self.crossAllcheckBox() == 1){//全不选
 				if(crossRow.trainSort == 0){
 					crossRow.selected(0);
 				} 
-			}else{ 
+			}else{//全选
 				if(crossRow.trainSort == 0){
 					crossRow.selected(1);
 				}    
@@ -368,7 +368,7 @@ function CrossModel() {
 	//生成运行线
 	self.createTrainLines = function(){  
 		 var crossIds = [];
-		 var createCrosses = [];
+		 var createCrosses = [];//选中交路总数
 		 var startDate = $("#runplan_input_startDate").val(); 
 		 var endDate =  $("#runplan_input_endDate").val();  
 		 var days = GetDays(startDate, endDate); 
@@ -376,13 +376,8 @@ function CrossModel() {
 	     if(chart == null){
 	    	showErrorDialog("请选择一个方案"); 
 	    	return;
-	     }  
-		 
-		 //重置生成总数和已生成数
-		 self.createRunPlanTotalCount(createCrosses.length); 
-		 self.createRunPlanCompletedCount(0);
-
-		 var crosses = self.trainPlans();
+	     }
+	     var crosses = self.trainPlans();
 		 for(var i = 0; i < crosses.length; i++){   
 			if(crosses[i].selected() == 1){  
 				crossIds.push(crosses[i].unitCrossId);
@@ -390,6 +385,12 @@ function CrossModel() {
 				createCrosses.push(crosses[i]); 
 			 }
 		 }
+		 
+		 //重置生成总数和已生成数
+		 self.createRunPlanTotalCount(createCrosses.length); 
+		 self.createRunPlanCompletedCount(0);
+
+		 
 		 if(crossIds.length == 0){
 			 showWarningDialog("未选中数据");
 			 return;

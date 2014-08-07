@@ -423,7 +423,7 @@ function CrossModel() {
 	
 	self.get40Date = function(){
 		var d = new Date();
-		d.setDate(d.getDate() + 30);
+		d.setDate(d.getDate() + 35);
 		
 		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
 		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
@@ -737,6 +737,9 @@ function CrossModel() {
 	
 	self.showTrainTimes = function(row) {
 		self.currentTrain(row);
+		if(self.tabIndex() != 1) {//当前显示非车底交路图tab
+			return;
+		}
 		self.runPlanCanvasPage.reDrawByTrainNbr(row.trainNbr);
 //		self.stns.remove(function(item){
 //			return true;

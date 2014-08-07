@@ -326,7 +326,7 @@ function CrossModel() {
 	
 	self.get40Date = function(){
 		var d = new Date();
-		d.setDate(d.getDate() + 30);
+		d.setDate(d.getDate() + 35);
 		
 		var year = d.getFullYear();    //获取完整的年份(4位,1970-????)
 		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
