@@ -996,6 +996,7 @@ public class CrossController {
 					//取i的终点站日期和时刻进行组合
 					dto.setFromTime(dtoCurrent.getEndDate());
 					dto.setFromStartStnName(dtoCurrent.getStartStn());
+					
 					//设置i-1始发日期和时刻
 					dto.setToTime(dtoNext.getStartDate());
 					//取i-1的起点信息
