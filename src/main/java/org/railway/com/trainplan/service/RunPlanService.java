@@ -419,7 +419,6 @@ public class RunPlanService {
 				List<TrainRunDto> list = runPlan.getRunPlans();
 				RunPlanTrainDto currTrain = new RunPlanTrainDto(startDay, endDay);
 				currTrain.setTrainNbr(runPlan.getTrainNbr());
-				currTrain.setRunDay(startDay, endDay);
 				List<TrainRunDto> tempSubList = currTrain.getRunPlans();
 				for(TrainRunDto dto :list){
 					String day = dto.getDay();

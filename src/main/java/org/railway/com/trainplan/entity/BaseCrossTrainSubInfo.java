@@ -12,9 +12,20 @@ public class BaseCrossTrainSubInfo {
 	private String endStn;
 	private String startTime;
 	private String endTime;
+	private String baseCrossTrainId;
 	
 	
 	private List<BaseCrossTrainInfoTime> stationList = new ArrayList<BaseCrossTrainInfoTime>();
+
+	
+	
+	public String getBaseCrossTrainId() {
+		return baseCrossTrainId;
+	}
+
+	public void setBaseCrossTrainId(String baseCrossTrainId) {
+		this.baseCrossTrainId = baseCrossTrainId;
+	}
 
 	public String getBaseTrainId() {
 		return baseTrainId;

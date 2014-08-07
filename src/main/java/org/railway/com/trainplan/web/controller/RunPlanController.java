@@ -141,7 +141,7 @@ public class RunPlanController {
 	    	if(user.getBureau() != null){
 	    		reqMap.put("currentBureau", user.getBureau());
 	    	} 
-	    	System.err.println("getPlanCross~~~reqMap==" + reqMap);
+	    	
 			 List<PlanCrossDto> runPlans = runPlanService.getPlanCross(reqMap);
 			 result.setData(runPlans);
 		 }catch(Exception e){

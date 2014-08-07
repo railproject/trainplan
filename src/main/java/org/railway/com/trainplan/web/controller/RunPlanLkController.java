@@ -883,6 +883,19 @@ public class RunPlanLkController {
 				    	}else{
 				    		stn.setBaseDptTime(baseDptTime);
 				    	}
+			    	}else {
+			    		stn.setArrTime(arrTime);
+			    		stn.setDptTime(endTime);
+			    		if(baseArrTime == null || "".equals(baseArrTime)){
+				    		stn.setBaseArrTime(arrTime);
+				    	}else{
+				    		stn.setBaseArrTime(baseArrTime);
+				    	}
+			    		if(baseDptTime == null || "".equals(baseDptTime)){
+				    		stn.setBaseDptTime(endTime);
+				    	}else{
+				    		stn.setBaseDptTime(baseDptTime);
+				    	}
 			    	}
 	
 			    	String plantFormStr = StringUtil.objToStr(trainStn.get("platform"));

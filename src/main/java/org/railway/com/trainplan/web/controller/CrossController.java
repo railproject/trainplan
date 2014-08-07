@@ -117,7 +117,7 @@ public class CrossController {
 			  	}  
  
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 				result.setCode("401");
 				result.setMessage("上传失败");

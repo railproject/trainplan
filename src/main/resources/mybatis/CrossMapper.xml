@@ -575,10 +575,11 @@ where b.PLAN_TRAIN_ID = a.PLAN_TRAIN_ID order by sort
 	    </resultMap>
 	
 	    <resultMap id="crossSubTrain" type="org.railway.com.trainplan.entity.BaseCrossTrainSubInfo">
-	        <id column="base_train_id" property="baseTrainId"/>
+	        <id column="base_cross_train_id" property="baseCrossTrainId"/>
 	        <result column="train_sort" property="trainSort"/>
-	        <result column="train_nbr" property="trainNbr"/>
 	        <result column="start_time" property="startTime"/>
+	        <result column="train_nbr" property="trainNbr"/>
+            <result column="base_train_id" property="baseTrainId"/>
 	        <result column="end_time" property="endTime"/>
 	        <result column="START_STN" property="startStn"/>
 	        <result column="END_STN" property="endStn"/>
@@ -627,6 +628,7 @@ A.BASE_CROSS_ID,
 TO_CHAR(TO_DATE(A.CROSS_START_DATE,'yyyy-mm-dd'),'yyyy-mm-dd') CROSS_START_DATE,
 TO_CHAR(TO_DATE(A.CROSS_END_DATE,'yyyy-mm-dd'),'yyyy-mm-dd') CROSS_END_DATE,
 A.CROSS_NAME,
+B.BASE_CROSS_TRAIN_ID,
 B.BASE_TRAIN_ID,
 B.TRAIN_SORT,
 B.DAY_GAP,
