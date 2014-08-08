@@ -735,14 +735,17 @@ function CrossModel() {
 	
 	
 	
-	self.init = function(){  
+	self.init = function(){
+		//显示详情
+		$('#div_hightline_planDayDetail').css({height: '500px'});//交路信息表格div高度
+		var _height = $(window).height()-$('#div_searchForm').height()-500-150;
+		$('#div_crossDetailInfo').css({height:_height});//设置交路详情div高度
+		$('#canvas_parent_div').css({height:_height});//canvas图形div高度
+		
  
 		$("#run_plan_train_times").dialog("close"); 
-		
 		$("#hb_highLine_cross").dialog("close");  
- 
 		$("#runplan_input_startDate").datepicker();
-		
 		$("#runplan_input_endDate").datepicker();
 		
 		//注册双击多选列表中事件
@@ -1177,7 +1180,7 @@ function CrossModel() {
 										self.highLineCrossRows.push(new CrossRow(n));
 									});
 								}
-								showSuccessDialog("加载图定成功");  
+								showSuccessDialog("加载图定成功");
 							} else {
 								showErrorDialog("获取车底交路列表失败");
 							};
@@ -1288,13 +1291,15 @@ function CrossModel() {
 	self.showRunPlans = function(){
 		if(!self.isShowCrossDetailInfo()) {//勾选
 			//显示详情
-			$('#div_hightline_planDayDetail').css({height: '300px'});//交路信息表格div高度
-			var _height = $('#body_highline').height()-$('#div_searchForm').height()-$('#div_crossDetailInfo').height();
+			$('#div_hightline_planDayDetail').css({height: '500px'});//交路信息表格div高度
+			var _height = $(window).height()-$('#div_searchForm').height()-300-150;
 			$('#div_crossDetailInfo').css({height:_height});//设置交路详情div高度
+			$('#canvas_parent_div').css({height:_height});//canvas图形div高度
 			$('#div_crossDetailInfo').show();
 		} else {//未勾选
-			$('#div_hightline_planDayDetail').css({height: '100%'});
 			$('#div_crossDetailInfo').hide();
+			var _height = $(window).height()-$('#div_searchForm').height() -80;
+			$('#div_hightline_planDayDetail').css({height: _height});
 		}
 		
 	    

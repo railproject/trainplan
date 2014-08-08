@@ -80,7 +80,7 @@ var currentUserBureau = "";
 
  
 </head>
-<body id="body_highline" class="Iframe_body"  >
+<body class="Iframe_body" style="height:100%" >
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
@@ -139,10 +139,10 @@ var currentUserBureau = "";
 	  </div>  
 	    <div class="row" style="margin: 10px 10px 10px 10px;">   
 		    <!--分栏框开始-->
-		    <div id="div_hightline_planDayDetail" style="height:300px" class="panel panel-default">
-				     <div class="row" style="margin:15px 10px 10px 10px;overflow-y:auto"> 
+		    <div id="div_hightline_planDayDetail" style="height:280px;overflow:auto;" class="panel panel-default">
+				     <div class="row" style="margin:15px 10px 10px 10px;"> 
 					     <div class="table-responsive" >
-					          <table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:98%">
+					          <table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:100%">
 									<thead>
 										<tr> 
 											<!-- <th style="width: 33px" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th> -->
@@ -194,7 +194,7 @@ var currentUserBureau = "";
 	    </div>
 	   <div id="div_crossDetailInfo" class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
-		    <div class="pull-left" style="width: 39.7%;height:100%">
+		    <div class="pull-left" style="width: 39.7%;height:100%;">
 			<!--分栏框开始-->   
 			         <div class="panel panel-default"> 
 				       <div class="panel-body"> 
@@ -237,7 +237,7 @@ var currentUserBureau = "";
 			 
 		        <div class="pull-right" style="width: 59.7%;">
 		        <div class="panel panel-default"> 
-					 <div class="panel-body" >
+					 <div class="panel-body" style="overflow:auto;">
 					      	<div class="row" style="margin:5px 0 10px 0;">
 						      <form class="form-inline" role="form">
 					              <div class="row" style="margin:5px 0 10px 50px;">
@@ -254,10 +254,10 @@ var currentUserBureau = "";
 						         </div>
 					          </form>
 						    </div> 
-					        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:200px;overflow-x:auto; overflow-y:auto;">
+					        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:390px;overflow-x:auto; overflow-y:auto;">
 					        	<canvas id="canvas_event_getvalue"></canvas>
 					        </div> 
-					      </div> 
+					</div> 
 				</div> 
 			</div>
 		</div>  
