@@ -2,9 +2,9 @@
 
 cd trainplan/
 
-mvn install:install-file -Dfile=lib\springside-core-4.2.2.GA.jar -DgroupId=org.springside -DartifactId=springside-core-4.2.2.GA -Dversion=4.2.2.GA -Dpackaging=jar
-mvn install:install-file -Dfile=lib\springside-extension-4.2.2.GA.jar -DgroupId=org.springside -DartifactId=springside-extension-4.2.2.GA -Dversion=4.2.2.GA -Dpackaging=jar
-mvn install:install-file -Dfile=lib\springside-metrics-4.2.2.GA.jar -DgroupId=org.springside -DartifactId=springside-metrics-4.2.2.GA -Dversion=4.2.2.GA -Dpackaging=jar
+mvn install:install-file -Dfile=lib\springside-core-4.2.2.GA.jar -DgroupId=org.springside -DartifactId=springside-core -Dversion=4.2.2.GA -Dpackaging=jar
+mvn install:install-file -Dfile=lib\springside-extension-4.2.2.GA.jar -DgroupId=org.springside -DartifactId=springside-extension -Dversion=4.2.2.GA -Dpackaging=jar
+mvn install:install-file -Dfile=lib\springside-metrics-4.2.2.GA.jar -DgroupId=org.springside -DartifactId=springside-metrics -Dversion=4.2.2.GA -Dpackaging=jar
 mvn install:install-file -Dfile=lib\mor.railway.cmd.adapter.jar -DgroupId=mor.railway.cmd.adapter -DartifactId=mor.railway.cmd.adapter -Dversion=1.0 -Dpackaging=jar
 mvn install:install-file -Dfile=lib\itcmor.util.jar -DgroupId=itcmor.util -DartifactId=itcmor.util -Dversion=1.0 -Dpackaging=jar
 mvn install:install-file -Dfile=lib\jdom.jar -DgroupId=itcmor.util -DartifactId=jdom -Dversion=1.0 -Dpackaging=jar
