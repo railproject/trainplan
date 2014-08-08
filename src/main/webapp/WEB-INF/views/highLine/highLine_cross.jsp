@@ -128,7 +128,7 @@ var currentUserBureau = "";
 			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: deleteAllHighLineCrosses">清空</a>
 			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: showActiveHighLineCrossDlg">调整</a>
 			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: submitHighLineWithRole">提交</a>
-			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: createCmdInfo">生成命令</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: previewCmdInfo">生成命令</a>
 			</div>
 			<div class="pull-right" style="margin-right:10px;">
 				<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowCrossDetailInfo, event:{change: showRunPlans}"> 
@@ -356,7 +356,25 @@ var currentUserBureau = "";
 			        	</div>
 			        </div>
       		</div>
-	   </div> 
+	   </div>
+	   
+	   <!-- 命令查看界面  开始-->
+	   <div id="cmdInfo_dialog" class="easyui-dialog"
+	      title="命令预览" data-options="iconCls:'icon-save'"
+		   style="width: 600px; height: 500px; padding: 10px;">
+	   		<div id="cmdInfo_dialog_row1" class="row" style="width:100%;overflow: auto;">
+	   			<span data-bind="html : cmdInfoStr()"></span>
+	   		</div>
+	   		<div id="cmdInfo_dialog_row2" class="row" style="width:100%;height:30px;margin-top:10px;margin-bottom:5px">
+	   			<div align="center">
+	   				<a type="button" class="btn btn-success" data-bind="click: createCmdInfo">确定</a>
+	   				<a type="button" class="btn btn-success" data-bind="click: createCmdInfoCancel" style="margin-left:5px">取消</a>
+	   			</div>
+	   		</div>
+	   </div>
+	   <!-- 命令查看界面  end-->
+	   
+	   
 	    <div id="active_highLine_cross_dialog" class="easyui-dialog"
 	      title="交路调整"
 		  data-options="iconCls:'icon-save'"

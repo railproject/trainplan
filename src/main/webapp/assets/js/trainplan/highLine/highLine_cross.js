@@ -557,7 +557,7 @@ function CrossModel() {
 								}else if(i == result.data.length - 1){
 									self.currentTrainInfoMessage(message + "——" + n.stnName);
 									if($("#run_plan_train_times").is(":hidden")){
-										$("#run_plan_train_times").dialog({top:10, draggable: true, resizable:true, onResize:function() {
+										$("#run_plan_train_times").dialog({top:50, draggable: true, resizable:true, onResize:function() {
 											var simpleTimes_table = $("#simpleTimes_table");
 											var allTimes_table = $("#allTimes_table");
 											var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
@@ -742,7 +742,8 @@ function CrossModel() {
 		$('#div_crossDetailInfo').css({height:_height});//设置交路详情div高度
 		$('#canvas_parent_div').css({height:_height});//canvas图形div高度
 		
- 
+
+		$("#cmdInfo_dialog").dialog("close");//命令查看窗口div
 		$("#run_plan_train_times").dialog("close"); 
 		$("#hb_highLine_cross").dialog("close");  
 		$("#runplan_input_startDate").datepicker();
@@ -1110,8 +1111,10 @@ function CrossModel() {
 	
 	/**
 	 * 生成命令按钮点击事件
+	 * 
+	 * 实则为查看交路生成命令字符串
 	 */
-	self.createCmdInfo = function() {
+	self.previewCmdInfo = function() {
 		if($("#runplan_input_startDate").val()==null || $("#runplan_input_startDate").val()=="") {
 			showWarningDialog("请选择日期");
 			return;
@@ -1121,7 +1124,7 @@ function CrossModel() {
 	        if (r) {
 	        	commonJsScreenLock();
 	    		$.ajax({
-	    			url : basePath+"/highLine/createCmdInfo",
+	    			url : basePath+"/highLine/previewCmdInfo",
 	    			cache : false,
 	    			type : "POST",
 	    			dataType : "json",
@@ -1132,12 +1135,26 @@ function CrossModel() {
 	    			success : function(result) {
 	    				if (result != null && result != "undefind" && result.code == "0") {
 	    					showSuccessDialog("生成命令成功");
+		    				self.cmdInfoStr(result.data);
+	    					if($("#cmdInfo_dialog").is(":hidden")){
+								$("#cmdInfo_dialog").dialog({top:50, draggable: true, resizable:true, onResize:function() {
+									var cmdInfo_dialog_row1 = $("#cmdInfo_dialog_row1");
+									var cmdInfo_dialog_row2 = $("#cmdInfo_dialog_row2");
+									var WH = $('#cmdInfo_dialog').height();
+									var WW = $('#cmdInfo_dialog').width();
+
+					            	cmdInfo_dialog_row1.attr("width", (WW));
+									cmdInfo_dialog_row1.css({ "height": (WH-50) + "px"});
+					            	cmdInfo_dialog_row2.attr("width", (WW));
+								}});
+							}
 	    				} else {
 	    					showErrorDialog("生成命令失败");
 	    				}
 	    			},
 	    			error : function() {
 	    				showErrorDialog("生成命令失败");
+	    				self.cmdInfoStr("");
 	    			},
 	    			complete : function(){
 	    				commonJsScreenUnLock();
@@ -1148,6 +1165,52 @@ function CrossModel() {
 	        	
 	        }
 		});
+		
+	};
+	
+	
+	self.cmdInfoStr = ko.observable("");//命令字符串
+	
+	/**
+	 * 取消发布命令按钮点击事件
+	 */
+	self.createCmdInfoCancel = function() {
+		$("#cmdInfo_dialog").dialog("close");//命令查看窗口div
+	};
+	
+	/**
+	 * 生成命令
+	 */
+	self.createCmdInfo = function() {
+		if(self.cmdInfoStr()==null || self.cmdInfoStr()=="") {
+			showWarningDialog("无效命令，不能提交");
+			return;
+		}
+		
+    	commonJsScreenLock();
+		$.ajax({
+			url : basePath+"/highLine/createCmdInfo",
+			cache : false,
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+			data :JSON.stringify({
+				cmdInfo: self.cmdInfoStr()
+			}),
+			success : function(result) {
+				if (result != null && result != "undefind" && result.code == "0") {
+					showSuccessDialog("生成命令成功");
+				} else {
+					showErrorDialog("生成命令失败");
+				}
+			},
+			error : function() {
+				showErrorDialog("生成命令失败");
+			},
+			complete : function(){
+				commonJsScreenUnLock();
+			}
+	    });
 		
 	};
 	
@@ -1315,7 +1378,7 @@ function CrossModel() {
 	
 	self.showCrossTrainTimeDlg = function(){
 		
-		$("#run_plan_train_times").dialog({inline: false, top:10});
+		$("#run_plan_train_times").dialog({inline: false, top:50});
 	};
 	
 	self.trainNbrChange = function(n,  event){
