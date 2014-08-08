@@ -11,4 +11,3 @@ mvn install:install-file -Dfile=lib\jdom.jar -DgroupId=itcmor.util -DartifactId=
 mvn install:install-file -Dfile=lib\TableEditor.jar -DgroupId=TableEditor -DartifactId=TableEditor -Dversion=1.0 -Dpackaging=jar
 mvn install:install-file -Dfile=lib\ojdbc6.jar -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0 -Dpackaging=jar
 mvn install:install-file -Dfile=lib\dwr.jar -DgroupId=org.directwebremoting -DartifactId=dwr -Dversion=3.0.rc2 -Dpackaging=jar
-
