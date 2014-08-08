@@ -113,6 +113,13 @@ var currentUserBureau = "";
 							 data-bind="options: searchModle().tokenVehDepots, value: searchModle().searchTokenVehDepot, optionsText: 'name', optionsValue: 'name' , optionsCaption: ''">
 					 </select> 
 				  </div>
+				  <div class="pull-left" style="margin-left:10px"> 
+					  	<label for="exampleInputEmail3" class="control-label pull-left" >动车台:&nbsp;</label> 
+						<div class="pull-left">
+						<select class="form-control" data-bind="options:searchModle().accs, value: searchModle().acc, optionsText: 'name', optionsValue:'code', optionsCaption: ''">
+						</select>
+					</div>
+				  </div>
 				  <div class="pull-left"> 
 					 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
 														车次:&nbsp;</label> 

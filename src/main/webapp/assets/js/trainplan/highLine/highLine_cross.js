@@ -1150,6 +1150,7 @@ function CrossModel() {
 							}
 	    				} else {
 	    					showErrorDialog("生成命令失败");
+		    				self.cmdInfoStr("");
 	    				}
 	    			},
 	    			error : function() {
