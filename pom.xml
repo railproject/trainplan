@@ -356,7 +356,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>4.1.0.BUILD-SNAPSHOT</version>
+            <version>${org.springframework.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- cmd  adapter-->

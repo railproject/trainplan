@@ -50,7 +50,6 @@ String basePath = request.getContextPath();
 
    
 
-<script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 var all_role = "";
@@ -81,183 +80,159 @@ var currentUserBureau = "";
 
  
 </head>
-<body class="Iframe_body"  >
+<body id="body_highline" class="Iframe_body"  >
 	
 	<ol class="breadcrumb">
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">发布计划 -> 交路计划 -> 高铁交路计划审核</a></li>
 	</ol>  
-	 <div class="row" style="margin:15px 0 10px 0;"> 
+	 <div id="div_searchForm" class="row" style="margin:15px 0 10px 0;"> 
 	    <form class="form-horizontal" role="form">
-	   
-	      <div class="pull-left"> 
-	        <div class="pull-left"> 
-				 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
-													日期:&nbsp;</label> 
-				 <input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
+	   	<div class="row" style="margin:15px 0 10px 0;">
+		      <div class="pull-left"> 
+		        <div class="pull-left"> 
+					 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
+														日期:&nbsp;</label> 
+					 <input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
+				 </div>
+				 <div class="pull-left" style="margin-left:10px"> 
+					 <label for="exampleInputEmail5" style="vertical-align: bottom;">铁路线:&nbsp;</label> 
+					 <select class="form-control" style="width: 100px;display:inline-block;" id="input_cross_filter_showFlag"
+							 data-bind="options: searchModle().throughLines, value: searchModle().searchThroughLine, optionsText: 'name', optionsValue: 'code', optionsCaption: ''">
+					 </select>  
+				  </div>
+				   <div class="pull-left" style="margin-left:10px"> 
+					 <label for="exampleInputEmail5" style="vertical-align: bottom;">担当局:&nbsp;</label> 
+					 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+							 data-bind="options: searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue: 'code', optionsCaption: ''">
+					 </select> 
+				  </div>
+				   <div class="pull-left" style="margin-left:10px"> 
+					 <label for="exampleInputEmail5" style="vertical-align: bottom;">动车所:&nbsp;</label> 
+					 <select class="form-control" style="width: 130px;display:inline-block;" id="input_cross_filter_showFlag"
+							 data-bind="options: searchModle().tokenVehDepots, value: searchModle().searchTokenVehDepot, optionsText: 'name', optionsValue: 'name' , optionsCaption: ''">
+					 </select> 
+				  </div>
+				  <div class="pull-left"> 
+					 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
+														车次:&nbsp;</label> 
+					 <input type="text" class="form-control" style="width:75px;" placeholder="" />
+				 </div>
+				  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
 			 </div>
-			 <div class="pull-left" style="margin-left:10px"> 
-				 <label for="exampleInputEmail5" style="vertical-align: bottom;">铁路线:&nbsp;</label> 
-				 <select class="form-control" style="width: 100px;display:inline-block;" id="input_cross_filter_showFlag"
-						 data-bind="options: searchModle().throughLines, value: searchModle().searchThroughLine, optionsText: 'name', optionsValue: 'code', optionsCaption: ''">
-				 </select>  
-			  </div>
-			   <div class="pull-left" style="margin-left:10px"> 
-				 <label for="exampleInputEmail5" style="vertical-align: bottom;">担当局:&nbsp;</label> 
-				 <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
-						 data-bind="options: searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue: 'code', optionsCaption: ''">
-				 </select> 
-			  </div>
-			   <div class="pull-left" style="margin-left:10px"> 
-				 <label for="exampleInputEmail5" style="vertical-align: bottom;">动车所:&nbsp;</label> 
-				 <select class="form-control" style="width: 130px;display:inline-block;" id="input_cross_filter_showFlag"
-						 data-bind="options: searchModle().tokenVehDepots, value: searchModle().searchTokenVehDepot, optionsText: 'name', optionsValue: 'name' , optionsCaption: ''">
-				 </select> 
-			  </div>
-			  <div class="pull-left"> 
-				 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
-													车次:&nbsp;</label> 
-				 <input type="text" class="form-control" style="width:75px;" placeholder="" />
-			 </div>
-			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
 		 </div>
-	      <!--col-md-3 col-sm-4 col-xs-4-->
+		 
+		 <div class="row" style="margin:5px 0 0px 5;"> 
+	        <div class="pull-left">   
+			  <a type="button"  style="margin-left:15px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: deleteAllHighLineCrosses">清空</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >提交</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >生成命令</a>
+			</div>
+			<div class="pull-right" style="margin-right:10px;">
+				<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowCrossDetailInfo, event:{change: showRunPlans}"> 
+				<label for="exampleInputEmail5" class="control-label pull-left">显示交路详情</label>  
+		 	</div>
+	    </div>
 	    </form> 
 	  </div>  
 	    <div class="row" style="margin: 10px 10px 10px 10px;">   
 		    <!--分栏框开始-->
-		    <div id="plan_view_div_palnDayDetail" class="panel panel-default">
-		       <div class="row" style="margin:15px 0 10px 0;"> 
-				      <form class="form-horizontal" role="form">
-				     
-				        <div class="pull-left">   
-						  <!-- <a type="button"  style="margin-left:15px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">刷新</a> -->
-						  <a type="button"  style="margin-left:15px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载</a>
-						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: deleteHighLineCrosses">删除</a>
-						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整</a>
-						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >提交</a>
-						  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >生成命令</a>
-						  
-						  
-						 </div>
-				        <!--col-md-3 col-sm-4 col-xs-4-->
-				      </form> 
-				    </div>  
+		    <div id="div_hightline_planDayDetail" style="height:300px" class="panel panel-default">
 				     <div class="row" style="margin:15px 10px 10px 10px;overflow-y:auto"> 
 					     <div class="table-responsive" >
-					          <table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:98%"
-															id="cross_table_crossInfo">
+					          <table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px; width:98%">
 									<thead>
-										<tr style="height: 25px"> 
-											<th style="width: 33px" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
-											<th style="width: 40px" align="center">序号</th> 
+										<tr> 
+											<!-- <th style="width: 33px" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th> -->
+											<th style="width: 25px" align="center">序号</th> 
 											<th style="width: 100px" align="center">铁路线</th>
-											<th style="width: 100px" align="center">首车日期</th>  
-											<th style="width: 100px" align="center">  
-												    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路全车次</label> 
-													<!-- <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
-														 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
-													</select>   -->
-											</th> 
+											<th style="width: 70px" align="center">首车日期</th>  
+											<th style="width: 180px" align="center">  
+											    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路</label> 
+												<select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+													 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+												</select>
+											</th>
 											<th style="width: 100px" align="center">车型</th>
 											<th style="width: 100px" align="center">车底1</th>
 											<th style="width: 100px" align="center">车底2</th>
 											<th style="width: 100px" align="center">出库所/始发站</th>  
 											<th style="width: 100px" align="center">入库所/终到站</th>
-											<th style="width: 40px" align="center">热备<br>状态</th>
-											<th style="width: 85px" align="center">担当局</th>
+											<th style="width: 30px" align="center">热备</th>
+											<th style="width: 55px" align="center">担当局</th>
 											<th style="width: 100px" align="center">动车所</th>
 											<th style="width: 100px" align="center">管辖动车台</th>
 											<th style="width: 100px" align="center">来源</th> 
 										</tr>
 									</thead>
-									<tbody style="padding:0">
-										 <tr style="padding:0">
-										   <td colspan="15" style="padding:0">
-												 <div id="plan_train_panel_body" style="height: 250px; overflow-y:auto;"> 
-													<table class="table table-bordered table-striped table-hover" >
-														<tbody data-bind="foreach: highLineCrossRows">
-															<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
-																<td style="width: 35px" align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
-														        <td style="width: 40px" data-bind="text: ($index() + 1), click: $parent.showTrains"></td> 
-														         <td style="width: 103px" data-bind="text: throughline, click: $parent.showTrains"></td> 
-														         <td style="width: 103px" data-bind="text: crossStartDate, click: $parent.showTrains"></td> 
-															     <td style="width: 103px" data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
-															     <td style="width: 100px" data-bind="text: crhType, click: $parent.showTrains"></td>
-															     <td style="width: 100px" data-bind="text: vehicle1, click: $parent.showTrains"></td>
-															     <td style="width: 100px" data-bind="text: vehicle2, click: $parent.showTrains"></td>       
-															     <td style="width: 110px" data-bind="text: startStn, click: $parent.showTrains"></td>
-															     <td style="width: 110px" data-bind="text: endStn, click: $parent.showTrains"></td> 
-															     <td style="width: 45px" data-bind="text: (spareFlag() == 2 ? '是' : '否'), click: $parent.showTrains"></td>
-															     <td style="width: 85px" data-bind="text: tokenVehBureauShowValue, click: $parent.showTrains"></td>
-															     <td style="width: 100px" data-bind="text: tokenPsgDept, click: $parent.showTrains"></td>
-															     <td style="width: 100px" data-bind="text: postName, click: $parent.showTrains"></td>
-															     <td style="width: 100px" data-bind="text: note, click: $parent.showTrains"></td>
-															</tr> 
-														</tbody> 
-													</table> 
-											 	</div>
-											</td>
+									<tbody data-bind="foreach: highLineCrossRows">
+										<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
+											<!-- <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td> -->
+									        <td data-bind="text: ($index() + 1), click: $parent.showTrains"></td> 
+									        <td data-bind="text: throughline, click: $parent.showTrains"></td> 
+									        <td data-bind="text: crossStartDate, click: $parent.showTrains"></td> 
+										    <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
+										    <td data-bind="text: crhType, click: $parent.showTrains"></td>
+										    <td data-bind="text: vehicle1, click: $parent.showTrains"></td>
+										    <td data-bind="text: vehicle2, click: $parent.showTrains"></td>       
+										    <td data-bind="text: startStn, click: $parent.showTrains"></td>
+										    <td data-bind="text: endStn, click: $parent.showTrains"></td> 
+										    <td data-bind="text: (spareFlag() == 2 ? '是' : '否'), click: $parent.showTrains"></td>
+										    <td data-bind="text: tokenVehBureauShowValue, click: $parent.showTrains"></td>
+										    <td data-bind="text: tokenPsgDept, click: $parent.showTrains"></td>
+										    <td data-bind="text: postName, click: $parent.showTrains"></td>
+										    <td data-bind="text: note, click: $parent.showTrains"></td>
 										</tr>
-									</tbody>				 
+									</tbody>
 								</table>
+								<div data-bind="template: { name: 'tablefooter-short-template'}" style="margin-bottom: 5px"></div>
 					        </div> 
 				       </div>
 				  </div>  
 	    </div>
-	   <div class="row" style="margin: 10px 10px 10px 10px;">  
+	   <div id="div_crossDetailInfo" class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
 		    <div class="pull-left" style="width: 39.7%;height:100%">
 			<!--分栏框开始-->   
 			         <div class="panel panel-default"> 
 				       <div class="panel-body"> 
-							<table class="table table-bordered table-striped table-hover" style="margin-left:5px; margin-right:5px;"
-											id="cross_table_crossInfo">
-											<thead>
-												<tr style="height: 26px">
-													<th class="text-center" style="vertical-align: middle;width:20px" rowspan="2">序号</th>
-													<th class="text-center" style="vertical-align: middle;width:100px" rowspan="2">车次</th>
-													<th class="text-center" style="vertical-align: middle;width:20px" colspan="3">始发</th>
-													<th class="text-center" style="vertical-align: middle;width:20px" colspan="3">终到</th>
-												</tr>
-												<tr style="height: 26px"> 
-													<th style="width: 30px" align="center">局</th> 
-													<th style="width: 120px" align="center">站名</th> 
-													<th style="width: 70px" align="center">时间</th>
-													<th style="width: 30px" align="center">局</th> 
-													<th style="width: 120px" align="center">站名</th> 
-													<th style="width: 70px" align="center">时间</th>
-												</tr>
-											</thead>
-											<tbody style="padding:0">
-												 <tr style="padding:0">
-												   <td colspan="8" style="padding:0">
-														 <div id="plan_cross_panel_body" style="height: 220px; overflow-y:auto;"> 
-															<table class="table table-bordered table-striped table-hover"
-																id="cross_trainInfo" > 
-																<tbody data-bind="foreach: trains" >
-																	<tr  data-bind="click: $parent.showTrainTimes, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
-																		<td style="width: 36px" data-bind="text: ($index() + 1)"></td>
-																		<td style="width: 100px" data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
-																		
-																		<td style="width: 30px" data-bind="text: startStnBureau, attr:{title: startStnBureau}"></td>
-																		<td style="width: 120px" data-bind="text: startStn, attr:{title: startStn}"></td>
-																		<td style="width: 70px" data-bind="text: startTime, attr:{title: startTime}"></td>
-																		
-																		
-																		<td style="width: 30px" data-bind="text: endStnBureau, attr:{title: endStnBureau}"></td>
-																		<td style="width: 120px" data-bind="text: endStn, attr:{title: endStn}"></td>
-																		<td style="width: 70px" data-bind="text: endTime, attr:{title: endTime}"></td>
-																	</tr>
-																</tbody>
-															</table> 
-													 	</div>
-													</td>
-												</tr>
-											</tbody>				 
-										</table>   
-								 </div>  
-								 </div>
+							<table class="table table-bordered table-striped table-hover" style="margin-left:2px; margin-right:5px;">
+								<thead>
+									<tr style="height: 26px">
+										<th class="text-center" style="vertical-align: middle;width:20px" rowspan="2">序号</th>
+										<th class="text-center" style="vertical-align: middle;width:100px" rowspan="2">车次</th>
+										<th class="text-center" style="vertical-align: middle;width:20px" colspan="3">始发</th>
+										<th class="text-center" style="vertical-align: middle;width:20px" colspan="3">终到</th>
+									</tr>
+									<tr style="height: 26px"> 
+										<th style="width: 30px" align="center">局</th> 
+										<th style="width: 120px" align="center">站名</th> 
+										<th style="width: 70px" align="center">时间</th>
+										<th style="width: 30px" align="center">局</th> 
+										<th style="width: 120px" align="center">站名</th> 
+										<th style="width: 70px" align="center">时间</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: trains" >
+									<tr  data-bind="click: $parent.showTrainTimes, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
+										<td style="width: 36px" data-bind="text: ($index() + 1)"></td>
+										<td style="width: 100px" data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
+										
+										<td style="width: 30px" data-bind="text: startStnBureau, attr:{title: startStnBureau}"></td>
+										<td style="width: 120px" data-bind="text: startStn, attr:{title: startStn}"></td>
+										<td style="width: 70px" data-bind="text: startTime, attr:{title: startTime}"></td>
+										
+										
+										<td style="width: 30px" data-bind="text: endStnBureau, attr:{title: endStnBureau}"></td>
+										<td style="width: 120px" data-bind="text: endStn, attr:{title: endStn}"></td>
+										<td style="width: 70px" data-bind="text: endTime, attr:{title: endTime}"></td>
+									</tr>
+								</tbody>
+							</table>   
+					 </div>  
+					 </div>
 					</div>
 			 
 		        <div class="pull-right" style="width: 59.7%;">
@@ -396,13 +371,17 @@ var currentUserBureau = "";
 						   </span>
 						</div> 
 				          <div class="panel-body" style="height:93%">
-					         <div class="row" style="width:100%;height:100%"> 
+					         <div class="row" style="width:100%;height:95%"> 
 						        	<select multiple="multiple" id="current_highLineCrosses" style="width:100%;height:100%" data-bind="options: highLineCrossRows, optionsText: 'crossName', selectedOptions:selectedHighLineCrossRows" >
 						        	 
 						        	</select>
-							  </div>  
+							  </div>
+							  <div class="row" style="margin-top:5px"> 
+							    <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: deleteHighLineCrosses">删除</a>
+							  </div>
 						</div>
 						</section>
+						
 				</div>
 				<div class="pull-left" style="width: 25%;height:100%" >
 				<!--分栏框开始-->    
@@ -520,9 +499,9 @@ var currentUserBureau = "";
 							<select style="width: 60px" id="input_cross_chart_id"
 								class="form-control" data-bind="options:searchModle().tokenPsgBureaus, value: searchModle().tokenPsgBureau, optionsText: 'shortName',optionsValue:'code', optionsCaption: ''">
 							</select>
-						</div> 
+						</div>
 						<label for="exampleInputEmail3" style="margin-left:20px" class="control-label pull-left">
-										 动车组车型:&nbsp;</label> 
+										 动车组车型:&nbsp;</label>
 						<div class="pull-left">
 							<select style="width: 100px" id="input_cross_chart_id"
 								class="form-control" data-bind="options:searchModle().crhTypes, value: searchModle().crhType, optionsText: 'name',optionsValue:'code', optionsCaption: ''">
@@ -548,7 +527,6 @@ var currentUserBureau = "";
 						class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: $root.hbHighLineCrossYes">确定</a>
 					 <a type="button" id="btn_fileToUpload"
 						class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: $root.hbHighLineCrossCancel">取消</a>
-					<!-- <input type="submit"  value="上传" data-bind=/> -->
 				</div> 
 		</div>  
 </body>  
@@ -556,13 +534,10 @@ var currentUserBureau = "";
   <table style="width:100%;height:20px;">
     <tr style="width:100%;height:20px;">
      <td style="width:60%;height:20px;">
-  		<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
+  		<span class="pull-left"><span data-bind="html: $root.currentTotalCount()"></span></span>
   	 </td>
      <td style="width:40%;height:20px;padding:0px;pading-bottom:-14">   
-		<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
-	    <input type="text"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
-		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
-       </ul>  
+		  
      </td >
   </tr>
 </table> 
@@ -578,6 +553,7 @@ var currentUserBureau = "";
 <script type="text/javascript" src="<%=basePath %>/assets/js/knockout.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/highLine/highLine_cross.js"></script>  
 <script type="text/javascript" src="<%=basePath %>/assets/js/datepicker.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.gritter.min.js"></script> 

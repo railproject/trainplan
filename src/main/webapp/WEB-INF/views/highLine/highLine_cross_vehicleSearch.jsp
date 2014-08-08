@@ -114,10 +114,10 @@ var currentUserBureau = "";
 											<!-- <th style="width: 37px" align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th> -->
 											<th style="width: 37px" align="center">序号</th> 
 											<th align="center">  
-												    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路全车次</label> 
-													<select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
-														 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
-													</select>  
+											    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路全车次</label> 
+												<select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
+													 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
+												</select>
 											</th> 
 											<th style="width: 8%" align="center">车底1</th>
 											<th style="width: 8%" align="center">车底2</th>
