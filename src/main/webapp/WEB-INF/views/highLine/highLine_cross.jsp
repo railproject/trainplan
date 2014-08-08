@@ -124,11 +124,11 @@ var currentUserBureau = "";
 		 
 		 <div class="row" style="margin:5px 0 0px 5;"> 
 	        <div class="pull-left">   
-			  <a type="button"  style="margin-left:15px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: createHighLineCrosses">加载</a>
-			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: deleteAllHighLineCrosses">清空</a>
-			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: showActiveHighLineCrossDlg">调整</a>
-			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >提交</a>
-			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#" >生成命令</a>
+			  <a type="button"  style="margin-left:15px" class="btn btn-success" data-bind="click: createHighLineCrosses">加载</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: deleteAllHighLineCrosses">清空</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: showActiveHighLineCrossDlg">调整</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: submitHighLineWithRole">提交</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: createCmdInfo">生成命令</a>
 			</div>
 			<div class="pull-right" style="margin-right:10px;">
 				<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowCrossDetailInfo, event:{change: showRunPlans}"> 

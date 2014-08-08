@@ -484,7 +484,7 @@ function CrossModel() {
 		
 	};
 	 
-	self.updateHighLineCrosses = function(){ 
+	self.updateHighLineCrosses = function(){
 		var highLineCrossRows = self.highLineCrossRows();
 		updateCrossRows = [];
 		for(var i = 0; i < highLineCrossRows.length; i++){
@@ -1059,36 +1059,141 @@ function CrossModel() {
 			}
 	    });
 	};
+	
+	
+	/**
+	 * 提交按钮点击事件
+	 */
+	self.submitHighLineWithRole = function() {
+		if($("#runplan_input_startDate").val()==null || $("#runplan_input_startDate").val()=="") {
+			showWarningDialog("请选择日期");
+			return;
+		}
+		
+		showConfirmDiv("提示", "确定要提交" + $("#runplan_input_startDate").val() + "日交路数据吗?", function (r) { 
+	        if (r) {
+	        	commonJsScreenLock();
+	    		$.ajax({
+	    			url : basePath+"/highLine/deleteHighLineForIds",
+	    			cache : false,
+	    			type : "POST",
+	    			dataType : "json",
+	    			contentType : "application/json",
+	    			data :JSON.stringify({
+	    				startDate: moment($("#runplan_input_startDate").val()).format("YYYYMMDD")
+	    			}),
+	    			success : function(result) {
+	    				if (result != null && result != "undefind" && result.code == "0") {
+	    					showSuccessDialog("成功提交"+$("#runplan_input_startDate").val()+"日交路数据");
+	    				} else {
+	    					showErrorDialog("提交"+$("#runplan_input_startDate").val()+"日交路数据失败");
+	    				}
+	    			},
+	    			error : function() {
+	    				showErrorDialog("提交"+$("#runplan_input_startDate").val()+"日交路数据失败");
+	    			},
+	    			complete : function(){
+	    				commonJsScreenUnLock();
+	    			}
+	    	    });
+	        }else{
+	        	return false;
+	        	
+	        }
+		});
+		
+	};
+	
+	
+	/**
+	 * 生成命令按钮点击事件
+	 */
+	self.createCmdInfo = function() {
+		if($("#runplan_input_startDate").val()==null || $("#runplan_input_startDate").val()=="") {
+			showWarningDialog("请选择日期");
+			return;
+		}
+		
+		showConfirmDiv("提示", "确定要生成" + $("#runplan_input_startDate").val() + "日命令数据吗?", function (r) { 
+	        if (r) {
+	        	commonJsScreenLock();
+	    		$.ajax({
+	    			url : basePath+"/highLine/createCmdInfo",
+	    			cache : false,
+	    			type : "POST",
+	    			dataType : "json",
+	    			contentType : "application/json",
+	    			data :JSON.stringify({
+	    				startDate: moment($("#runplan_input_startDate").val()).format("YYYYMMDD")
+	    			}),
+	    			success : function(result) {
+	    				if (result != null && result != "undefind" && result.code == "0") {
+	    					showSuccessDialog("生成命令成功");
+	    				} else {
+	    					showErrorDialog("生成命令失败");
+	    				}
+	    			},
+	    			error : function() {
+	    				showErrorDialog("生成命令失败");
+	    			},
+	    			complete : function(){
+	    				commonJsScreenUnLock();
+	    			}
+	    	    });
+	        }else{
+	        	return false;
+	        	
+	        }
+		});
+		
+	};
+	
+	
+	/**
+	 * 加载按钮点击事件
+	 */
 	self.createHighLineCrosses = function(){
-		 var planStartDate = $("#runplan_input_startDate").val();
-		 $.ajax({
-				url : "highLine/createHighLineCross",
-				cache : false,
-				type : "POST",
-				dataType : "json",
-				contentType : "application/json",
-				data :JSON.stringify({  
-					startDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, '') 
-				}),
-				success : function(result) {   
-					if (result != null && result != "undefind" && result.code == "0") { 
-						if(result.data != null && result.data.length > 0){
-							$.each(result.data, function(i, n){
-								self.highLineCrossRows.push(new CrossRow(n));
-							});
+		var planStartDate = $("#runplan_input_startDate").val();
+		if(planStartDate==null || planStartDate=="") {
+			showWarningDialog("请选择日期");
+			return;
+		}
+		showConfirmDiv("提示", "确定要加载" + $("#runplan_input_startDate").val() + "日交路数据吗?", function (r) { 
+	        if (r) {
+	        	commonJsScreenLock();
+				 $.ajax({
+						url : "highLine/createHighLineCross",
+						cache : false,
+						type : "POST",
+						dataType : "json",
+						contentType : "application/json",
+						data :JSON.stringify({  
+							startDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, '') 
+						}),
+						success : function(result) {   
+							if (result != null && result != "undefind" && result.code == "0") { 
+								if(result.data != null && result.data.length > 0){
+									$.each(result.data, function(i, n){
+										self.highLineCrossRows.push(new CrossRow(n));
+									});
+								}
+								showSuccessDialog("加载图定成功");  
+							} else {
+								showErrorDialog("获取车底交路列表失败");
+							};
+						},
+						error : function() {
+							showErrorDialog("获取车底交路列表失败");
+						},
+						complete : function(){
+							commonJsScreenUnLock();
 						}
-						showSuccessDialog("加载图定成功");  
-					} else {
-						showErrorDialog("获取车底交路列表失败");
-					};
-				},
-				error : function() {
-					showErrorDialog("获取车底交路列表失败");
-				},
-				complete : function(){
-					commonJsScreenUnLock();
-				}
-			}); 
+					});
+	        }else{
+	        	return false;
+	        	
+	        }
+		});
 	};
 	
 	self.loadCrosses = function(){
