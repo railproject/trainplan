@@ -246,6 +246,18 @@ public class HighLineService{
 	
 	
 	/**
+	 * 根据时间和局码简称删除highline_cross表中数据
+	 * @param startDate   对应数据表highline_cross中CROSS_START_DATE，格式yyyyMMdd
+	 * @param crossBureau 局码简称，比如：京
+	 * @return
+	 */
+	public int cleanHighLineForDate(String startDate,String crossBureau){
+		Map<String,Object> reqMap = new HashMap<String,Object>();
+		reqMap.put("crossBureau",crossBureau );
+		reqMap.put("startDate", startDate);
+		return baseDao.deleteBySql(Constants.HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_DATE, reqMap);
+	}
+	/**
 	 * 更新highlinecross中check的基本信息
 	 * @param checkType 审核状态
 	 * @param checkPeople  审核人
@@ -276,6 +288,15 @@ public class HighLineService{
 		Map<String,Object> reqMap = new HashMap<String,Object>(); 
 		 
 		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_VEHICLES, reqMap);
+	}
+	
+	/**
+	 * 根据条件查询highline_cross表中数据
+	 * @param crossInfo
+	 * @return
+	 */
+	public List<HighlineCrossInfo> getHighlineCrossInfo(HighlineCrossInfo crossInfo){
+		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_INFO, crossInfo);
 	}
 	
 }

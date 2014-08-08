@@ -255,6 +255,11 @@ public class Constants {
 	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_TRAINTIME_FOR_HIGHLINE_CROSSID = "highlineCrossDao.getHighlineTrainTimeForHighlineCrossId";
     //deleteHighlienCrossTrainForHighlineCrossId  
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSSTRAIN_FOR_ID = "highlineCrossDao.deleteHighlienCrossTrainForHighlineCrossId";
+	//根据cross_start_date和cross_bureau删除数据
+	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_DATE = "highlineCrossDao.deleteHighLineForDate";
+	//根据条件获取highline_cross数据 
+	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_INFO = "highlineCrossDao.getHighlineCrossInfo";
+	
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID = "highlineCrossDao.deleteHighlienCrossForHighlineCrossId";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_VEHICLE="highlineCrossDao.updateHighLineVehicle";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_CHECKINFO="highlineCrossDao.updateHiglineCheckInfo";

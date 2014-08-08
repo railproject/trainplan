@@ -22,6 +22,7 @@ import org.railway.com.trainplan.service.dto.OptionDto;
 import org.railway.com.trainplan.web.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -179,6 +180,9 @@ public class HighlineController {
 		public Result  getHighlineCrossList(@RequestBody Map<String,Object> reqMap) {
 			 Result result = new Result();
 			 try{
+				 
+				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+				 reqMap.put("crossBureau", user.getBureauShortName());
 				 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(reqMap);
 				 result.setData(list);
 			 }catch(Exception e){
@@ -422,5 +426,83 @@ public class HighlineController {
 		}
 		
 		
+		/**
+		 * 通过startDate和crossBureau删除数据
+		 * @param reqMap
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/cleanHighLineForDate", method = RequestMethod.POST)
+		public Result cleanHighLineForDate(@RequestBody Map<String,Object> reqMap){
+			 Result result = new Result();
+			 try{
+				 logger.debug("cleanHighLineForDate~~~reqMap==" + reqMap);
+				 //交路开始时间，格式yyyyMMdd
+				 String startDate = StringUtil.objToStr(reqMap.get("startDate"));
+				 //获取登录用户信息
+				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+				 HighlineCrossInfo crossInfo = new HighlineCrossInfo();
+				 crossInfo.setCrossStartDate(startDate);
+				 crossInfo.setCrossBureau(user.getBureauShortName());
+				 //获取数据
+				 List<HighlineCrossInfo> list = highLineService.getHighlineCrossInfo(crossInfo);
+				 StringBuffer highlineCrossIdBf = new StringBuffer();
+				 if(list != null && list.size() > 0){
+					 int size = list.size();
+					 for(int i = 0;i<size;i++){
+						 HighlineCrossInfo tempCrossInfo = list.get(i);
+						 String highlineCrossId = tempCrossInfo.getHighLineCrossId();
+						 if( i != size-1){
+							 highlineCrossIdBf.append("'").append(highlineCrossId).append("',");
+						 }else{
+							 highlineCrossIdBf.append("'").append(highlineCrossId);
+						 }
+					 }
+					 
+					 //先删除子表HIGHLINE_CROSS_TRAIN的数据
+					 highLineService.deleteHighlienCrossTrainForHighlineCrossId(highlineCrossIdBf.toString());
+					 //再删除父表HIGHLINE_CROSS的数据
+					 highLineService.deleteHighlienCrossForHighlineCrossId(highlineCrossIdBf.toString());
+				 }
+				 
+			 }catch(Exception e){
+				 e.printStackTrace();
+				 logger.error("cleanHighLineForDate error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
+		
+		
+		/**
+		 * 通过highlineCrossIds删除数据
+		 * @param reqMap
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/deleteHighLineForIds", method = RequestMethod.POST)
+		public Result deleteHighLineForIds(@RequestBody Map<String,Object> reqMap){
+			
+			Result result = new Result();
+			 try{
+				 logger.debug("deleteHighLineForIds~~~reqMap==" + reqMap);
+				 String higlineCrossids = StringUtil.objToStr(reqMap.get("higlineCrossids"));
+				 //先删除子表HIGHLINE_CROSS_TRAIN的数据
+				 highLineService.deleteHighlienCrossTrainForHighlineCrossId(higlineCrossids);
+				//再删除父表HIGHLINE_CROSS的数据
+				 highLineService.deleteHighlienCrossForHighlineCrossId(higlineCrossids);
+				
+			 }catch(Exception e){
+				 e.printStackTrace();
+				 logger.error("deleteHighLineForIds error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
+
 		
 }

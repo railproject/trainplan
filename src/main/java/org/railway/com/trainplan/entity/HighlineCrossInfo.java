@@ -1,18 +1,7 @@
 package org.railway.com.trainplan.entity;
 
 public class HighlineCrossInfo {
-//     #{item.startStn,jdbcType=VARCHAR},
-//     #{item.crossEndStn,jdbcType=VARCHAR},
-//     #{item.spareFlag,jdbcType=VARCHAR},
-//     #{item.relevantBureau,jdbcType=VARCHAR},
-//     #{item.tokenVehBureau,jdbcType=VARCHAR},
-//     #{item.tokenVehDept,jdbcType=VARCHAR},
-//     #{item.tokenVehDepot,jdbcType=VARCHAR},
-//     #{item.tokenPsgBureau,jdbcType=VARCHAR},
-//     #{item.tokenPsgDept,jdbcType=VARCHAR},
-//     #{item.crhType,jdbcType=VARCHAR},
-//     #{item.note,jdbcType=VARCHAR}, 
-//     #{item.createPeople,jdbcType=VARCHAR},  
+
 	//高铁日历交路计划ID（本表ID）
 	private String highLineCrossId;
 	//交路计划ID（对应PLAN_CROSS表中的PLAN_CROSS_ID）
@@ -54,10 +43,7 @@ public class HighlineCrossInfo {
 	private String creatPeopleOrg;
 	//创建时间（格式：yyyy-mm-dd hh24:mi:ss）
 	private String creatTime;
-	//审核状态（0:未审核1:审核）
-	private int checkType ;
-	//审核人
-	private String checkPeople;
+
 	private String postId;
 	private String postName;
 	private String throughLine;
@@ -75,8 +61,94 @@ public class HighlineCrossInfo {
 	private String checkPeopleOrg;
 	//审核时间（格式：yyyy-mm-dd hh24:mi:ss）
 	private String checkTime;
-	 
 	
+	private String vehicleSubType;
+	private String vehicleSubPeople;
+	private String vehicleSubPeopleOrg;
+	private String vehicleSubTime;
+	private String vehicleCheckType;
+	private String vehicleCheckPeople;
+	private String vehicleCheckPeopleOrg;
+	private String vehicleCheckTime;
+	private String crossCheckType;
+	private String crossCheckPeople;
+	private String crossCheckPeopleOrg;
+	private String crossCheckTime;
+	
+	
+	
+	public String getVehicleSubType() {
+		return vehicleSubType;
+	}
+	public void setVehicleSubType(String vehicleSubType) {
+		this.vehicleSubType = vehicleSubType;
+	}
+	public String getVehicleSubPeople() {
+		return vehicleSubPeople;
+	}
+	public void setVehicleSubPeople(String vehicleSubPeople) {
+		this.vehicleSubPeople = vehicleSubPeople;
+	}
+	public String getVehicleSubPeopleOrg() {
+		return vehicleSubPeopleOrg;
+	}
+	public void setVehicleSubPeopleOrg(String vehicleSubPeopleOrg) {
+		this.vehicleSubPeopleOrg = vehicleSubPeopleOrg;
+	}
+	public String getVehicleSubTime() {
+		return vehicleSubTime;
+	}
+	public void setVehicleSubTime(String vehicleSubTime) {
+		this.vehicleSubTime = vehicleSubTime;
+	}
+	public String getVehicleCheckType() {
+		return vehicleCheckType;
+	}
+	public void setVehicleCheckType(String vehicleCheckType) {
+		this.vehicleCheckType = vehicleCheckType;
+	}
+	public String getVehicleCheckPeople() {
+		return vehicleCheckPeople;
+	}
+	public void setVehicleCheckPeople(String vehicleCheckPeople) {
+		this.vehicleCheckPeople = vehicleCheckPeople;
+	}
+	public String getVehicleCheckPeopleOrg() {
+		return vehicleCheckPeopleOrg;
+	}
+	public void setVehicleCheckPeopleOrg(String vehicleCheckPeopleOrg) {
+		this.vehicleCheckPeopleOrg = vehicleCheckPeopleOrg;
+	}
+	public String getVehicleCheckTime() {
+		return vehicleCheckTime;
+	}
+	public void setVehicleCheckTime(String vehicleCheckTime) {
+		this.vehicleCheckTime = vehicleCheckTime;
+	}
+	public String getCrossCheckType() {
+		return crossCheckType;
+	}
+	public void setCrossCheckType(String crossCheckType) {
+		this.crossCheckType = crossCheckType;
+	}
+	public String getCrossCheckPeople() {
+		return crossCheckPeople;
+	}
+	public void setCrossCheckPeople(String crossCheckPeople) {
+		this.crossCheckPeople = crossCheckPeople;
+	}
+	public String getCrossCheckPeopleOrg() {
+		return crossCheckPeopleOrg;
+	}
+	public void setCrossCheckPeopleOrg(String crossCheckPeopleOrg) {
+		this.crossCheckPeopleOrg = crossCheckPeopleOrg;
+	}
+	public String getCrossCheckTime() {
+		return crossCheckTime;
+	}
+	public void setCrossCheckTime(String crossCheckTime) {
+		this.crossCheckTime = crossCheckTime;
+	}
 	public String getCrossBureau() {
 		return crossBureau;
 	}
@@ -253,18 +325,7 @@ public class HighlineCrossInfo {
 	public void setCreatTime(String creatTime) {
 		this.creatTime = creatTime;
 	}
-	public int getCheckType() {
-		return checkType;
-	}
-	public void setCheckType(int checkType) {
-		this.checkType = checkType;
-	}
-	public String getCheckPeople() {
-		return checkPeople;
-	}
-	public void setCheckPeople(String checkPeople) {
-		this.checkPeople = checkPeople;
-	}
+	
 	public String getCheckPeopleOrg() {
 		return checkPeopleOrg;
 	}
