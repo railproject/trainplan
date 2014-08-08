@@ -150,7 +150,7 @@ var currentUserBureau = "";
 											<th align="center"><input type="checkbox" style="margin-top:0" value="1" data-bind="checked: crossAllcheckBox, event:{change: selectCrosses}"></th>
 											<th style="width: 37px" align="center">序号</th> 
 											<th style="width: 8%" align="center">铁路线</th>
-											<th style="width: 8%" align="center">首车始发日期</th>  
+											<th style="width: 70px" align="center">首车日期</th>  
 											<th align="center">  
 												    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路全车次</label> 
 													<!-- <select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
@@ -179,11 +179,11 @@ var currentUserBureau = "";
 																<td ><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td>
 														        <td style="width: 37px" data-bind="text: $index() + 1"></td> 
 														         <td style="width: 8%" data-bind="text: throughline"></td> 
-														         <td style="width: 8%" data-bind="text: crossStartDate"></td> 
+														         <td style="width: 70px" data-bind="text: crossStartDate"></td> 
 															     <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
 															     <td style="width: 8%" data-bind="text: crhType"></td>
-															     <td style="width: 8%"><input type="text" data-bind="value: vehicle1, event:{change: $parent.vehicle1Change, focus: $parent.vehicleOnfocus}"></td>
-															     <td style="width: 8%"><input type="text" data-bind="value: vehicle2, event:{change: $parent.vehicle2Change, focus: $parent.vehicleOnfocus}"></td>  
+															     <td style="width: 8%"><input type="text" class="form-control" data-bind="value: vehicle1, event:{change: vehicle1Change, focus: vehicle1Onfocus}"></td>
+															     <td style="width: 8%"><input type="text" class="form-control" data-bind="value: vehicle2, event:{change: vehicle2Change, focus: vehicle2Onfocus}"></td>  
 															     <td style="width: 8%" data-bind="text: startStn"></td>
 															     <td style="width: 8%" data-bind="text: endStn"></td> 
 															     <td style="width: 5%" data-bind="text: spareFlag() == 2 ? '是' : '否'"></td>
@@ -240,11 +240,6 @@ var currentUserBureau = "";
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
 <%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%> 
 
-<script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/canvas.util.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_rightmenu.js"></script>
-<script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/jquery.autocomplete.js"></script>
 <script type="text/javascript">
 var basePath = "<%=basePath %>";

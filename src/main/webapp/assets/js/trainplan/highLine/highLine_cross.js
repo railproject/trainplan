@@ -975,7 +975,47 @@ function CrossModel() {
 	    });
 		
 		
-	};  
+	};
+	
+	
+	/**
+	 * 清空某天全部交路记录
+	 */
+	self.deleteAllHighLineCrosses = function(){
+		if($("#runplan_input_startDate").val()==null || $("#runplan_input_startDate").val()=="") {
+			showWarningDialog("请选择日期");
+			return;
+		}
+		
+		commonJsScreenLock();
+		$.ajax({
+			url : basePath+"/highLine/cleanHighLineForDate",
+			cache : false,
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+			data :JSON.stringify({
+				startDate: moment($("#runplan_input_startDate").val()).format("YYYYMMDD")
+			}),
+			success : function(result) {
+				if (result != null && result != "undefind" && result.code == "0") {
+					//清除下拉框数据
+					self.highLineCrossRows.remove(function(item){
+						return true;
+					});
+					showSuccessDialog("成功清除"+$("#runplan_input_startDate").val()+"日交路数据");
+				} else {
+					showErrorDialog("清除"+$("#runplan_input_startDate").val()+"日交路数据失败");
+				}
+			},
+			error : function() {
+				showErrorDialog("清除"+$("#runplan_input_startDate").val()+"日交路数据失败");
+			},
+			complete : function(){
+				commonJsScreenUnLock();
+			}
+	    });
+	};
 	//删除选中的记录
 	self.deleteHighLineCrosses = function(){
 		
@@ -1015,20 +1055,34 @@ function CrossModel() {
 	self.loadCrosses = function(){
 		self.loadCrosseForPage();
 	};
+	
+	/**
+	 * 列表左下角显示记录总数
+	 * 
+	 * 临时使用
+	 */
+	self.currentTotalCount = ko.computed(function(){
+		if(self.highLineCrossRows().length >0) {
+			return "共"+self.highLineCrossRows().length+"条数据";
+		} else {
+			return "当前没有可显示的数据";
+		}
+	});
+	
 	self.loadCrosseForPage = function(startIndex, endIndex) {  
 	 
-//		commonJsScreenLock();
+		commonJsScreenLock();
 		 
 		var bureauCode = self.searchModle().bureau(); 
 		var trainNbr = self.searchModle().filterTrainNbr(); 
 		var searchThroughLine = self.searchModle().searchThroughLine();
 		var searchTokenVehDepot = self.searchModle().searchTokenVehDepot();
  
-		 var planStartDate = $("#runplan_input_startDate").val();
+		var planStartDate = $("#runplan_input_startDate").val();
 		
-		 self.highLineCrossRows.remove(function(item) {
+		self.highLineCrossRows.remove(function(item) {
 			return true;
-		});  
+		});
 		$.ajax({
 				url : "highLine/getHighlineCrossList",
 				cache : false,
@@ -1042,15 +1096,15 @@ function CrossModel() {
 					throughLine:searchThroughLine,
 					tokenVehDepot: searchTokenVehDepot
 				}),
-				success : function(result) {    
- 
+				success : function(result) {
 					if (result != null && result != "undefind" && result.code == "0") {
-						//var rows = [];
-						if(result.data != null){  
-							$.each(result.data,function(n, crossInfo){ 
-								self.highLineCrossRows.push(new CrossRow(crossInfo));  
-							}); 
-							//self.crossRows.loadPageRows(result.data.totalRecord, rows);
+//						var rows = [];
+						if(result.data != null){
+							$.each(result.data,function(n, crossInfo){
+//								rows.push(new CrossRow(crossInfo));
+								self.highLineCrossRows.push(new CrossRow(crossInfo));
+							});
+//							self.crossRows.loadPageRows(result.data.totalRecord, rows);
 						}   
 						 
 					} else {
@@ -1068,7 +1122,7 @@ function CrossModel() {
 	//必须定义在load函数之后
 	self.crossRows = new PageModle(50, self.loadCrosseForPage);
 	
-	self.saveCrossInfo = function() { 
+	self.saveCrossInfo = function() {
 		alert(self.currentCross().tokenVehBureau());
 	};
 	 
@@ -1079,20 +1133,20 @@ function CrossModel() {
 	
 	self.showActiveHighLineCrossDlg = function(){
 		$("#active_highLine_cross_dialog").dialog("open"); 
-	};  
+	};
 	
 	self.showRunPlans = function(){  
 		if($('#learn-more-content').is(":visible")){
 			$('#learn-more-content').hide();
 			$('#plan_cross_default_panel').css({height: '620px'});
 			$('#plan_cross_panel_body').css({height: '490px'});
-			$('#plan_train_panel_body').css({height: '490px'});
+			$('#cross_table_crossInfo').css({height: '490px'});
 			$('#canvas_parent_div').css({height: '630px'});
 		}else{
 			 $('#learn-more-content').show(); 
 			 $('#plan_cross_default_panel').css({height: '520px'});
 			 $('#plan_cross_panel_body').css({height: '390px'});
-			 $('#plan_train_panel_body').css({height: '390px'});
+			 $('#cross_table_crossInfo').css({height: '390px'});
 			 $('#canvas_parent_div').css({height:'530px'});
 		}
 	    
@@ -1202,6 +1256,10 @@ function CrossModel() {
 		});
 	};
 	
+	
+	/**
+	 * 
+	 */
 	self.createTrainLines = function(){  
 		var crossIds = "";
 		var delCrosses = [];
@@ -1484,7 +1542,12 @@ function CrossModel() {
 			  }
 				 
 		  }); 
-	}; 
+	};
+	
+	
+	
+	
+	
 }
 
 function searchModle(){
