@@ -1016,9 +1016,48 @@ function CrossModel() {
 			}
 	    });
 	};
-	//删除选中的记录
+	//删除选中的交路记录
 	self.deleteHighLineCrosses = function(){
+		if (self.selectedHighLineCrossRows().length == 0) {
+			showWarningDialog("请选需要删除的交路信息");
+			return;
+		}
 		
+		var _deleteIds = "";
+		for(var i=0;i<self.selectedHighLineCrossRows().length;i++) {
+			_deleteIds = _deleteIds+"'"+self.selectedHighLineCrossRows()[i].highLineCrossId()+"',";
+		}
+		_deleteIds = _deleteIds.substring(0, _deleteIds.lastIndexOf(","));
+		
+		commonJsScreenLock();
+		$.ajax({
+			url : basePath+"/highLine/deleteHighLineForIds",
+			cache : false,
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+			data :JSON.stringify({
+				higlineCrossids: _deleteIds
+			}),
+			success : function(result) {
+				if (result != null && result != "undefind" && result.code == "0") {
+					//清除列表交路数据
+					for(var i=0;i<self.selectedHighLineCrossRows().length;i++) {
+						self.highLineCrossRows.remove(self.selectedHighLineCrossRows()[i]);
+					}
+					
+					showSuccessDialog("成功删除"+self.selectedHighLineCrossRows().length+"条交路数据");
+				} else {
+					showErrorDialog("删除交路数据失败");
+				}
+			},
+			error : function() {
+				showErrorDialog("删除交路数据失败");
+			},
+			complete : function(){
+				commonJsScreenUnLock();
+			}
+	    });
 	};
 	self.createHighLineCrosses = function(){
 		 var planStartDate = $("#runplan_input_startDate").val();
@@ -1135,25 +1174,29 @@ function CrossModel() {
 		$("#active_highLine_cross_dialog").dialog("open"); 
 	};
 	
-	self.showRunPlans = function(){  
-		if($('#learn-more-content').is(":visible")){
-			$('#learn-more-content').hide();
-			$('#plan_cross_default_panel').css({height: '620px'});
-			$('#plan_cross_panel_body').css({height: '490px'});
-			$('#cross_table_crossInfo').css({height: '490px'});
-			$('#canvas_parent_div').css({height: '630px'});
-		}else{
-			 $('#learn-more-content').show(); 
-			 $('#plan_cross_default_panel').css({height: '520px'});
-			 $('#plan_cross_panel_body').css({height: '390px'});
-			 $('#cross_table_crossInfo').css({height: '390px'});
-			 $('#canvas_parent_div').css({height:'530px'});
+	
+	
+	self.isShowCrossDetailInfo = ko.observable(true);// 显示交路详情复选框   默认勾选
+	/**
+	 * 显示交路详情复选框点击事件
+	 */
+	self.showRunPlans = function(){
+		if(!self.isShowCrossDetailInfo()) {//勾选
+			//显示详情
+			$('#div_hightline_planDayDetail').css({height: '300px'});//交路信息表格div高度
+			var _height = $('#body_highline').height()-$('#div_searchForm').height()-$('#div_crossDetailInfo').height();
+			$('#div_crossDetailInfo').css({height:_height});//设置交路详情div高度
+			$('#div_crossDetailInfo').show();
+		} else {//未勾选
+			$('#div_hightline_planDayDetail').css({height: '100%'});
+			$('#div_crossDetailInfo').hide();
 		}
+		
 	    
 	};
 	
 	self.showDialog = function(id, title){
-		$('#' + id).dialog({ title:  title, autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true })
+		$('#' + id).dialog({ title:  title, autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true });
 	};
 	
 	self.showCrossTrainDlg = function(){
