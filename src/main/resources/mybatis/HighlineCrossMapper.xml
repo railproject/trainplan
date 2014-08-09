@@ -114,7 +114,7 @@
       <if test="crossStartDate != null and crossStartDate != '' ">
          AND T.CROSS_START_DATE = #{crossStartDate}
       </if>
-  
+      ORDER BY t.TOKEN_VEH_BUREAU,t.CROSS_NAME
   </select>
     
   <select id="getHighlineCrossInfo" parameterType="org.railway.com.trainplan.entity.HighlineCrossInfo" resultType="org.railway.com.trainplan.entity.HighlineCrossInfo">

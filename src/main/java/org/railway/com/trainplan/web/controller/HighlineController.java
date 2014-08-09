@@ -540,17 +540,30 @@ public class HighlineController {
 				 //查询数据
 				 List<HighlineThroughlineInfo> list = highLineService.getHighlineThroughCrossInfo(crossInfoReq);
 				 if(list != null && list.size() > 0 ){
+					 //获取18个路局的基本信息
+					 Map<String,String> ljMap = commonService.getStationJCMapping();
+					
 					 String dateStr = crossStartDate.substring(0,4)+"年" + crossStartDate.substring(4,6)+"月" + crossStartDate.substring(6,8) + "日";
 					 StringBuffer  cmdInfoBf = new StringBuffer();
 					for(int i = 0;i<list.size();i++){
 						HighlineThroughlineInfo throughInfo = list.get(i);
+						 if(i !=0 ){
+							 cmdInfoBf.append("\n").append("\n"); 
+						 }
 						//铁路线
 						String throughLine = throughInfo.getThroughLine();
-						cmdInfoBf.append(dateStr).append(throughLine).append(f_cmdinfo).append("<br>");
-						cmdInfoBf.append(f_oneCatalog).append("<br>");
+						cmdInfoBf.append(dateStr).append(throughLine).append(f_cmdinfo).append("\n");
+						cmdInfoBf.append(f_oneCatalog).append("\n");
 						List<HighlineCrossInfo> crossInfoList = throughInfo.getListCrossInfo();
 						if(crossInfoList != null && crossInfoList.size() > 0 ){
+							//本局
+							List<String>  localList = new ArrayList<String>();
+							
+							//外局
+							List<String>  otherList = new ArrayList<String>();
 							for(int j = 0;j<crossInfoList.size();j++){
+								StringBuffer  localCmdInfoBf = new StringBuffer();
+								StringBuffer  otherCmdInfoBf = new StringBuffer();
 								HighlineCrossInfo crossInfo = crossInfoList.get(j);
 								String crossName = crossInfo.getCrossName();
 								String vehicle1 = crossInfo.getVehicle1();
@@ -559,28 +572,45 @@ public class HighlineController {
 								String tokenVehBureau = crossInfo.getTokenVehBureau();
 								//交路计划所属局（局码）
 								String crossBureau = crossInfo.getCrossBureau();
-								cmdInfoBf.append(j+1).append(f_point).append(f_crossName).append(crossName).append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+								//cmdInfoBf.append(j+1).append(f_point).append(f_crossName).append(crossName).append("    ");
 								//组装车底
 								if(tokenVehBureau.equals(crossBureau)){
+									localCmdInfoBf.append(f_crossName).append(crossName).append("    ");
 									if(vehicle1 != null && !"".equals(vehicle1)){
 										if(vehicle2 != null && !"".equals(vehicle2)){
-											cmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_plus).append(vehicle2).append(f_semicolon).append("<br>");
+											localCmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_plus).append(vehicle2).append(f_semicolon).append("\n");
 										}else{
-											cmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_semicolon).append("<br>");
+											localCmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_semicolon).append("\n");
 										}
 									}else{
 										if(vehicle2 != null && !"".equals(vehicle2)){
-											cmdInfoBf.append(f_vehicleName).append(vehicle2).append(f_semicolon).append("<br>");
+											localCmdInfoBf.append(f_vehicleName).append(vehicle2).append(f_semicolon).append("\n");
 										}else{
-											cmdInfoBf.append("<br>");
+											localCmdInfoBf.append("\n");
 										}
 									}
+									localList.add(localCmdInfoBf.toString());
 								}else{
-									cmdInfoBf.append(f_vehicleName).append(tokenVehBureau).append(f_bureauInfo).append("<br>");
+									otherCmdInfoBf.append(f_crossName).append(crossName).append("    ");
+									otherCmdInfoBf.append(f_vehicleName).append(ljMap.get(tokenVehBureau)).append(f_bureauInfo).append("\n");
+									otherList.add(otherCmdInfoBf.toString());
 								}
 								
 							}
-							 
+							int count = 1;
+							if(localList != null && localList.size() > 0 ){
+								for(String localStr : localList){
+									cmdInfoBf.append(count).append(f_point).append(localStr);
+									count++;
+								}
+							}
+							
+							if(otherList != null && otherList.size() > 0 ){
+								for(String otherStr : otherList){
+									cmdInfoBf.append(count).append(f_point).append(otherStr);
+									count++;
+								}
+							}
 						}
 						
 					}
@@ -613,7 +643,7 @@ public class HighlineController {
 			Result result = new Result();
 			 try{
 				 String cmdInfo = StringUtil.objToStr(reqMap.get("cmdInfo"));
-				 cmdInfo = cmdInfo.replaceAll("<br>", "\r\n").replaceAll("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","");
+				 //cmdInfo = cmdInfo.replaceAll("<br>", "\r\n").replaceAll("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","");
 				 logger.debug("cmdInfo==" + cmdInfo);
 			 }catch(Exception e){
 				 e.printStackTrace();

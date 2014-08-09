@@ -434,7 +434,7 @@ public class RunPlanLkController {
 						 cmdTrainTempl.setSelectedDate(infoModel.getSelectedDate());
 						 cmdTrainTempl.setStartStn(infoModel.getStartStn());
 						 cmdTrainTempl.setTrainNbr(infoModel.getTrainNbr());
-						 cmdTrainTempl.setCmdTxtMlId(infoModel.getCmdItem());
+						 cmdTrainTempl.setCmdTxtMlId(infoModel.getCmdTxtMlId());
 						 cmdTrainTempl.setCmdTxtMlItemId(cmdTxtMlItemId);
 						
 						 if("all".equals(selectState) && !"all".equals(createState)){
