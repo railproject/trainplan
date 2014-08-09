@@ -140,7 +140,7 @@
 		 t.CREAT_PEOPLE AS creatPeople,
 		 t.CREAT_PEOPLE_ORG AS creatPeopleOrg ,
 		 t.CREAT_TIME AS creatTime,
-		 b.THROUGH_LINE AS throughLine,
+		 t.THROUGH_LINE AS throughLine,
 		 t.POST_ID AS postId,
 		 t.POST_Name AS postName,
 		 t.CROSS_BUREAU AS crossBureau,
@@ -157,7 +157,7 @@
 		 t.CROSS_CHECK_PEOPLE AS crossCheckPeople,
 		 t.CROSS_CHECK_PEOPLE_ORG AS crossCheckPeopleOrg,
 		 TO_CHAR(t.CROSS_CHECK_TIME,'yyyy-MM-dd hh24:mi:SS')  AS crossCheckTime
-      FROM HIGHLINE_CROSS WHERE 1=1 
+      FROM HIGHLINE_CROSS T WHERE 1=1 
       <if test="crossBureau != null and crossBureau !='' ">
          AND T.CROSS_BUREAU = #{crossBureau}
       </if>

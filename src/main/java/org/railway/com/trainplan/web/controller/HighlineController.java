@@ -456,7 +456,7 @@ public class HighlineController {
 						 if( i != size-1){
 							 highlineCrossIdBf.append("'").append(highlineCrossId).append("',");
 						 }else{
-							 highlineCrossIdBf.append("'").append(highlineCrossId);
+							 highlineCrossIdBf.append("'").append(highlineCrossId).append("'");
 						 }
 					 }
 					 
@@ -710,15 +710,18 @@ public class HighlineController {
 				 if("CROSS_CHECK".equals(roleType)){
 					 crossInfo.setCrossCheckPeople(people);
 					 crossInfo.setCrossCheckPeopleOrg(org);
+					 crossInfo.setCrossCheckType(1);
 				 }else if("VEHICLE_SUB".equals(roleType)){
 					 crossInfo.setVehicleSubPeople(people);
 					 crossInfo.setVehicleSubPeopleOrg(org);
+					 crossInfo.setVehicleSubType(1);
 				 }else if("VEHICLE_CHECK".equals(roleType)){
 					 crossInfo.setVehicleCheckPeople(people);
 					 crossInfo.setVehicleCheckPeopleOrg(org);
+					 crossInfo.setVehicleCheckType(1);
 				 }
 				 crossInfo.setCrossBureau(bureauCode);
-				 
+				
 				 highLineService.updateHighlineCrossInfo(crossInfo);
 			 }catch(Exception e){
 				 e.printStackTrace();
