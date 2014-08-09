@@ -179,7 +179,7 @@ var currentUserBureau = "";
 									        <td data-bind="text: throughline, click: $parent.showTrains"></td> 
 									        <td data-bind="text: crossStartDate, click: $parent.showTrains"></td> 
 										    <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
-										   <!--  crhType, --><td data-bind="text: updateFlag, click: $parent.showTrains"></td>
+										    <td data-bind="text: crhType, click: $parent.showTrains"></td>
 										    <td><input type="text" class="form-control" data-bind="value: vehicle1, event:{change: vehicle1Change, focus: vehicle1Onfocus}"></td>
 										    <td><input type="text" class="form-control" data-bind="value: vehicle2, event:{change: vehicle2Change, focus: vehicle2Onfocus}"></td>       
 										    <td data-bind="text: startStn, click: $parent.showTrains"></td>

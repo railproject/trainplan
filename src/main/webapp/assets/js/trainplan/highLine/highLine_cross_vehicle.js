@@ -34,8 +34,6 @@ function HighLineCrossModle(data){
 	//加载列车到列车数组中
 	self.loadTrains = function(trains){
 		$.each(trains, function(i, n){
-			console.log("&&&&&&&&& ");
-			console.dir(n);
 			var train = new TrainRow(n);
 			train.loadTimes(n.highlineTrainTimeList);
 			self.trains.push(train);
@@ -216,7 +214,6 @@ function CrossModel() {
 		 var currentCorss = self.selectedHighLineCrossRows()[0]; 
 		 //做恢复使用
 		 self.oldHighLineCrosses.push(currentCorss);
-		 console.log(ko.toJSON(currentCorss));
 		 commonJsScreenLock();
 		 $.ajax({
 				url : basePath+"/highLine/getHighlineTrainTimeForHighlineCrossId",
@@ -232,7 +229,6 @@ function CrossModel() {
 						 self.highLineCrossRows.remove(currentCorss);
 						 self.selectedHighLineCrossRows.remove(currentCorss);
 						 self.acvtiveHighLineCrosses.push(cross); 
-						 console.log(ko.toJSON(cross));
 					} else {
 						showErrorDialog("没有加载的交路数据");
 					} 
@@ -250,7 +246,6 @@ function CrossModel() {
 		$.each(self.selectedActiveHighLineCrossRows(), function(i, n){
 			$.each(n.trains(), function(a, t){ 
 				var cross = new HighLineCrossModle($.parseJSON(ko.toJSON(n))); 
-				console.log(ko.toJSON(cross));
 				 cross.addTrain(t);
 				self.acvtiveHighLineCrosses.push(cross);  
 			}); 
@@ -471,9 +466,9 @@ function CrossModel() {
 	};
 	
 	self.trainRunPlanChange = function(row, event){ 
-		console.log(row);
-		console.log(event.target.name);
-		console.log("trainRunPlanChange test");
+//		console.log(row);
+//		console.log(event.target.name);
+//		console.log("trainRunPlanChange test");
 	};
 	
 	self.dragRunPlan = function(n,event){
@@ -2036,7 +2031,7 @@ function CrossRow(data) {
 	self.childIndex = ko.observable(data.childIndex);//序号
 	self.vehicle1Onfocus = function(n, event){
 		$(event.target).autocomplete(cross.vehicles(),{
-			max: 12,    //列表里的条目数
+			max: 50,    //列表里的条目数
 			width: 200,     //提示的宽度，溢出隐藏
 			scrollHeight: 120,   //提示的高度，溢出显示滚动条
 			matchContains: true,    //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
@@ -2045,41 +2040,55 @@ function CrossRow(data) {
 				return row;
 			}
        }).result(function(event, vehicleName, formatted) {
-    	   console.log("   --------- vehicle1Onfocus: ------- vehicleName="+vehicleName+"tttself.childIndex()="+self.childIndex()+" self.crossStartDate()="+self.crossStartDate());
     	   var _tempVehicleObj = null;
-    	   var _temp_vehicleName = vehicleName;
+    	   vehicleName = (vehicleName+"").toUpperCase();
     	   if(vehicleName != null && vehicleName != ""){
     			var highLineCrossRows = cross.highLineCrossRows();
     			for(var i = 0; i < highLineCrossRows.length; i++){
-	   				console.log("i="+i+" typeof="+typeof highLineCrossRows[i].vehicle1()+" highLineCrossRows[i].vehicle1()="+highLineCrossRows[i].vehicle1()+"  highLineCrossRows[i].vehicle2()="+highLineCrossRows[i].vehicle2()+"   highLineCrossRows[i].crossStartDate()="+highLineCrossRows[i].crossStartDate());
-	   				
+    				_tempVehicleObj = highLineCrossRows[i];
+    				
+    				if(i == self.childIndex()) {
+    					if ((_tempVehicleObj.vehicle2()+"").toUpperCase() == vehicleName) {
+    						showConfirmDiv("提示", "当前车底["+vehicleName+"]被当前交路车底2使用。是否要重新绑定到当前交路?", function (r) { 
+    					        if (r) {//替换
+    					        	_tempVehicleObj.vehicle2("");//置空车底1
+    	   				        	_tempVehicleObj.vehicle1(vehicleName);
+    	   				        	_tempVehicleObj.updateFlag(1);
+    					        }else{//不替换 
+    					        	_tempVehicleObj.vehicle1("");//置空车底2
+    					        }
+    						});
+    						break;
+    					} else {
+    						continue;//循环到当前行  直接跳过
+    					}
+    				}
+    				
+    				
 	   				//车底1被使用
-	   				if(i != self.childIndex() && self.crossStartDate()==highLineCrossRows[i].crossStartDate() && (""+highLineCrossRows[i].vehicle1()) == (""+vehicleName)){
-	   					console.log("------  vehicle1Onfocus 车底1被1使用 --------- highLineCrossRows[i].vehicle1()="+highLineCrossRows[i].vehicle1()+"  row.vehicle1()="+vehicleName);
-	   					_tempVehicleObj = highLineCrossRows[i];
-	   					showConfirmDiv("提示", "当前车底["+vehicleName+"]被交路：" + highLineCrossRows[i].crossName() + "车底1使用。是否要重新绑定到当前交路?", function (r) { 
+	   				if(self.crossStartDate()==_tempVehicleObj.crossStartDate() && (""+_tempVehicleObj.vehicle1()) == vehicleName){
+	   					showConfirmDiv("提示", "当前车底["+vehicleName+"]被序号："+(_tempVehicleObj.childIndex()+1)+"  交路：" + _tempVehicleObj.crossName() + "车底1使用。是否要重新绑定到当前交路?", function (r) { 
 	   				        if (r) {//替换
 	   				        	_tempVehicleObj.vehicle1("");
 	   				        	_tempVehicleObj.updateFlag(1);
-	   				        	_temp_vehicleName = vehicleName;
+	   				        	self.vehicle1(vehicleName);
 	   				        	self.updateFlag(1);
 	   				        }else{//不替换 则列表当前行车底1 置空
-	   				        	_temp_vehicleName = "";
+	   				        	self.vehicle1("");
 	   				        	self.updateFlag(1);
 	   				        	
 	   				        }
 	   					});
-	   				} else if(i != self.childIndex() && self.crossStartDate()==highLineCrossRows[i].crossStartDate() && (""+highLineCrossRows[i].vehicle2()) == (""+vehicleName)){
-	   					console.log("------ vehicle1Onfocus  车底1被2使用 --------- highLineCrossRows[i].vehicle2()="+highLineCrossRows[i].vehicle2()+"  row.vehicle1()="+vehicleName);
-	   					_tempVehicleObj = highLineCrossRows[i];
-	   					showConfirmDiv("提示", "当前车底["+vehicleName+"]被交路：" + highLineCrossRows[i].crossName() + "车底2使用。是否要重新绑定到当前交路?", function (r) { 
-	   				        if (r) { 
+	   					break;
+	   				} else if(self.crossStartDate()==_tempVehicleObj.crossStartDate() && (""+_tempVehicleObj.vehicle2()) == vehicleName){
+	   					showConfirmDiv("提示", "当前车底["+vehicleName+"]被序号："+(_tempVehicleObj.childIndex()+1)+"  交路：" + _tempVehicleObj.crossName() + "车底2使用。是否要重新绑定到当前交路?", function (r) { 
+	   						if (r) { 
 	   				        	_tempVehicleObj.vehicle2("");
 	   				        	_tempVehicleObj.updateFlag(1);
-	   				        	_temp_vehicleName = vehicleName;
+	   				        	self.vehicle1(vehicleName);
 	   				        	self.updateFlag(1);
 	   				        }else{
-	   				        	_temp_vehicleName = "";
+	   				        	self.vehicle1("");
 	   				        	self.updateFlag(1);
 	   				        }
 	   					});
@@ -2087,36 +2096,48 @@ function CrossRow(data) {
 	   				}
     			}
     	   }
-    	   
-    	   self.vehicle1(_temp_vehicleName);
+
+    	   self.vehicle1(vehicleName);
        });
 	};
 	self.vehicle1Change = function(row){
-		console.log("------   change ---------");
+		var _vehicle1 = row.vehicle1().toUpperCase();
 		row.updateFlag(1);
 		var highLineCrossRows = cross.highLineCrossRows();
-		if(row.vehicle1() != null && row.vehicle1() != ""){
+		if(_vehicle1 != null && _vehicle1 != ""){
 			for(var i = 0; i < highLineCrossRows.length; i++){
 				if(i == row.childIndex()) {
-					continue;//循环到当前行  直接跳过
+					if ((row.vehicle2()+"").toUpperCase() == _vehicle1) {
+						showConfirmDiv("提示", "当前车底["+_vehicle1+"]被当前交路车底1使用。是否要重新绑定到当前交路?", function (r) { 
+					        if (r) {//替换
+					        	row.vehicle1(_vehicle1);//置空车底2
+					        	row.vehicle2("");
+					        }else{//不替换 
+					        	row.vehicle1("");//置空车底2
+					        }
+						});
+						break;
+					} else {
+						continue;//循环到当前行  直接跳过
+					}
 				}
 				
 				//车底1被使用
-				if(self.crossStartDate()==highLineCrossRows[i].crossStartDate() && highLineCrossRows[i].vehicle1() == row.vehicle1()){
-					console.log("------ vehicle1Change childIndex="+row.childIndex()+" 车底1被1使用 --------- highLineCrossRows["+i+"].vehicle1()="+highLineCrossRows[i].vehicle1()+"  row.vehicle1()="+row.vehicle1());
-					showConfirmDiv("提示", "当前车底["+row.vehicle1()+"]被交路：" + highLineCrossRows[i].crossName() + "车底1使用。是否要重新绑定到当前交路?", function (r) { 
+				if(self.crossStartDate()==highLineCrossRows[i].crossStartDate() && (highLineCrossRows[i].vehicle1()+"").toUpperCase() == _vehicle1){
+					showConfirmDiv("提示", "当前车底["+_vehicle1+"]被序号："+(highLineCrossRows[i].childIndex()+1)+"  交路：" + highLineCrossRows[i].crossName() + "车底1使用。是否要重新绑定到当前交路?", function (r) { 
 				        if (r) {//替换
 				        	highLineCrossRows[i].vehicle1("");
+				        	row.vehicle1(_vehicle1);
 				        }else{//不替换 则列表当前行车底1 置空
 				        	row.vehicle1("");
 				        }
 					});
 					break;
-				} else if(self.crossStartDate()==highLineCrossRows[i].crossStartDate() && highLineCrossRows[i].vehicle2() == row.vehicle1()){
-					console.log("------ vehicle1Change childIndex="+row.childIndex()+"  车底1被2使用 --------- highLineCrossRows["+i+"].vehicle2()="+highLineCrossRows[i].vehicle2()+"  row.vehicle1()="+row.vehicle1());
-					showConfirmDiv("提示", "当前车底["+row.vehicle1()+"]被交路：" + highLineCrossRows[i].crossName() + "车底2使用。是否要重新绑定到当前交路?", function (r) { 
-				        if (r) { 
+				} else if(self.crossStartDate()==highLineCrossRows[i].crossStartDate() && (highLineCrossRows[i].vehicle2()+"").toUpperCase() == _vehicle1){
+   					showConfirmDiv("提示", "当前车底["+_vehicle1+"]被序号："+(highLineCrossRows[i].childIndex()+1)+"  交路：" + highLineCrossRows[i].crossName() + "车底2使用。是否要重新绑定到当前交路?", function (r) { 
+						if (r) {
 				        	highLineCrossRows[i].vehicle2("");
+				        	row.vehicle1(_vehicle1);
 				        }else{
 				        	row.vehicle1("");
 				        }
@@ -2130,7 +2151,7 @@ function CrossRow(data) {
 	
 	self.vehicle2Onfocus = function(n, event){
 		$(event.target).autocomplete(cross.vehicles(),{
-			max: 12,    //列表里的条目数
+			max: 50,    //列表里的条目数
 			width: 200,     //提示的宽度，溢出隐藏
 			scrollHeight: 120,   //提示的高度，溢出显示滚动条
 			matchContains: true,    //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
@@ -2140,14 +2161,14 @@ function CrossRow(data) {
 			}
        }).result(function(event, vehicleName, formatted) {
     	   var _tempVehicleObj = null;
-    	   vehicleName = vehicleName+"";
+    	   vehicleName = (vehicleName+"").toUpperCase();
     	   if(vehicleName != null && vehicleName != ""){
     			var highLineCrossRows = cross.highLineCrossRows();
     			for(var i = 0; i < highLineCrossRows.length; i++){
     				_tempVehicleObj = highLineCrossRows[i];
     				
     				if(i == self.childIndex()) {
-    					if ((_tempVehicleObj.vehicle1()+"").toUpperCase() == (vehicleName+"").toUpperCase()) {
+    					if ((_tempVehicleObj.vehicle1()+"").toUpperCase() == vehicleName) {
     						showConfirmDiv("提示", "当前车底["+vehicleName+"]被当前交路车底1使用。是否要重新绑定到当前交路?", function (r) { 
     					        if (r) {//替换
     					        	_tempVehicleObj.vehicle1("");//置空车底1
@@ -2165,7 +2186,7 @@ function CrossRow(data) {
     				
     				
 	   				//车底1被使用
-	   				if(self.crossStartDate()==_tempVehicleObj.crossStartDate() && (""+_tempVehicleObj.vehicle1()) == (""+vehicleName)){
+	   				if(self.crossStartDate()==_tempVehicleObj.crossStartDate() && (""+_tempVehicleObj.vehicle1()) == vehicleName){
 	   					showConfirmDiv("提示", "当前车底["+vehicleName+"]被序号："+(_tempVehicleObj.childIndex()+1)+"  交路：" + _tempVehicleObj.crossName() + "车底1使用。是否要重新绑定到当前交路?", function (r) { 
 	   				        if (r) {//替换
 	   				        	_tempVehicleObj.vehicle1("");
@@ -2179,11 +2200,8 @@ function CrossRow(data) {
 	   				        }
 	   					});
 	   					break;
-	   				} else if(self.crossStartDate()==_tempVehicleObj.crossStartDate() && (""+_tempVehicleObj.vehicle2()) == (""+vehicleName)){
-	   					console.log("pppppp");
-	   					
+	   				} else if(self.crossStartDate()==_tempVehicleObj.crossStartDate() && (""+_tempVehicleObj.vehicle2()) == vehicleName){
 	   					showConfirmDiv("提示", "当前车底["+vehicleName+"]被序号："+(_tempVehicleObj.childIndex()+1)+"  交路：" + _tempVehicleObj.crossName() + "车底2使用。是否要重新绑定到当前交路?", function (r) { 
-	   					 console.log("qqqq     r="+r);
 	   						if (r) { 
 	   				        	_tempVehicleObj.vehicle2("");
 	   				        	_tempVehicleObj.updateFlag(1);
@@ -2198,22 +2216,23 @@ function CrossRow(data) {
 	   				}
     			}
     	   }
+
+    	   self.vehicle2(vehicleName);
        });
 	};
 	self.vehicle2Change = function(row){
-		console.log("------   22 change ---------"+row.vehicle2());
+		var _vehicle2 = row.vehicle2().toUpperCase();
 		row.updateFlag(1);
 		var highLineCrossRows = cross.highLineCrossRows();
-		if(row.vehicle2() != null && row.vehicle2() != ""){
+		if(_vehicle2 != null && _vehicle2 != ""){
 			for(var i = 0; i < highLineCrossRows.length; i++){
 				if(i == row.childIndex()) {
-					if ((row.vehicle1()+"").toUpperCase() == (row.vehicle2()+"").toUpperCase()) {
-						showConfirmDiv("提示", "当前车底["+row.vehicle2()+"]被当前交路车底1使用。是否要重新绑定到当前交路?", function (r) { 
-							 console.log("ttttt     r="+r);
+					if ((row.vehicle1()+"").toUpperCase() == _vehicle2) {
+						showConfirmDiv("提示", "当前车底["+_vehicle2+"]被当前交路车底1使用。是否要重新绑定到当前交路?", function (r) { 
 					        if (r) {//替换
 					        	row.vehicle1("");//置空车底1
+					        	row.vehicle2(_vehicle2);
 					        }else{//不替换 
-					        	console.log("-----cancel   2222222----");
 					        	row.vehicle2("");//置空车底2
 					        }
 						});
@@ -2224,19 +2243,21 @@ function CrossRow(data) {
 				}
 				
 				//车底1被使用
-				if(self.crossStartDate()==highLineCrossRows[i].crossStartDate() && (highLineCrossRows[i].vehicle1()+"").toUpperCase() == (row.vehicle2()+"").toUpperCase()){
-					showConfirmDiv("提示", "当前车底["+row.vehicle2()+"]被序号："+(highLineCrossRows[i].childIndex()+1)+"  交路：" + highLineCrossRows[i].crossName() + "车底1使用。是否要重新绑定到当前交路?", function (r) { 
+				if(self.crossStartDate()==highLineCrossRows[i].crossStartDate() && (highLineCrossRows[i].vehicle1()+"").toUpperCase() == _vehicle2){
+					showConfirmDiv("提示", "当前车底["+_vehicle2+"]被序号："+(highLineCrossRows[i].childIndex()+1)+"  交路：" + highLineCrossRows[i].crossName() + "车底1使用。是否要重新绑定到当前交路?", function (r) { 
 				        if (r) {//替换
 				        	highLineCrossRows[i].vehicle1("");
+				        	row.vehicle2(_vehicle2);
 				        }else{//不替换 则列表当前行车底1 置空
 				        	row.vehicle2("");
 				        }
 					});
 					break;
-				} else if(self.crossStartDate()==highLineCrossRows[i].crossStartDate() && (highLineCrossRows[i].vehicle2()+"").toUpperCase() == (row.vehicle2()+"").toUpperCase()){
-					showConfirmDiv("提示", "当前车底["+row.vehicle2()+"]被序号："+(highLineCrossRows[i].childIndex()+1)+"  交路：" + highLineCrossRows[i].crossName() + "车底2使用。是否要重新绑定到当前交路?", function (r) { 
+				} else if(self.crossStartDate()==highLineCrossRows[i].crossStartDate() && (highLineCrossRows[i].vehicle2()+"").toUpperCase() == _vehicle2){
+   					showConfirmDiv("提示", "当前车底["+_vehicle2+"]被序号："+(highLineCrossRows[i].childIndex()+1)+"  交路：" + highLineCrossRows[i].crossName() + "车底2使用。是否要重新绑定到当前交路?", function (r) { 
 						if (r) {
 				        	highLineCrossRows[i].vehicle2("");
+				        	row.vehicle2(_vehicle2);
 				        }else{
 				        	row.vehicle2("");
 				        }
@@ -2262,9 +2283,6 @@ function TrainModel() {
 
 function HighLineTrain(data){
 	var self = this; 
-//	console.log("------------ HighLineTrain------------- ");
-//	console.dir(data);
-
 	self.trainNbr = data.trainNbr;
 	self.startStn = data.startStn;
 	self.startTime = data.startTime==""?"":moment(data.startTime).format('MMDD HH:mm');
