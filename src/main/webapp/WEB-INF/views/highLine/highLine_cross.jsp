@@ -569,7 +569,6 @@ var currentUserBureau = "";
 </table> 
 </script> 
 
-
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/html5.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/bootstrap.min.js"></script>
