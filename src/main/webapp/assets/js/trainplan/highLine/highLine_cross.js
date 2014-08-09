@@ -219,7 +219,7 @@ function CrossModel() {
 		 console.log(ko.toJSON(currentCorss));
 		 commonJsScreenLock();
 		 $.ajax({
-				url : "highLine/getHighlineTrainTimeForHighlineCrossId",
+				url : basePath+"/highLine/getHighlineTrainTimeForHighlineCrossId",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -397,7 +397,7 @@ function CrossModel() {
 		}
 		console.log(crosses);
 		$.ajax({
-				url : "highLine/saveHighlineCrossAndTrainInfo",
+				url : basePath+"/highLine/saveHighlineCrossAndTrainInfo",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -493,7 +493,7 @@ function CrossModel() {
 			}
 		} 
 		 $.ajax({
-				url : "highLine/updateHighLineVehicle",
+				url : basePath+"/highLine/updateHighLineVehicle",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -534,7 +534,7 @@ function CrossModel() {
 		});
 		commonJsScreenLock();
 		 $.ajax({ 
-				url : "jbtcx/queryPlanLineTrainTimes",
+				url : basePath+"/jbtcx/queryPlanLineTrainTimes",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -862,7 +862,7 @@ function CrossModel() {
 		commonJsScreenLock(4); 
 		//获取当期系统日期  
 	    $.ajax({
-			url : "plan/getFullStationInfo",
+			url : basePath+"/plan/getFullStationInfo",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -889,7 +889,7 @@ function CrossModel() {
 	    });
 	    
 	    $.ajax({
-			url : "highLine/getThroughLines",
+			url : basePath+"/highLine/getThroughLines",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -912,7 +912,7 @@ function CrossModel() {
 	    });
 	    
 	    $.ajax({
-			url : "highLine/getCrhTypes",
+			url : basePath+"/highLine/getCrhTypes",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -935,7 +935,7 @@ function CrossModel() {
 	    });
 	    
 	    $.ajax({
-			url : "highLine/getDepots",
+			url : basePath+"/highLine/getDepots",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -958,7 +958,7 @@ function CrossModel() {
 	    });
 	    
 	    $.ajax({
-			url : "highLine/getAccs",
+			url : basePath+"/highLine/getAccs",
 			cache : false,
 			type : "GET",
 			dataType : "json",
@@ -1080,7 +1080,7 @@ function CrossModel() {
 	        if (r) {
 	        	commonJsScreenLock();
 	    		$.ajax({
-	    			url : basePath+"/highLine/deleteHighLineForIds",
+	    			url : basePath+"/highLine/submitHighLineWithRole/CROSS_CHECK",
 	    			cache : false,
 	    			type : "POST",
 	    			dataType : "json",
@@ -1231,7 +1231,7 @@ function CrossModel() {
 	        if (r) {
 	        	commonJsScreenLock();
 				 $.ajax({
-						url : "highLine/createHighLineCross",
+						url : basePath+"/highLine/createHighLineCross",
 						cache : false,
 						type : "POST",
 						dataType : "json",
@@ -1297,7 +1297,7 @@ function CrossModel() {
 			return true;
 		});
 		$.ajax({
-				url : "highLine/getHighlineCrossList",
+				url : basePath+"/highLine/getHighlineCrossList",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -1405,7 +1405,7 @@ function CrossModel() {
 //			 
 //		}else{
 //			$.ajax({
-//				url : "jbtcx/queryTrainTimes",
+//				url : basePath+"/jbtcx/queryTrainTimes",
 //				cache : false,
 //				type : "POST",
 //				dataType : "json",
@@ -1456,7 +1456,7 @@ function CrossModel() {
 		showConfirmDiv("提示", "你确定要执行删除操作?", function (r) { 
 	        if (r) { 
 				$.ajax({
-					url : "runPlan/deletePlanCrosses",
+					url : basePath+"/runPlan/deletePlanCrosses",
 					cache : false,
 					type : "POST",
 					dataType : "json",
@@ -1511,7 +1511,7 @@ function CrossModel() {
 		 }
 		 commonJsScreenLock();
 		 $.ajax({
-				url : "runPlan/handleTrainLinesWithCross",
+				url : basePath+"/runPlan/handleTrainLinesWithCross",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -1629,7 +1629,7 @@ function CrossModel() {
 		}
 		commonJsScreenLock();
 		 $.ajax({
-				url : "runPlan/checkCrossRunLine",
+				url : basePath+"/runPlan/checkCrossRunLine",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -1668,7 +1668,7 @@ function CrossModel() {
 		 var planEndDate =  $("#runplan_input_endDate").val();
 		 
 		 $.ajax({
-				url : "cross/createCrossMap",
+				url : basePath+"/cross/createCrossMap",
 				cache : false,
 				type : "POST",
 				dataType : "json",
@@ -1706,7 +1706,7 @@ function CrossModel() {
 			return true;
 		});   
 		$.ajax({
-				url : "highLine/getHighlineCrossTrainBaseInfoList",
+				url : basePath+"/highLine/getHighlineCrossTrainBaseInfoList",
 				cache : false,
 				type : "POST",
 				dataType : "json",
