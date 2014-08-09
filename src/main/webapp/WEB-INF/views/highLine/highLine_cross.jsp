@@ -139,7 +139,7 @@ var currentUserBureau = "";
 			</div>
 			<div class="pull-right" style="margin-right:10px;">
 				<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowCrossDetailInfo, event:{change: showRunPlans}"> 
-				<label for="exampleInputEmail5" class="control-label pull-left">显示交路详情</label>  
+				<label for="exampleInputEmail5" class="control-label pull-left"><b>显示交路详情</b></label>  
 		 	</div>
 	    </div>
 	    </form> 

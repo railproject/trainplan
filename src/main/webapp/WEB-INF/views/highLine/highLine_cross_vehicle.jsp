@@ -2,6 +2,18 @@
     pageEncoding="utf-8"%>
 <%@ page import="org.apache.shiro.SecurityUtils,org.railway.com.trainplan.service.ShiroRealm,java.util.List" %>
 <% 
+/* ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+
+boolean isZgsUser = false;	//当前用户是否为总公司用户
+if (user!=null && user.getBureau()==null) {
+	isZgsUser = true;
+} */
+/* String currentUserBureau = "";
+List<String> permissionList = "";
+String userRolesString = "";
+for(String p : permissionList){
+	userRolesString += userRolesString.equals("") ? p : "," + p;
+}  */
 String basePath = request.getContextPath();
 %>
 <!DOCTYPE HTML>
@@ -33,6 +45,7 @@ String basePath = request.getContextPath();
 <link href="<%=basePath %>/assets/css/cross/cross.css" rel="stylesheet">  
 <link href="<%=basePath %>/assets/css/style.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/rightmenu.css">
+<link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/jquery.autocomplete.css">
 
 
 
@@ -118,13 +131,13 @@ var currentUserBureau = "";
 		 </div>
 		 
 		 <div class="row" style="margin:5px 0 0px 5;"> 
-	        <div class="pull-left">   
-			  	<a type="button"  style="margin-left:15px" class="btn btn-success" data-bind="click: saveHighLineWithRole">保存</a>
-				<a type="button"  style="margin-left:20px" class="btn btn-success" data-bind="click: submitHighLineWithRole">提交</a>
+	        <div class="pull-left">
+			  <a type="button"  style="margin-left:15px" class="btn btn-success" data-bind="click: saveHighLineWithRole">保存</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: submitHighLineWithRole">提交</a>
 			</div>
 			<div class="pull-right" style="margin-right:10px;">
 				<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowCrossDetailInfo, event:{change: showRunPlans}"> 
-				<label for="exampleInputEmail5" class="control-label pull-left">显示交路详情</label>  
+				<label for="exampleInputEmail5" class="control-label pull-left"><b>显示交路详情</b></label>  
 		 	</div>
 	    </div>
 	    </form> 
@@ -160,15 +173,15 @@ var currentUserBureau = "";
 										</tr>
 									</thead>
 									<tbody data-bind="foreach: highLineCrossRows">
-										<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''}" >
+										<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCross().highLineCrossId == highLineCrossId ? 'blue':''},attr:{class : updateFlag()==1? 'success':''}" >
 											<!-- <td align="center"><input type="checkbox" value="1" data-bind="event:{change: $parent.selectCross}, checked: selected"></td> -->
 									        <td data-bind="text: ($index() + 1), click: $parent.showTrains"></td> 
 									        <td data-bind="text: throughline, click: $parent.showTrains"></td> 
 									        <td data-bind="text: crossStartDate, click: $parent.showTrains"></td> 
 										    <td data-bind="text: $parent.searchModle().shortNameFlag() == 1 ? shortName : crossName, attr:{title: crossName}, click: $parent.showTrains" ></td>
-										    <td data-bind="text: crhType, click: $parent.showTrains"></td>
-										    <td data-bind="text: vehicle1, click: $parent.showTrains"></td>
-										    <td data-bind="text: vehicle2, click: $parent.showTrains"></td>       
+										   <!--  crhType, --><td data-bind="text: updateFlag, click: $parent.showTrains"></td>
+										    <td><input type="text" class="form-control" data-bind="value: vehicle1, event:{change: vehicle1Change, focus: vehicle1Onfocus}"></td>
+										    <td><input type="text" class="form-control" data-bind="value: vehicle2, event:{change: vehicle2Change, focus: vehicle2Onfocus}"></td>       
 										    <td data-bind="text: startStn, click: $parent.showTrains"></td>
 										    <td data-bind="text: endStn, click: $parent.showTrains"></td> 
 										    <td data-bind="text: (spareFlag() == 2 ? '是' : '否'), click: $parent.showTrains"></td>
@@ -540,10 +553,7 @@ var currentUserBureau = "";
 						class="btn btn-success" data-toggle="modal" data-target="#" data-bind="click: $root.hbHighLineCrossCancel">取消</a>
 				</div> 
 		</div>  
-</body>
-<script type="text/javascript">
-var basePath = "<%=basePath %>";
-</script>
+</body>  
  <script type="text/html" id="tablefooter-short-template"> 
   <table style="width:100%;height:20px;">
     <tr style="width:100%;height:20px;">
@@ -554,11 +564,11 @@ var basePath = "<%=basePath %>";
 		  
      </td >
   </tr>
-</table>
+</table> 
 </script> 
 
-
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.js"></script>
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/html5.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/respond.min.js"></script>
@@ -568,6 +578,7 @@ var basePath = "<%=basePath %>";
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.freezeheader.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/ajaxfileupload.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
+<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/highLine/highLine_cross_vehicle.js"></script>  
 <script type="text/javascript" src="<%=basePath %>/assets/js/datepicker.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.gritter.min.js"></script> 
 <script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/common.js"></script> 
@@ -581,8 +592,9 @@ var basePath = "<%=basePath %>";
 <script src="<%=basePath %>/assets/js/trainplan/util/canvas.component.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_rightmenu.js"></script>
 <script src="<%=basePath %>/assets/js/trainplan/runPlan/canvas_event_getvalue.js"></script>
-<script type="text/javascript" src="<%=basePath %>/assets/js/trainplan/highLine/highLine_cross_vehicle.js"></script>
-
+<script type="text/javascript">
+var basePath = "<%=basePath %>";
+</script>
 
 <script  type="text/html" id="runPlanTableDateHeader"> 
     <!-- ko if: $index() == 0 -->
