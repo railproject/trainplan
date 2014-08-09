@@ -156,7 +156,7 @@ var currentUserBureau = "";
 											<th style="width: 25px" align="center">序号</th> 
 											<th style="width: 100px" align="center">铁路线</th>
 											<th style="width: 70px" align="center">首车日期</th>  
-											<th style="width: 180px" align="center">  
+											<th style="width: 250px" align="center">  
 											    <label for="exampleInputEmail5" style="font-weight: bold;vertical-align: bottom;">交路</label> 
 												<select class="form-control" style="width: 56px;display:inline-block;" id="input_cross_filter_showFlag"
 													 data-bind="options: [{'code': 2, 'text': '全称'},{'code': 1, 'text': '简称'}], value: searchModle().shortNameFlag, optionsText: 'text', optionsValue: 'code'">
@@ -201,9 +201,9 @@ var currentUserBureau = "";
 	    </div>
 	   <div id="div_crossDetailInfo" class="row" style="margin: 10px 10px 10px 10px;">  
 	        <!--分栏框开始-->
-		    <div class="pull-left" style="width: 39.7%;height:100%;">
+		    <div class="pull-left" style="width: 39.7%;">
 			<!--分栏框开始-->   
-			         <div class="panel panel-default"> 
+			         <div id="div_crossDetailInfo_trainStnTable" style="overflow: auto;" class="panel panel-default"> 
 				       <div class="panel-body"> 
 							<table class="table table-bordered table-striped table-hover" style="margin-left:2px; margin-right:5px;">
 								<thead>
@@ -224,17 +224,17 @@ var currentUserBureau = "";
 								</thead>
 								<tbody data-bind="foreach: trains" >
 									<tr  data-bind="click: $parent.showTrainTimes, style:{color: $parent.currentTrain() != null && $parent.currentTrain().trainNbr == trainNbr ? 'blue':''}">
-										<td style="width: 36px" data-bind="text: ($index() + 1)"></td>
-										<td style="width: 100px" data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
+										<td data-bind="text: ($index() + 1)"></td>
+										<td data-bind="text: trainNbr, attr:{title: trainNbr}"></td>
 										
-										<td style="width: 30px" data-bind="text: startStnBureau, attr:{title: startStnBureau}"></td>
-										<td style="width: 120px" data-bind="text: startStn, attr:{title: startStn}"></td>
-										<td style="width: 70px" data-bind="text: startTime, attr:{title: startTime}"></td>
+										<td data-bind="text: startStnBureau, attr:{title: startStnBureau}"></td>
+										<td data-bind="text: startStn, attr:{title: startStn}"></td>
+										<td data-bind="text: startTime, attr:{title: startTime}"></td>
 										
 										
-										<td style="width: 30px" data-bind="text: endStnBureau, attr:{title: endStnBureau}"></td>
-										<td style="width: 120px" data-bind="text: endStn, attr:{title: endStn}"></td>
-										<td style="width: 70px" data-bind="text: endTime, attr:{title: endTime}"></td>
+										<td data-bind="text: endStnBureau, attr:{title: endStnBureau}"></td>
+										<td data-bind="text: endStn, attr:{title: endStn}"></td>
+										<td data-bind="text: endTime, attr:{title: endTime}"></td>
 									</tr>
 								</tbody>
 							</table>   
@@ -369,8 +369,9 @@ var currentUserBureau = "";
 	   <div id="cmdInfo_dialog" class="easyui-dialog"
 	      title="命令预览" data-options="iconCls:'icon-save'"
 		   style="width: 600px; height: 500px; padding: 10px;">
-	   		<div id="cmdInfo_dialog_row1" class="row" style="width:100%;overflow: auto;">
-	   			<span data-bind="html : cmdInfoStr()"></span>
+	   		<div id="cmdInfo_dialog_row1" class="row" style="width:100%;overflow: hidden;">
+	   			<textarea id="textarea_cmdInfoStr" rows="24" cols="94" data-bind="value:cmdInfoStr()"></textarea>
+	   			<!-- <span data-bind="html : cmdInfoStr()"></span> -->
 	   		</div>
 	   		<div id="cmdInfo_dialog_row2" class="row" style="width:100%;height:30px;margin-top:10px;margin-bottom:5px">
 	   			<div align="center">

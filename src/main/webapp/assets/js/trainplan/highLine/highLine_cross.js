@@ -557,7 +557,7 @@ function CrossModel() {
 								}else if(i == result.data.length - 1){
 									self.currentTrainInfoMessage(message + "——" + n.stnName);
 									if($("#run_plan_train_times").is(":hidden")){
-										$("#run_plan_train_times").dialog({top:50, draggable: true, resizable:true, onResize:function() {
+										$("#run_plan_train_times").dialog({top:150, draggable: true, resizable:true, onResize:function() {
 											var simpleTimes_table = $("#simpleTimes_table");
 											var allTimes_table = $("#allTimes_table");
 											var isChrome = navigator.userAgent.toLowerCase().match(/chrome/) != null;
@@ -739,7 +739,9 @@ function CrossModel() {
 		//显示详情
 		$('#div_hightline_planDayDetail').css({height: '500px'});//交路信息表格div高度
 		var _height = $(window).height()-$('#div_searchForm').height()-500-150;
+		_height = _height<80?200:_height;
 		$('#div_crossDetailInfo').css({height:_height});//设置交路详情div高度
+		$('#div_crossDetailInfo_trainStnTable').css({height: _height+67});//设置交路详情_车次详情表格div高度
 		$('#canvas_parent_div').css({height:_height});//canvas图形div高度
 		
 
@@ -1137,7 +1139,7 @@ function CrossModel() {
 	    					showSuccessDialog("生成命令成功");
 		    				self.cmdInfoStr(result.data);
 	    					if($("#cmdInfo_dialog").is(":hidden")){
-								$("#cmdInfo_dialog").dialog({top:50, draggable: true, resizable:true, onResize:function() {
+								$("#cmdInfo_dialog").dialog({top:130, draggable: true, resizable:true, onResize:function() {
 									var cmdInfo_dialog_row1 = $("#cmdInfo_dialog_row1");
 									var cmdInfo_dialog_row2 = $("#cmdInfo_dialog_row2");
 									var WH = $('#cmdInfo_dialog').height();
@@ -1196,7 +1198,7 @@ function CrossModel() {
 			dataType : "json",
 			contentType : "application/json",
 			data :JSON.stringify({
-				cmdInfo: self.cmdInfoStr()
+				cmdInfo: $("#textarea_cmdInfoStr").val()//self.cmdInfoStr()
 			}),
 			success : function(result) {
 				if (result != null && result != "undefind" && result.code == "0") {
@@ -1225,7 +1227,7 @@ function CrossModel() {
 			showWarningDialog("请选择日期");
 			return;
 		}
-		showConfirmDiv("提示", "确定要加载" + $("#runplan_input_startDate").val() + "日交路数据吗?", function (r) { 
+		showConfirmDiv("提示", "该加载操作将重新生成" + $("#runplan_input_startDate").val() + "日所有交路数据。<br>确定要执行吗?", function (r) { 
 	        if (r) {
 	        	commonJsScreenLock();
 				 $.ajax({
@@ -1343,7 +1345,7 @@ function CrossModel() {
 	};
 	
 	self.showActiveHighLineCrossDlg = function(){
-		$("#active_highLine_cross_dialog").dialog("open"); 
+		$("#active_highLine_cross_dialog").dialog({top:150, draggable: true, resizable:true, onResize:function() {}}); 
 	};
 	
 	
@@ -1356,14 +1358,18 @@ function CrossModel() {
 		if(!self.isShowCrossDetailInfo()) {//勾选
 			//显示详情
 			$('#div_hightline_planDayDetail').css({height: '500px'});//交路信息表格div高度
-			var _height = $(window).height()-$('#div_searchForm').height()-300-150;
+			var _height = $(window).height()-$('#div_searchForm').height()-500-150;
+			_height = _height<80?200:_height;
 			$('#div_crossDetailInfo').css({height:_height});//设置交路详情div高度
+			$('#div_crossDetailInfo_trainStnTable').css({height: _height+67});//设置交路详情_车次详情表格div高度
 			$('#canvas_parent_div').css({height:_height});//canvas图形div高度
 			$('#div_crossDetailInfo').show();
 		} else {//未勾选
 			$('#div_crossDetailInfo').hide();
 			var _height = $(window).height()-$('#div_searchForm').height() -80;
-			$('#div_hightline_planDayDetail').css({height: _height});
+			_height = _height<80?500:_height;
+			$('#div_hightline_planDayDetail').css({height: _height});//设置交路详情div高度
+			
 		}
 		
 	    
@@ -1379,7 +1385,7 @@ function CrossModel() {
 	
 	self.showCrossTrainTimeDlg = function(){
 		
-		$("#run_plan_train_times").dialog({inline: false, top:50});
+		$("#run_plan_train_times").dialog({inline: false, top:150});
 	};
 	
 	self.trainNbrChange = function(n,  event){
@@ -1905,15 +1911,15 @@ function CrossRow(data) {
 	
 	self.vehicle2 = ko.observable(data.vehicle2);   
 	 
-	self.crossName = ko.observable(data.planCrossName == null ? data.crossName : data.planCrossName);   
+	self.crossName = ko.observable(data.crossName);   
 	
 	self.shortName = ko.computed(function(){
-		if(data.planCrossName != null){
-			trainNbrs = data.planCrossName.split('-');
+		if(data.crossName != null){
+			trainNbrs = data.crossName.split('-');
 			if(trainNbrs.length > 2){
 				return trainNbrs[0] + '-......-' + trainNbrs[trainNbrs.length-1];
 			}else{
-				return data.planCrossName;
+				return data.crossName;
 			}
 		}else{
 			return "";
