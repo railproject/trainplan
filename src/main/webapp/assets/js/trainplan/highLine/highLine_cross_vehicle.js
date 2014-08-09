@@ -433,7 +433,7 @@ function CrossModel() {
 		var _updateCrossRows = [];
 		for(var i = 0; i < highLineCrossRows.length; i++){
 			if(highLineCrossRows[i].updateFlag() == 1){
-				updateCrossRows.push({"highLineCrossId": highLineCrossRows[i].highLineCrossId(), "vehicle1":  highLineCrossRows[i].vehicle1(), "vehicle2":  highLineCrossRows[i].vehicle2()});
+				_updateCrossRows.push({"highLineCrossId": highLineCrossRows[i].highLineCrossId(), "vehicle1":  highLineCrossRows[i].vehicle1(), "vehicle2":  highLineCrossRows[i].vehicle2()});
 			}
 		}
 		
@@ -451,7 +451,7 @@ function CrossModel() {
 					type : "POST",
 					dataType : "json",
 					contentType : "application/json",
-					data :JSON.stringify({"highLineCrosses": updateCrossRows}),
+					data :JSON.stringify({"highLineCrosses": _updateCrossRows}),
 					success : function(result) {    
 						if (result != null && result != "undefind" && result.code == "0") {
 							showSuccessDialog("保存交动车交路车底计划成功"); 
@@ -2140,6 +2140,7 @@ function CrossRow(data) {
 			}
        }).result(function(event, vehicleName, formatted) {
     	   var _tempVehicleObj = null;
+    	   vehicleName = vehicleName+"";
     	   if(vehicleName != null && vehicleName != ""){
     			var highLineCrossRows = cross.highLineCrossRows();
     			for(var i = 0; i < highLineCrossRows.length; i++){
@@ -2200,7 +2201,7 @@ function CrossRow(data) {
        });
 	};
 	self.vehicle2Change = function(row){
-		console.log("------   22 change ---------"+row.row.vehicle2());
+		console.log("------   22 change ---------"+row.vehicle2());
 		row.updateFlag(1);
 		var highLineCrossRows = cross.highLineCrossRows();
 		if(row.vehicle2() != null && row.vehicle2() != ""){
