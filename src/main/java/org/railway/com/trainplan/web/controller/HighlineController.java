@@ -534,6 +534,9 @@ public class HighlineController {
 				 HighlineCrossInfo crossInfoReq = new HighlineCrossInfo();
 				 String crossStartDate =  StringUtil.objToStr(reqMap.get("startDate"));
 				 crossInfoReq.setCrossStartDate(crossStartDate);
+				//获取登录用户信息
+				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+				 crossInfoReq.setCrossBureau(user.getBureau());
 				 //查询数据
 				 List<HighlineThroughlineInfo> list = highLineService.getHighlineThroughCrossInfo(crossInfoReq);
 				 if(list != null && list.size() > 0 ){
@@ -543,8 +546,8 @@ public class HighlineController {
 						HighlineThroughlineInfo throughInfo = list.get(i);
 						//铁路线
 						String throughLine = throughInfo.getThroughLine();
-						cmdInfoBf.append(dateStr).append(throughLine).append(f_cmdinfo).append("\n");
-						cmdInfoBf.append(f_oneCatalog).append("\n");
+						cmdInfoBf.append(dateStr).append(throughLine).append(f_cmdinfo).append("<br>");
+						cmdInfoBf.append(f_oneCatalog).append("<br>");
 						List<HighlineCrossInfo> crossInfoList = throughInfo.getListCrossInfo();
 						if(crossInfoList != null && crossInfoList.size() > 0 ){
 							for(int j = 0;j<crossInfoList.size();j++){
@@ -556,24 +559,24 @@ public class HighlineController {
 								String tokenVehBureau = crossInfo.getTokenVehBureau();
 								//交路计划所属局（局码）
 								String crossBureau = crossInfo.getCrossBureau();
-								cmdInfoBf.append(j+1).append(f_point).append(f_crossName).append(crossName).append("   ");
+								cmdInfoBf.append(j+1).append(f_point).append(f_crossName).append(crossName).append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 								//组装车底
 								if(tokenVehBureau.equals(crossBureau)){
 									if(vehicle1 != null && !"".equals(vehicle1)){
 										if(vehicle2 != null && !"".equals(vehicle2)){
-											cmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_plus).append(vehicle2).append(f_semicolon).append("\n");
+											cmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_plus).append(vehicle2).append(f_semicolon).append("<br>");
 										}else{
-											cmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_semicolon).append("\n");
+											cmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_semicolon).append("<br>");
 										}
 									}else{
 										if(vehicle2 != null && !"".equals(vehicle2)){
-											cmdInfoBf.append(f_vehicleName).append(vehicle2).append(f_semicolon).append("\n");
+											cmdInfoBf.append(f_vehicleName).append(vehicle2).append(f_semicolon).append("<br>");
 										}else{
-											cmdInfoBf.append("\n");
+											cmdInfoBf.append("<br>");
 										}
 									}
 								}else{
-									cmdInfoBf.append(f_vehicleName).append(tokenVehBureau).append(f_bureauInfo).append("\n");
+									cmdInfoBf.append(f_vehicleName).append(tokenVehBureau).append(f_bureauInfo).append("<br>");
 								}
 								
 							}
@@ -581,6 +584,7 @@ public class HighlineController {
 						}
 						
 					}
+					//logger.debug("cmdInfo==" + cmdInfoBf.toString());
 					result.setData(cmdInfoBf.toString());
 				 }else{
 					 //没有命令
@@ -609,6 +613,8 @@ public class HighlineController {
 			Result result = new Result();
 			 try{
 				 String cmdInfo = StringUtil.objToStr(reqMap.get("cmdInfo"));
+				 cmdInfo = cmdInfo.replaceAll("<br>", "\r\n").replaceAll("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","");
+				 logger.debug("cmdInfo==" + cmdInfo);
 			 }catch(Exception e){
 				 e.printStackTrace();
 				 logger.error("createCmdInfo error==" + e.getMessage());
