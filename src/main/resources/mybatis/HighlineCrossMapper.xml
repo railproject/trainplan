@@ -21,6 +21,101 @@
 	        <result column="dptTime" property="dptTime"/>
     </resultMap>
   
+  
+    <resultMap id="highlineThroughInfo" type="org.railway.com.trainplan.entity.HighlineThroughlineInfo">
+	        <id column="throughLine" property="throughLine"/>
+            <collection property="listCrossInfo" resultMap="highlineCrossInfo"/>
+    </resultMap>
+ 
+    <resultMap id="highlineCrossInfo" type="org.railway.com.trainplan.entity.HighlineThroughlineInfo">
+	        <id column="highLineCrossId" property="highLineCrossId"/>
+	        <result column="planCrossId" property="planCrossId"/>
+	        <result column="crossStartDate" property="crossStartDate"/>
+	        <result column="crossEndDate" property="crossEndDate"/>
+	        <result column="crossStartStn" property="crossStartStn"/>
+	        <result column="crossEndStn" property="crossEndStn"/>
+	        <result column="spareFlag" property="spareFlag"/>
+	        <result column="relevantBureau" property="relevantBureau"/>
+	        <result column="tokenVehBureau" property="tokenVehBureau"/>
+	        <result column="tokenVehDept" property="tokenVehDept"/>
+	        <result column="tokenPsgBureau" property="tokenPsgBureau"/>
+	        <result column="tokenPsgDept" property="tokenPsgDept"/>
+	        <result column="crhType" property="crhType"/>
+	        <result column="vehicle1" property="vehicle1"/>
+	        <result column="vehicle2" property="vehicle2"/>
+	        <result column="note" property="note"/>
+	        <result column="creatPeople" property="creatPeople"/>
+	        <result column="creatPeopleOrg" property="creatPeopleOrg"/>
+	        <result column="creatTime" property="creatTime"/>
+	        <result column="throughLine" property="throughLine"/>
+	        <result column="postId" property="postId"/>
+	        <result column="postName" property="postName"/>
+	        <result column="crossBureau" property="crossBureau"/>
+	        <result column="createReason" property="createReason"/>
+	        <result column="vehicleSubType" property="vehicleSubType"/>
+	        <result column="vehicleSubPeople" property="vehicleSubPeople"/>
+	        <result column="vehicleSubPeopleOrg" property="vehicleSubPeopleOrg"/>
+	        <result column="vehicleSubTime" property="vehicleSubTime"/>
+	        <result column="vehicleCheckType" property="vehicleCheckType"/>
+	        <result column="vehicleCheckPeople" property="vehicleCheckPeople"/>
+	        <result column="vehicleCheckPeopleOrg" property="vehicleCheckPeopleOrg"/>
+	        <result column="vehicleCheckTime" property="vehicleCheckTime"/>
+	        <result column="crossCheckType" property="crossCheckType"/>
+	        <result column="crossCheckPeople" property="crossCheckPeople"/>
+	        <result column="crossCheckPeopleOrg" property="crossCheckPeopleOrg"/>
+	        <result column="crossCheckTime" property="crossCheckTime"/>
+    </resultMap>
+    
+    <select id="getHighlineThroughCrossInfo"  parameterType="org.railway.com.trainplan.entity.HighlineCrossInfo" resultMap="highlineThroughInfo">
+       SELECT
+         t.HIGHLINE_CROSS_ID AS highlineCrossId,
+		 t.PLAN_CROSS_ID AS planCrossId,
+		 t.CROSS_START_DATE AS crossStartDate,
+		 t.CROSS_END_DATE AS crossEndDate,
+		 t.CROSS_START_STN AS crossStartStn,
+         t.CROSS_END_STN AS crossEndStn,
+		 t.CROSS_NAME AS crossName,
+		 t.SPARE_FLAG AS spareFlag,
+		 t.RELEVANT_BUREAU AS relevantBureau,
+		 t.TOKEN_VEH_BUREAU AS tokenVehBureau,
+		 t.TOKEN_VEH_DEPT AS tokenVehDept,
+		 t.TOKEN_VEH_DEPOT AS tokenVehDepot,
+		 t.TOKEN_PSG_BUREAU AS tokenPsgBureau ,
+		 t.TOKEN_PSG_DEPT AS tokenPsgDept,
+		 t.CRH_TYPE AS crhType,
+		 t.VEHICLE1 AS vehicle1,
+		 t.VEHICLE2 AS vehicle2,
+		 t.NOTE AS note,
+		 t.CREAT_PEOPLE AS creatPeople,
+		 t.CREAT_PEOPLE_ORG AS creatPeopleOrg ,
+		 t.CREAT_TIME AS creatTime,
+		 b.THROUGH_LINE AS throughLine,
+		 t.POST_ID AS postId,
+		 t.POST_Name AS postName,
+		 t.CROSS_BUREAU AS crossBureau,
+		 t.CREAT_REASON AS createReason,
+		 t.VEHICLE_SUB_TYPE AS vehicleSubType,
+		 t.VEHICLE_SUB_PEOPLE	 AS vehicleSubPeople,
+		 t.VEHICLE_SUB_PEOPLE_ORG AS vehicleSubPeopleOrg,
+         TO_CHAR(t.VEHICLE_SUB_TIME,'yyyy-MM-dd hh24:mi:SS')	AS vehicleSubTime,
+         t.VEHICLE_CHECK_TYPE	 AS vehicleCheckType,
+         t.VEHICLE_CHECK_PEOPLE	 AS vehicleCheckPeople,
+         t.VEHICLE_CHECK_PEOPLE_ORG	 AS vehicleCheckPeopleOrg,
+         TO_CHAR(t.VEHICLE_CHECK_TIME,'yyyy-MM-dd hh24:mi:SS')  AS vehicleCheckTime,
+         t.CROSS_CHECK_TYPE AS crossCheckType,
+		 t.CROSS_CHECK_PEOPLE AS crossCheckPeople,
+		 t.CROSS_CHECK_PEOPLE_ORG AS crossCheckPeopleOrg,
+		 TO_CHAR(t.CROSS_CHECK_TIME,'yyyy-MM-dd hh24:mi:SS')  AS crossCheckTime
+      FROM HIGHLINE_CROSS WHERE 1=1 
+      <if test="crossBureau != null and crossBureau !='' ">
+         AND T.CROSS_BUREAU = #{crossBureau}
+      </if>
+      <if test="crossStartDate != null and crossStartDate != '' ">
+         AND T.CROSS_START_DATE = #{crossStartDate}
+      </if>
+  
+  </select>
+    
   <select id="getHighlineCrossInfo" parameterType="org.railway.com.trainplan.entity.HighlineCrossInfo" resultType="org.railway.com.trainplan.entity.HighlineCrossInfo">
        SELECT
          t.HIGHLINE_CROSS_ID AS highlineCrossId,
@@ -214,6 +309,34 @@
   
      WHERE HIGHLINE_CROSS_ID IN (${highlineCrossIds})
    
+   </update>
+   
+   <update id="updateHighlineCrossInfo"  parameterType="org.railway.com.trainplan.entity.HighlineCrossInfo">
+    UPDATE HIGHLINE_CROSS
+    <if test="vehicleSubPeople != null and vehicleSubPeople != '' ">
+       SET 
+           VEHICLE_SUB_TYPE = ${vehicleSubType},
+           VEHICLE_SUB_PEOPLE = #{vehicleSubPeople},
+           VEHICLE_SUB_PEOPLE_ORG = #{vehicleSubPeopleOrg},
+           VEHICLE_SUB_TIME = sysdate
+    </if>
+    <if test="vehicleCheckPeople != null and vehicleCheckPeople != '' ">
+       SET
+            VEHICLE_CHECK_TYPE = ${vehicleCheckType},
+			VEHICLE_CHECK_PEOPLE =#{vehicleCheckPeople},
+			VEHICLE_CHECK_PEOPLE_ORG =#{vehicleCheckPeopleOrg},
+			VEHICLE_CHECK_TIME = sysdate
+    
+    </if>
+    
+    <if test="crossCheckPeople != null and crossCheckPeople != '' ">
+      SET
+         CROSS_CHECK_TYPE = ${crossCheckType},
+		 CROSS_CHECK_PEOPLE = #{crossCheckPeople},
+		 CROSS_CHECK_PEOPLE_ORG = #{crossCheckPeopleOrg},
+		 CROSS_CHECK_TIME= sysdate
+    </if>
+   WHERE CROSS_START_DATE = #{crossStartDate}  AND CROSS_BUREAU = #{crossBureau}
    </update>
    
    

@@ -14,6 +14,7 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.HighLineCrossTrainInfo;
 import org.railway.com.trainplan.entity.HighlineCrossInfo;
 import org.railway.com.trainplan.entity.HighlineCrossTrainBaseInfo;
+import org.railway.com.trainplan.entity.HighlineThroughlineInfo;
 import org.railway.com.trainplan.entity.HighlineTrainRunLine;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.HighLineService;
@@ -503,6 +504,193 @@ public class HighlineController {
 			
 			 return result;
 		}
+		
+		/**
+		 * 预览命令
+		 * @param reqMap
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/previewCmdInfo", method = RequestMethod.POST)
+		public Result previewCmdInfo(@RequestBody Map<String,Object> reqMap){
+			Result result = new Result();
+			 try{
+				 /**
+				  * 2014年08月09日京广高铁日计划命令：
+					一、各站列车开行车次：
+					1.交路:0D2002-D2001-D2006-D6721;  车底:CRH5049A+CRH5057A; 
+					2.交路:0D6721;  车底:CRH5049A+CRH5057A; 
+					3.交路:0G2503;  车底:京局担当
+					4.交路:0G2504-G2503-G2504;  车底:京局担当
+				  */
+				 final String f_crossName = "交路:";
+				 final String f_vehicleName = "车底:";
+				 final String f_point = ".";
+				 final String f_semicolon = ";";
+				 final String f_cmdinfo = "日计划命令:";
+				 final String f_oneCatalog = "一、各站列车开行车次：";
+				 final String f_bureauInfo = "局担当";
+				 final String f_plus = "+";
+				 HighlineCrossInfo crossInfoReq = new HighlineCrossInfo();
+				 String crossStartDate =  StringUtil.objToStr(reqMap.get("startDate"));
+				 crossInfoReq.setCrossStartDate(crossStartDate);
+				 //查询数据
+				 List<HighlineThroughlineInfo> list = highLineService.getHighlineThroughCrossInfo(crossInfoReq);
+				 if(list != null && list.size() > 0 ){
+					 String dateStr = crossStartDate.substring(0,4)+"年" + crossStartDate.substring(4,6)+"月" + crossStartDate.substring(6,8) + "日";
+					 StringBuffer  cmdInfoBf = new StringBuffer();
+					for(int i = 0;i<list.size();i++){
+						HighlineThroughlineInfo throughInfo = list.get(i);
+						//铁路线
+						String throughLine = throughInfo.getThroughLine();
+						cmdInfoBf.append(dateStr).append(throughLine).append(f_cmdinfo).append("\n");
+						cmdInfoBf.append(f_oneCatalog).append("\n");
+						List<HighlineCrossInfo> crossInfoList = throughInfo.getListCrossInfo();
+						if(crossInfoList != null && crossInfoList.size() > 0 ){
+							for(int j = 0;j<crossInfoList.size();j++){
+								HighlineCrossInfo crossInfo = crossInfoList.get(j);
+								String crossName = crossInfo.getCrossName();
+								String vehicle1 = crossInfo.getVehicle1();
+								String vehicle2 = crossInfo.getVehicle2();
+								//车辆担当局
+								String tokenVehBureau = crossInfo.getTokenVehBureau();
+								//交路计划所属局（局码）
+								String crossBureau = crossInfo.getCrossBureau();
+								cmdInfoBf.append(j+1).append(f_point).append(f_crossName).append(crossName).append("   ");
+								//组装车底
+								if(tokenVehBureau.equals(crossBureau)){
+									if(vehicle1 != null && !"".equals(vehicle1)){
+										if(vehicle2 != null && !"".equals(vehicle2)){
+											cmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_plus).append(vehicle2).append(f_semicolon).append("\n");
+										}else{
+											cmdInfoBf.append(f_vehicleName).append(vehicle1).append(f_semicolon).append("\n");
+										}
+									}else{
+										if(vehicle2 != null && !"".equals(vehicle2)){
+											cmdInfoBf.append(f_vehicleName).append(vehicle2).append(f_semicolon).append("\n");
+										}else{
+											cmdInfoBf.append("\n");
+										}
+									}
+								}else{
+									cmdInfoBf.append(f_vehicleName).append(tokenVehBureau).append(f_bureauInfo).append("\n");
+								}
+								
+							}
+							 
+						}
+						
+					}
+					result.setData(cmdInfoBf.toString());
+				 }else{
+					 //没有命令
+					 result.setData("-1");
+				 }
+				 
+			 }catch(Exception e){
+				 e.printStackTrace();
+				 logger.error("previewCmdInfo error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
+
+
+		/**
+		 * 生成命令
+		 * @param reqMap
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/createCmdInfo", method = RequestMethod.POST)
+		public Result createCmdInfo(@RequestBody Map<String,Object> reqMap){
+			Result result = new Result();
+			 try{
+				 String cmdInfo = StringUtil.objToStr(reqMap.get("cmdInfo"));
+			 }catch(Exception e){
+				 e.printStackTrace();
+				 logger.error("createCmdInfo error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
+
+		/**
+		 * 保存
+		 * @param reqMap
+		 * @param roleType 取值：VEHICLE_SUB，VEHICLE_CHECK
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/saveHighLineWithRole/{roleType}",method = RequestMethod.POST)
+		public Result saveHighLineWithRole(@RequestBody Map<String,Object> reqMap,@PathVariable String roleType){
+			Result result = new Result();
+			 try{
+				 List<Map> highLineCrossesList = (List<Map>)reqMap.get("highLineCrosses");
+				 if(highLineCrossesList != null && highLineCrossesList.size() > 0 ){
+					 for(Map map : highLineCrossesList){
+						
+						 String highlineCrossId =  StringUtil.objToStr(map.get("highlineCrossId"));
+						 String vehicle1 =  StringUtil.objToStr(map.get("vehicle1"));
+						 String vehicle2 =  StringUtil.objToStr(map.get("vehicle2"));
+						 int count = highLineService.updateHighLineVehicle(highlineCrossId,vehicle1,vehicle2);
+						 logger.debug("saveHighLineWithRole~~count==" + count);
+					 }
+				 }
+				
+			 }catch(Exception e){
+				 logger.error("saveHighLineWithRole error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			 return result;
+		}
 
 		
+		/**
+		 * 提交
+		 * @param reqMap
+		 * @param roleType 取值：CROSS_CHECK，VEHICLE_SUB，VEHICLE_CHECK
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/submitHighLineWithRole/{roleType}",method = RequestMethod.POST)
+		public Result submitHighLineWithRole(@RequestBody Map<String,Object> reqMap,@PathVariable String roleType){
+			Result result = new Result();
+			 try{
+				 HighlineCrossInfo crossInfo = new HighlineCrossInfo();
+				 logger.debug("deleteHighLineForIds~~~reqMap==" + reqMap);
+				 String crossStartDate = StringUtil.objToStr(reqMap.get("startDate"));
+				 crossInfo.setCrossStartDate(crossStartDate);
+				 //获取登录用户信息
+				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+				 String bureauShortName = user.getBureauShortName();
+				 String people = user.getName();
+				 String org = user.getDeptName();
+				 if("CROSS_CHECK".equals(roleType)){
+					 crossInfo.setCrossCheckPeople(people);
+					 crossInfo.setCrossCheckPeopleOrg(org);
+				 }else if("VEHICLE_SUB".equals(roleType)){
+					 crossInfo.setVehicleSubPeople(people);
+					 crossInfo.setVehicleSubPeopleOrg(org);
+				 }else if("VEHICLE_CHECK".equals(roleType)){
+					 crossInfo.setVehicleCheckPeople(people);
+					 crossInfo.setVehicleCheckPeopleOrg(org);
+				 }
+				 crossInfo.setCrossBureau(bureauShortName);
+				 
+				 highLineService.updateHighlineCrossInfo(crossInfo);
+			 }catch(Exception e){
+				 e.printStackTrace();
+				 logger.error("submitHighLineWithRole error==" + e.getMessage());
+				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
+				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
+			 }
+			
+			 return result;
+		}
 }

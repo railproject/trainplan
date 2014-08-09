@@ -62,26 +62,39 @@ public class HighlineCrossInfo {
 	//审核时间（格式：yyyy-mm-dd hh24:mi:ss）
 	private String checkTime;
 	
-	private String vehicleSubType;
+	private Integer vehicleSubType;
 	private String vehicleSubPeople;
 	private String vehicleSubPeopleOrg;
 	private String vehicleSubTime;
-	private String vehicleCheckType;
+	private Integer vehicleCheckType;
 	private String vehicleCheckPeople;
 	private String vehicleCheckPeopleOrg;
 	private String vehicleCheckTime;
-	private String crossCheckType;
+	private Integer crossCheckType;
 	private String crossCheckPeople;
 	private String crossCheckPeopleOrg;
 	private String crossCheckTime;
 	
 	
 	
-	public String getVehicleSubType() {
+	
+	public Integer getVehicleSubType() {
 		return vehicleSubType;
 	}
-	public void setVehicleSubType(String vehicleSubType) {
+	public void setVehicleSubType(Integer vehicleSubType) {
 		this.vehicleSubType = vehicleSubType;
+	}
+	public Integer getVehicleCheckType() {
+		return vehicleCheckType;
+	}
+	public void setVehicleCheckType(Integer vehicleCheckType) {
+		this.vehicleCheckType = vehicleCheckType;
+	}
+	public Integer getCrossCheckType() {
+		return crossCheckType;
+	}
+	public void setCrossCheckType(Integer crossCheckType) {
+		this.crossCheckType = crossCheckType;
 	}
 	public String getVehicleSubPeople() {
 		return vehicleSubPeople;
@@ -101,12 +114,7 @@ public class HighlineCrossInfo {
 	public void setVehicleSubTime(String vehicleSubTime) {
 		this.vehicleSubTime = vehicleSubTime;
 	}
-	public String getVehicleCheckType() {
-		return vehicleCheckType;
-	}
-	public void setVehicleCheckType(String vehicleCheckType) {
-		this.vehicleCheckType = vehicleCheckType;
-	}
+	
 	public String getVehicleCheckPeople() {
 		return vehicleCheckPeople;
 	}
@@ -125,12 +133,7 @@ public class HighlineCrossInfo {
 	public void setVehicleCheckTime(String vehicleCheckTime) {
 		this.vehicleCheckTime = vehicleCheckTime;
 	}
-	public String getCrossCheckType() {
-		return crossCheckType;
-	}
-	public void setCrossCheckType(String crossCheckType) {
-		this.crossCheckType = crossCheckType;
-	}
+	
 	public String getCrossCheckPeople() {
 		return crossCheckPeople;
 	}

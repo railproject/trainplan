@@ -19,6 +19,7 @@ import org.railway.com.trainplan.entity.BaseTrainInfo;
 import org.railway.com.trainplan.entity.HighLineCrossTrainInfo;
 import org.railway.com.trainplan.entity.HighlineCrossInfo;
 import org.railway.com.trainplan.entity.HighlineCrossTrainBaseInfo;
+import org.railway.com.trainplan.entity.HighlineThroughlineInfo;
 import org.railway.com.trainplan.entity.HighlineTrainRunLine;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
 import org.railway.com.trainplan.entity.PlanTrain;
@@ -299,4 +300,21 @@ public class HighLineService{
 		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_INFO, crossInfo);
 	}
 	
+	/**
+	 * 更新表highline_cross中数据
+	 * @param crossInfo
+	 * @return
+	 */
+	public int updateHighlineCrossInfo(HighlineCrossInfo crossInfo){
+		return baseDao.updateBySql(Constants.HIGHLINECROSSDAO_UPDATE_HIGHLINE_CROSSINFO, crossInfo);
+	}
+	
+	/**
+	 * 根据throughline分组查询highlineCross信息
+	 * @param crossInfo
+	 * @return
+	 */
+	public List<HighlineThroughlineInfo> getHighlineThroughCrossInfo(HighlineCrossInfo crossInfo){
+		return baseDao.selectListBySql(Constants.HIGHLINECROSSDAO_GET_HIGHLINE_THROUGH_CROSSINFO, crossInfo);
+	}
 }

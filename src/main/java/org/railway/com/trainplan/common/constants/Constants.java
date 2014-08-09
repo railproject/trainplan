@@ -248,7 +248,9 @@ public class Constants {
 
 	//highlineCross    
 	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_LIST = "highlineCrossDao.getHighlineCrossList";
-
+    //
+	public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_CROSSINFO = "highlineCrossDao.updateHighlineCrossInfo";
+	
 	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_LIST = "highlineCrossDao.getHighlineCrossTrainList";
 	public static final String HIGHLINECROSSDAO_GET_HIGHLINE_CROSS_TRAIN_BASEINFO="highlineCrossDao.getHighlineCrossTrainBaseInfoList";
     //getHighlineTrainTimeForHighlineCrossId
@@ -262,6 +264,7 @@ public class Constants {
 	
 	public static final String HIGHLINECROSSDAO_DELETE_HIGHLINECROSS_FOR_ID = "highlineCrossDao.deleteHighlienCrossForHighlineCrossId";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_VEHICLE="highlineCrossDao.updateHighLineVehicle";
+    public static final String HIGHLINECROSSDAO_GET_HIGHLINE_THROUGH_CROSSINFO = "highlineCrossDao.getHighlineThroughCrossInfo";
     public static final String HIGHLINECROSSDAO_UPDATE_HIGHLINE_CHECKINFO="highlineCrossDao.updateHiglineCheckInfo";
 	public static final String GET_TRAIN_RUN_PLANS_FOR_CREATElINE = "org.railway.com.trainplan.repository.mybatis.RunPlanDao.getTrainRunPlansForCreateLine";
 	public static final String HIGHLINECROSSDAO_GET_VEHICLES = "highlineCrossDao.getVehicles";

@@ -519,6 +519,10 @@ public class DateUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	    
+	    System.err.println("20141010".substring(0,4));
+	    System.err.println("20141010".substring(4,6));
+	    System.err.println("20141010".substring(6,8));
 	  }
 	
 	  
