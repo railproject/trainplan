@@ -183,7 +183,7 @@ public class HighlineController {
 			 try{
 				 
 				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-				 reqMap.put("crossBureau", user.getBureauShortName());
+				 reqMap.put("crossBureau", user.getBureau());
 				 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(reqMap);
 				 result.setData(list);
 			 }catch(Exception e){
@@ -444,7 +444,7 @@ public class HighlineController {
 				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 				 HighlineCrossInfo crossInfo = new HighlineCrossInfo();
 				 crossInfo.setCrossStartDate(startDate);
-				 crossInfo.setCrossBureau(user.getBureauShortName());
+				 crossInfo.setCrossBureau(user.getBureau());
 				 //获取数据
 				 List<HighlineCrossInfo> list = highLineService.getHighlineCrossInfo(crossInfo);
 				 StringBuffer highlineCrossIdBf = new StringBuffer();
@@ -668,7 +668,7 @@ public class HighlineController {
 				 crossInfo.setCrossStartDate(crossStartDate);
 				 //获取登录用户信息
 				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-				 String bureauShortName = user.getBureauShortName();
+				 String bureauCode = user.getBureau();
 				 String people = user.getName();
 				 String org = user.getDeptName();
 				 if("CROSS_CHECK".equals(roleType)){
@@ -681,7 +681,7 @@ public class HighlineController {
 					 crossInfo.setVehicleCheckPeople(people);
 					 crossInfo.setVehicleCheckPeopleOrg(org);
 				 }
-				 crossInfo.setCrossBureau(bureauShortName);
+				 crossInfo.setCrossBureau(bureauCode);
 				 
 				 highLineService.updateHighlineCrossInfo(crossInfo);
 			 }catch(Exception e){
