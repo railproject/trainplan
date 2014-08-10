@@ -50,7 +50,6 @@ var CrossDictPage = function() {
 			var tokenVehBureau = _self.crossDictSearchModle().tokenVehBureau().value;//担当局局码
 			var crossName = _self.crossDictSearchModle().crossName();//交路名
 			
-			console.log("schemeId="+schemeId+"	tokenVehBureau="+tokenVehBureau+"	crossName="+crossName);
 			
 			if(schemeId == null || typeof schemeId=="undefine"){
 				showErrorDialog("请选择方案!");

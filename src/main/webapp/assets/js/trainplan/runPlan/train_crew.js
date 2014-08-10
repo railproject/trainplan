@@ -49,7 +49,6 @@ var TrainCrewPage = function () {
 				success : function(result) {
 					if (result != null && result != "undefind" && result.code == "0") {
 					
-						console.dir(result);
 						$.each(result.data, function(i, obj){
 							//乘务类型（1车长、2司机、3机械师）
 							if (obj.crewType == "1") {

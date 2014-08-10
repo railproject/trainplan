@@ -85,7 +85,6 @@ function PageModle(pageSize, fun, jg){
 		return self.currentIndex() + self.pageSize();
 	};
 	self.loadPre = function(){
-//		console.log("loadPre")
 //		if(self.currentPage()*self.pageSize() > self.totalCount()){
 //			
 //		}

@@ -99,9 +99,9 @@ function CrossModel() {
 	}; 
 	
 	self.trainRunPlanChange = function(row, event){ 
-		console.log(row);
-		console.log(event.target.name);
-		console.log("trainRunPlanChange test");
+//		console.log(row);
+//		console.log(event.target.name);
+//		console.log("trainRunPlanChange test");
 	};
 	
 	self.dragRunPlan = function(n,event){
@@ -220,7 +220,6 @@ function CrossModel() {
 	 * @param currentTrain
 	 */
 	self.loadTrainPersonnel = function(currentTrain){
-		console.dir(currentTrain);
 //		if($('#run_plan_train_crew_dialog').is(":hidden")){
 			var _param = "trainNbr="+currentTrain.trainName+"&runDate=" + currentTrain.startDate+"&startStn="+currentTrain.startStn+"&endStn="+currentTrain.endStn;
 			var _title = "车次："+currentTrain.trainName
@@ -582,7 +581,6 @@ function CrossModel() {
 			dataType : "json",
 			contentType : "application/json", 
 			success : function(result) {    
-				console.dir(result);
 				if (result != null && result != "undefind" && result.code == "0") { 
 					self.searchModle().loadBureau(result.data); 
 					if (result.data !=null) { 
