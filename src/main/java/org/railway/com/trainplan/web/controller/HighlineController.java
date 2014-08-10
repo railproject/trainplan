@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import mor.railway.cmd.adapter.model.HighlineCross;
+
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -158,12 +161,26 @@ public class HighlineController {
 			 Result result = new Result();
 			 try{
 				 String startDate = StringUtil.objToStr(reqMap.get("startDate"));
+				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+				 String bureauName = user.getBureauShortName();
+				 String bureauCode = user.getBureau();
+				 List<HighlineCrossInfo> lisetResult = new ArrayList<HighlineCrossInfo>();
 				 if(startDate != null){  
-					 List<HighlineCrossInfo> list = highLineService.createHighLineCross(startDate); 
-					 result.setData(list);
+					 List<HighlineCross> list = highLineService.createHighLineCross(bureauName,bureauCode,startDate); 
+					 if(list != null && list.size() > 0 ){
+						 for(HighlineCross cross : list){
+							 HighlineCrossInfo temp = new HighlineCrossInfo();
+							 BeanUtils.copyProperties(temp, cross);
+							 temp.setHighLineCrossId(cross.getHighlineCrossId());
+							 lisetResult.add(temp);
+						 }
+					 }
+					 
+					 
+					 result.setData(lisetResult);
 				 } 
 			 }catch(Exception e){ 
-				 logger.error("checkCorssInfo error==" + e.getMessage());
+				 logger.error("createHighLineCross error==" + e.getMessage());
 				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
 				 result.setMessage(StaticCodeType.SYSTEM_ERROR.getDescription());	
 			 }
@@ -643,7 +660,6 @@ public class HighlineController {
 			Result result = new Result();
 			 try{
 				 String cmdInfo = StringUtil.objToStr(reqMap.get("cmdInfo"));
-				 //cmdInfo = cmdInfo.replaceAll("<br>", "\r\n").replaceAll("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","");
 				 logger.debug("cmdInfo==" + cmdInfo);
 			 }catch(Exception e){
 				 e.printStackTrace();
@@ -670,7 +686,7 @@ public class HighlineController {
 				 if(highLineCrossesList != null && highLineCrossesList.size() > 0 ){
 					 for(Map map : highLineCrossesList){
 						
-						 String highlineCrossId =  StringUtil.objToStr(map.get("highlineCrossId"));
+						 String highlineCrossId =  StringUtil.objToStr(map.get("highLineCrossId"));
 						 String vehicle1 =  StringUtil.objToStr(map.get("vehicle1"));
 						 String vehicle2 =  StringUtil.objToStr(map.get("vehicle2"));
 						 int count = highLineService.updateHighLineVehicle(highlineCrossId,vehicle1,vehicle2);

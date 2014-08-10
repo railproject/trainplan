@@ -4,13 +4,14 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import org.apache.commons.beanutils.BeanUtils;
+import mor.railway.cmd.adapter.model.HighlineCross;
+import mor.railway.cmd.adapter.service.impl.HighLinePlanGeneratorService;
+
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.railway.com.trainplan.common.constants.Constants;
@@ -22,7 +23,6 @@ import org.railway.com.trainplan.entity.HighlineCrossTrainBaseInfo;
 import org.railway.com.trainplan.entity.HighlineThroughlineInfo;
 import org.railway.com.trainplan.entity.HighlineTrainRunLine;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
-import org.railway.com.trainplan.entity.PlanTrain;
 import org.railway.com.trainplan.repository.mybatis.BaseDao;
 import org.railway.com.trainplan.service.dto.OptionDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,71 +77,13 @@ public class HighLineService{
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<HighlineCrossInfo>  createHighLineCross(String startDate){
-		ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-		Map<String, Object> pMap = new HashMap<String, Object>();
-		pMap.put("startDate", startDate);
-		List<PlanCrossInfo> planCrosses = this.baseDao.selectListBySql(Constants.GET_PLANCROSSINFO_BY_STARTDATE, pMap);
-		List<HighlineCrossInfo> hList = new ArrayList<HighlineCrossInfo>();
-		List<HighLineCrossTrainInfo> tList = new ArrayList<HighLineCrossTrainInfo>(); 
-		if(planCrosses != null && planCrosses.size() > 0){
-			Map<String, Object> tMap = new HashMap<String, Object>();
-			tMap.put("startDate", startDate);  
-			for(PlanCrossInfo pc : planCrosses){ 
-				HighlineCrossInfo highlineCrossInfo = new HighlineCrossInfo(); 
-				highlineCrossInfo.setCreatPeople(user.getUsername());
-				highlineCrossInfo.setCrossBureau(user.getBureau());
-				highlineCrossInfo.setCreatPeopleOrg(user.getDeptName());
-				highlineCrossInfo.setHighLineCrossId(UUID.randomUUID().toString());
-				try {
-					BeanUtils.copyProperties(highlineCrossInfo, pc);  
-				} catch (IllegalAccessException e) {
-					
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					
-					e.printStackTrace();
-				} 
-				tMap.put("planCrossId", pc.getPlanCrossId());
-				tMap.put("groupSerialNbr", pc.getGroupSerialNbr()); 
-				List<PlanTrain> trains = this.baseDao.selectListBySql(Constants.TRAINPLANDAO_FIND_BY_GROUPSERIALBRR, tMap);
-				for(int i = 0; i < trains.size(); i++){
-					PlanTrain ct = trains.get(i);
-					if(ct.getTrainSort() == 1){ 
-						highlineCrossInfo.setCrossStartDate(DateUtil.format(ct.getStartTime(), "yyyyMMdd"));
-						highlineCrossInfo.setCrossStartStn(ct.getStartStn());
-						// 如果只有第一个车的时候默认设置为第一个车的终到站和时间
-						highlineCrossInfo.setCrossEndDate(DateUtil.format(ct.getEndTime(), "yyyyMMdd"));
-						highlineCrossInfo.setEndStn(ct.getEndStn()); 
-					}else if(i == trains.size() - 1){ 
-						highlineCrossInfo.setCrossEndDate(DateUtil.format(ct.getEndTime(), "yyyyMMdd"));
-						highlineCrossInfo.setCrossEndStn(ct.getEndStn()); 
-					}
-					HighLineCrossTrainInfo ht = new HighLineCrossTrainInfo();
-					ht.setHighLineCrossId(highlineCrossInfo.getHighLineCrossId());
-					ht.setHighLineTrainId(UUID.randomUUID().toString());
-					try {
-						BeanUtils.copyProperties(ht, ct);
-					} catch (IllegalAccessException e) {
-						
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						
-						e.printStackTrace();
-					} 
-					tList.add(ht);
-				}  
-				hList.add(highlineCrossInfo);
-			} 
-		}   
-		Map<String, Object> hMap = new HashMap<String, Object>();
-		hMap.put("hList", hList);
-		if(hList.size() > 0){
-			this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS, hMap);
-			this.baseDao.insertBySql(Constants.CROSSDAO_ADD_HIGHLINE_CROSS_TRAIN, tList);
-		} 
-		return hList;
-		//insert to database 
+	public List<HighlineCross>  createHighLineCross(String bureauName,String bureauCode,String startDate) throws ParseException{
+		Date runDate = DateUtil.parseDate(startDate,"yyyyMMdd");
+		// 加载高铁计划服务
+		List<HighlineCross> highlineData = HighLinePlanGeneratorService.getInstance().loadHighlineData(bureauName, bureauCode, runDate);
+
+		return highlineData;
+		
 	}
 	 
 	/**

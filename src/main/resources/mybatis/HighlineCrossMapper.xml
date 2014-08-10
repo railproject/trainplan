@@ -209,7 +209,7 @@
 		 t.CREAT_PEOPLE AS creatPeople,
 		 t.CREAT_PEOPLE_ORG AS creatPeopleOrg ,
 		 t.CREAT_TIME AS creatTime,
-		 b.THROUGH_LINE AS throughLine,
+		 t.THROUGH_LINE AS throughLine,
 		 t.POST_ID AS postId,
 		 t.POST_Name AS postName,
 		 t.CROSS_BUREAU AS crossBureau,
@@ -234,7 +234,7 @@
 		  and t.CROSS_NAME like '%' || #{trainNbr} || '%'
 	  </if>
 	   <if test="throughLine != null and throughLine != '' ">
-		  and b.THROUGH_LINE=#{throughLine}
+		  and t.THROUGH_LINE=#{throughLine}
 	  </if>
 	   <if test="tokenVehDepot != null and tokenVehDepot != '' ">
 		  and t.TOKEN_VEH_DEPOT=#{tokenVehDepot}
