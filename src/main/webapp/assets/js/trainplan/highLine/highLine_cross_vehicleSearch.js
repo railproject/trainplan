@@ -34,8 +34,6 @@ function HighLineCrossModle(data){
 	//加载列车到列车数组中
 	self.loadTrains = function(trains){
 		$.each(trains, function(i, n){
-			console.log("&&&&&&&&& ");
-			console.dir(n);
 			var train = new TrainRow(n);
 			train.loadTimes(n.highlineTrainTimeList);
 			self.trains.push(train);
@@ -216,7 +214,6 @@ function CrossModel() {
 		 var currentCorss = self.selectedHighLineCrossRows()[0]; 
 		 //做恢复使用
 		 self.oldHighLineCrosses.push(currentCorss);
-		 console.log(ko.toJSON(currentCorss));
 		 commonJsScreenLock();
 		 $.ajax({
 				url : basePath+"/highLine/getHighlineTrainTimeForHighlineCrossId",
@@ -232,7 +229,6 @@ function CrossModel() {
 						 self.highLineCrossRows.remove(currentCorss);
 						 self.selectedHighLineCrossRows.remove(currentCorss);
 						 self.acvtiveHighLineCrosses.push(cross); 
-						 console.log(ko.toJSON(cross));
 					} else {
 						showErrorDialog("没有加载的交路数据");
 					} 
@@ -250,7 +246,6 @@ function CrossModel() {
 		$.each(self.selectedActiveHighLineCrossRows(), function(i, n){
 			$.each(n.trains(), function(a, t){ 
 				var cross = new HighLineCrossModle($.parseJSON(ko.toJSON(n))); 
-				console.log(ko.toJSON(cross));
 				 cross.addTrain(t);
 				self.acvtiveHighLineCrosses.push(cross);  
 			}); 
@@ -395,7 +390,6 @@ function CrossModel() {
 		for(var i = 0; i < oldCrosses.length; i++){ 
 			oldCrossIds += (oldCrossIds == "" ? "'"  : ",'")  + oldCrosses[i].highLineCrossId() + "'";
 		}
-		console.log(crosses);
 		$.ajax({
 				url : basePath+"/highLine/saveHighlineCrossAndTrainInfo",
 				cache : false,
@@ -516,9 +510,9 @@ function CrossModel() {
 	};
 	
 	self.trainRunPlanChange = function(row, event){ 
-		console.log(row);
-		console.log(event.target.name);
-		console.log("trainRunPlanChange test");
+//		console.log(row);
+//		console.log(event.target.name);
+//		console.log("trainRunPlanChange test");
 	};
 	
 	self.dragRunPlan = function(n,event){
@@ -2075,9 +2069,6 @@ function TrainModel() {
 
 function HighLineTrain(data){
 	var self = this; 
-//	console.log("------------ HighLineTrain------------- ");
-//	console.dir(data);
-
 	self.trainNbr = data.trainNbr;
 	self.startStn = data.startStn;
 	self.startTime = data.startTime==""?"":moment(data.startTime).format('MMDD HH:mm');

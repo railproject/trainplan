@@ -56,7 +56,6 @@ function CrossModel() {
 	 * @param crossId
 	 */
 	self.loadRunPlans = function(_trainNbr){
-//		console.log("----------------    加载开行情况       ------------------");
 		var startDate = $("#runplan_input_startDate").val(); 
 		var endDate =  $("#runplan_input_endDate").val();
 		
@@ -106,7 +105,6 @@ function CrossModel() {
 	
 	
 	self.loadStns = function(currentTrain){
-//		console.log("-----------------     查看时刻表      条件     ----------------------");
 		self.times.remove(function(item){
 			return true;
 		});

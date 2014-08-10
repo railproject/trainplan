@@ -153,8 +153,6 @@ var RunPlanCanvasPage = function(cross) {
 //	        for(var i = 0; i < lineList.length; i++) {
 //	            var c = lineList[i]; 
 //	            if(c.isCurrent == true) { 
-//	            	console.log("---------------------faf-----------------");
-//	            	console.log(c);
 //	            	_self.app.loadStns(c.obj.planTrainId);
 //	            	if(c.obj.trainStns != null){
 //	            		$.each(c.obj.trainStns, function(z, n){

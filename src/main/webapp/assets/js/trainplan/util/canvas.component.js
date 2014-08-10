@@ -625,7 +625,6 @@ var MyCanvasComponent = function(context, xDateArray, stnArray, expandObj) {
 			for(var i=0; i<_len;i++) {
 				var _obj = this.obj.trainStns[i];
 				
-//				console.log("###########	_obj.stationType="+_obj.stationType+"	 $.inArray(_obj.stationType, _stationTypeArray)="+$.inArray(_obj.stationType, _stationTypeArray));
 				//屏蔽不在显示要求范围内的数据
 				if (getStnArcYIndex(_obj.stnName) < 0 || $.inArray(_obj.stationType, _stationTypeArray) < 0) {//该站不存在于纵坐标数组中或站类型不在显示范围内 	当数据字典完善后，重新启用上面的注释条件
 					continue;
