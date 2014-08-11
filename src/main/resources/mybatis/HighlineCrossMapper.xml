@@ -246,6 +246,15 @@
 	  <if test="postName != null and postName !='' ">
 	      and t.POST_NAME = #{postName}
 	  </if>
+	  <if test="crossCheckType != null and crossCheckType !='' ">
+	      and t.CROSS_CHECK_TYPE = ${crossCheckType}
+	  </if>
+	  <if test="vehicleSubType != null and vehicleSubType !='' ">
+	      and t.VEHICLE_SUB_TYPE = ${vehicleSubType}
+	  </if>
+	  <if test="vehicleCheckType != null and vehicleCheckType !='' ">
+	      and t.VEHICLE_CHECK_TYPE = ${vehicleCheckType}
+	  </if>
       ORDER BY t.CROSS_NAME
    </select>
 
@@ -270,7 +279,7 @@
         C.END_BUREAU AS endStnBureau,
 		TO_CHAR(C.END_TIME,'yyyy-MM-dd hh24:mi:SS') AS endTime
 		FROM HIGHLINE_CROSS A,HIGHLINE_CROSS_TRAIN B,PLAN_TRAIN C
-	WHERE A.HIGHLINE_CROSS_ID=B.HIGHLINE_CROSS_ID AND B.PLAN_TRAIN_ID=C.PLAN_TRAIN_ID AND A.HIGHLINE_CROSS_ID=#{highlineCrossId}
+	WHERE A.HIGHLINE_CROSS_ID=B.HIGHLINE_CROSS_ID AND B.PLAN_TRAIN_ID=C.PLAN_TRAIN_ID AND A.HIGHLINE_CROSS_ID=#{highlineCrossId} order by starttime
    
    </select>
    

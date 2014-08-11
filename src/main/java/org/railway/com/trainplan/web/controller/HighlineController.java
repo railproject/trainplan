@@ -194,15 +194,66 @@ public class HighlineController {
 		 * @return
 		 */
 		@ResponseBody
-		@RequestMapping(value = "/getHighlineCrossList", method = RequestMethod.POST)
-		public Result  getHighlineCrossList(@RequestBody Map<String,Object> reqMap) {
+		@RequestMapping(value = "/getHighlineCrossList/{roleType}", method = RequestMethod.POST)
+		public Result  getHighlineCrossList(@RequestBody Map<String,Object> reqMap,@PathVariable String roleType) {
 			 Result result = new Result();
 			 try{
-				 
+				 /**
+				  * roleType取值：
+					CROSS_CHECK   高铁交路计划审核
+					VEHICLE_SUB     高铁车底计划审核
+					VEHICLE_CHECK  高铁车底计划报告
+					ALL     高铁交路/计划查询
+				  */
 				 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 				 reqMap.put("crossBureau", user.getBureau());
-				 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(reqMap);
-				 result.setData(list);
+				 if("CROSS_CHECK".equals(roleType)){
+					 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(reqMap);
+					 List<HighlineCrossInfo> returnList = new ArrayList<HighlineCrossInfo>();
+					 if(list != null && list.size() > 0 ){
+						 for(HighlineCrossInfo crossInfo : list){
+							 HighlineCrossInfo temp = new HighlineCrossInfo();
+							 Integer  vehicleCheckType = crossInfo.getVehicleCheckType();
+							 BeanUtils.copyProperties(temp, crossInfo);
+							 //车底计划审核状态（0:未审核1:审核），已经审核的才能显示车底1和车底2
+							 if(vehicleCheckType != 1){
+								 temp.setVehicle1("");
+								 temp.setVehicle2("");
+							 }
+							 returnList.add(temp);
+						 }
+						 result.setData(returnList);
+					 }
+				 }else if("VEHICLE_SUB".equals(roleType)){
+					 reqMap.put("crossCheckType", 1);
+					 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(reqMap);
+					 result.setData(list);
+				 }else if("VEHICLE_CHECK".equals(roleType)){
+					 reqMap.put("crossCheckType", 1);
+					 reqMap.put("vehicleSubType", 1);
+					 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(reqMap);
+					 result.setData(list);
+				 }else if("ALL".equals(roleType)){
+					 reqMap.put("crossCheckType", 1);
+					 List<HighlineCrossInfo> list = highLineService.getHighlineCrossList(reqMap);
+					 List<HighlineCrossInfo> returnList = new ArrayList<HighlineCrossInfo>();
+					 if(list != null && list.size() > 0 ){
+						 for(HighlineCrossInfo crossInfo : list){
+							 HighlineCrossInfo temp = new HighlineCrossInfo();
+							 Integer  vehicleCheckType = crossInfo.getVehicleCheckType();
+							 BeanUtils.copyProperties(temp, crossInfo);
+							 //车底计划审核状态（0:未审核1:审核），已经审核的才能显示车底1和车底2
+							 if(vehicleCheckType != 1){
+								 temp.setVehicle1("");
+								 temp.setVehicle2("");
+							 }
+							 returnList.add(temp);
+						 }
+						 result.setData(returnList);
+					 }
+				 }
+				
+				
 			 }catch(Exception e){
 				 logger.error("getHighlineCrossList error==" + e.getMessage());
 				 result.setCode(StaticCodeType.SYSTEM_ERROR.getCode());
