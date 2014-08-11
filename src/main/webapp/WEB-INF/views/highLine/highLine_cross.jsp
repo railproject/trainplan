@@ -113,17 +113,16 @@ var currentUserBureau = "";
 							 data-bind="options: searchModle().tokenVehDepots, value: searchModle().searchTokenVehDepot, optionsText: 'name', optionsValue: 'name' , optionsCaption: ''">
 					 </select> 
 				  </div>
-				  <div class="pull-left" style="margin-left:10px"> 
-					  	<label for="exampleInputEmail3" class="control-label pull-left" >动车台:&nbsp;</label> 
-						<div class="pull-left">
-						<select class="form-control" data-bind="options:searchModle().accs, value: searchModle().acc, optionsText: 'name', optionsValue:'code', optionsCaption: ''">
-						</select>
-					</div>
+				   <div class="pull-left" style="margin-left:10px"> 
+					 <label for="exampleInputEmail5" style="vertical-align: bottom;">动车台:&nbsp;</label> 
+					 <select class="form-control" style="width: 130px;display:inline-block;"
+							 data-bind="options:searchModle().accs, value: searchModle().searchAcc, optionsText: 'name', optionsValue: 'name' , optionsCaption: ''">
+					 </select> 
 				  </div>
 				  <div class="pull-left"> 
 					 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 15px;">
 														车次:&nbsp;</label> 
-					 <input type="text" class="form-control" style="width:75px;" placeholder="" />
+					 <input type="text" class="form-control" style="width:75px;" data-bind="value: searchModle().trainNbr"/>
 				 </div>
 				  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
 			 </div>
