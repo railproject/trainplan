@@ -170,7 +170,7 @@ var currentUserBureau = "";
 											<th style="width: 55px" align="center">担当局</th>
 											<th style="width: 100px" align="center">动车所</th>
 											<th style="width: 100px" align="center">管辖动车台</th>
-											<th style="width: 100px" align="center">来源</th> 
+											<th style="width: 100px" align="center">来源</th>
 										</tr>
 									</thead>
 									<tbody data-bind="foreach: highLineCrossRows">
@@ -189,7 +189,7 @@ var currentUserBureau = "";
 										    <td data-bind="text: tokenVehBureauShowValue, click: $parent.showTrains"></td>
 										    <td data-bind="text: tokenVehDepot, click: $parent.showTrains"></td>
 										    <td data-bind="text: postName, click: $parent.showTrains"></td>
-										    <td data-bind="text: note, click: $parent.showTrains"></td>
+										    <td data-bind="text: createReason, click: $parent.showTrains"></td>
 										</tr>
 									</tbody>
 								</table>

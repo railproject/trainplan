@@ -187,7 +187,7 @@ var currentUserBureau = "";
 										    <td data-bind="text: tokenVehBureauShowValue, click: $parent.showTrains"></td>
 										    <td data-bind="text: tokenVehDepot, click: $parent.showTrains"></td>
 										    <td data-bind="text: postName, click: $parent.showTrains"></td>
-										    <td data-bind="text: note, click: $parent.showTrains"></td>
+										    <td data-bind="text: createReason, click: $parent.showTrains"></td>
 										    <td data-bind="text: crossBureau, click: $parent.showTrains"></td>
 										</tr>
 									</tbody>
