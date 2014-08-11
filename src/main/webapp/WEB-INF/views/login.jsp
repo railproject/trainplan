@@ -8,6 +8,7 @@
 <html>
 <head lang="en">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="shortcut icon" href="${ctx}/assets/img/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="${ctx}/assets/css/custom-bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="${ctx}/assets/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="${ctx}/assets/css/style.css"/>
