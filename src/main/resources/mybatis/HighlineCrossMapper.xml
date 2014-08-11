@@ -206,6 +206,7 @@
 		 t.VEHICLE1 AS vehicle1,
 		 t.VEHICLE2 AS vehicle2,
 		 t.NOTE AS note,
+		 t.CROSS_DATE AS crossDate,
 		 t.CREAT_PEOPLE AS creatPeople,
 		 t.CREAT_PEOPLE_ORG AS creatPeopleOrg ,
 		 t.CREAT_TIME AS creatTime,
@@ -226,21 +227,24 @@
 		 t.CROSS_CHECK_PEOPLE AS crossCheckPeople,
 		 t.CROSS_CHECK_PEOPLE_ORG AS crossCheckPeopleOrg,
 		 TO_CHAR(t.CROSS_CHECK_TIME,'yyyy-MM-dd hh24:mi:SS')  AS crossCheckTime
-      FROM HIGHLINE_CROSS t LEFT JOIN dic_rela_cross_post b ON  t.base_cross_id=b.base_cross_id WHERE t.CROSS_START_DATE = #{crossStartDate}
+      FROM HIGHLINE_CROSS t LEFT JOIN dic_rela_cross_post b ON  t.base_cross_id=b.base_cross_id WHERE t.CROSS_DATE = #{crossDate}
       <if test="tokenVehBureau != null and tokenVehBureau != '' ">
 		  and t.TOKEN_VEH_BUREAU=#{tokenVehBureau}
 	  </if>
 	   <if test="trainNbr != null and trainNbr != '' ">
-		  and t.CROSS_NAME like '%' || #{trainNbr} || '%'
+		  and t.CROSS_NAME like '%' || ${trainNbr} || '%'
 	  </if>
 	   <if test="throughLine != null and throughLine != '' ">
 		  and t.THROUGH_LINE=#{throughLine}
-	  </if>
+	  </if>      
 	   <if test="tokenVehDepot != null and tokenVehDepot != '' ">
 		  and t.TOKEN_VEH_DEPOT=#{tokenVehDepot}
 	  </if>
 	  <if test="crossBureau != null and crossBureau !='' ">
 	      and t.cross_bureau = #{crossBureau}
+	  </if>
+	  <if test="postName != null and postName !='' ">
+	      and t.POST_NAME = #{postName}
 	  </if>
       ORDER BY t.CROSS_NAME
    </select>

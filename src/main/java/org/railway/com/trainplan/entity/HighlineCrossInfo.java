@@ -7,6 +7,7 @@ public class HighlineCrossInfo {
 	//交路计划ID（对应PLAN_CROSS表中的PLAN_CROSS_ID）
 	private String planCrossId;
 	private String baseCrossId;
+	private String crossDate;
 	//开始日期（该日历交路第一个车次的始发日期）
 	private String crossStartDate;
 	//结束日期（该日历交路最后一个车次的终到日期）
@@ -78,6 +79,12 @@ public class HighlineCrossInfo {
 	
 	
 	
+	public String getCrossDate() {
+		return crossDate;
+	}
+	public void setCrossDate(String crossDate) {
+		this.crossDate = crossDate;
+	}
 	public Integer getVehicleSubType() {
 		return vehicleSubType;
 	}

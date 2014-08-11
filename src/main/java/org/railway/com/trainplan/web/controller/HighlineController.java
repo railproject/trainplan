@@ -138,7 +138,7 @@ public class HighlineController {
 		 Result result = new Result();
 		 try{  
 			 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
-			 System.out.println("============user.getBureau()==============" + user.getBureau()); 
+			 
 			 List<OptionDto> list = commonService.getAccs(user.getBureau());
 			 result.setData(list);
 		 }catch(Exception e){
@@ -324,6 +324,7 @@ public class HighlineController {
 				 List<Map> newCrosses = (List<Map>)reqMap.get("newCrosses"); 
 				 if(newCrosses != null && newCrosses.size() > 0){
 					 ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
+					 String crossBureau = user.getBureau();
 					 List<HighlineCrossInfo> hList = new ArrayList<HighlineCrossInfo>();
 					 for(Map crossMap : newCrosses){
 						 HighlineCrossInfo highlineCrossInfo = new HighlineCrossInfo();
@@ -348,6 +349,7 @@ public class HighlineController {
 						 String postName = StringUtil.objToStr(crossMap.get("postName"));
 						 String postId = StringUtil.objToStr(crossMap.get("postId"));
 						 //set值
+						 highlineCrossInfo.setCrossBureau(crossBureau);
 						 highlineCrossInfo.setHighLineCrossId(highLineCrossId);
 						 highlineCrossInfo.setPlanCrossId(planCrossId == null?"":planCrossId);
 						 highlineCrossInfo.setCrossName(crossName == null?"":crossName);
