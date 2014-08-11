@@ -1281,7 +1281,7 @@ function CrossModel() {
 		commonJsScreenLock();
 		 
 		var bureauCode = self.searchModle().bureau(); 
-		var trainNbr = self.searchModle().filterTrainNbr(); 
+		var trainNbr = self.searchModle().trainNbr();
 		var searchThroughLine = self.searchModle().searchThroughLine();
 		var searchTokenVehDepot = self.searchModle().searchTokenVehDepot();
  
@@ -1291,18 +1291,19 @@ function CrossModel() {
 			return true;
 		});
 		$.ajax({
-				url : basePath+"/highLine/getHighlineCrossList",
+				url : basePath+"/highLine/getHighlineCrossList/ALL",
 				cache : false,
 				type : "POST",
 				dataType : "json",
 				contentType : "application/json",
 				data :JSON.stringify({
-					tokenVehBureau : bureauCode, 
-					trainNbr : trainNbr, 
-					crossStartDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),
-					throughLine:searchThroughLine,
-					tokenVehDepot: searchTokenVehDepot,
-					crossBureau: self.searchModle().crossBureau()//计划局
+					tokenVehBureau : bureauCode,//担当局局码
+					trainNbr : trainNbr,//车次号
+					crossDate : (planStartDate != null ? planStartDate : self.currdate()).replace(/-/g, ''),//交路日期
+					throughLine:searchThroughLine,//铁路线
+					tokenVehDepot: searchTokenVehDepot,//动车所
+					postName: self.searchModle().searchAcc(),//动车台
+					crossBureau:self.searchModle().crossBureau()//计划局
 				}),
 				success : function(result) {
 					if (result != null && result != "undefind" && result.code == "0") {
@@ -1825,6 +1826,10 @@ function searchModle(){
 	self.throughLine = ko.observable();
 	//动车台
 	self.acc = ko.observable();
+	//查询动车台
+	self.searchAcc = ko.observable();
+	//车次号
+	self.trainNbr = ko.observable();
 	//动车组车型（用于高铁）
 	self.crhType = ko.observable();  
 	
