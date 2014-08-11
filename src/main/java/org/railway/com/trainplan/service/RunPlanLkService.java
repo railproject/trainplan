@@ -134,8 +134,6 @@ public class RunPlanLkService {
 		  //根据开始结束时间，查询符合条件的临客命令对象集合
 		  List<CmdInfoModel> list = service.findCmdInfoModelListByDateAndBureau(model);
 		
-		  //关闭服务资源
-		  service.closeResource();
 		  return list;
 	  }
 	  
