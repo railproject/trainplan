@@ -185,7 +185,7 @@ var currentUserBureau = "";
 										    <td data-bind="text: endStn, click: $parent.showTrains"></td> 
 										    <td data-bind="text: (spareFlag() == 2 ? '是' : '否'), click: $parent.showTrains"></td>
 										    <td data-bind="text: tokenVehBureauShowValue, click: $parent.showTrains"></td>
-										    <td data-bind="text: tokenPsgDept, click: $parent.showTrains"></td>
+										    <td data-bind="text: tokenVehDepot, click: $parent.showTrains"></td>
 										    <td data-bind="text: postName, click: $parent.showTrains"></td>
 										    <td data-bind="text: note, click: $parent.showTrains"></td>
 										    <td data-bind="text: crossBureau, click: $parent.showTrains"></td>
