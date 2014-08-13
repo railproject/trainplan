@@ -29,7 +29,7 @@
 
     <logger name="org.springframework" level="ERROR" />
 
-    <logger name="org.mybatis" level="INFO" />
+    <logger name="org.mybatis" level="debug" />
 
     <logger name="org.apache.ibatis" level="DEBUG"/>
 
@@ -42,7 +42,7 @@
     <logger name="org.springframework.amqp" level="ERROR" />
 
 	<!-- root -->
-	<root level="DEBUG">
+	<root level="debug">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />
 	</root>

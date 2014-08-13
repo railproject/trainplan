@@ -232,7 +232,7 @@
 		  and t.TOKEN_VEH_BUREAU=#{tokenVehBureau}
 	  </if>
 	   <if test="trainNbr != null and trainNbr != '' ">
-		  and t.CROSS_NAME like '%' || ${trainNbr} || '%'
+		  and t.CROSS_NAME like '%${trainNbr}%'
 	  </if>
 	   <if test="throughLine != null and throughLine != '' ">
 		  and t.THROUGH_LINE=#{throughLine}

@@ -661,7 +661,7 @@ public class CrossService{
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("unitCrossId", unitCrossId);
 		List<UnitCrossTrainInfo> list = baseDao.selectListBySql(Constants.CROSSDAO_GET_UNIT_CROSS_TRAIN_INFO_FOR_UNIT_CROSSID, paramMap);
-		if(list != null && list.size() > 0 ){
+		/*if(list != null && list.size() > 0 ){
 			for(UnitCrossTrainInfo crossInfo : list ){
 				List<UnitCrossTrainSubInfo> trainList = crossInfo.getTrainInfoList();
 				if(trainList != null && trainList.size() > 0 ){
@@ -694,7 +694,7 @@ public class CrossService{
 					}
 				}
 			}
-		}
+		}*/
 		return  list;
 	}
 	
