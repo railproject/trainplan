@@ -19,11 +19,13 @@ import org.railway.com.trainplan.common.utils.StringUtil;
 import org.railway.com.trainplan.entity.MTrainLine;
 import org.railway.com.trainplan.entity.MTrainLineStn;
 import org.railway.com.trainplan.entity.PlanCheckInfo;
+import org.railway.com.trainplan.entity.QueryResult;
 import org.railway.com.trainplan.service.CommonService;
 import org.railway.com.trainplan.service.PlanTrainStnService;
 import org.railway.com.trainplan.service.RunPlanLkService;
 import org.railway.com.trainplan.service.RunPlanService;
 import org.railway.com.trainplan.service.ShiroRealm;
+import org.railway.com.trainplan.service.dto.PagingResult;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanCrossDto;
 import org.railway.com.trainplan.service.dto.RunPlanTrainDto;
@@ -315,17 +317,21 @@ public class RunPlanController {
     public Result getTrainRunPlansForCreateLine(@RequestBody Map<String, Object> params) {
 	   Result result = new Result();
 	   String createType = StringUtil.objToStr(params.get("createType"));
-	   System.err.println("createType==" + createType);
+	   //fortest
+	   params.put("rownumstart", 1);
+	   params.put("rownumend", 10);
 	   List trainPlans = null;
 	   try{
+		   QueryResult queryResult  = null;
 		   //"创建方式 （0:基本图初始化；1:基本图滚动；2:文件电报；3:命令；4:人工添加）"
 		   if("0".equals(createType)){
-			   
-			    trainPlans = runPlanService.getTrainRunPlansForCreateLine(params); 
+	            queryResult = runPlanService.getTrainRunPlansForCreateLine(params); 
+	       
 		   }else if("3".equals(createType)){
-			    trainPlans = runPlanService.getTrainRunPlanForLk(params);   
+			   queryResult = runPlanService.getTrainRunPlanForLk(params);   
 		   }
-	       result.setData(trainPlans);
+		     PagingResult page = new PagingResult(queryResult.getTotal(),queryResult.getRows());
+	         result.setData(page);
 	   }catch(Exception e){
 		   e.printStackTrace();
 	   }

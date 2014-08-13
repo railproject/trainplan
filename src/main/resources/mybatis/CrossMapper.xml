@@ -1145,7 +1145,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.ARRTIME
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">
-            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            	AND RELEVANT_BUREAU like '%#{currentBureau}%'
             </if>
         </if>
         <if test="startBureau != null">
@@ -1164,7 +1164,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.ARRTIME
             AND CREAT_UNIT_TIME is null
         </if>
         <if test="trainNbr != null">
-            AND cross_name like '%' || #{trainNbr} || '%'
+            AND cross_name like '%#{trainNbr}%'
         </if>
         <if test="unitCreateFlag == 1 ">
             AND CREAT_UNIT_TIME is not null
@@ -1191,11 +1191,11 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.ARRTIME
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">
-            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            	AND RELEVANT_BUREAU like '%#{currentBureau}%'
             </if>
         </if>
         <if test="trainNbr != null">
-            AND cross_name like '%' || #{trainNbr} || '%'
+            AND cross_name like '%#{trainNbr}%'
         </if>
         <if test="startBureau != null">
             AND START_BUREAU = #{startBureau}
@@ -1233,7 +1233,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.ARRTIME
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">
-            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            	AND RELEVANT_BUREAU like '%#{currentBureau}%'
             </if>
         </if>
         <if test="highlineFlag != null">
@@ -1243,7 +1243,7 @@ ORDER BY M.groupSerialNbr,M.trainSort,N.ARRTIME
             AND check_time is null
         </if>
         <if test="trainNbr != null">
-            AND CROSS_NAME like '%' || #{trainNbr} || '%'
+            AND CROSS_NAME like '%#{trainNbr}%'
         </if>
         <if test="checkFlag == 1 ">
             AND check_time is not null

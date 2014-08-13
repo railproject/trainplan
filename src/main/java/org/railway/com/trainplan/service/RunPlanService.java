@@ -31,6 +31,7 @@ import org.railway.com.trainplan.entity.CrossRunPlanInfo;
 import org.railway.com.trainplan.entity.LevelCheck;
 import org.railway.com.trainplan.entity.PlanCheckInfo;
 import org.railway.com.trainplan.entity.PlanCrossInfo;
+import org.railway.com.trainplan.entity.QueryResult;
 import org.railway.com.trainplan.entity.RunPlan;
 import org.railway.com.trainplan.entity.RunPlanStn;
 import org.railway.com.trainplan.entity.UnitCross;
@@ -1062,13 +1063,13 @@ public class RunPlanService {
 		return baseDao.deleteBySql(Constants.CROSSDAO_DELETE_PLANTRAIN_INFO_TRAIN_FOR_CROSSIDS, reqMap); 
 	}
 
-	public List getTrainRunPlansForCreateLine(Map<String, Object> params) {
-		List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.GET_TRAIN_RUN_PLANS_FOR_CREATElINE, params);
-		return crossRunPlans;
+	public QueryResult<CrossRunPlanInfo> getTrainRunPlansForCreateLine(Map<String, Object> params) throws Exception{
+		return baseDao.selectListForPagingBySql(Constants.GET_TRAIN_RUN_PLANS_FOR_CREATElINE, params);
+		 
 	}
 
-	public List getTrainRunPlanForLk(Map<String, Object> params) {
-		List<CrossRunPlanInfo> crossRunPlans = baseDao.selectListBySql(Constants.RUN_PLAN_DAO_GET_TRAINRUNPLAN_FOR_LK, params);
-		return crossRunPlans;
+	public QueryResult<CrossRunPlanInfo> getTrainRunPlanForLk(Map<String, Object> params) throws Exception {
+		return baseDao.selectListForPagingBySql(Constants.RUN_PLAN_DAO_GET_TRAINRUNPLAN_FOR_LK, params);
+		 
 	}
 }

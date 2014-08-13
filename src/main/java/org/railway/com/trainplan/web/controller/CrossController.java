@@ -1082,6 +1082,7 @@ public class CrossController {
 	public Result getUnitCrossInfo(@RequestBody Map<String,Object> reqMap){
 		Result result = new Result(); 
 		List<SubCrossInfo> list = null;
+		
 	    try{
 	    	ShiroRealm.ShiroUser user = (ShiroRealm.ShiroUser)SecurityUtils.getSubject().getPrincipal();
 	    	if(user.getBureau() != null){
