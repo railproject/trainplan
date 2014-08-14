@@ -122,9 +122,7 @@ function CrossModel() {
 	};
 	
 	self.trainRunPlanChange = function(row, event){ 
-//		console.log(row);
-//		console.log(event.target.name);
-//		console.log("trainRunPlanChange test");
+
 	};
 	
 	self.dragRunPlan = function(n,event){
@@ -445,9 +443,7 @@ function CrossModel() {
 						if(self.searchModle().searchType() != '3'){//图定
 							 var trainPlans = {};
 							 $.each(result.data.data, function(z, n){
-								 console.log("~~~n.planCrossId="+n.planCrossId);
 								 var planCross = trainPlans[n.planCrossId];
-								 console.dir(planCross);
 								 if(planCross == null){
 									 var trainPlanData = {
 												crossName: n.crossName, 
@@ -557,7 +553,7 @@ function CrossModel() {
 			});  
 	};
 	//必须定义在load函数之后
-	self.crossRows = new PageModle(50, self.loadCrosseForPage);  
+	self.crossRows = new PageModle(20, self.loadCrosseForPage);  
    
 	/**
 	 * 生成运行线

@@ -263,7 +263,7 @@ function CrossModel() {
 	};  
 	//查询所有的交路单元，因为没有使用提供未分页的查询函数，这里设置一个无法达到的总数5000后台提供以后可以替换掉
 	self.loadCrosses = function(){
-		self.loadCrosseForPage(0, 5000);
+		self.crossRows.loadRows();//.loadCrosseForPage(0, 5000);
 	};
 	//初始化数据表的表头数据
 	self.initDataHeader = function(){
@@ -318,7 +318,7 @@ function CrossModel() {
 					rownumend : endIndex,
 				}),
 				success : function(result) {    
- 
+					var rows = [];
 					if (result != null && result != "undefind" && result.code == "0") { 
 						if(result.data.data != null){
 							$.each(result.data.data,function(n, crossInfo){
@@ -331,6 +331,8 @@ function CrossModel() {
 										trainSort: 0,
 										chirldrenIndex : n//用于界面显示序号
 								};
+								 rows.push(trainPlanData);//分页集合对象，只用记录条数，数据暂未使用
+								 
 								//默认吧交路作为第一条记录
 								self.trainPlans.push(new TrainRunPlanRow(trainPlanData));
 								var crossNames = crossInfo.crossName.split("-");
@@ -348,7 +350,9 @@ function CrossModel() {
 									self.trainPlans.push(new TrainRunPlanRow(trainPlanData));
 								} ; 
 							});  
-						}   
+						}
+
+						self.crossRows.loadPageRows(result.data.totalRecord, rows);
 						 
 					} else {
 						showErrorDialog("获取交路单元信息失败");
@@ -363,7 +367,7 @@ function CrossModel() {
 			});  
 	};
 	//必须定义在load函数之后
-	self.crossRows = new PageModle(50, self.loadCrosseForPage);  
+	self.crossRows = new PageModle(20, self.loadCrosseForPage);  
    
 	//生成运行线
 	self.createTrainLines = function(){  
