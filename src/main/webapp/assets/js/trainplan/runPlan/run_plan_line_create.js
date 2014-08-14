@@ -48,6 +48,7 @@ function CrossModel() {
 	self.crossAllcheckBox = ko.observable(0); 
 	//当前展示的列车信息
 	self.trainPlans = ko.observableArray();
+
 	//表头的数据列表
 	self.planDays = ko.observableArray(); 
 	self.removeArrayAfterCreateRunLine = ko.observableArray();//清除该临时对象，避免每次点击生成运行线按钮重复提交数据
@@ -353,10 +354,6 @@ function CrossModel() {
 	    
 	    self.initDataHeader();
 	};  
-	//查询所有的交路单元，因为没有使用提供未分页的查询函数，这里设置一个无法达到的总数5000后台提供以后可以替换掉
-	self.loadCrosses = function(){
-		self.loadCrosseForPage(0, 5000);
-	};
 	self.initDataHeader = function(){
 		var startDate = $("#runplan_input_startDate").val(); 
 		var endDate =  $("#runplan_input_endDate").val();   
@@ -391,9 +388,15 @@ function CrossModel() {
 		return year + "-" + month + "-" + days;
 	};
 	
+
+	//查询所有的交路单元，因为没有使用提供未分页的查询函数，这里设置一个无法达到的总数5000后台提供以后可以替换掉
+	self.loadCrosses = function(){
+		self.crossRows.loadRows();//loadCrosseForPage(0, 5000);
+	};
+	
 	//查询所有的交路单元
-	self.loadCrosseForPage = function(startIndex, endIndex) {  
-	 		commonJsScreenLock();
+	self.loadCrosseForPage = function(startIndex, endIndex) {
+	 	commonJsScreenLock();
 		 
 		var bureauCode = self.searchModle().bureau(); 
 		var highlingFlag = self.searchModle().highlingFlag();
@@ -415,7 +418,9 @@ function CrossModel() {
 		
 		self.createRunPlanErrorCount(0);
 		
-		self.initDataHeader(); 
+		self.initDataHeader();
+		
+		
 		 
 		$.ajax({
 				url : basePath+"/runPlan/getTrainRunPlansForCreateLine",
@@ -435,11 +440,14 @@ function CrossModel() {
 				}),
 				success : function(result) {    
                    var _chirldrenIndex = 0;
+                   var rows = [];
 					if (result != null && result != "undefind" && result.code == "0") { 
 						if(self.searchModle().searchType() != '3'){//图定
 							 var trainPlans = {};
-							 $.each(result.data, function(z, n){ 
+							 $.each(result.data.data, function(z, n){
+								 console.log("~~~n.planCrossId="+n.planCrossId);
 								 var planCross = trainPlans[n.planCrossId];
+								 console.dir(planCross);
 								 if(planCross == null){
 									 var trainPlanData = {
 												crossName: n.crossName, 
@@ -452,6 +460,9 @@ function CrossModel() {
 												trainSort: 0,
 												chirldrenIndex : _chirldrenIndex//用于界面显示序号
 										};
+									 
+									 rows.push(trainPlanData);//分页集合对象，只用记录条数，数据暂未使用
+									 
 									 _chirldrenIndex ++ ;
 										//默认吧交路作为第一条记录
 									    var planCross = new TrainRunPlanRow(trainPlanData);
@@ -491,7 +502,7 @@ function CrossModel() {
 							 });
 						}else{//临客
 							 var trainPlans = {};
-							 $.each(result.data, function(z, n){ 
+							 $.each(result.data.data, function(z, n){ 
 								 var planCross = trainPlans[n.baseTrainId];
 								 if(planCross == null){
 									 
@@ -507,6 +518,7 @@ function CrossModel() {
 												trainSort: 1,
 												chirldrenIndex : _chirldrenIndex//用于界面显示序号
 										};
+									 	rows.push(trainPlanData);//分页集合对象，只用记录条数，数据暂未使用
 									 	_chirldrenIndex ++;
 										//默认吧交路作为第一条记录
 									    var planCross = new TrainRunPlanRow(trainPlanData);
@@ -531,7 +543,7 @@ function CrossModel() {
 							 });
 						}
 						
-						
+						self.crossRows.loadPageRows(result.data.totalRecord, rows);
 					} else {
 						showErrorDialog("获取交路单元信息失败");
 					};

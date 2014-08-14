@@ -138,11 +138,12 @@ var currentUserBureau = "<%=currentUserBureau %>";
 	 	    <div id="learn-more-content" >
               <div class="panel-body"> 
 				<!-- Tab panes --> 
-	  		    <div id="plan_view_div_palnDayDetail" class="panel panel-default">   
+	  		    <div id="plan_view_div_palnDayDetail" class="panel panel-default">
 				  <div class="row" style="margin: 5px 10px 10px 10px;" data-bind="html: completedMessage()">       
 				  </div>
 			      <div class="panel-body" style="bapadding:10px;overflow: auto">
-			      	<div class="table-responsive" > 
+			      	<div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }" style="margin-bottom: 50px"></div>
+					<div class="table-responsive" > 
 			          <table class="table table-bordered table-striped table-hover" id="run_plan_table" data-bind="style:{width: runPlanTableWidth()}">
 				      <thead>  
 				      	<tr data-bind="template: { name: 'runPlanTableDateHeader', foreach: planDays }" ></tr>
@@ -165,10 +166,10 @@ var currentUserBureau = "<%=currentUserBureau %>";
      <td style="width:60%;height:20px;">
   		<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
   	 </td>
-     <td style="width:40%;height:20px;padding:0px;pading-bottom:-14">   
-		<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
-	    <input type="text"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
-		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
+     <td class="pull-right" style="width:40%;height:20px;padding:0px;pading-bottom:-14">   
+		<span class="pull-right" data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a class="pull-right" style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
+	    <input type="text" class="pull-right"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
+		<a class="pull-right" style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
        </ul> 
 	 
      </td >
