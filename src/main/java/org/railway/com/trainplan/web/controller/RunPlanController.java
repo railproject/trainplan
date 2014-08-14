@@ -317,9 +317,6 @@ public class RunPlanController {
     public Result getTrainRunPlansForCreateLine(@RequestBody Map<String, Object> params) {
 	   Result result = new Result();
 	   String createType = StringUtil.objToStr(params.get("createType"));
-	   //fortest
-	   params.put("rownumstart", 1);
-	   params.put("rownumend", 10);
 	   List trainPlans = null;
 	   try{
 		   QueryResult queryResult  = null;
