@@ -8,6 +8,7 @@ $(function() {
 	cross.init();   
 });
 
+var weekDays= ["<b>日</b>","一","二","三","四","五","<b>六</b>"];//星期X数组
 var highlingFlags = [{"value": "0", "text": "普线"},{"value": "1", "text": "高线"},{"value": "2", "text": "混合"}];
 var checkFlags = [{"value": "1", "text": "部分审核"},{"value": "2", "text": "全部审核"},{"value": "0", "text": "未审核"}];
 var unitCreateFlags = [{"value": "0", "text": "未"}, {"value": "1", "text": "已"},{"value": "2", "text": "全"}];
@@ -55,16 +56,16 @@ function CrossModel() {
 		var startDate = $("#runplan_input_startDate").val(); 
 		var endDate =  $("#runplan_input_endDate").val();
 		
-		var currentTime = new Date(startDate);
-		var endTime = endDate.substring(5);  
+		var currentTime = moment(startDate).format("YYYY-MM-DD");
+		var endTime = moment(endDate).format("MMDD");
 		self.planDays.remove(function(item) {
 			return true;
 		});   
-		self.planDays.push({"day": self.dayHeader(currentTime)}); 
-		while(self.dayHeader(currentTime) != endTime){
-			currentTime.setDate(currentTime.getDate() + 1); 
-			self.planDays.push({"day": self.dayHeader(currentTime)}); 
-		} 
+		self.planDays.push({"day": moment(currentTime).format("MMDD"),"week": weekDays[moment(currentTime).weekday()], "weekDay":moment(currentTime).weekday()}); 
+		while(moment(currentTime).format("MMDD") != endTime){
+			currentTime = moment(currentTime).add("day", 1).format('YYYY-MM-DD');
+			self.planDays.push({"day": moment(currentTime).format("MMDD"),"week": weekDays[moment(currentTime).weekday()], "weekDay":moment(currentTime).weekday()}); 
+		}
 		 $.ajax({
 				url : basePath+"/runPlan/getRunPlans",
 				cache : false,
@@ -398,8 +399,9 @@ function CrossModel() {
 		"createPeopleOrg":"",  
 		"createTime":""};
 	//当前选中的交路对象
-	self.currentCross = ko.observable(new CrossRow(self.defualtCross)); 
-	 
+	self.currentCross = ko.observable(new CrossRow(self.defualtCross));
+	self.currentCrossRow = ko.observable(new CrossRow(self.defualtCross));//仅用于交路列表行点击事件变蓝
+	
 	//currentIndex 
 	self.currdate =function(){
 		var d = new Date();
@@ -411,14 +413,7 @@ function CrossModel() {
 		return year+"-"+month+"-"+days;
 	};
 	
-	self.dayHeader =function(d){ 
-	 
-		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
-		var days = d.getDate(); 
-		month = ("" + month).length == 1 ? "0" + month : month;
-		days = ("" + days).length == 1 ? "0" + days : days;
-		return month + "-"+ days;
-	};
+	
 	
 	self.get40Date = function(){
 		var d = new Date();
@@ -1071,7 +1066,8 @@ function CrossModel() {
 	
 	
 	self.showTrains = function(row) {   
-		self.setCurrentCross(row); 
+		self.setCurrentCross(row);
+		self.currentCrossRow(row);//行事件变蓝
 		self.currentPlanCrossId(row.planCrossId());//用于车底交路图tab
 		
 		if(self.tabIndex() == 1) {//当前显示车底交路图tab
@@ -1175,7 +1171,7 @@ function searchModle(){
 	
 	self.planStartDate = ko.observable();
 	
-	self.currentBureanFlag = ko.observable(0);
+	self.currentBureanFlag = ko.observable(1);
 	
 	self.planEndDate = ko.observable();
 	

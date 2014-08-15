@@ -152,7 +152,7 @@ var basePath = "<%=basePath %>";
 				  	</div>
 			     	<div style="float:left;margin-left:40px;margin-top: 25px;margin-bottom:0;vertical-align: middle">
 	  					<a type="button"  style="margin-left:1px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_createRunLine"  data-bind="click: loadTrains">查询</a>
-						<a type="button"  style="margin-left:1px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_canvas_trainTime"  data-bind="click: showTrainTimeCanvas">查看图形</a>
+						<a type="button"  style="margin-left:1px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_canvas_trainTime"  data-bind="click: showTrainTimeCanvas">运行图</a>
 				 		<a id="bjdd_btn_useTrainStnAndTime" type="button"  style="margin-left:1px" class="btn btn-success" data-bind="click: useTrainStnAndTime">套用经由及时刻</a>
 						<a type="button"  style="margin-left:1px" class="btn btn-success" data-bind="click: useTrainStn">套用经由</a>
 	  			 	</div>

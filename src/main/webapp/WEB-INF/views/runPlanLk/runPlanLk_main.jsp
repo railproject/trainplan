@@ -77,7 +77,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												<div class="pull-left" style="margin-left: 5px;">
 													<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 												</div>
-												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 13px;">
+												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 													截至日期:</label>
 												<div class="pull-left" style="margin-left: 5px; ">
 													<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_endDate"  name="endDate" data-bind="value: searchModle().planEndDate" />
@@ -87,19 +87,19 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												<label for="exampleInputEmail3" class="control-label pull-left" >
 													车辆担当局:</label>
 												<div class="pull-left" style="margin-left: 5px;">
-													<select style="width:55px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
+													<select style="width:62px" class="form-control" data-bind="options:searchModle().bureaus, value: searchModle().bureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: '' ,event:{change: bureauChange}"></select>
 												</div>
 												<label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;">
 													始发路局:</label>
 												<div class="pull-left" style="margin-left: 5px; ">
-													<select style="width: 50px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
+													<select style="width: 75px" class="form-control" data-bind="options:searchModle().startBureaus, value: searchModle().startBureau, optionsText: 'shortName', optionsValue:'code', optionsCaption: ''"></select>
 												</div> 
 											</div>     
 											<div class="row"  style="margin-top: 5px;">
 											    <label for="exampleInputEmail3" class="control-label pull-left">
 													车次:&nbsp;</label>
 												<div class="pull-left">
-													<input type="text" class="form-control" style="width: 95px;"
+													<input type="text" class="form-control" style="width: 102px;"
 												 		 id="input_cross_filter_trainNbr" data-bind=" value: searchModle().filterTrainNbr, event:{keyup: trainNbrChange}">
 												</div> 
 												 <label for="exampleInputEmail3" class="control-label pull-left" style="margin-left: 20px;" >
@@ -161,7 +161,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 				<!-- Nav tabs -->
 				<div class="panel panel-default" >  
 					<ul class="nav nav-tabs" style="margin-top:10px;margin-left:5px;margin-right:5px;"  >
-					  <li class="active"><a style="padding:3px 10px;" href="#home" data-toggle="tab">图形</a></li>
+					  <li class="active"><a style="padding:3px 10px;" href="#home" data-toggle="tab">运行图</a></li>
 					  <li style="float:right">  					 
 						<input type="checkbox" class="pull-left" class="form-control" data-bind="event:{change: showRunPlans}"
 							class="form-control"> 
@@ -201,8 +201,8 @@ var currentUserBureau = "<%=currentUserBureau %>";
 		</div> 
    	 	<div class="row" class="panel-collapse" style="margin: 0px 5px 5px 16px;" >  
    	 	  <div class="panel panel-default">   
-	 	    <div id="learn-more-content"  class="panel-collapse collapse">
-              <div class="panel-body">
+	 	    <div id="learn-more-content" class="panel-collapse collapse">
+              <div class="panel-body" style="padding:5px;">
 	 	   	    <ul class="nav nav-tabs" >
 				  <li class="active"><a style="padding:3px 10px;" href="#runPlan" data-toggle="tab">开行情况</a></li> 
 				</ul> 
@@ -211,11 +211,12 @@ var currentUserBureau = "<%=currentUserBureau %>";
 				  <div class="tab-pane active" id="runPlan" > 
 				  		 <div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
 								      <!--panle-heading-->
-						      <div class="panel-body" style="bapadding:10px;overflow: auto">
+						      <div style="bapadding:10px;overflow: auto">
 						      	<div class="table-responsive" > 
 						          <table class="table table-bordered table-striped table-hover" id="run_plan_table">
 							      <thead> 
 							      	<tr data-bind="template: { name: 'runPlanTableDateHeader', foreach: planDays }"></tr>
+							      	<tr data-bind="template: { name: 'runPlanTableWeekHeader', foreach: planDays }" ></tr>
 							      </thead>
 							      <tbody data-bind="template: { name: 'runPlanTableVlaues', foreach: trainPlans }"> 
 							      </tbody> 
@@ -408,15 +409,18 @@ var currentUserBureau = "<%=currentUserBureau %>";
 
 
 <script  type="text/html" id="runPlanTableDateHeader"> 
-    <!-- ko if: $index() == 0 -->
- 	<td></td>
- 	<!-- /ko --> 
+   	<!-- ko if: $index() == 0 -->
+ 	<td rowspan="2" width="100px"></td>
+ 	<!-- /ko -->
  	<td align='center' data-bind="text: day"></td>
+</script>
+<script  type="text/html" id="runPlanTableWeekHeader">  
+ 	<td align='center' data-bind="html: week, style:{color: (weekDay==0||weekDay==6) ? 'blue':''}"></td>
 </script>
 <script  type="text/html" id="runPlanTableVlaues">
  <tr data-bind="foreach: runPlans">
     <!-- ko if: $index() == 0 --> 
- 	<td data-bind="text: $parent.trainNbr"></td>
+ 	<td data-bind="text: $parent.trainNbr, attr:{title: $parent.trainNbr}"></td>
  	<!-- /ko -->  
  	<td style="vertical-align: middle;" align='center' data-bind="html: runFlagStr"></td>
  </tr> 

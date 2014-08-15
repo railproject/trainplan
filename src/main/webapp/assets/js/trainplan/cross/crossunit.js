@@ -765,7 +765,7 @@ function searchModle(){
 	
 	self.filterUnitCreateFlag = ko.observable(0);
 	
-	self.currentBureanFlag = ko.observable(0);
+	self.currentBureanFlag = ko.observable(1);
 		
 	self.checkFlags = checkFlags;
 	

@@ -811,7 +811,7 @@ function searchModle(){
 	self.bureaus = ko.observableArray();  
 	self.startBureaus = ko.observableArray();
 	
-	self.currentBureanFlag = ko.observable(0);
+	self.currentBureanFlag = ko.observable(1);
 	
 	self.charts = ko.observableArray();
 	 

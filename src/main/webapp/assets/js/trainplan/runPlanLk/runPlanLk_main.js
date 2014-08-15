@@ -8,6 +8,7 @@ $(function() {
 	cross.init();   
 });
 
+var weekDays= ["<b>日</b>","一","二","三","四","五","<b>六</b>"];//星期X数组
 var highlingFlags = [{"value": "0", "text": "普线"},{"value": "1", "text": "高线"},{"value": "2", "text": "混合"}];
 var checkFlags = [{"value": "1", "text": "已"},{"value": "0", "text": "未"}];
 var unitCreateFlags = [{"value": "0", "text": "未"}, {"value": "1", "text": "已"},{"value": "2", "text": "全"}];
@@ -59,16 +60,16 @@ function CrossModel() {
 		var startDate = $("#runplan_input_startDate").val(); 
 		var endDate =  $("#runplan_input_endDate").val();
 		
-		var currentTime = new Date(startDate);
-		var endTime = endDate.substring(5);  
+		var currentTime = moment(startDate).format("YYYY-MM-DD");
+		var endTime = moment(endDate).format("MMDD");
 		self.planDays.remove(function(item) {
 			return true;
 		});   
-		self.planDays.push({"day": self.dayHeader(currentTime)}); 
-		while(self.dayHeader(currentTime) != endTime){
-			currentTime.setDate(currentTime.getDate() + 1); 
-			self.planDays.push({"day": self.dayHeader(currentTime)}); 
-		} 
+		self.planDays.push({"day": moment(currentTime).format("MMDD"),"week": weekDays[moment(currentTime).weekday()], "weekDay":moment(currentTime).weekday()}); 
+		while(moment(currentTime).format("MMDD") != endTime){
+			currentTime = moment(currentTime).add("day", 1).format('YYYY-MM-DD');
+			self.planDays.push({"day": moment(currentTime).format("MMDD"),"week": weekDays[moment(currentTime).weekday()], "weekDay":moment(currentTime).weekday()}); 
+		}
 		 $.ajax({
 				url : basePath+"/runPlanLk/getTrainLkRunPlans",
 				cache : false,
@@ -313,14 +314,20 @@ function CrossModel() {
 		return year+"-"+month+"-"+days;
 	};
 	
-	self.dayHeader =function(d){ 
-	 
-		var month = d.getMonth()+1;       //获取当前月份(0-11,0代表1月)
-		var days = d.getDate(); 
-		month = ("" + month).length == 1 ? "0" + month : month;
-		days = ("" + days).length == 1 ? "0" + days : days;
-		return month + "-"+ days;
-	};
+	//格式化出一、二
+	self.getWeek = function(d){
+		 var week = ""; 
+		//获取当前星期X(0-6,0代表星期天)
+		if(d.getDay()==0)          week="日"; 
+		if(d.getDay()==1)          week="一"; 
+		if(d.getDay()==2)          week="二"; 
+		if(d.getDay()==3)          week="三"; 
+		if(d.getDay()==4)          week="四"; 
+		if(d.getDay()==5)          week="五"; 
+		if(d.getDay()==6)          week="六"; 
+		
+		return week;
+	 };
 	
 	self.get40Date = function(){
 		var d = new Date();
@@ -621,7 +628,7 @@ function searchModle(){
 	
 	self.planStartDate = ko.observable();
 	
-	self.currentBureanFlag = ko.observable(0);
+	self.currentBureanFlag = ko.observable(1);
 	
 	self.planEndDate = ko.observable();
 	
@@ -722,15 +729,14 @@ function CrossRow(data) {
 	//列表记录行点击事件 显示相关局
 	self.relevantBureauShowValue =  ko.computed(function(){ 
 		var result = "";
-		 if(data.relevantBureau != null && data.relevantBureau != "null"){  
-			 for(var j = 0; j < data.relevantBureau.length; j++){
-				 for(var i = 0; i < gloabBureaus.length; i++){
-					 if(data.relevantBureau.substring(j, j + 1) == gloabBureaus[i].code){
-						 result += result == "" ? gloabBureaus[i].shortName : "、" + gloabBureaus[i].shortName;
-						 break;
-					 };
-				 };
-			 }; 
+		if(data.passBureau != null && data.passBureau != "null" && data.passBureau != ""){
+			for (var i=0;i<data.passBureau.length;i++) {
+//				console.log("---"+ data.passBureau.substring(i, i+1));
+				result = result + data.passBureau.substring(i, i+1);
+				if (i != data.passBureau.length-1) {
+					result = result +"、";
+				}
+			}
 		 } 
 		 return  result; 
 	});
