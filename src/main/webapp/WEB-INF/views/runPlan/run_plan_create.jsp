@@ -50,7 +50,6 @@ String basePath = request.getContextPath();
 
    
 <jsp:include page="/assets/commonpage/include-dwr-script.jsp" flush="true" /> 
-<script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 var all_role = "<%=userRolesString %>";
@@ -138,18 +137,15 @@ var currentUserBureau = "<%=currentUserBureau %>";
 				</div>
 		</div>
 										   
-   	 	<div class="row"  style="margin: 10px 10px 10px 25px;" >  
-   	 	  <div class="panel panel-default">   
+   	 	<div class="row"  style="margin: 10px 10px 10px 25px;" >
+   	 	<div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }" style="margin-bottom: 5px"></div>
+					
+   	 	  <div>   
 	 	    <div id="learn-more-content" >
-              <div class="panel-body"> 
+              <div> 
 				<!-- Tab panes --> 
 	  		    <div id="plan_view_div_palnDayDetail" class="panel panel-default"> 
-					      <!--panle-heading-->  
-				  <div class="row" style="margin: 5px 10px 10px 10px;" data-bind="html: completedMessage()">       
-				  </div>
-				  
-				  <div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }" style="margin-bottom: 50px"></div>
-					
+				  <div class="row" style="margin: 5px 10px 10px 10px;" data-bind="html: completedMessage()"></div>
 				  
 			      <div class="panel-body" style="bapadding:10px;overflow: auto">
 			      	<div class="table-responsive" > 
@@ -168,23 +164,8 @@ var currentUserBureau = "<%=currentUserBureau %>";
 			</div>
 		 </div>
 	 </div>  
-</body>  
- <script type="text/html" id="tablefooter-short-template"> 
-  <table style="width:100%;height:20px;">
-    <tr style="width:100%;height:20px;">
-     <td style="width:60%;height:20px;">
-  		<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
-  	 </td>
-     <td align="right" style="width:40%;height:20px;padding:0px;pading-bottom:-14;">   
-		<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
-	    <input type="text"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
-		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
-       </ul> 
-	 
-     </td >
-  </tr>
-</table> 
-</script> 
+</body>
+
 
 
 <script type="text/javascript" src="<%=basePath %>/assets/js/jquery.js"></script>
@@ -203,11 +184,28 @@ var currentUserBureau = "<%=currentUserBureau %>";
 <script type="text/javascript" src="<%=basePath%>/assets/js/respond.min.js"></script>
 <script src="<%=basePath %>/assets/js/moment.min.js"></script>
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%> 
 
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 </script>
+ <script type="text/html" id="tablefooter-short-template"> 
+  <table style="width:100%;height:20px;">
+    <tr style="width:100%;height:20px;">
+     <td style="width:60%;height:20px;">
+  		<span class="pull-left">共<span data-bind="html: totalCount()"></span>个交路  &nbsp;&nbsp;当前页<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>   &nbsp;&nbsp;共<span data-bind="text: pageCount()"></span>页</span> 								 
+  	 </td>
+     <td align="right" style="width:40%;height:20px;padding:0px;pading-bottom:-14;">   
+		<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
+	    <input type="text"  style="padding-left:8px;margin-bottom:0px;padding-bottom:0;width:30px;height: 19px;background-color: #ffffff;border: 1px solid #dddddd;" data-bind="value: parseInt(currentPage())+1, event:{keyup: pageNbrChange}"/>
+		<a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-left:-5px;padding:0px 5px;" data-bind="text:'>>', click: (currentPage() == pageCount()-1 || totalCount() == 0) ? null: loadNext"  style="padding:0px 5px;"></a>
+       </ul> 
+	 
+     </td >
+  </tr>
+</table> 
+</script> 
 
 <script  type="text/html" id="runPlanTableDateHeader"> 
     <!-- ko if: $index() == 0 -->
@@ -224,7 +222,7 @@ var basePath = "<%=basePath %>";
  <!-- ko if: trainSort == 0 --> 
  <tr data-bind="foreach: runPlans" >
     <!-- ko if: $index() == 0 -->
-	<td style="width:30px" data-bind="text:($parent.chirldrenIndex +1)"></td>
+	<td style="width:30px" data-bind="text:($root.crossRows.currentPage()*$root.crossRows.pageSize() + $parent.chirldrenIndex +1)"></td>
     <td style="width:40px"><input type="checkbox" value="1" data-bind="event:{change: $root.selectCross.bind($data, $parent)},checked: $parent.selected"></td>
     <td data-bind="text: $parent.tokenVehBureauShowValue" style="width:40px"></td>
     <td data-bind="attr:{colspan: $parent.colspan} "><span style="vertical-align: middle;" data-bind="html: $parent.createStatusShowValue"></span></td> 

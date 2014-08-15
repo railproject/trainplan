@@ -47,7 +47,6 @@ String basePath = request.getContextPath();
 <link rel="stylesheet" type="text/css" media="screen" href="<%=basePath%>/assets/css/rightmenu.css">
 
 <jsp:include page="/assets/commonpage/include-dwr-script.jsp" flush="true" /> 
-<script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <script type="text/javascript">
 var basePath = "<%=basePath %>";
 var all_role = "<%=userRolesString %>";
@@ -133,17 +132,17 @@ var currentUserBureau = "<%=currentUserBureau %>";
 					</div> 
 				</div>
 		</div> 						   
-   	 	<div class="row"  style="margin: 10px 10px 10px 25px;" >  
-   	 	  <div class="panel panel-default">   
+   	 	<div class="row"  style="margin: 10px 10px 10px 25px;" >
+   	 	<div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }" style="margin-bottom: 5px"></div>
+				  
+   	 	  <div>   
 	 	    <div id="learn-more-content" >
-              <div class="panel-body"> 
+              <div> 
 				<!-- Tab panes --> 
 	  		    <div id="plan_view_div_palnDayDetail" class="panel panel-default">
-				  <div class="row" style="margin: 5px 10px 10px 10px;" data-bind="html: completedMessage()">       
-				  </div>
 				  
-				  <div data-bind="template: { name: 'tablefooter-short-template', foreach: crossRows }" style="margin-bottom: 50px"></div>
-					
+				  <div class="row" style="margin: 5px 10px 10px 10px;" data-bind="html: completedMessage()"></div>
+				  	
 			      <div class="panel-body" style="bapadding:10px;overflow: auto">
 			      	<div class="table-responsive" > 
 			          <table class="table table-bordered table-striped table-hover" id="run_plan_table" data-bind="style:{width: runPlanTableWidth()}">
@@ -166,7 +165,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
   <table style="width:100%;height:20px;">
     <tr style="width:100%;height:20px;">
      <td style="width:60%;height:20px;">
-  		<span class="pull-left">共<span data-bind="html: totalCount()"></span>条  当前<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>条   共<span data-bind="text: pageCount()"></span>页</span> 								 
+  		<span class="pull-left">共<span data-bind="html: totalCount()"></span>个交路  &nbsp;&nbsp;当前页<span data-bind="html: totalCount() > 0 ? (currentIndex() + 1) : '0'"></span>到<span data-bind="html: endIndex()"></span>   &nbsp;&nbsp;共<span data-bind="text: pageCount()"></span>页</span> 								 
   	 </td>
      <td  align="right" style="width:40%;height:20px;padding:0px;pading-bottom:-14;">   
 		<span data-bind="attr:{class:currentPage() == 0 ? 'disabed': ''}"><a style="cursor:pointer;background-color: #ffffff;border: 1px solid #dddddd;margin-right:-5px;padding:0px 5px;" data-bind="text:'<<', click: currentPage() == 0 ? null: loadPre"></a>
@@ -196,6 +195,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 <script type="text/javascript" src="<%=basePath%>/assets/js/respond.min.js"></script>
 <script src="<%=basePath %>/assets/js/moment.min.js"></script>
 <script src="<%=basePath %>/assets/lib/fishcomponent.js"></script>
+<script src="<%=basePath %>/assets/js/trainplan/knockout.pagemodle.js"></script> 
 <%-- <script type="text/javascript" src="<%=basePath%>/assets/js/trainplan/common.security.js"></script> --%> 
 
 <%-- <script src="<%=basePath %>/assets/js/trainplan/util/fishcomponent.js"></script>
@@ -222,7 +222,7 @@ var basePath = "<%=basePath %>";
  <!-- ko if: trainSort == 0 --> 
  <tr data-bind="foreach: runPlans" >
     <!-- ko if: $index() == 0 --> 
-	<td style="width:30px" data-bind="text:($parent.chirldrenIndex +1)"></td>
+	<td style="width:30px" data-bind="text:($root.crossRows.currentPage()*$root.crossRows.pageSize() + $parent.chirldrenIndex +1)"></td>
     <td style="width:40px"><input type="checkbox" value="1" data-bind="event:{change: $root.selectCross.bind($data, $parent)},checked: $parent.selected"></td>
     <td data-bind="text: $parent.tokenVehBureauShowValue" style="width:40px"></td>
     <td data-bind="attr:{colspan: $parent.colspan} "><span style="vertical-align: middle;" data-bind="html: $parent.createStatusShowValue"></span></td> 
@@ -236,7 +236,7 @@ var basePath = "<%=basePath %>";
 			<td data-bind="attr:{rowspan: $parent.rowspan} " colspan="3"></td>
 		<!-- /ko -->
 		<!-- ko if: $root.searchModle().searchType() == '3' -->
-			<td style="width:30px" data-bind="text:($parent.chirldrenIndex +1)"></td>
+			<td style="width:30px" data-bind="text:(($root.crossRows.currentPage()*$root.crossRows.pageSize() + $parent.chirldrenIndex +1)"></td>
 			<td colspan="2">
          		<input type="checkbox" value="1" data-bind="event:{change: $root.selectCross.bind($data, $parent)},checked: $parent.selected">
     		</td>
