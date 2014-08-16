@@ -115,7 +115,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 													</div>
 											</div>
 										 
-										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:735px;margin-top:10px"> 
+										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:575px;margin-top:10px"> 
 											<!-- <div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 20px;">
@@ -126,7 +126,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												</div> 
 										   </div>  -->
 										  <div style="margin-left:10px;margin-top:5px;margin-bottom:10px;">相关局: <span style="margin-top:5px;margin-left:5px;" data-bind="html: currentCross().relevantBureauShowValue()"></span></div> 
-									      <div id="row_table" class="row" style="margin-left:5px; margin-right:5px;overflow: auto;">
+									      <div id="row_table" class="row" style="height:530px;margin-left:5px; margin-right:5px;overflow: auto;">
 										     <div class="table-responsive" > 
 												<table class="table table-bordered table-striped table-hover" id="yourTableID2" width="100%" border="0" cellspacing="0" cellpadding="0"  >
 													<thead>
@@ -162,7 +162,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 					<ul class="nav nav-tabs" style="margin-top:10px;margin-left:5px;margin-right:5px;"  >
 					  <li class="active"><a style="padding:3px 10px;" href="#home" data-toggle="tab">运行图</a></li>
 					  <li style="float:right">  					 
-						<input type="checkbox" class="pull-left" class="form-control" data-bind="event:{change: showRunPlans}"
+						<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowRunPlans, event:{change: showRunPlans}"
 							class="form-control"> 
 										<label for="exampleInputEmail5" class="control-label pull-left">
 										显示开行情况</label>  
@@ -188,7 +188,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 								         </div>
 							          </form>
 								    </div> 
-							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:720px;overflow-x:auto; overflow-y:auto;">
+							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:560px;overflow-x:auto; overflow-y:auto;">
 							        	<canvas id="canvas_event_getvalue"></canvas>
 							        </div> 
 							      </div> 
@@ -200,7 +200,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 		</div> 
    	 	<div class="row" class="panel-collapse" style="margin: 0px 5px 5px 16px;" >  
    	 	  <div class="panel panel-default">   
-	 	    <div id="learn-more-content" class="panel-collapse collapse">
+	 	    <div id="learn-more-content">
               <div class="panel-body" style="padding:5px;">
 	 	   	    <ul class="nav nav-tabs" >
 				  <li class="active"><a style="padding:3px 10px;" href="#runPlan" data-toggle="tab">开行情况</a></li> 

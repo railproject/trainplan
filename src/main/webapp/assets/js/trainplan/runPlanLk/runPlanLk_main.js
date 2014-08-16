@@ -456,21 +456,18 @@ function CrossModel() {
 		
 		$("#file_upload_dlg").dialog("open"); 
 	};
-	
+
+	self.isShowRunPlans = ko.observable(true);// 显示开行情况复选框   默认勾选
 	self.showRunPlans = function(){
-		if($('#learn-more-content').is(":visible")){
+		if(self.isShowRunPlans()) {//未勾选
 			$('#learn-more-content').hide();
 			$('#plan_cross_default_panel').css({height: '733px'});
 			$('#row_table').css({height: '620px'});
 			$('#canvas_parent_div').css({height: '720px'});
-			$('#plan_cross_panel_body').css({height: '490px'});
-			$('#plan_train_panel_body').css({height: '490px'});
-		}else{
+		}else{//勾选
 			 $('#learn-more-content').show();
 			 $('#plan_cross_default_panel').css({height: '575px'});
 			 $('#row_table').css({height: '530px'});
-			 $('#plan_cross_panel_body').css({height: '390px'});
-			 $('#plan_train_panel_body').css({height: '390px'});
 			 $('#canvas_parent_div').css({height:'560px'});
 		}
 	    

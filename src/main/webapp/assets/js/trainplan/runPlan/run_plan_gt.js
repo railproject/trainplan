@@ -543,7 +543,6 @@ function CrossModel() {
 		self.searchModle().planEndDate(self.get40Date());
 		
 		commonJsScreenLock(2);
-		var initFlag = 0;
 		//获取当期系统日期 
 		 $.ajax({
 				url : basePath+"/jbtcx/querySchemes",
@@ -694,25 +693,25 @@ function CrossModel() {
 		$("#file_upload_dlg").dialog("open"); 
 	};
 	
-	self.showRunPlans = function(){  
-		if($('#learn-more-content').is(":visible")){
+	self.isShowRunPlans = ko.observable(true);// 显示开行情况复选框   默认勾选
+	self.showRunPlans = function(){
+		if(!self.isShowRunPlans()) {//勾选
+			$('#plan_cross_default_panel').css({height: '530px'});//页面左侧div
+			$('#plan_cross_panel_body').css({height: '415px'});//某交路下车次table
+			$('#plan_train_panel_body').css({height: '415px'});//交路table
+			$('#canvas_parent_div').css({height:'530px'});//交路图tab页
+			$('#learn-more-content').show();
+		} else {//未勾选
 			$('#learn-more-content').hide();
-			$('#plan_cross_default_panel').css({height: '700px'});
-			$('#plan_cross_panel_body').css({height: '585px'});
-			$('#plan_train_panel_body').css({height: '585px'});
-			$('#canvas_parent_div').css({height: '700px'});
-		}else{
-			 $('#learn-more-content').show(); 
-			 $('#plan_cross_default_panel').css({height: '530px'});
-			 $('#plan_cross_panel_body').css({height: '415px'});
-			 $('#plan_train_panel_body').css({height: '415px'});
-			 $('#canvas_parent_div').css({height:'530px'});
+			$('#plan_cross_default_panel').css({height: '700px'});//页面左侧div
+			$('#plan_cross_panel_body').css({height: '585px'});//某交路下车次table
+			$('#plan_train_panel_body').css({height: '585px'});//交路table
+			$('#canvas_parent_div').css({height: '700px'});//交路图tab页
 		}
-	    
 	};
 	
 	self.showDialog = function(id, title){
-		$('#' + id).dialog({ title:  title, autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true })
+		$('#' + id).dialog({ title:  title, autoOpen: true, height:600,width: 800, modal: false, draggable: true, resizable:true });
 	};
 	
 	self.showCrossTrainDlg = function(){

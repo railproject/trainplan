@@ -87,7 +87,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 		<span><i class="fa fa-anchor"></i>当前位置:</span>
 		<li><a href="#">编制计划 -> 开行计划管理 -> 高铁图定开行计划</a></li>
 	</ol>  
-	   <div class="row" style="margin: 10px 10px 10px 10px;">  
+	   <div class="row" style="margin: 10px 10px 5px 10px;">  
 	        <!--分栏框开始-->
 		    <div class="pull-left" style="width: 30%;height:100%">
 			<!--分栏框开始--> 
@@ -158,7 +158,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												<span style="margin-left: 20px;"><span style="">途经局:</span><span data-bind="text: '京郑武广'"></span><span style="margin-left:3px" data-bind="text: '已审核: 郑  ; 未审核 : 京武广'"></span></span>   
 											</div>  -->
 										 
-										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:700px;margin-top:10px"> 
+										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:530px;margin-top:10px"> 
 											<div class="row" style="margin-top:10px">
 												<div class="form-group"
 													style="margin-left: 10px;">
@@ -192,7 +192,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 															<tbody style="padding:0">
 																 <tr style="padding:0">
 																   <td colspan="6" style="padding:0">
-																		 <div id="plan_train_panel_body" style="height: 585px; overflow-y:auto;"> 
+																		 <div id="plan_train_panel_body" style="height: 415px; overflow-y:auto;"> 
 																			<table class="table table-bordered table-striped table-hover" >
 																				<tbody data-bind="foreach: planCrossRows">
 																					<tr data-bind=" visible: visiableRow, style:{color: $parent.currentCrossRow().planCrossId == planCrossId ? 'blue':''}" >
@@ -220,7 +220,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 															<tbody style="padding:0">
 																 <tr style="padding:0">
 																   <td colspan="6" style="padding:0">
-																		 <div id="plan_cross_panel_body" style="height: 585px; overflow-y:auto;"> 
+																		 <div id="plan_cross_panel_body" style="height: 415px; overflow-y:auto;"> 
 																			<table class="table table-bordered table-striped table-hover"
 																				id="cross_trainInfo" > 
 																				<tbody data-bind="foreach: trains" >
@@ -247,7 +247,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 					  <li class="active"><a style="padding:3px 10px;" href="#profile" data-toggle="tab" data-bind="click: toCrossTab">交路信息</a></li>
 					  <li><a style="padding:3px 10px;" href="#home" data-toggle="tab" data-bind="click: toRunMapTab">交路图</a></li> 
 					  <li style="float:right">  					 
-						<input type="checkbox" class="pull-left" class="form-control" data-bind="event:{change: showRunPlans}"
+						<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowRunPlans, event:{change: showRunPlans}"
 							class="form-control"> 
 										<label for="exampleInputEmail5" class="control-label pull-left">
 										显示开行情况</label>  
@@ -274,7 +274,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 								         </div>
 							          </form>
 								    </div> 
-							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:700px;overflow-x:auto; overflow-y:auto;">
+							        <div id="canvas_parent_div" class="table-responsive" style="width:100%;height:530px;overflow-x:auto; overflow-y:auto;">
 							        	<canvas id="canvas_event_getvalue"></canvas>
 							        </div> 
 							      </div> 
@@ -602,9 +602,9 @@ var currentUserBureau = "<%=currentUserBureau %>";
 				 </div> 
 			</div>
 		</div> 
-   	 	<div class="row" class="panel-collapse" style="margin: 10px 10px 10px 25px;" >  
-   	 	  <div class="panel panel-default">   
-	 	    <div id="learn-more-content"  class="panel-collapse collapse">
+   	 	<div class="row" class="panel-collapse" style="margin: 0px 10px 10px 20px;" >  
+   	 	  <div class="panel panel-default">
+	 	    <div id="learn-more-content">
               <div class="panel-body">
 	 	   	    <ul class="nav nav-tabs" >
 				  <li class="active"><a style="padding:3px 10px;" href="#runPlan" data-toggle="tab">开行情况</a></li> 
