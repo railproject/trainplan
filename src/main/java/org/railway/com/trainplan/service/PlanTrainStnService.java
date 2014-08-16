@@ -47,10 +47,7 @@ public class PlanTrainStnService {
     
     @Autowired
     private TrainTimeService trainTimeService;
-    
-    @Autowired
-    private TreadService treadService;
-    
+
     @Autowired
     private CrossService crossService;
     

@@ -26,7 +26,6 @@ import org.railway.com.trainplan.service.RemoteService;
 import org.railway.com.trainplan.service.SchemeService;
 import org.railway.com.trainplan.service.TrainInfoService;
 import org.railway.com.trainplan.service.TrainTimeService;
-import org.railway.com.trainplan.service.TreadService;
 import org.railway.com.trainplan.service.dto.ParamDto;
 import org.railway.com.trainplan.service.dto.PlanTrainDto;
 import org.railway.com.trainplan.web.dto.Result;
@@ -67,8 +66,7 @@ public class PlanTrainStnController {
 	@Autowired
 	private TrainTimeService trainTimeService;
 	
-	@Autowired
-	private TreadService treadService;
+
 	
 	@Autowired
 	private SchemeService schemeService;

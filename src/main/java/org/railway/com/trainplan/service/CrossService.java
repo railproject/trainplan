@@ -1143,8 +1143,15 @@ public class CrossService{
 		 */
 		private void setDayGap(CrossTrainInfo train1, CrossTrainInfo train2){ 
 			try {  
-				Date sourceTime = format.parse("1977-01-01 " + train1.getSourceTargetTime());
-				Date targetTime = train2 != null ?  format.parse("1977-01-01 " + train2.getTargetTime()) :  format.parse("1977-01-01 " + train1.getTargetTime());
+				String sourceTimeTemp = train1.getSourceTargetTime();
+				String targetTimeTemp = train1.getTargetTime();
+				logger.debug("sourceTimeTemp=="+sourceTimeTemp);
+				logger.debug("targetTimeTemp=="+targetTimeTemp);
+				logger.debug("train2.getTargetTime()=="+train2.getTargetTime());
+				 
+				Date sourceTime = format.parse("1977-01-01 " + (sourceTimeTemp == null || "".equals(sourceTimeTemp)?targetTimeTemp:sourceTimeTemp));
+				Date targetTime = train2 != null ?  format.parse("1977-01-01 " + train2.getTargetTime()) :  format.parse("1977-01-01 " 
+				+ (targetTimeTemp == null || "".equals(targetTimeTemp)?sourceTimeTemp:targetTimeTemp));
 				
 				if(sourceTime.compareTo(targetTime) < 0){
 					train1.setDayGap(1);

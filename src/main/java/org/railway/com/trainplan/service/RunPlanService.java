@@ -518,9 +518,9 @@ public class RunPlanService {
                 // 查询同名交路，用来补全时间空挡，只查询生成过计划的交路
             	Map<String,Object> reqMap = new HashMap<String,Object>();
             	reqMap.put("unitCrossName", this.unitCross.getCrossName());
-            	System.err.println("this.unitCross.getCrossName()==" + this.unitCross.getCrossName());
+            	
                 List<PlanCrossInfo> planCrossInfoList = planCrossDao.findByUnitCrossName(reqMap);
-                System.err.println("planCrossInfoList.size==" + planCrossInfoList.size());
+                
                 // 按启用时间排序
                 Collections.sort(planCrossInfoList, new Comparator<PlanCrossInfo>() {
                     @Override

@@ -177,17 +177,11 @@ public class Constants {
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAININFO = "trainInfoDao.getTrainInfo";
     public static final String TRAININFO_GETTRAININFO_PAGE = "trainInfoDao.getTrainInfoForPage";
-    //
-    public static final String TRAININFO_GET_TRAINS_AND_TIMES_COUNT = "trainInfoDao.getTrainsAndTimesCount";
-    //
-    public static final String TRAININFO_GET_TRAINS_AND_TIMES_FORPAGE = "trainInfoDao.getTrainsAndTimesForPage";
+
     public static final String TRAININFO_GETTRAININFO_COUNT="trainInfoDao.getTrainInfoTotalCount";
     //根据baseTrainId查询列车基本信息
     public static final String TRAININFO_GETTRAININFO_FOR_TRAINID="trainInfoDao.getTrainInfoForTrainId";
-    //根据baseTrainId查询列车时刻表信息 
-    public static final String TRAININFO_GETTRAIN_TIME_INFO_FOR_TRAINID = "trainInfoDao.getTrainTimeInfoForTrainId";
-    //根据baseTrainId查询列车的起点和终点站信息 
-    public static final String TRAININFO_GET_START_END_TRAINTIME_FOR_TRAINID = "trainInfoDao.getStartEndTrainTimeInfoForTrainId";
+    
     //根据方案ID和始发终到局获取列车列表
     public static final String TRAININFO_GETTRAINTIMEINFO_BY_TRAINID = "trainTimeDao.getTrainTimeInfoByTrainId";
     //根据plan_train_id获取运行线列车时刻表 

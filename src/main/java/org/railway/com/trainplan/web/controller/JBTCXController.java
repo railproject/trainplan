@@ -330,13 +330,15 @@ public class JBTCXController {
 					 //获取起始站的到站日期和终到站的出发日期为横坐标的日期段
 					 if( i == 0){
 						 String arrTime = subInfo.getArrTime();
-						 arrDate = DateUtil.format(DateUtil.parseDate(arrTime,"yyyy-MM-dd hh:mm:ss"),"yyyy-MM-dd");
+						 String dptTime = subInfo.getDptTime();
+						 arrDate = DateUtil.format(DateUtil.parseDate(arrTime == null ||"".equals(arrTime)?dptTime : arrTime,"yyyy-MM-dd hh:mm:ss"),"yyyy-MM-dd");
 					     //设置始发站
 						 dto.setStartStn(subInfo.getStnName());
 					 }
 					 if( i == list.size()-1){
+						 String arrTime = subInfo.getArrTime();
 						 String dptTime = subInfo.getDptTime();
-						 dptDate = DateUtil.format(DateUtil.parseDate(dptTime,"yyyy-MM-dd hh:mm:ss"),"yyyy-MM-dd");
+						 dptDate = DateUtil.format(DateUtil.parseDate(dptTime == null || "".equals(dptTime)?arrTime : dptTime,"yyyy-MM-dd hh:mm:ss"),"yyyy-MM-dd");
 					     //设置终到站
 						 dto.setEndStn(subInfo.getStnName());
 					 }

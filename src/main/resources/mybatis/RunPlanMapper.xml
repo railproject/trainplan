@@ -131,7 +131,7 @@
 	            AND t.START_BUREAU = #{startBureau}
 	        </if> 
 	        <if test="trainNbr != null">
-	            AND t.train_nbr like '%#{trainNbr}%'
+	            AND t.train_nbr like '%${trainNbr}%'
 	        </if> 
 	         order by t.train_nbr, t.run_date
 			) M
@@ -157,7 +157,7 @@
 	            AND t.START_BUREAU = #{startBureau}
 	        </if> 
 	        <if test="trainNbr != null">
-	            AND t.train_nbr like '%#{trainNbr}%'
+	            AND t.train_nbr like '%${trainNbr}%'
 	        </if> 
 	         order by t.train_nbr, t.run_date
     </select>
@@ -194,7 +194,7 @@
 		         AND t1.START_BUREAU = #{startBureau}
 		     </if> 
 		     <if test="trainNbr != null">
-		         AND t1.CROSS_NAME like '%#{trainNbr}%'
+		         AND t1.CROSS_NAME like '%${trainNbr}%'
 		     </if> 
 		 
 		 ) M
@@ -223,7 +223,7 @@
 		            AND t1.START_BUREAU = #{startBureau}
 		        </if> 
 		        <if test="trainNbr != null">
-		            AND t1.CROSS_NAME like '%#{trainNbr}%'
+		            AND t1.CROSS_NAME like '%${trainNbr}%'
 		        </if> 
 		    GROUP BY T.PLAN_CROSS_ID
     )
@@ -251,7 +251,7 @@ FROM
         <otherwise>  AND t.HIGHLINE_FLAG IN ('0','2')</otherwise>
       </choose>
       <if test="trainNbr != null">
-			AND t.cross_name like '%' || #{trainNbr} || '%'
+			AND t.cross_name like '%${trainNbr}%'
 	  </if>
 	   <if test="tokenVehBureau != null">
             AND t.TOKEN_VEH_BUREAU= #{tokenVehBureau}
@@ -261,7 +261,7 @@ FROM
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">
-            	AND RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            	AND RELEVANT_BUREAU like '%${currentBureau}%'
             </if>
         </if>
         <if test="checkFlag != null and checkFlag !='' ">
@@ -269,7 +269,7 @@ FROM
         </if>
          <if test="currentBureanFlag == 1">
             <if test="currentBureau != null">
-            	AND t.RELEVANT_BUREAU like '%' || #{currentBureau} || '%'
+            	AND t.RELEVANT_BUREAU like '%${currentBureau}%'
             </if>
         </if>
       
