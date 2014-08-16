@@ -126,14 +126,14 @@ var currentUserBureau = "";
 														车次:&nbsp;</label> 
 					 <input type="text" class="form-control" style="width:75px;" data-bind="value: searchModle().trainNbr" />
 				 </div>
-				  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
+				  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses"><i class="fa fa-search"></i>查询</a>
 			 </div>
 		 </div>
 		 
 		 <div class="row" style="margin:5px 0 0px 5;"> 
 	        <div class="pull-left">
-			  <a type="button"  style="margin-left:15px" class="btn btn-success" data-bind="click: saveHighLineWithRole">保存</a>
-			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: submitHighLineWithRole">提交</a>
+			  <a type="button"  style="margin-left:15px" class="btn btn-success" data-bind="click: saveHighLineWithRole"><i class="fa fa-floppy-o"></i>保存</a>
+			  <a type="button"  style="margin-left:5px" class="btn btn-success" data-bind="click: submitHighLineWithRole"><i class="fa fa-external-link"></i>提交</a>
 			</div>
 			<div class="pull-right" style="margin-right:10px;">
 				<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowCrossDetailInfo, event:{change: showRunPlans}"> 

@@ -150,7 +150,7 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												</div> -->
 												<div class="pull-left" style="margin-left: 20px;">
 														<a type="button" class="btn btn-success" data-toggle="modal"
-															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
+															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses"><i class="fa fa-search"></i>查询</a> 
 													</div> 
 												
 											</div>  
@@ -163,9 +163,9 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												<div class="form-group"
 													style="margin-left: 10px;">
 													<a type="button" data-bind="attr:{class: searchModle().checkActiveFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: checkCrossInfo"  data-toggle="modal"
-														data-target="#" id="btn_cross_sure">审核</a>
+														data-target="#" id="btn_cross_sure"><i class="fa fa-eye"></i>审核</a>
 													<a  type="button" class="btn btn-success" data-toggle="modal"
-														data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
+														data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses"><i class="fa fa-trash-o"></i>删除</a>
 													<!-- <a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
 														data-target="#" id="btn_cross_createTrainLines" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createTrainLines">生成运行线</a> -->
 												</div> 

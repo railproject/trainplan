@@ -150,11 +150,11 @@ var basePath = "<%=basePath %>";
 						  	</div>
 				  		</div>
 				  	</div>
-			     	<div style="float:left;margin-left:40px;margin-top: 25px;margin-bottom:0;vertical-align: middle">
-	  					<a type="button"  style="margin-left:1px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_createRunLine"  data-bind="click: loadTrains">查询</a>
-						<a type="button"  style="margin-left:1px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_canvas_trainTime"  data-bind="click: showTrainTimeCanvas">运行图</a>
-				 		<a id="bjdd_btn_useTrainStnAndTime" type="button"  style="margin-left:1px" class="btn btn-success" data-bind="click: useTrainStnAndTime">套用经由及时刻</a>
-						<a type="button"  style="margin-left:1px" class="btn btn-success" data-bind="click: useTrainStn">套用经由</a>
+			     	<div style="float:left;margin-left:35px;margin-top: 25px;margin-bottom:0;vertical-align: middle">
+	  					<a type="button"  class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_createRunLine"  data-bind="click: loadTrains"><i class="fa fa-search"></i>查询</a>
+						<a type="button"  class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_canvas_trainTime"  data-bind="click: showTrainTimeCanvas"><i class="fa fa-bar-chart-o"></i>运行图</a>
+				 		<a id="bjdd_btn_useTrainStnAndTime" type="button" class="btn btn-success" data-bind="click: useTrainStnAndTime">套用经由及时刻</a>
+						<a type="button"  class="btn btn-success" data-bind="click: useTrainStn"></i>套用经由</a>
 	  			 	</div>
 		     </div>
 		     

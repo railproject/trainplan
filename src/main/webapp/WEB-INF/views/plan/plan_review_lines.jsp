@@ -80,7 +80,7 @@ var basePath = "<%=basePath %>";
 					<div class="pull-left" style="margin-left: 5px;">
 						<input type="text" class="form-control" style="width:75px;" placeholder="" id="runplan_input_startDate"  name="startDate" data-bind="value: searchModle().planStartDate" />
 					</div>
-				  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_createRunLine"  data-bind="click: loadTrains">查询</a>
+				  <a type="button"  style="margin-left:30px" class="btn btn-success" data-toggle="modal" data-target="#" id="plan_construction_createRunLine"  data-bind="click: loadTrains"><i class="fa fa-search"></i>查询</a>
 				 </div>
 		        <!--col-md-3 col-sm-4 col-xs-4-->
 		      </form> 

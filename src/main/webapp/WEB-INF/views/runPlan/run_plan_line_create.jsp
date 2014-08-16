@@ -123,9 +123,9 @@ var currentUserBureau = "<%=currentUserBureau %>";
 									</div>  	 
 									<div class="pull-left" style="margin-left: 10px;">
 											<a type="button" class="btn btn-success" data-toggle="modal"
-												data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
+												data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses"><i class="fa fa-search"></i>查询</a> 
 											<a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
-										data-target="#" id="btn_cross_createTrainLines" data-bind="click: createTrainLines">生成运行线</a>
+										data-target="#" id="btn_cross_createTrainLines" data-bind="click: createTrainLines"><i class="fa fa-external-link"></i>生成运行线</a>
 										</div>  
 										
 						</div>

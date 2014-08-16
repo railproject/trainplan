@@ -147,8 +147,8 @@ var all_role = "<%=userRolesString %>";
 													class="form-control" data-bind="options: searchModle().unitCreateFlags, value: searchModle().unitCreateFlag, optionsText: 'text' , optionsCaption: '' ">
 												</select>
 											</div> -->
-												<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 30px;"
-														data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a>   
+												<a type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 15px;"
+														data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses"><i class="fa fa-search"></i>查询</a>   
 											
 										</div>   
 									</div>
@@ -157,11 +157,11 @@ var all_role = "<%=userRolesString %>";
 									<div class="panel panel-default"> 
 									<div class="table-responsive">
 										<div class="form-group"
-											style="margin-left: 20px;margin-top:10px">
+											style="margin-left: 5px;margin-top:10px">
 											<a type="button" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: checkCrossInfo"  data-toggle="modal"
-												data-target="#" id="btn_cross_sure">审核</a>
+												data-target="#" id="btn_cross_sure"><i class="fa fa-eye"></i>审核</a>
 											<a  type="button" class="btn btn-success" data-toggle="modal"
-												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses">删除</a>
+												data-target="#" id="btn_cross_delete" style="margin-left: 2px;" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: deleteCrosses"><i class="fa fa-trash-o"></i>删除</a>
 											<!-- <a  type="button" class="btn btn-success" data-toggle="modal" style="margin-left: 2px;" 
 												data-target="#" id="btn_cross_createCrossUnit" data-bind="attr:{class: searchModle().activeFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: createUnitCrossInfo">生成车底</a>
 											 -->
@@ -219,7 +219,7 @@ var all_role = "<%=userRolesString %>";
 			        <div class="panel-heading">
 			        	<span>
 			              <i class="fa fa-table"></i>交路信息   <a  type="button" style="margin-left: 15px;margin-top: -5px" class="btn btn-success" data-toggle="modal" data-target="#"
-										id="cross_train_save" data-bind="attr:{class: searchModle().activeCurrentCrossFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: saveCrossInfo"> 保存</a>
+										id="cross_train_save" data-bind="attr:{class: searchModle().activeCurrentCrossFlag() == 1 ? 'btn btn-success' : 'btn btn-success disabled'}, click: saveCrossInfo"><i class="fa fa-floppy-o"></i>保存</a>
 					   </span>
 					</div> 
 			          <div class="panel-body">
@@ -549,9 +549,9 @@ var all_role = "<%=userRolesString %>";
 				                           
 											<a  type="button" style="margin-left: 15px;margin-top: -5px" class="btn btn-success" data-toggle="modal" data-target="#"
 											id="cross_train_save" data-bind="
-											click: showCrossMapDlg">交路图</a>
+											click: showCrossMapDlg"><i class="fa fa-bar-chart-o"></i>交路图</a>
 											<a  type="button" style="margin-left: 5px;margin-top: -5px" class="btn btn-success" data-toggle="modal" data-target="#"
-											id="cross_train_save" data-bind="click: showCrossTrainTimeDlg">时刻表</a>
+											id="cross_train_save" data-bind="click: showCrossTrainTimeDlg"><i class="fa fa-clock-o"></i>时刻表</a>
 						   </span>
 				         </div>
 				          <div class="panel-body" style="overflow-y:auto" >

@@ -107,14 +107,13 @@ var currentUserBureau = "<%=currentUserBureau %>";
 												<div class="pull-left" style="margin-left: 5px;">
 													<input type="checkBox" class="pull-left" class="form-control"
 													value="1" data-bind="checked: searchModle().currentBureanFlag"
-													style="width: 20px;class="form-control">
+													style="width: 20px;" class="form-control">
 												</div>
 												<div class="pull-left" style="margin-left: 10px;">
 														<a type="button" class="btn btn-success" data-toggle="modal"
-															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses">查询</a> 
-													</div> 
-												
-											</div>  
+															data-target="#" id="btn_cross_search"  data-bind="click: loadCrosses"><i class="fa fa-search"></i>查询</a> 
+													</div>
+											</div>
 										 
 										 <div id="plan_cross_default_panel" class="panel panel-default" style="height:735px;margin-top:10px"> 
 											<!-- <div class="row" style="margin-top:10px">

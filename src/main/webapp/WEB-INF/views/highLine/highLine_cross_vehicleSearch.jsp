@@ -131,7 +131,7 @@ var currentUserBureau = "";
 														车次:&nbsp;</label> 
 					 <input type="text" class="form-control" style="width:75px;" data-bind="value: searchModle().trainNbr"/>
 				 </div>
-				  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses">查询</a>
+				  <a type="button"  style="margin-left:5px" class="btn btn-success" data-toggle="modal" data-target="#"  data-bind="click: loadCrosses"><i class="fa fa-search"></i>查询</a>
 			 </div>
 			 <div class="pull-right" style="margin-right:10px;">
 				<input type="checkbox" class="pull-left" class="form-control" data-bind="checked: isShowCrossDetailInfo, event:{change: showRunPlans}"> 

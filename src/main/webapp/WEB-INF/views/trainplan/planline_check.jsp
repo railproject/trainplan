@@ -63,11 +63,11 @@
                                 <option value="4">接入交出</option>
                             </select>
 
-                            <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: search">查询</button>
+                            <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: search"><i class="fa fa-search"></i>查询</button>
 
                             <shiro:hasPermission name="JHPT.RJH.KDSP"><!-- 客运调度审批 -->
-                            <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: autoCheck, enable: canCheckLev1">校验</button>
-                            <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1, enable: canCheckLev1">审核</button>
+                            <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: autoCheck, enable: canCheckLev1"><i class="fa fa-retweet"></i>校验</button>
+                            <button type="button" class="btn btn-primary" style="width: 100px; margin-right: 10px; border-radius: 4px" data-bind="click: checkLev1, enable: canCheckLev1"><i class="fa fa-eye"></i>审核</button>
                             </shiro:hasPermission>
 
                             <shiro:hasPermission name="JHPT.RJH.ZBZRSP"><!-- 值班主任审批权限 -->

@@ -103,7 +103,7 @@ String basePath = request.getContextPath();
 					      <div class="panel-body">
 					        <div class="row" style="margin-bottom:10px;">
 					          <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="click: loadTrainInfoFromJbt"><i class="fa fa-plus"></i>选线</button>
-					          <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="click: batchCreateRunPlanLine" data-target="#saveHightLineCrewModal"><i class="fa fa-pencil-square-o"></i> 生成开行计划</button>
+					          <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-bind="click: batchCreateRunPlanLine" data-target="#saveHightLineCrewModal"><i class="fa fa-external-link"></i> 生成开行计划</button>
 					        </div>
 					        
 					        <!-- 加开table div -->
@@ -233,7 +233,7 @@ String basePath = request.getContextPath();
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: down"><i class="fa fa-arrow-down"></i> 下移</button>
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: insertTrainStnRow"><i class="fa fa-plus"></i> 插入行</button>
 								        <button type="button" class="btn btn-success btn-xs" data-bind="click: addTrainStnRow"><i class="fa fa-plus"></i> 追加行</button>
-								        <button type="button" class="btn btn-success btn-xs" data-bind="click: deleteTrainStnRow"><i class="fa fa-minus-square"></i> 删除行</button>
+								        <button type="button" class="btn btn-success btn-xs" data-bind="click: deleteTrainStnRow"><i class="fa fa-trash-o"></i> 删除行</button>
 					          		</div>
 						  		</div>
 						  	</div>
